@@ -30,7 +30,7 @@ class m240704_194704_create_set_table extends Migration
             'updated_at'     => $this->timestamp()->null(),
         ]);
 
-        $this->addForeignKey('{{%set_theme_id_fk}}', '{{%set}}', 'theme_id', '{{%set}}', 'id', 'CASCADE', 'CASCADE');
+        $this->addForeignKey('{{%set_theme_id_fk}}', '{{%set}}', 'theme_id', '{{%theme}}', 'id', 'CASCADE', 'CASCADE');
 
         $this->createIndex('{{%set_number_index}}', '{{%set}}', 'number');
         $this->createIndex('{{%set_status_index}}', '{{%set}}', 'status');

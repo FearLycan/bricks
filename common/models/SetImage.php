@@ -2,8 +2,11 @@
 
 namespace common\models;
 
+use common\enums\image\TypeEnum;
+use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
+use yii\db\BaseActiveRecord;
 
 /**
  * This is the model class for table "{{%set_image}}".
@@ -20,13 +23,22 @@ use yii\db\ActiveRecord;
  */
 class SetImage extends ActiveRecord
 {
-    /*public const TYPE_SCREENSHOT = 'screenshot';
-    public const TYPE_ICON       = 'icon';
-    public const TYPE_BACKGROUND = 'background';
-    public const TYPE_HEADER     = 'header';*/
-
-    public const STATUS_ACTIVE   = 1;
-    public const STATUS_INACTIVE = 0;
+    /**
+     * @return array
+     */
+    public function behaviors(): array
+    {
+        return [
+            'timestamp' => [
+                'class'      => TimestampBehavior::class,
+                'attributes' => [
+                    BaseActiveRecord::EVENT_BEFORE_INSERT => ['created_at'],
+                    BaseActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
+                ],
+                'value'      => date("Y-m-d H:i:s"),
+            ],
+        ];
+    }
 
     /**
      * {@inheritdoc}
@@ -74,5 +86,20 @@ class SetImage extends ActiveRecord
     public function getSet(): ActiveQuery
     {
         return $this->hasOne(Set::class, ['id' => 'set_id']);
+    }
+
+    public static function getOrCreate(Set $set, TypeEnum $type, string $url): self
+    {
+        $image = self::findOne(['type' => $type->value, 'set_id' => $set->id]);
+        if (!$image) {
+            $image = new self();
+            $image->type = $type->value;
+            $image->set_id = $set->id;
+        }
+
+        $image->url = $url;
+        $image->save();
+
+        return $image;
     }
 }

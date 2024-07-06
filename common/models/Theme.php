@@ -2,8 +2,11 @@
 
 namespace common\models;
 
+use yii\behaviors\SluggableBehavior;
+use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
+use yii\db\BaseActiveRecord;
 
 /**
  * This is the model class for table "{{%theme}}".
@@ -26,6 +29,30 @@ use yii\db\ActiveRecord;
 class Theme extends ActiveRecord
 {
     /**
+     * @return array
+     */
+    public function behaviors(): array
+    {
+        return [
+            'timestamp' => [
+                'class'      => TimestampBehavior::class,
+                'attributes' => [
+                    BaseActiveRecord::EVENT_BEFORE_INSERT => ['created_at'],
+                    BaseActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
+                ],
+                'value'      => date("Y-m-d H:i:s"),
+            ],
+            'sluggable' => [
+                'class'         => SluggableBehavior::class,
+                'attribute'     => 'name',
+                'slugAttribute' => 'slug',
+                'ensureUnique'  => false,
+                'immutable'     => true,
+            ],
+        ];
+    }
+
+    /**
      * {@inheritdoc}
      */
     public static function tableName(): string
@@ -41,7 +68,7 @@ class Theme extends ActiveRecord
         return [
             [['parent_id', 'group_id', 'sets_count', 'year_from', 'year_to'], 'integer'],
             [['created_at', 'updated_at'], 'safe'],
-            [['name', 'slug'], 'string', 'max' => 255],
+            [['name'], 'string', 'max' => 255],
             [['group_id'], 'exist', 'skipOnError' => true, 'targetClass' => ThemeGroup::class, 'targetAttribute' => ['group_id' => 'id']],
             [['parent_id'], 'exist', 'skipOnError' => true, 'targetClass' => __CLASS__, 'targetAttribute' => ['parent_id' => 'id']],
         ];
@@ -94,5 +121,43 @@ class Theme extends ActiveRecord
     public function getSubThemes(): ActiveQuery
     {
         return $this->hasMany(__CLASS__, ['parent_id' => 'id']);
+    }
+
+    public static function getOrCreate(string $name, ?ThemeGroup $themeGroup): self
+    {
+        $theme = self::find()->where(['name' => $name]);
+
+        if ($themeGroup) {
+            $theme->andWhere(['group_id' => $themeGroup->id]);
+        }
+
+        $theme = $theme->one();
+
+        if (!$theme) {
+            $theme = new self();
+            $theme->name = $name;
+        }
+
+        $theme->group_id = $themeGroup->id ?? null;
+        $theme->save();
+
+        return $theme;
+    }
+
+    public static function getOrCreateSub(string $name, Theme $theme): self
+    {
+        $themeSub = self::find()->where([
+            'name'      => $name,
+            'parent_id' => $theme->id,
+        ])->one();
+
+        if (!$themeSub) {
+            $themeSub = new self();
+            $themeSub->name = $name;
+            $themeSub->parent_id = $theme->id;
+            $themeSub->save();
+        }
+
+        return $themeSub;
     }
 }

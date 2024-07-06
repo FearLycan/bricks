@@ -10,6 +10,8 @@ enum TypeEnum: string implements BaseEnum
     case ICON = 'icon';
     case BACKGROUND = 'background';
     case HEADER = 'header';
+    case THUMBNAIL = 'thumbnail';
+    case IMAGE = 'image';
 
     public function label(): string
     {
@@ -18,6 +20,8 @@ enum TypeEnum: string implements BaseEnum
             self::ICON => 'Icon',
             self::BACKGROUND => 'Background',
             self::HEADER => 'Header',
+            self::THUMBNAIL => 'Thumbnail',
+            self::IMAGE => 'Image'
         };
     }
 }
