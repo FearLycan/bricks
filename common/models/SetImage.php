@@ -2,6 +2,7 @@
 
 namespace common\models;
 
+use common\enums\image\KindEnum;
 use common\enums\image\TypeEnum;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveQuery;
@@ -16,6 +17,8 @@ use yii\db\BaseActiveRecord;
  * @property int         $set_id
  * @property string      $type
  * @property int|null    $status
+ * @property string      $kind
+ * @property string      $hash
  * @property string      $created_at
  * @property string|null $updated_at
  *
@@ -57,7 +60,9 @@ class SetImage extends ActiveRecord
             [['url', 'set_id', 'type'], 'required'],
             [['set_id', 'status'], 'integer'],
             [['created_at', 'updated_at'], 'safe'],
-            [['url', 'type'], 'string', 'max' => 255],
+            [['url'], 'string', 'max' => 255],
+            [['hash'], 'string', 'max' => 50],
+            [['kind', 'type'], 'string', 'max' => 30],
             [['set_id'], 'exist', 'skipOnError' => true, 'targetClass' => Set::class, 'targetAttribute' => ['set_id' => 'id']],
         ];
     }
@@ -73,6 +78,7 @@ class SetImage extends ActiveRecord
             'set_id'     => 'Set ID',
             'type'       => 'Type',
             'status'     => 'Status',
+            'hash'       => 'Hash',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];
@@ -88,13 +94,15 @@ class SetImage extends ActiveRecord
         return $this->hasOne(Set::class, ['id' => 'set_id']);
     }
 
-    public static function getOrCreate(Set $set, TypeEnum $type, string $url): self
+    public static function getOrCreate(Set $set, TypeEnum $type, KindEnum $kind, string $url): self
     {
-        $image = self::findOne(['type' => $type->value, 'set_id' => $set->id]);
+        $image = self::findOne(['type' => $type->value, 'set_id' => $set->id, 'hash' => md5($url)]);
         if (!$image) {
             $image = new self();
             $image->type = $type->value;
+            $image->kind = $kind->value;
             $image->set_id = $set->id;
+            $image->hash = md5($url);
         }
 
         $image->url = $url;

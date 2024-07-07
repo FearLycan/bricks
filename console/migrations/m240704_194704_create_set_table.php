@@ -25,6 +25,8 @@ class m240704_194704_create_set_table extends Migration
             'pieces'         => $this->smallInteger(),
             'released'       => $this->boolean(),
             'brickset_url'   => $this->string(),
+            'rating'         => $this->float(4, 2)->null(),
+            'price'          => $this->integer()->null(),
             'age'            => $this->smallInteger(),
             'created_at'     => $this->timestamp()->notNull()->defaultExpression('CURRENT_TIMESTAMP'),
             'updated_at'     => $this->timestamp()->null(),

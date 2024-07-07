@@ -2,6 +2,7 @@
 
 namespace console\controllers;
 
+use common\enums\image\KindEnum;
 use common\enums\image\TypeEnum;
 use common\models\Set;
 use common\models\SetImage;
@@ -73,17 +74,30 @@ class BricksetController extends Controller
                 $legoSet->age = $set['ageRange']['min'] ?? 0;
                 $legoSet->save();
 
-                if (isset($set['image']['thumbnailURL']) && $set['image']['thumbnailURL']) {
-                    SetImage::getOrCreate($legoSet, TypeEnum::THUMBNAIL, $set['image']['thumbnailURL']);
-                }
-
-                if (isset($set['image']['imageURL']) && $set['image']['imageURL']) {
-                    SetImage::getOrCreate($legoSet, TypeEnum::IMAGE, $set['image']['imageURL']);
-                }
+                $this->syncImages((int)$set['setID'], $legoSet);
             }
 
         } while (count($sets) > 0);
 
+
+    }
+
+    private function syncImages(int $setID, Set $legoSet): void
+    {
+        $response = $this->sendRequest('getAdditionalImages', ['setID' => $setID]);
+        $images = $response['additionalImages'] ?? [];
+
+        foreach ($images as $key => $image) {
+            if (isset($image['imageURL']) && $image['imageURL']) {
+
+                $kind = KindEnum::ADDITIONAL;
+                if ($key === 0) {
+                    $kind = KindEnum::MAIN;
+                }
+
+                SetImage::getOrCreate($legoSet, TypeEnum::IMAGE, $kind, $image['imageURL']);
+            }
+        }
 
     }
 

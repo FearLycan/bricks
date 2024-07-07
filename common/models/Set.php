@@ -22,6 +22,8 @@ use yii\db\BaseActiveRecord;
  * @property int|null    $year
  * @property int|null    $pieces
  * @property int|null    $released
+ * @property float|null  $rating
+ * @property int|null    $price
  * @property string|null $brickset_url
  * @property int|null    $age
  * @property string      $created_at
@@ -71,7 +73,8 @@ class Set extends ActiveRecord
     {
         return [
             [['theme_id'], 'required'],
-            [['theme_id', 'status', 'number_variant', 'minifigures', 'year', 'pieces', 'released', 'age'], 'integer'],
+            [['theme_id', 'status', 'number_variant', 'minifigures', 'year', 'pieces', 'released', 'age', 'price'], 'integer'],
+            [['rating'], 'number'],
             [['created_at', 'updated_at'], 'safe'],
             [['number'], 'string', 'max' => 30],
             [['name', 'slug', 'brickset_url'], 'string', 'max' => 255],
