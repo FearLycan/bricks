@@ -1,5 +1,4 @@
-main > .container, main > .container-fluid
-{
+main > .container, main > .container-fluid {
     padding: 70px 15px 20px;
 }
 
@@ -71,9 +70,9 @@ a.desc:after {
     color: rgba(255, 255, 255, 0.5);
 }
 
-@media(max-width:767px) {
+@media (max-width: 767px) {
     .navbar form > button.logout {
-        display:block;
+        display: block;
         text-align: left;
         width: 100%;
         padding: 10px 0;
@@ -97,7 +96,6 @@ a.desc:after {
     padding: .75rem 1rem;
 }
 
-.breadcrumb-item > a
-{
+.breadcrumb-item > a {
     text-decoration: none;
 }

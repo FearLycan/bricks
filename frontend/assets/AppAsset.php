@@ -14,12 +14,16 @@ class AppAsset extends AssetBundle
     public $basePath = '@webroot';
     public $baseUrl  = '@web';
     public $css      = [
+        'bootscore/css/main.css',
+        'bootscore/fontawesome/css/all.min.css',
         'css/site.css',
     ];
     public $js       = [
+        'bootscore/js/lib/bootstrap.bundle.min.js',
+        'bootscore/js/theme.js',
     ];
     public $depends  = [
         YiiAsset::class,
-        BootstrapAsset::class,
+        //BootstrapAsset::class,
     ];
 }

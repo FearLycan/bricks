@@ -1,5 +1,8 @@
 <?php
 
+use yii\web\JqueryAsset;
+use yii\bootstrap5\BootstrapPluginAsset;
+use yii\bootstrap5\BootstrapAsset;
 use common\models\User;
 use yii\log\FileTarget;
 
@@ -18,6 +21,11 @@ return [
     'components'          => [
         'assetManager' => [
             'appendTimestamp' => true,
+            'bundles'         => [
+                JqueryAsset::class          => [],
+                BootstrapPluginAsset::class => ['js' => []],
+                BootstrapAsset::class       => ['css' => []],
+            ],
         ],
         'request'      => [
             'csrfParam' => '_csrf-frontend',
