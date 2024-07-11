@@ -1,5 +1,7 @@
 <?php
 
+use frontend\modules\homepage\HomepageModule;
+use frontend\modules\product\ProductModule;
 use yii\web\JqueryAsset;
 use yii\bootstrap5\BootstrapPluginAsset;
 use yii\bootstrap5\BootstrapAsset;
@@ -14,10 +16,13 @@ $params = array_merge(
 );
 
 return [
-    'id'                  => 'app-frontend',
+    'id'                  => 'brick-app',
+    'name'                => 'Brick Store',
+    'timeZone'            => 'Europe/Warsaw',
     'basePath'            => dirname(__DIR__),
     'bootstrap'           => ['log'],
     'controllerNamespace' => 'frontend\controllers',
+    'defaultRoute'        => 'homepage/home/index',
     'components'          => [
         'assetManager' => [
             'appendTimestamp' => true,
@@ -28,16 +33,15 @@ return [
             ],
         ],
         'request'      => [
-            'csrfParam' => '_csrf-frontend',
+            'csrfParam' => '_csrf-brick',
         ],
         'user'         => [
             'identityClass'   => User::class,
             'enableAutoLogin' => true,
-            'identityCookie'  => ['name' => '_identity-frontend', 'httpOnly' => true],
+            'identityCookie'  => ['name' => '_brick-number', 'httpOnly' => true],
         ],
         'session'      => [
-            // this is the name of the session cookie used for login on the frontend
-            'name' => 'advanced-frontend',
+            'name' => 'brick-session',
         ],
         'log'          => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
@@ -55,7 +59,18 @@ return [
             'enablePrettyUrl' => true,
             'showScriptName'  => false,
             'rules'           => [
+                '/'                => 'homepage/home/index',
+                'product/<slug>'   => 'product/product/view',
+                'product/<action>' => 'product/product/<action>',
             ],
+        ],
+    ],
+    'modules'             => [
+        'homepage' => [
+            'class' => HomepageModule::class,
+        ],
+        'product'  => [
+            'class' => ProductModule::class,
         ],
     ],
     'params'              => $params,
