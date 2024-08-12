@@ -1,11 +1,11 @@
 <?php
 
-namespace frontend\modules\product\controllers;
+namespace frontend\modules\lego\controllers;
 
 use common\components\AccessControl;
 use common\components\Controller;
 
-class ProductController extends Controller
+class ThemeController extends Controller
 {
     public function behaviors(): array
     {

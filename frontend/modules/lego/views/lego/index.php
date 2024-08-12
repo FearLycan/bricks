@@ -2,6 +2,7 @@
 
 use common\components\Html;
 use common\models\Theme;
+use frontend\components\Helper;
 use yii\helpers\Url;
 use yii\web\View;
 
@@ -9,15 +10,17 @@ use yii\web\View;
  * @var $this View
  */
 
-$this->title = Html::encode('Products');
-$this->params['breadcrumbs'][] = $this->title;
+$this->title = Html::encode('LEGO');
+$this->params['breadcrumbs'][] = ['label' => Helper::getLegoName()]
 
 
 ?>
 
 
 <div class="col-lg-9">
-    <h1 class="page-title"><?= Html::encode('Products') ?></h1>
+    <h1 class="page-title">
+        <?= Helper::getLegoName() ?>
+    </h1>
     <div class="woocommerce-notices-wrapper"></div>
     <div class="row">
         <div class="col-md-6 col-lg-8 col-xxl-9"><p class="woocommerce-result-count"> Showing all 5 results</p></div>
@@ -66,10 +69,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                             <a class="stretched-link text-decoration-none" style="" href="https://bootscore.me/product-category/t-shirts/">
                                             <span class="wc-cat-img d-inline-block me-2">
 
-                                                <?= Html::img(Url::to('@web/images/blank-category-image.png'), [
-                                                    'class' => 'attachment-woocommerce_thumbnail border rounded size-woocommerce_thumbnail',
-                                                    'alt'   => 'category',
-                                                ]) ?>
+                                                <?= Html::img(Url::to('@web/images/blank-category-image.png'), ['class' => 'attachment-woocommerce_thumbnail border rounded size-woocommerce_thumbnail',
+                                                                                                                'alt'   => 'category',]) ?>
 
                                             </span>
                                                 <span class="wc-block-product-categories-list-item__name align-middle">

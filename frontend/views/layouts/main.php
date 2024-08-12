@@ -33,12 +33,12 @@ AppAsset::register($this);
     $menuItems = [
         [
             'label'       => 'Home',
-            'url'         => ['/site/index'],
+            'url'         => Yii::$app->homeUrl,
             'options'     => ['class' => 'menu-item menu-item-type-post_type menu-item-object-page current_page_parent nav-item nav-item-731'],
             'linkOptions' => ['class' => 'nav-link'],
         ],
-        ['label' => 'About', 'url' => ['/site/about']],
-        ['label' => 'Contact', 'url' => ['/site/contact']],
+        //['label' => 'Products', 'url' => ['/products']],
+        ['label' => 'LEGO<sup>®</sup>', 'url' => ['/lego']],
     ];
     ?>
 
@@ -55,8 +55,9 @@ AppAsset::register($this);
                         </div>
                         <div class="offcanvas-body">
                             <?= Nav::widget([
-                                'options' => ['class' => 'navbar-nav ms-auto'],
-                                'items'   => $menuItems,
+                                'options'      => ['class' => 'navbar-nav ms-auto'],
+                                'items'        => $menuItems,
+                                'encodeLabels' => false,
                             ]) ?>
                         </div>
                     </div>
@@ -92,10 +93,11 @@ AppAsset::register($this);
                 <main role="main" class="site-main">
 
                     <?= Breadcrumbs::widget([
-                        'homeLink'   => ['label' => '', 'url' => Yii::$app->homeUrl,],
-                        'options'    => ['class' => 'breadcrumb flex-nowrap mb-0'],
-                        'navOptions' => ['aria' => ['label' => 'breadcrumb'], 'class' => 'wc-breadcrumb overflow-x-auto text-nowrap mb-4 mt-2 py-2 px-3 bg-body-tertiary rounded'],
-                        'links'      => $this->params['breadcrumbs'] ?? [],
+                        'homeLink'     => ['label' => '', 'url' => Yii::$app->homeUrl,],
+                        'options'      => ['class' => 'breadcrumb flex-nowrap mb-0'],
+                        'navOptions'   => ['aria' => ['label' => 'breadcrumb'], 'class' => 'wc-breadcrumb overflow-x-auto text-nowrap mb-4 mt-2 py-2 px-3 bg-body-tertiary rounded'],
+                        'links'        => $this->params['breadcrumbs'] ?? [],
+                        'encodeLabels' => false,
                     ]) ?>
 
                     <div class="row">

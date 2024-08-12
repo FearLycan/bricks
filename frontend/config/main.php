@@ -1,6 +1,7 @@
 <?php
 
 use frontend\modules\homepage\HomepageModule;
+use frontend\modules\lego\LegoModule;
 use frontend\modules\product\ProductModule;
 use yii\web\JqueryAsset;
 use yii\bootstrap5\BootstrapPluginAsset;
@@ -59,9 +60,13 @@ return [
             'enablePrettyUrl' => true,
             'showScriptName'  => false,
             'rules'           => [
-                '/'                => 'homepage/home/index',
-                'product/<slug>'   => 'product/product/view',
-                'product/<action>' => 'product/product/<action>',
+                '/'                     => 'homepage/home/index',
+                //'product/<slug>'          => 'product/product/view',
+                '<alias:products>'      => 'product/product/index',
+                '<alias:themes>'        => 'lego/theme/index',
+                '<alias:lego>'          => 'lego/lego/index',
+                '<alias:lego>/<slug>' => 'lego/lego/view',
+                //'product/<action>'        => 'product/product/<action>',
             ],
         ],
     ],
@@ -71,6 +76,9 @@ return [
         ],
         'product'  => [
             'class' => ProductModule::class,
+        ],
+        'lego'     => [
+            'class' => LegoModule::class,
         ],
     ],
     'params'              => $params,

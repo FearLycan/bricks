@@ -1,11 +1,12 @@
 <?php
 
-namespace frontend\modules\product\controllers;
+namespace frontend\modules\lego\controllers;
 
 use common\components\AccessControl;
 use common\components\Controller;
+use common\models\Set;
 
-class ProductController extends Controller
+class LegoController extends Controller
 {
     public function behaviors(): array
     {
@@ -32,6 +33,21 @@ class ProductController extends Controller
 
     public function actionView(string $slug): string
     {
-        return $this->render('view', []);
+        $model = $this->findModel($slug);
+
+        return $this->render('view', [
+            'model' => $model,
+        ]);
+    }
+
+    private function findModel(string $slug): Set
+    {
+        $model = Set::find()->where(['slug' => $slug])->one();
+
+        if (!$model) {
+            $this->notFound();
+        }
+
+        return $model;
     }
 }

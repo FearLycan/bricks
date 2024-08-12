@@ -2,6 +2,8 @@
 
 namespace common\models;
 
+use common\enums\image\KindEnum;
+use common\enums\image\TypeEnum;
 use yii\behaviors\SluggableBehavior;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveQuery;
@@ -30,7 +32,7 @@ use yii\db\BaseActiveRecord;
  * @property string|null $updated_at
  *
  * @property SetImage[]  $images
- * @property Set         $theme
+ * @property Theme       $theme
  */
 class Set extends ActiveRecord
 {
@@ -123,5 +125,14 @@ class Set extends ActiveRecord
     public function getTheme(): ActiveQuery
     {
         return $this->hasOne(Theme::class, ['id' => 'theme_id']);
+    }
+
+    public function getMainImage(): ?SetImage
+    {
+        return SetImage::findOne([
+            'set_id' => $this->id,
+            'kind'   => KindEnum::MAIN->value,
+            'type'   => TypeEnum::IMAGE->value,
+        ]);
     }
 }

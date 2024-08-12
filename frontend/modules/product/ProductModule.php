@@ -7,5 +7,5 @@ namespace frontend\modules\product;
  */
 class ProductModule extends \yii\base\Module
 {
-    public $controllerNamespace = 'frontend\modules\product\cotrollers';
+    public $controllerNamespace = 'frontend\modules\product\controllers';
 }

@@ -16,10 +16,15 @@ class AppAsset extends AssetBundle
     public $css      = [
         'bootscore/css/main.css',
         'bootscore/fontawesome/css/all.min.css',
+        'bootscore/lib/OwlCarousel2/assets/owl.carousel.min.css',
+        'bootscore/lib/OwlCarousel2/assets/owl.theme.default.min.css',
+        'bootscore/lib/baguetteBox/baguetteBox.min.css',
         'css/site.css',
     ];
     public $js       = [
         'bootscore/js/lib/bootstrap.bundle.min.js',
+        'bootscore/lib/OwlCarousel2/owl.carousel.min.js',
+        'bootscore/lib/baguetteBox/baguetteBox.min.js',
         'bootscore/js/theme.js',
     ];
     public $depends  = [

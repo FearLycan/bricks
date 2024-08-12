@@ -160,4 +160,17 @@ class Theme extends ActiveRecord
 
         return $themeSub;
     }
+
+
+    /**
+     * @return Theme[]
+     */
+    public static function getMainThemes(): array
+    {
+        return self::find()
+            ->where('parent_id is null')
+            ->andWhere('year_to >= 2020')
+            ->orderBy(['id' => SORT_ASC, 'name' => SORT_ASC])
+            ->all();
+    }
 }
