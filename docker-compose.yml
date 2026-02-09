@@ -1,10 +1,12 @@
-version: '3.8'
-
 services:
   frontend:
+    container_name: bricks-frontend
     build: frontend
+    image: bricks-frontend:1.0.0
     ports:
       - "20080:80"
+    depends_on:
+      - mysql
     volumes:
       - ~/.composer-docker/cache:/root/.composer/cache:delegated
       - ./:/app
@@ -12,9 +14,13 @@ services:
       - bricks-network
 
   backend:
+    container_name: bricks-backend
     build: backend
+    image: bricks-backend:1.0.0
     ports:
       - "21080:80"
+    depends_on:
+      - mysql
     volumes:
       - ~/.composer-docker/cache:/root/.composer/cache:delegated
       - ./:/app
@@ -22,9 +28,10 @@ services:
       - bricks-network
 
   mysql:
+    container_name: bricks-mysql
     image: mysql:5.7
     ports:
-      - "3306:3306"
+      - "127.0.0.1:3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
@@ -32,6 +39,11 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     volumes:
       - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -p$$MYSQL_ROOT_PASSWORD"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     networks:
       - bricks-network
 

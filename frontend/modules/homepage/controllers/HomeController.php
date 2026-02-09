@@ -10,11 +10,11 @@ use yii\caching\Cache;
 
 class HomeController extends Controller
 {
-    private Cache $cache;
+    //private Cache $cache;
 
     public function __construct($id, $module, $config = [])
     {
-        $this->cache = Yii::$app->cache;
+        //$this->cache = Yii::$app->cache;
         parent::__construct($id, $module, $config);
     }
 

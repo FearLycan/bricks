@@ -1,12 +1,9 @@
 <?php
 
+use common\models\User;
 use frontend\modules\homepage\HomepageModule;
 use frontend\modules\lego\LegoModule;
 use frontend\modules\product\ProductModule;
-use yii\web\JqueryAsset;
-use yii\bootstrap5\BootstrapPluginAsset;
-use yii\bootstrap5\BootstrapAsset;
-use common\models\User;
 use yii\log\FileTarget;
 
 $params = array_merge(
@@ -27,11 +24,6 @@ return [
     'components'          => [
         'assetManager' => [
             'appendTimestamp' => true,
-            'bundles'         => [
-                JqueryAsset::class          => [],
-                BootstrapPluginAsset::class => ['js' => []],
-                BootstrapAsset::class       => ['css' => []],
-            ],
         ],
         'request'      => [
             'csrfParam' => '_csrf-brick',
@@ -60,26 +52,20 @@ return [
             'enablePrettyUrl' => true,
             'showScriptName'  => false,
             'rules'           => [
-                '/'                     => 'homepage/home/index',
+                '/'                   => 'homepage/home/index',
                 //'product/<slug>'          => 'product/product/view',
-                '<alias:products>'      => 'product/product/index',
-                '<alias:themes>'        => 'lego/theme/index',
-                '<alias:lego>'          => 'lego/lego/index',
+                '<alias:products>'    => 'product/product/index',
+                '<alias:themes>'      => 'lego/theme/index',
+                '<alias:lego>'        => 'lego/lego/index',
                 '<alias:lego>/<slug>' => 'lego/lego/view',
                 //'product/<action>'        => 'product/product/<action>',
             ],
         ],
     ],
     'modules'             => [
-        'homepage' => [
-            'class' => HomepageModule::class,
-        ],
-        'product'  => [
-            'class' => ProductModule::class,
-        ],
-        'lego'     => [
-            'class' => LegoModule::class,
-        ],
+        'homepage' => ['class' => HomepageModule::class,],
+        'product'  => ['class' => ProductModule::class,],
+        'lego'     => ['class' => LegoModule::class,],
     ],
     'params'              => $params,
 ];
