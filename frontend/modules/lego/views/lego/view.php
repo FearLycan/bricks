@@ -17,8 +17,8 @@ $this->title = Html::encode($model->name);
 $this->params['breadcrumbs'][] = ['label' => Helper::getLegoName(), 'url' => ['/lego']];
 $this->params['breadcrumbs'][] = ['label' => $model->theme->name, 'url' => ['/theme/' . $model->theme->slug]];
 
-if ($model->theme->group) {
-    $this->params['breadcrumbs'][] = ['label' => $model->theme->group->name, 'url' => ['/theme-group/' . $model->theme->group->slug]];
+if ($model->subtheme) {
+    $this->params['breadcrumbs'][] = ['label' => $model->subtheme->name, 'url' => ['/subtheme/' . $model->subtheme->slug]];
 }
 
 $this->params['breadcrumbs'][] = $this->title;
@@ -28,11 +28,12 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="col">
     <div class="row product">
         <div class="col-md-6">
-            <?= Html::img("@web/images/lego/{$model->number}/{$model->getMainImage()->url}", [
-                'class' => 'img-fluid',
-                'style' => 'object-fit: fill; max-height:650px;',
-                'alt'   => Html::encode($model->name),
-                'id'    => 'mainImage',
+            <?= Html::img($model->getMainImage()->url, [
+                    'class'   => 'img-fluid',
+                    'style'   => 'object-fit: fill; max-height:650px;',
+                    'alt'     => Html::encode($model->name),
+                    'id'      => 'mainImage',
+                    'loading' => 'lazy',
             ]) ?>
 
             <div class="row mt-2 owl-main-content">
@@ -40,9 +41,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div class="col-md-12 owl-carousel owl-theme">
                     <?php foreach ($model->images as $image): ?>
                         <div class="item"
-                             data-url="<?= Url::to("@web/images/lego/{$model->number}/{$image->url}") ?>"
+                             data-url="<?= Url::to($image->url) ?>"
                              style="height: 85px;
-                                     background-image: url('<?= Url::to("@web/images/lego/{$model->number}/{$image->url}") ?>');
+                                     background-image: url('<?= Url::to($image->url) ?>');
                                      background-position: center;
                                      background-repeat: no-repeat;
                                      background-size:cover;">
@@ -187,9 +188,9 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <?php InlineScript::begin(); ?>
 <script>
-    let owl = $('.owl-carousel');
+    //let owl = $('.owl-carousel');
 
-    $(owl).owlCarousel({
+    /*$(owl).owlCarousel({
         loop: true,
         margin: 10,
         dots: false,
@@ -211,9 +212,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 items: 5
             }
         }
-    });
+    });*/
 
-    $(owl).on('click', 'div.item', function () {
+    /*$(owl).on('click', 'div.item', function () {
         let url = $(this).data('url');
 
         let image = $(document).find('img#mainImage');
@@ -221,7 +222,7 @@ $this->params['breadcrumbs'][] = $this->title;
             image.attr('src', url);
             image.fadeIn('swing');
         });
-    });
+    });*/
 
 </script>
 <?php InlineScript::end(); ?>

@@ -18,6 +18,7 @@ use yii\db\BaseActiveRecord;
  * @property string|null $name
  * @property string|null $slug
  * @property int         $theme_id
+ * @property int|null    $subtheme_id
  * @property int|null    $status
  * @property int|null    $number_variant
  * @property int|null    $minifigures
@@ -33,6 +34,7 @@ use yii\db\BaseActiveRecord;
  *
  * @property SetImage[]  $images
  * @property Theme       $theme
+ * @property Theme|null  $subtheme
  */
 class Set extends ActiveRecord
 {
@@ -75,12 +77,14 @@ class Set extends ActiveRecord
     {
         return [
             [['theme_id'], 'required'],
-            [['theme_id', 'status', 'number_variant', 'minifigures', 'year', 'pieces', 'released', 'age', 'price'], 'integer'],
+            [['theme_id', 'subtheme_id', 'status', 'number_variant', 'minifigures', 'year', 'pieces', 'released', 'age', 'price'], 'integer'],
             [['rating'], 'number'],
             [['created_at', 'updated_at'], 'safe'],
             [['number'], 'string', 'max' => 30],
             [['name', 'slug', 'brickset_url'], 'string', 'max' => 255],
-            [['theme_id'], 'exist', 'skipOnError' => true, 'targetClass' => Theme::class, 'targetAttribute' => ['theme_id' => 'id']]];
+            [['theme_id'], 'exist', 'skipOnError' => true, 'targetClass' => Theme::class, 'targetAttribute' => ['theme_id' => 'id']],
+            [['subtheme_id'], 'exist', 'skipOnError' => true, 'targetClass' => Theme::class, 'targetAttribute' => ['subtheme_id' => 'id']],
+        ];
     }
 
     /**
@@ -94,6 +98,7 @@ class Set extends ActiveRecord
             'name'           => 'Name',
             'slug'           => 'Slug',
             'theme_id'       => 'Theme ID',
+            'subtheme_id'    => 'Subtheme ID',
             'status'         => 'Status',
             'number_variant' => 'Number Variant',
             'minifigures'    => 'Minifigures',
@@ -125,6 +130,16 @@ class Set extends ActiveRecord
     public function getTheme(): ActiveQuery
     {
         return $this->hasOne(Theme::class, ['id' => 'theme_id']);
+    }
+
+    /**
+     * Gets query for [[Subtheme]].
+     *
+     * @return ActiveQuery
+     */
+    public function getSubtheme(): ActiveQuery
+    {
+        return $this->hasOne(Theme::class, ['id' => 'subtheme_id']);
     }
 
     public function getMainImage(): ?SetImage

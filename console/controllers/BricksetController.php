@@ -15,6 +15,10 @@ use yii\console\Exception;
 use yii\helpers\Json;
 use yii\httpclient\Client;
 
+/**
+ *
+ * @property-read string $userHash
+ */
 class BricksetController extends Controller
 {
     public Client         $client;
@@ -42,6 +46,8 @@ class BricksetController extends Controller
             $sets = $response['sets'] ?? [];
 
             foreach ($sets as $set) {
+                $themeGroup = null;
+                $subTheme = null;
 
                 $legoSet = Set::find()->where([
                     'number' => $set['number'],
@@ -64,6 +70,7 @@ class BricksetController extends Controller
 
                 $legoSet->name = $set['name'];
                 $legoSet->theme_id = $theme->id;
+                $legoSet->subtheme_id = $subTheme->id ?? null;
                 $legoSet->number = $set['number'];
                 $legoSet->number_variant = $set['numberVariant'] ?? 0;
                 $legoSet->year = $set['year'];
@@ -114,9 +121,9 @@ class BricksetController extends Controller
             }
 
             $legoTheme->name = $theme['theme'];
-            $legoTheme->sets_count = $theme['setCount'];
-            $legoTheme->year_to = $theme['yearTo'];
-            $legoTheme->year_from = $theme['yearFrom'];
+            $legoTheme->sets_count = (int)($theme['setCount'] ?? 0);
+            $legoTheme->year_to = (int)($theme['yearTo'] ?? 0);
+            $legoTheme->year_from = (int)($theme['yearFrom'] ?? 0);
             $legoTheme->save();
         }
 

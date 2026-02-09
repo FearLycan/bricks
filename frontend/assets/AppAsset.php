@@ -17,9 +17,7 @@ class AppAsset extends AssetBundle
     public $css      = [
         'css/site.css',
     ];
-    public $js       = [
-        'bootscore/js/theme.js',
-    ];
+    public $js       = [];
     public $depends  = [
         YiiAsset::class,
         BootstrapAsset::class,
