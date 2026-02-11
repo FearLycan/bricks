@@ -28,7 +28,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="col">
     <div class="row product">
         <div class="col-md-6">
-            <?= Html::img($model->getMainImage()->url, [
+            <?= Html::img($model->getMainImage()->url ?? "https://placehold.co/650?text={$model->number}", [
                     'class'   => 'img-fluid',
                     'style'   => 'object-fit: fill; max-height:650px;',
                     'alt'     => Html::encode($model->name),

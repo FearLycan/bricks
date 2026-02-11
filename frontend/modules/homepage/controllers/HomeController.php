@@ -5,6 +5,7 @@ namespace frontend\modules\homepage\controllers;
 use common\components\AccessControl;
 
 use common\components\Controller;
+use frontend\models\searches\SetSearch;
 use Yii;
 use yii\caching\Cache;
 
@@ -36,8 +37,14 @@ class HomeController extends Controller
         ];
     }
 
-    public function actionIndex(): string
+    public function actionIndex()
     {
-        return $this->render('index', []);
+        $searchModel = new SetSearch();
+        $dataProvider = $searchModel->search($this->request->queryParams);
+
+        return $this->render('index', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
     }
 }
