@@ -6,7 +6,7 @@ use common\enums\BaseEnum;
 
 enum KindEnum: string implements BaseEnum
 {
-    case MAIN = 'mian';
+    case MAIN = 'main';
     case ADDITIONAL = 'additional';
 
     public function label(): string

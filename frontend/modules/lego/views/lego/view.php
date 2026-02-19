@@ -27,6 +27,36 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="col">
     <div class="row product">
         <div class="col-md-6">
+
+
+            <div id="carouselExampleDark" class="carousel carousel-dark slide">
+                <div class="carousel-indicators">
+                    <?php foreach ($model->images as $key => $image): ?>
+                        <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="<?= $key ?>" class="<?= $image->isMain() ? 'active' : '' ?>" aria-current="true" aria-label="Slide <?= $image->id ?>"></button>
+                    <?php endforeach; ?>
+                </div>
+                <div class="carousel-inner">
+                    <?php foreach ($model->images as $image): ?>
+                        <div class="carousel-item <?= $image->isMain() ? 'active' : '' ?>" data-bs-interval="10000">
+                            <img src="<?= Url::to($image->url) ?>" class="d-block w-100" loading="lazy" alt="..." style="height: 500px; object-fit: cover;">
+                            <!--<div class="carousel-caption d-none d-md-block">
+                                <h5>First slide label</h5>
+                                <p>Some representative placeholder content for the first slide.</p>
+                            </div>-->
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+
+            <!--
             <?= Html::img($model->getMainImage()->url ?? "https://placehold.co/650?text={$model->number}", [
                     'class'   => 'img-fluid',
                     'style'   => 'object-fit: fill; max-height:650px;',
@@ -34,6 +64,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'id'      => 'mainImage',
                     'loading' => 'lazy',
             ]) ?>
+
 
             <div class="row mt-2 owl-main-content">
 
@@ -58,6 +89,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 </div>
 
             </div>
+            -->
         </div>
 
         <div class="col-md-6">

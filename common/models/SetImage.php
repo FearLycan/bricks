@@ -110,4 +110,9 @@ class SetImage extends ActiveRecord
 
         return $image;
     }
+
+    public function isMain(): bool
+    {
+        return KindEnum::tryFrom($this->kind) === KindEnum::MAIN;
+    }
 }
