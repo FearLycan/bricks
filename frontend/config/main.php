@@ -20,7 +20,7 @@ return [
     'basePath'            => dirname(__DIR__),
     'bootstrap'           => ['log'],
     'controllerNamespace' => 'frontend\controllers',
-    'defaultRoute'        => 'homepage/home/index',
+    'defaultRoute'        => 'lego/lego/index',
     'components'          => [
         'assetManager' => [
             'appendTimestamp' => true,
@@ -52,12 +52,13 @@ return [
             'enablePrettyUrl' => true,
             'showScriptName'  => false,
             'rules'           => [
-                '/'                   => 'homepage/home/index',
+                //'/'                                 => 'homepage/home/index',
                 //'product/<slug>'          => 'product/product/view',
-                '<alias:products>'    => 'product/product/index',
-                '<alias:themes>'      => 'lego/theme/index',
-                '<alias:lego>'        => 'lego/lego/index',
-                '<alias:lego>/<slug>' => 'lego/lego/view',
+                '<alias:products>'                               => 'product/product/index',
+                '<modules:lego>/<controler:theme>/<slug>'        => 'lego/theme/index',
+                '<modules:lego>/<controler:theme>/<slug>/<sub>' => 'lego/theme/index',
+                '<alias:lego>'                                   => 'lego/lego/index',
+                '<modules:lego>/<slug>'                          => 'lego/lego/view',
                 //'product/<action>'        => 'product/product/<action>',
             ],
         ],

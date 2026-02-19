@@ -126,11 +126,6 @@ class Theme extends ActiveRecord
     public static function getOrCreate(string $name, ?ThemeGroup $themeGroup): self
     {
         $theme = self::find()->where(['name' => $name]);
-
-        if ($themeGroup) {
-            $theme->andWhere(['group_id' => $themeGroup->id]);
-        }
-
         $theme = $theme->one();
 
         if (!$theme) {

@@ -58,6 +58,10 @@ AppAsset::register($this);
         <div class="container">
             <?= Breadcrumbs::widget([
                     'links'        => $this->params['breadcrumbs'] ?? [],
+                    'homeLink'     => [
+                            'label' => Html::encode(Yii::$app->name),
+                            'url'   => Yii::$app->homeUrl,
+                    ],
                     'encodeLabels' => false,
             ]) ?>
             <?= Alert::widget() ?>

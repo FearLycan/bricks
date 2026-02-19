@@ -5,6 +5,7 @@ namespace frontend\modules\lego\controllers;
 use common\components\AccessControl;
 use common\components\Controller;
 use common\models\Set;
+use frontend\models\searches\SetSearch;
 
 class LegoController extends Controller
 {
@@ -26,9 +27,15 @@ class LegoController extends Controller
         ];
     }
 
-    public function actionIndex(): string
+    public function actionIndex()
     {
-        return $this->render('index', []);
+        $searchModel = new SetSearch();
+        $dataProvider = $searchModel->search($this->request->queryParams);
+
+        return $this->render('index', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
     }
 
     public function actionView(string $slug): string

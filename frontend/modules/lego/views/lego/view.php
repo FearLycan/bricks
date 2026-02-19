@@ -12,13 +12,12 @@ use yii\web\View;
  * @var $model Set
  */
 
-
 $this->title = Html::encode($model->name);
 $this->params['breadcrumbs'][] = ['label' => Helper::getLegoName(), 'url' => ['/lego']];
-$this->params['breadcrumbs'][] = ['label' => $model->theme->name, 'url' => ['/theme/' . $model->theme->slug]];
+$this->params['breadcrumbs'][] = ['label' => $model->theme->name, 'url' => ["/lego/theme/{$model->theme->slug}"]];
 
 if ($model->subtheme) {
-    $this->params['breadcrumbs'][] = ['label' => $model->subtheme->name, 'url' => ['/subtheme/' . $model->subtheme->slug]];
+    $this->params['breadcrumbs'][] = ['label' => $model->subtheme->name, 'url' => ["/lego/theme/{$model->theme->slug}/{$model->subtheme->slug}"]];
 }
 
 $this->params['breadcrumbs'][] = $this->title;
