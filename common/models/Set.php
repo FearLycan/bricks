@@ -9,6 +9,7 @@ use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 use yii\db\BaseActiveRecord;
+use yii\helpers\Url;
 
 /**
  * This is the model class for table "{{%set}}".
@@ -149,5 +150,116 @@ class Set extends ActiveRecord
             'kind'   => KindEnum::MAIN->value,
             'type'   => TypeEnum::IMAGE->value,
         ]);
+    }
+
+    public function getDisplayMainImage(): ?SetImage
+    {
+        $mainImage = $this->getMainImage();
+        if ($mainImage !== null) {
+            return $mainImage;
+        }
+
+        if (isset($this->images[0])) {
+            return $this->images[0];
+        }
+
+        return null;
+    }
+
+    public function getDisplayMainImageUrl(): string
+    {
+        $mainImage = $this->getDisplayMainImage();
+        if ($mainImage !== null) {
+            return Url::to($mainImage->url);
+        }
+
+        return 'https://placehold.co/1000x800?text=' . rawurlencode((string) $this->number);
+    }
+
+    public static function formatAmountFromCents(int $amountInCents, string $currency = 'PLN'): string
+    {
+        return number_format($amountInCents / 100, 2, ',', ' ') . ' ' . $currency;
+    }
+
+    public function getFormattedPrice(string $currency = 'PLN'): ?string
+    {
+        if ($this->price === null) {
+            return null;
+        }
+
+        return self::formatAmountFromCents($this->price, $currency);
+    }
+
+    public function getFormattedPriceOrDefault(string $defaultText, string $currency = 'PLN'): string
+    {
+        $price = $this->getFormattedPrice($currency);
+        if ($price !== null) {
+            return $price;
+        }
+
+        return $defaultText;
+    }
+
+    public function getThemeGroupNameOrDefault(string $defaultText = '-'): string
+    {
+        if ($this->theme->group && $this->theme->group->name) {
+            return $this->theme->group->name;
+        }
+
+        return $defaultText;
+    }
+
+    public function getSubthemeNameOrDefault(string $defaultText = '-'): string
+    {
+        if ($this->subtheme && $this->subtheme->name) {
+            return $this->subtheme->name;
+        }
+
+        return $defaultText;
+    }
+
+    public function getAgeText(string $defaultText = '-'): string
+    {
+        if ($this->age) {
+            return $this->age . '+';
+        }
+
+        return $defaultText;
+    }
+
+    public function getPiecesText(string $defaultText = '-'): string
+    {
+        if ($this->pieces !== null) {
+            return (string) $this->pieces;
+        }
+
+        return $defaultText;
+    }
+
+    public function getMinifiguresText(string $defaultText = '-'): string
+    {
+        if ($this->minifigures !== null) {
+            return (string) $this->minifigures;
+        }
+
+        return $defaultText;
+    }
+
+    public function getYearText(string $defaultText = '-'): string
+    {
+        if ($this->year !== null) {
+            return (string) $this->year;
+        }
+
+        return $defaultText;
+    }
+
+    public function getSetNumberText(string $defaultText = '-'): string
+    {
+        if ($this->number !== null && $this->number !== '') {
+            return $this->number;
+        }
+
+        return $defaultText;
     }
 }

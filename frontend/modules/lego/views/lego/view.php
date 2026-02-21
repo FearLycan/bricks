@@ -4,6 +4,7 @@ use common\components\Html;
 use common\models\Set;
 use common\widgets\InlineScript;
 use frontend\components\Helper;
+use frontend\components\T;
 use yii\helpers\Url;
 use yii\web\View;
 
@@ -24,236 +25,147 @@ $this->params['breadcrumbs'][] = $this->title;
 
 ?>
 
-<div class="col">
-    <div class="row product">
-        <div class="col-md-6">
-
-
-            <div id="carouselExampleDark" class="carousel carousel-dark slide">
-                <div class="carousel-indicators">
-                    <?php foreach ($model->images as $key => $image): ?>
-                        <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="<?= $key ?>" class="<?= $image->isMain() ? 'active' : '' ?>" aria-current="true" aria-label="Slide <?= $image->id ?>"></button>
-                    <?php endforeach; ?>
-                </div>
-                <div class="carousel-inner">
-                    <?php foreach ($model->images as $image): ?>
-                        <div class="carousel-item <?= $image->isMain() ? 'active' : '' ?>" data-bs-interval="10000">
-                            <img src="<?= Url::to($image->url) ?>" class="d-block w-100" loading="lazy" alt="..." style="height: 500px; object-fit: cover;">
-                            <!--<div class="carousel-caption d-none d-md-block">
-                                <h5>First slide label</h5>
-                                <p>Some representative placeholder content for the first slide.</p>
-                            </div>-->
-                        </div>
-                    <?php endforeach; ?>
-                </div>
-                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Previous</span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Next</span>
-                </button>
-            </div>
-
-            <!--
-            <?= Html::img($model->getMainImage()->url ?? "https://placehold.co/650?text={$model->number}", [
-                    'class'   => 'img-fluid',
-                    'style'   => 'object-fit: fill; max-height:650px;',
-                    'alt'     => Html::encode($model->name),
-                    'id'      => 'mainImage',
-                    'loading' => 'lazy',
-            ]) ?>
-
-
-            <div class="row mt-2 owl-main-content">
-
-                <div class="col-md-12 owl-carousel owl-theme">
-                    <?php foreach ($model->images as $image): ?>
-                        <div class="item"
-                             data-url="<?= Url::to($image->url) ?>"
-                             style="height: 85px;
-                                     background-image: url('<?= Url::to($image->url) ?>');
-                                     background-position: center;
-                                     background-repeat: no-repeat;
-                                     background-size:cover;">
-                        </div>
-                    <?php endforeach; ?>
-
+<div class="lego-product-page">
+    <div class="row g-4 product">
+        <div class="col-lg-7">
+            <div class="lego-gallery-card">
+                <div class="lego-gallery-main">
+                    <?= Html::img($model->getDisplayMainImageUrl(), ['class' => 'lego-main-image', 'alt' => Html::encode($model->name), 'id' => 'legoMainImage', 'loading' => 'lazy']) ?>
                 </div>
 
-                <div class="owl-theme">
-                    <div class="owl-controls">
-                        <div class="custom-nav owl-nav"></div>
+                <?php if ($model->images): ?>
+                    <div class="lego-gallery-thumbs">
+                        <?php foreach ($model->images as $image): ?>
+                            <button class="lego-thumb <?= $model->getDisplayMainImage()?->id === $image->id ? 'is-active' : '' ?>" type="button" data-image-src="<?= Html::encode(Url::to($image->url)) ?>" aria-label="<?= Html::encode($model->name) ?>">
+                                <?= Html::img(Url::to($image->url), ['alt' => Html::encode($model->name), 'loading' => 'lazy']) ?>
+                            </button>
+                        <?php endforeach; ?>
                     </div>
-                </div>
-
+                <?php endif; ?>
             </div>
-            -->
         </div>
 
-        <div class="col-md-6">
-            <div class="summary entry-summary">
-                <h1 class="product_title entry-title">
-                    <?= $this->title ?>
-                </h1>
-                <p class="price">
-                <span class="woocommerce-Price-amount amount">
-                    <bdi>25,00&nbsp;
-                        <span class="woocommerce-Price-currencySymbol">€</span>
-                    </bdi>
-                </span>
-                </p>
-
-                <div class="product_meta">
-
-                    <div class="d-block">
-                        <span>Theme:</span>
-                        <span class="fw-bold"><?= Html::encode($model->theme->name) ?></span>
-                    </div>
-
-                    <div class="d-block">
-                        <span>Theme group:</span>
-                        <span class="fw-bold"><?= Html::encode($model->theme->group->name) ?></span>
-                    </div>
-
-                    <?php if ($model->theme->parent): ?>
-                        <div class="d-block">
-                            <span>Sub theme:</span>
-                            <span class="fw-bold"><?= $model->theme->parent->name ?></span>
-                        </div>
+        <div class="col-lg-5">
+            <div class="lego-info-card">
+                <div class="d-flex flex-wrap gap-2 mb-3">
+                    <?= Html::a(Html::encode($model->theme->name), ["/lego/theme/{$model->theme->slug}"], [
+                            'class' => 'badge rounded-pill text-bg-warning text-dark text-decoration-none',
+                    ]) ?>
+                    <?php if ($model->subtheme): ?>
+                        <?= Html::a(Html::encode($model->subtheme->name), ["/lego/theme/{$model->theme->slug}/{$model->subtheme->slug}"], [
+                                'class' => 'badge rounded-pill text-bg-light border text-decoration-none text-body',
+                        ]) ?>
                     <?php endif; ?>
+                    <span class="badge rounded-pill text-bg-primary">
+                        <?= T::t('Theme group') ?>: <?= Html::encode($model->getThemeGroupNameOrDefault()) ?>
+                    </span>
+                </div>
+                <h1 class="lego-title"><?= $this->title ?></h1>
+                <div class="lego-set-number"><?= T::t('Set') ?> #<?= Html::encode($model->getSetNumberText()) ?></div>
+                <div class="lego-price"><?= Html::encode($model->getFormattedPriceOrDefault(T::t('Check price in store'))) ?></div>
 
-
-                    <div class="d-block">
-                        <span>Year released:</span>
-                        <span class="fw-bold"><?= Html::encode($model->year) ?></span>
+                <div class="lego-quick-facts">
+                    <div class="lego-quick-fact">
+                        <span class="label"><i class="bi bi-cake me-1"></i><?= T::t('Age') ?></span>
+                        <span class="value"><?= Html::encode($model->getAgeText()) ?></span>
+                    </div>
+                    <div class="lego-quick-fact">
+                        <span class="label"><i class="bi bi-columns-gap me-1"></i><?= T::t('Pieces') ?></span>
+                        <span class="value"><?= Html::encode($model->getPiecesText()) ?></span>
+                    </div>
+                    <div class="lego-quick-fact">
+                        <span class="label"><i class="bi bi-people me-1"></i><?= T::t('Minifigures') ?></span>
+                        <span class="value"><?= Html::encode($model->getMinifiguresText()) ?></span>
+                    </div>
+                    <div class="lego-quick-fact">
+                        <span class="label"><i class="bi bi-calendar-check me-1"></i><?= T::t('Release year') ?></span>
+                        <span class="value"><?= Html::encode($model->getYearText()) ?></span>
                     </div>
                 </div>
 
-                <hr>
+                <div class="lego-cta-group">
+                    <?php if ($model->brickset_url): ?>
+                        <?= Html::a(T::t('Open on Brickset'), $model->brickset_url, [
+                                'class'  => 'btn btn-primary btn-lg',
+                                'target' => '_blank',
+                                'rel'    => 'noopener noreferrer',
+                        ]) ?>
+                    <?php endif; ?>
+                    <?= Html::a(T::t('Browse all sets'), ['/lego'], ['class' => 'btn btn-outline-secondary btn-lg']) ?>
+                </div>
+            </div>
+        </div>
 
-                <div class="container text-center">
-                    <div class="row">
-                        <div class="col">
-                            <i class="bi bi-cake fs-2 d-block"></i>
-                            <span class="fw-bold fs-2 d-block">
-                                <?= Html::encode($model->age) ?>
-                            </span>
-                            <small class="text-body-secondary d-block">Age</small>
-                        </div>
+        <div class="col-12">
+            <div class="lego-details-card">
+                <ul class="nav nav-tabs lego-tabs" id="legoProductTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button" role="tab" aria-controls="overview" aria-selected="true">
+                            <?= T::t('Overview') ?>
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="details-tab" data-bs-toggle="tab" data-bs-target="#details" type="button" role="tab" aria-controls="details" aria-selected="false">
+                            <?= T::t('Details') ?>
+                        </button>
+                    </li>
+                </ul>
 
-                        <div class="col">
-                            <i class="bi bi-columns-gap fs-2 d-block"></i>
-                            <span class="fw-bold fs-2 d-block"><?= Html::encode($model->pieces) ?></span>
-                            <small class="text-body-secondary d-block">Pieces</small>
-                        </div>
-
-                        <div class="col">
-                            <i class="bi bi-hash fs-2 d-block"></i>
-                            <span class="fw-bold fs-2 d-block"><?= Html::encode($model->number) ?></span>
-                            <small class="text-body-secondary d-block">Number</small>
-                        </div>
-
-                        <?php if ($model->minifigures): ?>
-                            <div class="col">
-                                <i class="bi bi-people fs-2 d-block"></i>
-                                <span class="fw-bold fs-2 d-block"><?= Html::encode($model->minifigures) ?></span>
-                                <small class="text-body-secondary d-block">Minifies</small>
+                <div class="tab-content pt-4" id="legoProductTabsContent">
+                    <div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview-tab" tabindex="0">
+                        <p class="mb-0">
+                            <?= T::t('Discover') ?> <strong><?= Html::encode($model->name) ?></strong> <?= T::t('from the') ?> <?= Html::encode($model->theme->name) ?> <?= T::t('theme') ?>.
+                            <?= T::t('This set contains') ?> <strong><?= Html::encode($model->getPiecesText()) ?></strong> <?= T::t('pieces and is designed for builders aged') ?>
+                            <strong><?= Html::encode($model->getAgeText()) ?></strong>.
+                        </p>
+                    </div>
+                    <div class="tab-pane fade" id="details" role="tabpanel" aria-labelledby="details-tab" tabindex="0">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="lego-meta-item"><span><?= T::t('Theme') ?></span><strong><?= Html::encode($model->theme->name) ?></strong></div>
+                                <div class="lego-meta-item"><span><?= T::t('Theme group') ?></span><strong><?= Html::encode($model->getThemeGroupNameOrDefault()) ?></strong></div>
+                                <div class="lego-meta-item"><span><?= T::t('Subtheme') ?></span><strong><?= Html::encode($model->getSubthemeNameOrDefault()) ?></strong></div>
                             </div>
-                        <?php endif; ?>
+                            <div class="col-md-6">
+                                <div class="lego-meta-item"><span><?= T::t('Set number') ?></span><strong><?= Html::encode($model->getSetNumberText()) ?></strong></div>
+                                <div class="lego-meta-item"><span><?= T::t('Pieces') ?></span><strong><?= Html::encode($model->getPiecesText()) ?></strong></div>
+                                <div class="lego-meta-item"><span><?= T::t('Minifigures') ?></span><strong><?= Html::encode($model->getMinifiguresText()) ?></strong></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-
-
-                <div class="product_meta">
-                </div>
             </div>
-        </div>
-
-        <div class="col-md-12">
-            <hr>
-        </div>
-
-        <div class="col-md-12 mt-2">
-            <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-                <li class="nav-item" role="presentation">
-                    <a class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" href="#description" data-bs-target="#description" type="button" role="tab" aria-controls="description" aria-selected="true">
-                        Description
-                    </a>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <a class="nav-link" id="pills-profile-tab" data-bs-toggle="pill" href="#additional-information" data-bs-target="#additional-information" type="button" role="tab" aria-controls="pills-profile" aria-selected="false">
-                        Additional information
-                    </a>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <a class="nav-link" id="pills-contact-tab" data-bs-toggle="pill" href="#reviews" data-bs-target="#reviews" type="button" role="tab" aria-controls="pills-contact" aria-selected="false">
-                        Reviews
-                    </a>
-                </li>
-            </ul>
-            <div class="tab-content" id="pills-tabContent">
-                <div class="tab-pane fade show active" id="description" role="tabpanel" aria-labelledby="pills-description-tab" tabindex="0">
-                    description
-                </div>
-                <div class="tab-pane fade" id="additional-information" role="tabpanel" aria-labelledby="pills-additional-information-tab" tabindex="0">
-                    additional information
-                </div>
-                <div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="pills-reviews-tab" tabindex="0">
-                    Reviews
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-12 mt-2">
-            <section class="related products">
-                <h2>Related products</h2>
-                <div class="row g-4 mb-4 products">
-
-                </div>
-            </section>
         </div>
     </div>
 </div>
 
 <?php InlineScript::begin(); ?>
 <script>
-    //let owl = $('.owl-carousel');
+    (() => {
+        const mainImage = document.getElementById('legoMainImage');
+        const thumbnails = document.querySelectorAll('.lego-thumb');
 
-    /*$(owl).owlCarousel({
-        loop: true,
-        margin: 10,
-        dots: false,
-        nav: true,
-        navText: [
-            '<i class="fa fa-angle-left" aria-hidden="true"></i>',
-            '<i class="fa fa-angle-right" aria-hidden="true"></i>'
-        ],
-        navContainer: '.owl-main-content .custom-nav',
-        items: 4,
-        responsive: {
-            0: {
-                items: 3
-            },
-            600: {
-                items: 3
-            },
-            1000: {
-                items: 5
-            }
+        if (!mainImage || thumbnails.length === 0) {
+            return;
         }
-    });*/
 
-    /*$(owl).on('click', 'div.item', function () {
-        let url = $(this).data('url');
+        thumbnails.forEach((thumbnail) => {
+            thumbnail.addEventListener('click', () => {
+                const targetSrc = thumbnail.dataset.imageSrc;
 
-        let image = $(document).find('img#mainImage');
-        image.fadeOut('swing', function () {
-            image.attr('src', url);
-            image.fadeIn('swing');
+                if (!targetSrc) {
+                    return;
+                }
+
+                mainImage.setAttribute('src', targetSrc);
+
+                thumbnails.forEach((item) => {
+                    item.classList.remove('is-active');
+                });
+
+                thumbnail.classList.add('is-active');
+            });
         });
-    });*/
-
+    })();
 </script>
 <?php InlineScript::end(); ?>
