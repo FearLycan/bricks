@@ -57,7 +57,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         ]) ?>
                     <?php endif; ?>
                     <span class="badge rounded-pill text-bg-primary">
-                        <?= T::t('Theme group') ?>: <?= Html::encode($model->getThemeGroupNameOrDefault()) ?>
+                        <?= Html::encode($model->getThemeGroupNameOrDefault()) ?>
                     </span>
                 </div>
                 <h1 class="lego-title"><?= $this->title ?></h1>
@@ -125,12 +125,47 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <div class="lego-meta-item"><span><?= T::t('Theme') ?></span><strong><?= Html::encode($model->theme->name) ?></strong></div>
                                 <div class="lego-meta-item"><span><?= T::t('Theme group') ?></span><strong><?= Html::encode($model->getThemeGroupNameOrDefault()) ?></strong></div>
                                 <div class="lego-meta-item"><span><?= T::t('Subtheme') ?></span><strong><?= Html::encode($model->getSubthemeNameOrDefault()) ?></strong></div>
+                                <div class="lego-meta-item"><span><?= T::t('Availability') ?></span><strong><?= Html::encode($model->getAvailabilityText(T::t('No data'))) ?></strong></div>
                             </div>
                             <div class="col-md-6">
                                 <div class="lego-meta-item"><span><?= T::t('Set number') ?></span><strong><?= Html::encode($model->getSetNumberText()) ?></strong></div>
                                 <div class="lego-meta-item"><span><?= T::t('Pieces') ?></span><strong><?= Html::encode($model->getPiecesText()) ?></strong></div>
                                 <div class="lego-meta-item"><span><?= T::t('Minifigures') ?></span><strong><?= Html::encode($model->getMinifiguresText()) ?></strong></div>
+                                <div class="lego-meta-item"><span><?= T::t('Dimensions (H x W x D)') ?></span><strong><?= nl2br(Html::encode($model->getDimensionsDisplayText(T::t('No dimensions available')))) ?></strong></div>
                             </div>
+                        </div>
+                        <div class="mt-4">
+                            <h5 class="mb-3"><?= T::t('Prices by country') ?></h5>
+                            <?php if ($model->setPrices): ?>
+                                <div class="table-responsive">
+                                    <table class="table table-sm align-middle mb-0">
+                                        <thead>
+                                        <tr>
+                                            <th><?= T::t('Country') ?></th>
+                                            <th><?= T::t('Price') ?></th>
+                                            <th><?= T::t('Price per piece') ?></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <?php foreach ($model->setPrices as $setPrice): ?>
+                                            <tr>
+                                                <td><?= Html::encode($setPrice->country_code) ?></td>
+                                                <td><?= Html::encode(Set::formatAmountFromCents($setPrice->retail_price_cents, $setPrice->country_code)) ?></td>
+                                                <td>
+                                                    <?php if ($model->pieces && $model->pieces > 0): ?>
+                                                        <?= Html::encode(Set::formatAmountFromCents((int) round($setPrice->retail_price_cents / $model->pieces), $setPrice->country_code)) ?>
+                                                    <?php else: ?>
+                                                        -
+                                                    <?php endif; ?>
+                                                </td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            <?php else: ?>
+                                <p class="text-body-secondary mb-0"><?= T::t('No prices available') ?></p>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>

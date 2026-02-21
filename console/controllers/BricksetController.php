@@ -6,6 +6,7 @@ use common\enums\image\KindEnum;
 use common\enums\image\TypeEnum;
 use common\models\Set;
 use common\models\SetImage;
+use common\models\SetPrice;
 use common\models\Theme;
 use common\models\ThemeGroup;
 use Yii;
@@ -67,7 +68,6 @@ class BricksetController extends Controller
                     $subTheme = Theme::getOrCreateSub($set['subtheme'], $theme);
                 }
 
-
                 $legoSet->name = $set['name'];
                 $legoSet->theme_id = $theme->id;
                 $legoSet->subtheme_id = $subTheme->id ?? null;
@@ -78,8 +78,22 @@ class BricksetController extends Controller
                 $legoSet->pieces = $set['pieces'] ?? 0;
                 $legoSet->minifigures = $set['minifigs'] ?? 0;
                 $legoSet->brickset_url = $set['bricksetURL'];
+                $legoSet->availability = $set['availability'] ?? null;
+                $legoSet->dimensions = null;
+                if (isset($set['modelDimensions']) && is_array($set['modelDimensions'])) {
+                    $legoSet->dimensions = Json::encode($set['modelDimensions']);
+                }
                 $legoSet->age = $set['ageRange']['min'] ?? 0;
+                $legoSet->rating = $set['rating'] ?? 0;
                 $legoSet->save();
+
+                if (isset($set['LEGOCom']) && is_array($set['LEGOCom'])) {
+                    SetPrice::syncLegoComPrices($legoSet, $set['LEGOCom']);
+                }
+
+                if (isset($set['image']['imageURL']) && $set['image']['imageURL']) {
+                    SetImage::getOrCreate($legoSet, TypeEnum::IMAGE, KindEnum::MAIN, $set['image']['imageURL']);
+                }
 
                 $this->syncImages((int)$set['setID'], $legoSet);
             }
@@ -96,13 +110,7 @@ class BricksetController extends Controller
 
         foreach ($images as $key => $image) {
             if (isset($image['imageURL']) && $image['imageURL']) {
-
-                $kind = KindEnum::ADDITIONAL;
-                if ($key === 0) {
-                    $kind = KindEnum::MAIN;
-                }
-
-                SetImage::getOrCreate($legoSet, TypeEnum::IMAGE, $kind, $image['imageURL']);
+                SetImage::getOrCreate($legoSet, TypeEnum::IMAGE, KindEnum::ADDITIONAL, $image['imageURL']);
             }
         }
 

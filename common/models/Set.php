@@ -9,6 +9,7 @@ use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 use yii\db\BaseActiveRecord;
+use yii\helpers\Json;
 use yii\helpers\Url;
 
 /**
@@ -29,11 +30,14 @@ use yii\helpers\Url;
  * @property float|null  $rating
  * @property int|null    $price
  * @property string|null $brickset_url
+ * @property string|null $dimensions
+ * @property string|null $availability
  * @property int|null    $age
  * @property string      $created_at
  * @property string|null $updated_at
  *
  * @property SetImage[]  $images
+ * @property SetPrice[]  $setPrices
  * @property Theme       $theme
  * @property Theme|null  $subtheme
  */
@@ -82,7 +86,7 @@ class Set extends ActiveRecord
             [['rating'], 'number'],
             [['created_at', 'updated_at'], 'safe'],
             [['number'], 'string', 'max' => 30],
-            [['name', 'slug', 'brickset_url'], 'string', 'max' => 255],
+            [['name', 'slug', 'brickset_url', 'dimensions', 'availability'], 'string', 'max' => 255],
             [['theme_id'], 'exist', 'skipOnError' => true, 'targetClass' => Theme::class, 'targetAttribute' => ['theme_id' => 'id']],
             [['subtheme_id'], 'exist', 'skipOnError' => true, 'targetClass' => Theme::class, 'targetAttribute' => ['subtheme_id' => 'id']],
         ];
@@ -107,6 +111,8 @@ class Set extends ActiveRecord
             'pieces'         => 'Pieces',
             'released'       => 'Released',
             'brickset_url'   => 'Brickset Url',
+            'dimensions'     => 'Dimensions',
+            'availability'   => 'Availability',
             'age'            => 'Age',
             'created_at'     => 'Created At',
             'updated_at'     => 'Updated At',
@@ -121,6 +127,16 @@ class Set extends ActiveRecord
     public function getImages(): ActiveQuery
     {
         return $this->hasMany(SetImage::class, ['set_id' => 'id']);
+    }
+
+    /**
+     * Gets query for [[SetPrices]].
+     *
+     * @return ActiveQuery
+     */
+    public function getSetPrices(): ActiveQuery
+    {
+        return $this->hasMany(SetPrice::class, ['set_id' => 'id']);
     }
 
     /**
@@ -261,5 +277,69 @@ class Set extends ActiveRecord
         }
 
         return $defaultText;
+    }
+
+    public function getAvailabilityText(string $defaultText = '-'): string
+    {
+        if ($this->availability !== null && $this->availability !== '') {
+            return $this->availability;
+        }
+
+        return $defaultText;
+    }
+
+    public function getDimensionsDisplayText(string $defaultText = '-'): string
+    {
+        $dimensions = $this->getDimensionsData();
+        if ($dimensions === null) {
+            return $defaultText;
+        }
+
+        $heightCm = self::formatDimensionCm($dimensions['height_cm']);
+        $widthCm = self::formatDimensionCm($dimensions['width_cm']);
+        $depthCm = self::formatDimensionCm($dimensions['depth_cm']);
+
+        $heightIn = (int) round($dimensions['height_cm'] / 2.54);
+        $widthIn = (int) round($dimensions['width_cm'] / 2.54);
+        $depthIn = (int) round($dimensions['depth_cm'] / 2.54);
+
+        return "H: {$heightIn}\" ({$heightCm}cm) W: {$widthIn}\" ({$widthCm}cm) D: {$depthIn}\" ({$depthCm}cm)";
+    }
+
+    private function getDimensionsData(): ?array
+    {
+        if (!$this->dimensions) {
+            return null;
+        }
+
+        try {
+            $decoded = Json::decode($this->dimensions, true);
+        } catch (\Throwable $exception) {
+            return null;
+        }
+
+        if (!is_array($decoded)) {
+            return null;
+        }
+
+        if (
+            !isset($decoded['dimension1'], $decoded['dimension2'], $decoded['dimension3']) ||
+            !is_numeric($decoded['dimension1']) ||
+            !is_numeric($decoded['dimension2']) ||
+            !is_numeric($decoded['dimension3'])
+        ) {
+            return null;
+        }
+
+        return [
+            'height_cm' => (float) $decoded['dimension1'],
+            'width_cm' => (float) $decoded['dimension2'],
+            'depth_cm' => (float) $decoded['dimension3'],
+        ];
+    }
+
+    private static function formatDimensionCm(float $value): string
+    {
+        return rtrim(rtrim(number_format($value, 1, '.', ''), '0'), '.');
     }
 }
