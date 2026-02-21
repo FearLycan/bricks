@@ -3,6 +3,7 @@
 namespace frontend\assets;
 
 use yii\bootstrap5\BootstrapAsset;
+use yii\bootstrap5\BootstrapIconAsset;
 use yii\bootstrap5\BootstrapPluginAsset;
 use yii\web\AssetBundle;
 use yii\web\YiiAsset;
@@ -22,5 +23,6 @@ class AppAsset extends AssetBundle
         YiiAsset::class,
         BootstrapAsset::class,
         BootstrapPluginAsset::class,
+        BootstrapIconAsset::class,
     ];
 }

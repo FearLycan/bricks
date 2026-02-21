@@ -63,6 +63,7 @@ AppAsset::register($this);
                             'url'   => Yii::$app->homeUrl,
                     ],
                     'encodeLabels' => false,
+                    'options'      => ['class' => 'breadcrumb p-3 bg-body-tertiary rounded-3'],
             ]) ?>
             <?= Alert::widget() ?>
             <?= $content ?>

@@ -136,7 +136,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div class="container text-center">
                     <div class="row">
                         <div class="col">
-                            <i class="fa fa-birthday-cake fa-2x d-block" aria-hidden="true"></i>
+                            <i class="bi bi-cake fs-2 d-block"></i>
                             <span class="fw-bold fs-2 d-block">
                                 <?= Html::encode($model->age) ?>
                             </span>
@@ -144,20 +144,20 @@ $this->params['breadcrumbs'][] = $this->title;
                         </div>
 
                         <div class="col">
-                            <i class="fa fa-th-large fa-2x d-block" aria-hidden="true"></i>
+                            <i class="bi bi-columns-gap fs-2 d-block"></i>
                             <span class="fw-bold fs-2 d-block"><?= Html::encode($model->pieces) ?></span>
                             <small class="text-body-secondary d-block">Pieces</small>
                         </div>
 
                         <div class="col">
-                            <i class="fa fa-hashtag fa-2x d-block" aria-hidden="true"></i>
+                            <i class="bi bi-hash fs-2 d-block"></i>
                             <span class="fw-bold fs-2 d-block"><?= Html::encode($model->number) ?></span>
                             <small class="text-body-secondary d-block">Number</small>
                         </div>
 
                         <?php if ($model->minifigures): ?>
                             <div class="col">
-                                <i class="fa fa-users fa-2x d-block" aria-hidden="true"></i>
+                                <i class="bi bi-people fs-2 d-block"></i>
                                 <span class="fw-bold fs-2 d-block"><?= Html::encode($model->minifigures) ?></span>
                                 <small class="text-body-secondary d-block">Minifies</small>
                             </div>
