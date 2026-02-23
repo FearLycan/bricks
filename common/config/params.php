@@ -9,4 +9,5 @@ return [
     'brickset.username'             => '',
     'brickset.password'             => '',
     'brickset.apiKey'               => '',
+    'rebrickable.apiKey'            => '',
 ];

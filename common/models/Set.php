@@ -37,6 +37,7 @@ use yii\helpers\Url;
  * @property string|null $updated_at
  *
  * @property SetImage[]  $images
+ * @property SetMinifig[] $setMinifigs
  * @property SetPrice[]  $setPrices
  * @property Theme       $theme
  * @property Theme|null  $subtheme
@@ -137,6 +138,16 @@ class Set extends ActiveRecord
     public function getSetPrices(): ActiveQuery
     {
         return $this->hasMany(SetPrice::class, ['set_id' => 'id']);
+    }
+
+    /**
+     * Gets query for [[SetMinifigs]].
+     *
+     * @return ActiveQuery
+     */
+    public function getSetMinifigs(): ActiveQuery
+    {
+        return $this->hasMany(SetMinifig::class, ['set_id' => 'id']);
     }
 
     /**
@@ -277,6 +288,20 @@ class Set extends ActiveRecord
         }
 
         return $defaultText;
+    }
+
+    public function getRebrickableSetNumber(): ?string
+    {
+        if ($this->number === null || $this->number === '') {
+            return null;
+        }
+
+        $variant = $this->number_variant;
+        if ($variant === null || $variant <= 0) {
+            $variant = 1;
+        }
+
+        return "{$this->number}-{$variant}";
     }
 
     public function getAvailabilityText(string $defaultText = '-'): string
