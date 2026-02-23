@@ -6,7 +6,7 @@ use Yii;
 
 class T
 {
-    public static function t(string $message, array $params = [], $category = 'app', $language = null): string
+    public static function t(string $message, array $params = [], string $category = 'app', ?string $language = null): string
     {
         return Yii::t($category, $message, $params, $language);
     }

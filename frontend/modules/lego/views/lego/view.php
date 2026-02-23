@@ -109,6 +109,11 @@ $this->params['breadcrumbs'][] = $this->title;
                             <?= T::t('Details') ?>
                         </button>
                     </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="minifigures-tab" data-bs-toggle="tab" data-bs-target="#minifigures" type="button" role="tab" aria-controls="minifigures" aria-selected="false">
+                            <?= T::t('Minifigures <small>({n})</small>', ['n' => $model->minifigures]) ?>
+                        </button>
+                    </li>
                 </ul>
 
                 <div class="tab-content pt-4" id="legoProductTabsContent">
@@ -153,7 +158,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                 <td><?= Html::encode(Set::formatAmountFromCents($setPrice->retail_price_cents, $setPrice->country_code)) ?></td>
                                                 <td>
                                                     <?php if ($model->pieces && $model->pieces > 0): ?>
-                                                        <?= Html::encode(Set::formatAmountFromCents((int) round($setPrice->retail_price_cents / $model->pieces), $setPrice->country_code)) ?>
+                                                        <?= Html::encode(Set::formatAmountFromCents((int)round($setPrice->retail_price_cents / $model->pieces), $setPrice->country_code)) ?>
                                                     <?php else: ?>
                                                         -
                                                     <?php endif; ?>
@@ -167,7 +172,9 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <p class="text-body-secondary mb-0"><?= T::t('No prices available') ?></p>
                             <?php endif; ?>
                         </div>
-                        <div class="mt-4">
+                    </div>
+                    <div class="tab-pane fade" id="minifigures" role="tabpanel" aria-labelledby="minifigures-tab" tabindex="0">
+                        <div class="mt-1">
                             <h5 class="mb-3"><?= T::t('Minifigures in this set') ?></h5>
                             <?php if ($model->setMinifigs): ?>
                                 <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-3">
@@ -176,16 +183,17 @@ $this->params['breadcrumbs'][] = $this->title;
                                             <div class="card h-100 shadow-sm border-0">
                                                 <?php if ($minifig->image): ?>
                                                     <?= Html::img($minifig->image, [
-                                                        'class' => 'card-img-top',
-                                                        'alt' => Html::encode($minifig->name),
-                                                        'loading' => 'lazy',
-                                                        'style' => 'height: 190px; object-fit: contain; background-color: #f8f9fa;',
+                                                            'class'         => 'card-img-top js-zoomable-image',
+                                                            'alt'           => Html::encode($minifig->name),
+                                                            'loading'       => 'lazy',
+                                                            'data-zoom-src' => $minifig->image,
+                                                            'style'         => 'height: 190px; object-fit: contain; background-color: #f8f9fa;',
                                                     ]) ?>
                                                 <?php endif; ?>
                                                 <div class="card-body d-flex flex-column">
                                                     <div class="fw-semibold mb-3"><?= Html::encode($minifig->name) ?></div>
                                                     <div class="mt-auto">
-                                                        <span class="badge text-bg-primary"><?= T::t('Qty') ?>: <?= Html::encode((string) $minifig->quantity) ?></span>
+                                                        <span class="badge text-bg-primary"><?= T::t('Qty') ?>: <?= Html::encode((string)$minifig->quantity) ?></span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -203,33 +211,125 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
 </div>
 
+<div class="modal fade" id="imageZoomModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content border-0 bg-transparent">
+            <div class="modal-body p-0 text-center position-relative">
+                <img id="imageZoomModalImage" src="" alt="" class="img-fluid rounded">
+                <button id="imageZoomPrev" type="button" class="btn btn-light position-absolute top-50 start-0 translate-middle-y ms-2" aria-label="Previous image">
+                    <i class="bi bi-chevron-left"></i>
+                </button>
+                <button id="imageZoomNext" type="button" class="btn btn-light position-absolute top-50 end-0 translate-middle-y me-2" aria-label="Next image">
+                    <i class="bi bi-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <?php InlineScript::begin(); ?>
 <script>
     (() => {
         const mainImage = document.getElementById('legoMainImage');
         const thumbnails = document.querySelectorAll('.lego-thumb');
+        const zoomableImages = document.querySelectorAll('.js-zoomable-image');
+        const zoomModalElement = document.getElementById('imageZoomModal');
+        const zoomModalImage = document.getElementById('imageZoomModalImage');
+        const zoomPrev = document.getElementById('imageZoomPrev');
+        const zoomNext = document.getElementById('imageZoomNext');
 
-        if (!mainImage || thumbnails.length === 0) {
-            return;
-        }
+        if (zoomModalElement && zoomModalImage && zoomPrev && zoomNext && typeof bootstrap !== 'undefined') {
+            const zoomModal = new bootstrap.Modal(zoomModalElement);
+            let currentIndex = 0;
+            let currentSources = [];
 
-        thumbnails.forEach((thumbnail) => {
-            thumbnail.addEventListener('click', () => {
-                const targetSrc = thumbnail.dataset.imageSrc;
+            const getImageSources = () => {
+                const sources = [];
+                zoomableImages.forEach((image) => {
+                    const source = image.dataset.zoomSrc || image.getAttribute('src');
+                    if (source && !sources.includes(source)) {
+                        sources.push(source);
+                    }
+                });
 
-                if (!targetSrc) {
+                return sources;
+            };
+
+            const renderCurrentImage = () => {
+                if (!currentSources[currentIndex]) {
                     return;
                 }
 
-                mainImage.setAttribute('src', targetSrc);
+                zoomModalImage.setAttribute('src', currentSources[currentIndex]);
+                zoomPrev.disabled = currentSources.length <= 1;
+                zoomNext.disabled = currentSources.length <= 1;
+            };
 
-                thumbnails.forEach((item) => {
-                    item.classList.remove('is-active');
+            zoomableImages.forEach((image) => {
+                image.addEventListener('click', () => {
+                    const zoomSrc = image.dataset.zoomSrc || image.getAttribute('src');
+                    if (!zoomSrc) {
+                        return;
+                    }
+
+                    currentSources = getImageSources();
+                    const clickedIndex = currentSources.indexOf(zoomSrc);
+                    currentIndex = clickedIndex >= 0 ? clickedIndex : 0;
+                    renderCurrentImage();
+                    zoomModalImage.setAttribute('alt', image.getAttribute('alt') || '');
+                    zoomModal.show();
                 });
-
-                thumbnail.classList.add('is-active');
             });
-        });
+
+            zoomPrev.addEventListener('click', () => {
+                if (currentSources.length <= 1) {
+                    return;
+                }
+
+                currentIndex = (currentIndex - 1 + currentSources.length) % currentSources.length;
+                renderCurrentImage();
+            });
+
+            zoomNext.addEventListener('click', () => {
+                if (currentSources.length <= 1) {
+                    return;
+                }
+
+                currentIndex = (currentIndex + 1) % currentSources.length;
+                renderCurrentImage();
+            });
+
+            zoomModalElement.addEventListener('keydown', (event) => {
+                if (event.key === 'ArrowLeft') {
+                    zoomPrev.click();
+                }
+
+                if (event.key === 'ArrowRight') {
+                    zoomNext.click();
+                }
+            });
+        }
+
+        if (mainImage && thumbnails.length > 0) {
+            thumbnails.forEach((thumbnail) => {
+                thumbnail.addEventListener('click', () => {
+                    const targetSrc = thumbnail.dataset.imageSrc;
+
+                    if (!targetSrc) {
+                        return;
+                    }
+
+                    mainImage.setAttribute('src', targetSrc);
+                    mainImage.dataset.zoomSrc = targetSrc;
+
+                    thumbnails.forEach((item) => {
+                        item.classList.remove('is-active');
+                    });
+
+                    thumbnail.classList.add('is-active');
+                });
+            });
+        }
     })();
 </script>
 <?php InlineScript::end(); ?>

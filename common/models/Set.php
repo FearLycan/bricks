@@ -44,6 +44,8 @@ use yii\helpers\Url;
  */
 class Set extends ActiveRecord
 {
+    private ?SetImage $_mainImage = null;
+    
     /**
      * @return array
      */
@@ -172,11 +174,17 @@ class Set extends ActiveRecord
 
     public function getMainImage(): ?SetImage
     {
-        return SetImage::findOne([
+        if ($this->_mainImage !== null) {
+            return $this->_mainImage;
+        }
+
+        $this->_mainImage = SetImage::findOne([
             'set_id' => $this->id,
             'kind'   => KindEnum::MAIN->value,
             'type'   => TypeEnum::IMAGE->value,
         ]);
+
+        return $this->_mainImage;
     }
 
     public function getDisplayMainImage(): ?SetImage

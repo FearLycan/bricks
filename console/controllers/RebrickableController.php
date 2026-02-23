@@ -32,6 +32,7 @@ class RebrickableController extends Controller
 
         /** @var Set $set */
         foreach ($sets->each() as $set) {
+            echo $set->name . "\n";
             $response = $this->sendRequest("lego/sets/{$set->getRebrickableSetNumber()}/minifigs/", [
                 'page_size' => 100,
             ]);
@@ -39,6 +40,8 @@ class RebrickableController extends Controller
             if (isset($response['results'])) {
                 SetMinifig::syncBySet($set, $response['results']);
             }
+
+            sleep(1);
         }
     }
 
