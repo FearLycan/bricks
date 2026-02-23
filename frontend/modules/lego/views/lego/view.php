@@ -167,6 +167,35 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <p class="text-body-secondary mb-0"><?= T::t('No prices available') ?></p>
                             <?php endif; ?>
                         </div>
+                        <div class="mt-4">
+                            <h5 class="mb-3"><?= T::t('Minifigures in this set') ?></h5>
+                            <?php if ($model->setMinifigs): ?>
+                                <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-3">
+                                    <?php foreach ($model->setMinifigs as $minifig): ?>
+                                        <div class="col">
+                                            <div class="card h-100 shadow-sm border-0">
+                                                <?php if ($minifig->image): ?>
+                                                    <?= Html::img($minifig->image, [
+                                                        'class' => 'card-img-top',
+                                                        'alt' => Html::encode($minifig->name),
+                                                        'loading' => 'lazy',
+                                                        'style' => 'height: 190px; object-fit: contain; background-color: #f8f9fa;',
+                                                    ]) ?>
+                                                <?php endif; ?>
+                                                <div class="card-body d-flex flex-column">
+                                                    <div class="fw-semibold mb-3"><?= Html::encode($minifig->name) ?></div>
+                                                    <div class="mt-auto">
+                                                        <span class="badge text-bg-primary"><?= T::t('Qty') ?>: <?= Html::encode((string) $minifig->quantity) ?></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <?php endforeach; ?>
+                                </div>
+                            <?php else: ?>
+                                <p class="text-body-secondary mb-0"><?= T::t('No minifigures available') ?></p>
+                            <?php endif; ?>
+                        </div>
                     </div>
                 </div>
             </div>
