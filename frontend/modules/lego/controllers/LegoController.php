@@ -5,7 +5,9 @@ namespace frontend\modules\lego\controllers;
 use common\components\AccessControl;
 use common\components\Controller;
 use common\models\Set;
+use common\models\SetMinifig;
 use frontend\models\searches\SetSearch;
+use yii\data\ActiveDataProvider;
 
 class LegoController extends Controller
 {
@@ -18,7 +20,7 @@ class LegoController extends Controller
                     [
                         'allow'   => true,
                         'actions' => [
-                            'index', 'view',
+                            'index', 'view', 'minifig',
                         ],
                         'roles'   => ['?'],
                     ],
@@ -44,6 +46,37 @@ class LegoController extends Controller
 
         return $this->render('view', [
             'model' => $model,
+        ]);
+    }
+
+    public function actionMinifig(string $number): string
+    {
+        $query = Set::find()
+            ->alias('set')
+            ->innerJoin(SetMinifig::tableName() . ' sm', 'sm.set_id = set.id')
+            ->where(['sm.number' => $number])
+            ->groupBy('set.id')
+            ->orderBy(['set.year' => SORT_DESC, 'set.id' => SORT_DESC]);
+
+        $dataProvider = new ActiveDataProvider([
+            'query' => $query,
+            'pagination' => ['pageSize' => 24],
+        ]);
+
+        $minifigPreview = SetMinifig::find()
+            ->select(['name', 'image'])
+            ->where(['number' => $number])
+            ->asArray()
+            ->one();
+
+        $minifigName = (string) ($minifigPreview['name'] ?? '');
+        $minifigImage = isset($minifigPreview['image']) ? (string) $minifigPreview['image'] : '';
+
+        return $this->render('minifig', [
+            'dataProvider' => $dataProvider,
+            'number' => $number,
+            'name' => $minifigName,
+            'image' => $minifigImage,
         ]);
     }
 

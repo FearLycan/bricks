@@ -191,7 +191,9 @@ $this->params['breadcrumbs'][] = $this->title;
                                                     ]) ?>
                                                 <?php endif; ?>
                                                 <div class="card-body d-flex flex-column">
-                                                    <div class="fw-semibold mb-3"><?= Html::encode($minifig->name) ?></div>
+                                                    <div class="fw-semibold mb-3">
+                                                        <?= Html::a(Html::encode($minifig->name), ['/lego/lego/minifig', 'number' => $minifig->number], ['class' => 'text-decoration-none']) ?>
+                                                    </div>
                                                     <div class="mt-auto">
                                                         <span class="badge text-bg-primary"><?= T::tr('Qty') ?>: <?= Html::encode((string)$minifig->quantity) ?></span>
                                                     </div>
