@@ -3,6 +3,7 @@
 namespace frontend\models\searches;
 
 use common\models\Set;
+use common\models\Theme;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 
@@ -59,10 +60,21 @@ class SetSearch extends Set
             'subtheme_id' => $this->subtheme_id, //to show subthemes views
         ]);
 
-        if (is_numeric($this->name)) {
-            $query->andFilterWhere(['=', 'number', $this->name]);
-        } else {
-            $query->andFilterWhere(['like', 'name', $this->name]);
+        if ($this->name) {
+            if (is_numeric($this->name)) {
+                $query->andFilterWhere(['=', 'number', $this->name]);
+            } else {
+                $themeIdsQuery = Theme::find()
+                    ->select('id')
+                    ->where(['like', 'name', $this->name]);
+
+                $query->andWhere([
+                    'or',
+                    ['like', Set::tableName() . '.name', $this->name],
+                    ['theme_id' => $themeIdsQuery],
+                    ['subtheme_id' => $themeIdsQuery],
+                ]);
+            }
         }
 
         return $dataProvider;
