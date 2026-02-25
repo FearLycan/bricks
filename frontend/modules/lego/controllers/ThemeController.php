@@ -38,9 +38,9 @@ class ThemeController extends Controller
 
         $searchModel = new SetSearch();
 
-        if ($sub === null) {
+       // if ($sub === null) {
             $searchModel->theme_id = $theme->id;
-        }
+       // }
 
         if ($subTheme) {
             $searchModel->subtheme_id = $subTheme->id;

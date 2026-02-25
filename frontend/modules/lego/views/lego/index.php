@@ -21,6 +21,8 @@ $this->title = Html::encode(Yii::$app->name);
     </h1>
 </div>
 
+<?= $this->render('_search', ['model' => $searchModel]) ?>
+
 <?= $this->render('_list', ['dataProvider' => $dataProvider]) ?>
 
 

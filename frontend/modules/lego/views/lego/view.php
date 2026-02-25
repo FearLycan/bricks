@@ -61,37 +61,37 @@ $this->params['breadcrumbs'][] = $this->title;
                     </span>
                 </div>
                 <h1 class="lego-title"><?= $this->title ?></h1>
-                <div class="lego-set-number"><?= T::t('Set') ?> #<?= Html::encode($model->getSetNumberText()) ?></div>
-                <div class="lego-price"><?= Html::encode($model->getFormattedPriceOrDefault(T::t('Check price in store'))) ?></div>
+                <div class="lego-set-number"><?= T::tr('Set') ?> #<?= Html::encode($model->getSetNumberText()) ?></div>
+                <div class="lego-price"><?= Html::encode($model->getFormattedPriceOrDefault(T::tr('Check price in store'))) ?></div>
 
                 <div class="lego-quick-facts">
                     <div class="lego-quick-fact">
-                        <span class="label"><i class="bi bi-cake me-1"></i><?= T::t('Age') ?></span>
+                        <span class="label"><i class="bi bi-cake me-1"></i><?= T::tr('Age') ?></span>
                         <span class="value"><?= Html::encode($model->getAgeText()) ?></span>
                     </div>
                     <div class="lego-quick-fact">
-                        <span class="label"><i class="bi bi-columns-gap me-1"></i><?= T::t('Pieces') ?></span>
+                        <span class="label"><i class="bi bi-columns-gap me-1"></i><?= T::tr('Pieces') ?></span>
                         <span class="value"><?= Html::encode($model->getPiecesText()) ?></span>
                     </div>
                     <div class="lego-quick-fact">
-                        <span class="label"><i class="bi bi-people me-1"></i><?= T::t('Minifigures') ?></span>
+                        <span class="label"><i class="bi bi-people me-1"></i><?= T::tr('Minifigures') ?></span>
                         <span class="value"><?= Html::encode($model->getMinifiguresText()) ?></span>
                     </div>
                     <div class="lego-quick-fact">
-                        <span class="label"><i class="bi bi-calendar-check me-1"></i><?= T::t('Release year') ?></span>
+                        <span class="label"><i class="bi bi-calendar-check me-1"></i><?= T::tr('Release year') ?></span>
                         <span class="value"><?= Html::encode($model->getYearText()) ?></span>
                     </div>
                 </div>
 
                 <div class="lego-cta-group">
                     <?php if ($model->brickset_url): ?>
-                        <?= Html::a(T::t('Open on Brickset'), $model->brickset_url, [
+                        <?= Html::a(T::tr('Open on Brickset'), $model->brickset_url, [
                                 'class'  => 'btn btn-primary btn-lg',
                                 'target' => '_blank',
                                 'rel'    => 'noopener noreferrer',
                         ]) ?>
                     <?php endif; ?>
-                    <?= Html::a(T::t('Browse all sets'), ['/lego'], ['class' => 'btn btn-outline-secondary btn-lg']) ?>
+                    <?= Html::a(T::tr('Browse all sets'), ['/lego'], ['class' => 'btn btn-outline-secondary btn-lg']) ?>
                 </div>
             </div>
         </div>
@@ -101,17 +101,17 @@ $this->params['breadcrumbs'][] = $this->title;
                 <ul class="nav nav-tabs lego-tabs" id="legoProductTabs" role="tablist">
                     <li class="nav-item" role="presentation">
                         <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button" role="tab" aria-controls="overview" aria-selected="true">
-                            <?= T::t('Overview') ?>
+                            <?= T::tr('Overview') ?>
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="details-tab" data-bs-toggle="tab" data-bs-target="#details" type="button" role="tab" aria-controls="details" aria-selected="false">
-                            <?= T::t('Details') ?>
+                            <?= T::tr('Details') ?>
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="minifigures-tab" data-bs-toggle="tab" data-bs-target="#minifigures" type="button" role="tab" aria-controls="minifigures" aria-selected="false">
-                            <?= T::t('Minifigures <small>({n})</small>', ['n' => $model->minifigures]) ?>
+                            <?= T::tr('Minifigures <small>({n})</small>', ['n' => $model->minifigures]) ?>
                         </button>
                     </li>
                 </ul>
@@ -119,36 +119,36 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div class="tab-content pt-4" id="legoProductTabsContent">
                     <div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview-tab" tabindex="0">
                         <p class="mb-0">
-                            <?= T::t('Discover') ?> <strong><?= Html::encode($model->name) ?></strong> <?= T::t('from the') ?> <?= Html::encode($model->theme->name) ?> <?= T::t('theme') ?>.
-                            <?= T::t('This set contains') ?> <strong><?= Html::encode($model->getPiecesText()) ?></strong> <?= T::t('pieces and is designed for builders aged') ?>
+                            <?= T::tr('Discover') ?> <strong><?= Html::encode($model->name) ?></strong> <?= T::tr('from the') ?> <?= Html::encode($model->theme->name) ?> <?= T::tr('theme') ?>.
+                            <?= T::tr('This set contains') ?> <strong><?= Html::encode($model->getPiecesText()) ?></strong> <?= T::tr('pieces and is designed for builders aged') ?>
                             <strong><?= Html::encode($model->getAgeText()) ?></strong>.
                         </p>
                     </div>
                     <div class="tab-pane fade" id="details" role="tabpanel" aria-labelledby="details-tab" tabindex="0">
                         <div class="row g-3">
                             <div class="col-md-6">
-                                <div class="lego-meta-item"><span><?= T::t('Theme') ?></span><strong><?= Html::encode($model->theme->name) ?></strong></div>
-                                <div class="lego-meta-item"><span><?= T::t('Theme group') ?></span><strong><?= Html::encode($model->getThemeGroupNameOrDefault()) ?></strong></div>
-                                <div class="lego-meta-item"><span><?= T::t('Subtheme') ?></span><strong><?= Html::encode($model->getSubthemeNameOrDefault()) ?></strong></div>
-                                <div class="lego-meta-item"><span><?= T::t('Availability') ?></span><strong><?= Html::encode($model->getAvailabilityText(T::t('No data'))) ?></strong></div>
+                                <div class="lego-meta-item"><span><?= T::tr('Theme') ?></span><strong><?= Html::encode($model->theme->name) ?></strong></div>
+                                <div class="lego-meta-item"><span><?= T::tr('Theme group') ?></span><strong><?= Html::encode($model->getThemeGroupNameOrDefault()) ?></strong></div>
+                                <div class="lego-meta-item"><span><?= T::tr('Subtheme') ?></span><strong><?= Html::encode($model->getSubthemeNameOrDefault()) ?></strong></div>
+                                <div class="lego-meta-item"><span><?= T::tr('Availability') ?></span><strong><?= Html::encode($model->getAvailabilityText(T::tr('No data'))) ?></strong></div>
                             </div>
                             <div class="col-md-6">
-                                <div class="lego-meta-item"><span><?= T::t('Set number') ?></span><strong><?= Html::encode($model->getSetNumberText()) ?></strong></div>
-                                <div class="lego-meta-item"><span><?= T::t('Pieces') ?></span><strong><?= Html::encode($model->getPiecesText()) ?></strong></div>
-                                <div class="lego-meta-item"><span><?= T::t('Minifigures') ?></span><strong><?= Html::encode($model->getMinifiguresText()) ?></strong></div>
-                                <div class="lego-meta-item"><span><?= T::t('Dimensions (H x W x D)') ?></span><strong><?= nl2br(Html::encode($model->getDimensionsDisplayText(T::t('No dimensions available')))) ?></strong></div>
+                                <div class="lego-meta-item"><span><?= T::tr('Set number') ?></span><strong><?= Html::encode($model->getSetNumberText()) ?></strong></div>
+                                <div class="lego-meta-item"><span><?= T::tr('Pieces') ?></span><strong><?= Html::encode($model->getPiecesText()) ?></strong></div>
+                                <div class="lego-meta-item"><span><?= T::tr('Minifigures') ?></span><strong><?= Html::encode($model->getMinifiguresText()) ?></strong></div>
+                                <div class="lego-meta-item"><span><?= T::tr('Dimensions (H x W x D)') ?></span><strong><?= nl2br(Html::encode($model->getDimensionsDisplayText(T::tr('No dimensions available')))) ?></strong></div>
                             </div>
                         </div>
                         <div class="mt-4">
-                            <h5 class="mb-3"><?= T::t('Prices by country') ?></h5>
+                            <h5 class="mb-3"><?= T::tr('Prices by country') ?></h5>
                             <?php if ($model->setPrices): ?>
                                 <div class="table-responsive">
                                     <table class="table table-sm align-middle mb-0">
                                         <thead>
                                         <tr>
-                                            <th><?= T::t('Country') ?></th>
-                                            <th><?= T::t('Price') ?></th>
-                                            <th><?= T::t('Price per piece') ?></th>
+                                            <th><?= T::tr('Country') ?></th>
+                                            <th><?= T::tr('Price') ?></th>
+                                            <th><?= T::tr('Price per piece') ?></th>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -169,13 +169,13 @@ $this->params['breadcrumbs'][] = $this->title;
                                     </table>
                                 </div>
                             <?php else: ?>
-                                <p class="text-body-secondary mb-0"><?= T::t('No prices available') ?></p>
+                                <p class="text-body-secondary mb-0"><?= T::tr('No prices available') ?></p>
                             <?php endif; ?>
                         </div>
                     </div>
                     <div class="tab-pane fade" id="minifigures" role="tabpanel" aria-labelledby="minifigures-tab" tabindex="0">
                         <div class="mt-1">
-                            <h5 class="mb-3"><?= T::t('Minifigures in this set') ?></h5>
+                            <h5 class="mb-3"><?= T::tr('Minifigures in this set') ?></h5>
                             <?php if ($model->setMinifigs): ?>
                                 <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-3">
                                     <?php foreach ($model->setMinifigs as $minifig): ?>
@@ -193,7 +193,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                 <div class="card-body d-flex flex-column">
                                                     <div class="fw-semibold mb-3"><?= Html::encode($minifig->name) ?></div>
                                                     <div class="mt-auto">
-                                                        <span class="badge text-bg-primary"><?= T::t('Qty') ?>: <?= Html::encode((string)$minifig->quantity) ?></span>
+                                                        <span class="badge text-bg-primary"><?= T::tr('Qty') ?>: <?= Html::encode((string)$minifig->quantity) ?></span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -201,7 +201,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <?php endforeach; ?>
                                 </div>
                             <?php else: ?>
-                                <p class="text-body-secondary mb-0"><?= T::t('No minifigures available') ?></p>
+                                <p class="text-body-secondary mb-0"><?= T::tr('No minifigures available') ?></p>
                             <?php endif; ?>
                         </div>
                     </div>

@@ -4,6 +4,7 @@ namespace common\models;
 
 use common\enums\image\KindEnum;
 use common\enums\image\TypeEnum;
+use Yii;
 use yii\behaviors\SluggableBehavior;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveQuery;
@@ -15,37 +16,37 @@ use yii\helpers\Url;
 /**
  * This is the model class for table "{{%set}}".
  *
- * @property int         $id
- * @property string|null $number
- * @property string|null $name
- * @property string|null $slug
- * @property int         $theme_id
- * @property int|null    $subtheme_id
- * @property int|null    $status
- * @property int|null    $number_variant
- * @property int|null    $minifigures
- * @property int|null    $year
- * @property int|null    $pieces
- * @property int|null    $released
- * @property float|null  $rating
- * @property int|null    $price
- * @property string|null $brickset_url
- * @property string|null $dimensions
- * @property string|null $availability
- * @property int|null    $age
- * @property string      $created_at
- * @property string|null $updated_at
+ * @property int          $id
+ * @property string|null  $number
+ * @property string|null  $name
+ * @property string|null  $slug
+ * @property int          $theme_id
+ * @property int|null     $subtheme_id
+ * @property int|null     $status
+ * @property int|null     $number_variant
+ * @property int|null     $minifigures
+ * @property int|null     $year
+ * @property int|null     $pieces
+ * @property int|null     $released
+ * @property float|null   $rating
+ * @property int|null     $price
+ * @property string|null  $brickset_url
+ * @property string|null  $dimensions
+ * @property string|null  $availability
+ * @property int|null     $age
+ * @property string       $created_at
+ * @property string|null  $updated_at
  *
- * @property SetImage[]  $images
+ * @property SetImage[]   $images
  * @property SetMinifig[] $setMinifigs
- * @property SetPrice[]  $setPrices
- * @property Theme       $theme
- * @property Theme|null  $subtheme
+ * @property SetPrice[]   $setPrices
+ * @property Theme        $theme
+ * @property Theme|null   $subtheme
  */
 class Set extends ActiveRecord
 {
     private ?SetImage $_mainImage = null;
-    
+
     /**
      * @return array
      */
@@ -208,7 +209,7 @@ class Set extends ActiveRecord
             return Url::to($mainImage->url);
         }
 
-        return 'https://placehold.co/1000x800?text=' . rawurlencode((string) $this->number);
+        return 'https://placehold.co/1000x800?text=' . rawurlencode((string)$this->number);
     }
 
     public static function formatAmountFromCents(int $amountInCents, string $currency = 'PLN'): string
@@ -265,7 +266,7 @@ class Set extends ActiveRecord
     public function getPiecesText(string $defaultText = '-'): string
     {
         if ($this->pieces !== null) {
-            return (string) $this->pieces;
+            return (string)$this->pieces;
         }
 
         return $defaultText;
@@ -274,7 +275,7 @@ class Set extends ActiveRecord
     public function getMinifiguresText(string $defaultText = '-'): string
     {
         if ($this->minifigures !== null) {
-            return (string) $this->minifigures;
+            return (string)$this->minifigures;
         }
 
         return $defaultText;
@@ -283,7 +284,7 @@ class Set extends ActiveRecord
     public function getYearText(string $defaultText = '-'): string
     {
         if ($this->year !== null) {
-            return (string) $this->year;
+            return (string)$this->year;
         }
 
         return $defaultText;
@@ -332,9 +333,9 @@ class Set extends ActiveRecord
         $widthCm = self::formatDimensionCm($dimensions['width_cm']);
         $depthCm = self::formatDimensionCm($dimensions['depth_cm']);
 
-        $heightIn = (int) round($dimensions['height_cm'] / 2.54);
-        $widthIn = (int) round($dimensions['width_cm'] / 2.54);
-        $depthIn = (int) round($dimensions['depth_cm'] / 2.54);
+        $heightIn = (int)round($dimensions['height_cm'] / 2.54);
+        $widthIn = (int)round($dimensions['width_cm'] / 2.54);
+        $depthIn = (int)round($dimensions['depth_cm'] / 2.54);
 
         return "H: {$heightIn}\" ({$heightCm}cm) W: {$widthIn}\" ({$widthCm}cm) D: {$depthIn}\" ({$depthCm}cm)";
     }
@@ -365,14 +366,56 @@ class Set extends ActiveRecord
         }
 
         return [
-            'height_cm' => (float) $decoded['dimension1'],
-            'width_cm' => (float) $decoded['dimension2'],
-            'depth_cm' => (float) $decoded['dimension3'],
+            'height_cm' => (float)$decoded['dimension1'],
+            'width_cm'  => (float)$decoded['dimension2'],
+            'depth_cm'  => (float)$decoded['dimension3'],
         ];
     }
 
     private static function formatDimensionCm(float $value): string
     {
         return rtrim(rtrim(number_format($value, 1, '.', ''), '0'), '.');
+    }
+
+    public static function getAvailableYearsList(): array
+    {
+        return self::getCachedList('set.availableYearsList', static function (): array {
+            $years = self::find()
+                ->select(['year'])
+                ->where(['not', ['year' => null]])
+                ->distinct()
+                ->orderBy(['year' => SORT_DESC])
+                ->column();
+
+            $years = array_map('intval', $years);
+
+            return array_combine($years, $years) ?: [];
+        });
+    }
+
+    public static function getAvailableThemesList(): array
+    {
+        return self::getCachedList('set.availableThemesList', static function (): array {
+            $themes = Theme::find()
+                ->select(['id', 'name'])
+                ->where(['parent_id' => null])
+                ->orderBy(['name' => SORT_ASC])
+                ->asArray()
+                ->all();
+
+            $list = [];
+            foreach ($themes as $theme) {
+                $list[(int) $theme['id']] = (string) $theme['name'];
+            }
+
+            return $list;
+        });
+    }
+
+    private static function getCachedList(string $cacheKey, callable $resolver, int $duration = 3600): array
+    {
+        $result = Yii::$app->cache->getOrSet($cacheKey, $resolver, $duration);
+
+        return is_array($result) ? $result : [];
     }
 }

@@ -41,7 +41,6 @@ class SetSearch extends Set
     public function search(array $params): ActiveDataProvider
     {
         $query = Set::find();
-        $query->orderBy(['created_at' => SORT_DESC, 'id' => SORT_DESC,]);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -55,27 +54,22 @@ class SetSearch extends Set
         }
 
         $query->andFilterWhere([
-            'id'             => $this->id,
-            'theme_id'       => $this->theme_id,
-            'status'         => $this->status,
-            'number_variant' => $this->number_variant,
-            'minifigures'    => $this->minifigures,
-            'year'           => $this->year,
-            'pieces'         => $this->pieces,
-            'released'       => $this->released,
-            'rating'         => $this->rating,
-            'price'          => $this->price,
-            'age'            => $this->age,
-            'created_at'     => $this->created_at,
-            'updated_at'     => $this->updated_at,
-            'subtheme_id'    => $this->subtheme_id,
+            'theme_id'    => $this->theme_id,
+            'year'        => $this->year,
+            'subtheme_id' => $this->subtheme_id, //to show subthemes views
         ]);
 
-        $query->andFilterWhere(['like', 'number', $this->number])
-            ->andFilterWhere(['like', 'name', $this->name])
-            ->andFilterWhere(['like', 'slug', $this->slug])
-            ->andFilterWhere(['like', 'brickset_url', $this->brickset_url]);
+        if (is_numeric($this->name)) {
+            $query->andFilterWhere(['=', 'number', $this->name]);
+        } else {
+            $query->andFilterWhere(['like', 'name', $this->name]);
+        }
 
         return $dataProvider;
+    }
+
+    public function formName(): string
+    {
+        return '';
     }
 }

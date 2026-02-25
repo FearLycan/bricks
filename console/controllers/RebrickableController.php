@@ -24,7 +24,7 @@ class RebrickableController extends Controller
 
     public function actionSyncMinifigs(?int $setNumber = null): void
     {
-        $sets = Set::find()->where('minifigures > 0');
+        $sets = Set::find();
 
         if ($setNumber !== null) {
             $sets->andWhere(['number' => $setNumber]);
@@ -37,7 +37,7 @@ class RebrickableController extends Controller
                 'page_size' => 100,
             ]);
 
-            if (isset($response['results'])) {
+            if (isset($response['results']) && is_array($response['results']) && count($response['results']) > 0) {
                 SetMinifig::syncBySet($set, $response['results']);
             }
 

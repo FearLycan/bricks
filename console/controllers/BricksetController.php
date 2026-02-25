@@ -50,6 +50,8 @@ class BricksetController extends Controller
                 $themeGroup = null;
                 $subTheme = null;
 
+                echo $set['number'] . "\n";
+
                 $legoSet = Set::find()->where([
                     'number' => $set['number'],
                 ])->one();
@@ -96,6 +98,7 @@ class BricksetController extends Controller
                 }
 
                 $this->syncImages((int)$set['setID'], $legoSet);
+                sleep(1);
             }
 
         } while (count($sets) > 0);

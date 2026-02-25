@@ -3,6 +3,7 @@
 use common\components\Html;
 use common\models\Theme;
 use frontend\components\Helper;
+use frontend\models\searches\SetSearch;
 use yii\data\ActiveDataProvider;
 use yii\web\View;
 
@@ -11,6 +12,7 @@ use yii\web\View;
  * @var $theme        Theme
  * @var $subTheme     Theme
  * @var $dataProvider ActiveDataProvider
+ * @var $searchModel  SetSearch
  */
 
 $this->title = Html::encode($theme->name);
@@ -34,5 +36,7 @@ if ($subTheme) {
         <?= $this->title ?>
     </h1>
 </div>
+
+<?= $this->render('/lego/_search', ['model' => $searchModel]) ?>
 
 <?= $this->render('/lego/_list', ['dataProvider' => $dataProvider]) ?>
