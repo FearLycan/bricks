@@ -30,13 +30,19 @@ use yii\widgets\ActiveForm;
                         ->label(false) ?>
             </div>
 
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <?= $form->field($model, 'theme_id')
                         ->dropDownList(Set::getAvailableThemesList(), ['prompt' => T::tr('Any theme')])
                         ->label(false) ?>
             </div>
 
             <div class="col-md-3">
+                <?= $form->field($model, 'sort_option')
+                        ->dropDownList(SetSearch::getSortOptions(), ['prompt' => T::tr('Sort by')])
+                        ->label(false) ?>
+            </div>
+
+            <div class="col-md-2">
                 <?= $form->field($model, 'year')
                         ->dropDownList(Set::getAvailableYearsList(), ['prompt' => T::tr('Any year')])
                         ->label(false) ?>
