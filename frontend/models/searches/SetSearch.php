@@ -2,6 +2,7 @@
 
 namespace frontend\models\searches;
 
+use common\enums\image\StatusEnum;
 use common\models\Set;
 use common\models\Theme;
 use frontend\components\T;
@@ -45,11 +46,11 @@ class SetSearch extends Set
      */
     public function search(array $params): ActiveDataProvider
     {
-        $query = Set::find();
+        $query = Set::find()->andFilterCompare('status', StatusEnum::ACTIVE->value);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
-            'sort'  => ['defaultOrder' => 'created_at DESC, id DESC'],
+            //'sort'  => ['defaultOrder' => ['year' => SORT_DESC, 'id' => SORT_ASC]], //moved to getSortOptions()
         ]);
 
         $this->load($params);
@@ -151,7 +152,7 @@ class SetSearch extends Set
                 $query->orderBy(['minifigures' => SORT_DESC, 'id' => SORT_ASC]);
                 break;
             default:
-                $query->orderBy(['created_at' => SORT_DESC, 'id' => SORT_DESC]);
+                $query->orderBy(['year' => SORT_DESC, 'id' => SORT_ASC]);
                 break;
         }
     }

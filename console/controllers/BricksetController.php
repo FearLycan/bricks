@@ -50,7 +50,7 @@ class BricksetController extends Controller
                 $themeGroup = null;
                 $subTheme = null;
 
-                echo $set['number'] . "\n";
+                echo $set['name'] . "\n";
 
                 $legoSet = Set::find()->where([
                     'number' => $set['number'],
@@ -81,10 +81,17 @@ class BricksetController extends Controller
                 $legoSet->minifigures = $set['minifigs'] ?? 0;
                 $legoSet->brickset_url = $set['bricksetURL'];
                 $legoSet->availability = $set['availability'] ?? null;
+
                 $legoSet->dimensions = null;
                 if (isset($set['modelDimensions']) && is_array($set['modelDimensions'])) {
                     $legoSet->dimensions = Json::encode($set['modelDimensions']);
                 }
+
+                $legoSet->price = null;
+                if (isset($set['LEGOCom']['US']['retailPrice']) && is_numeric($set['LEGOCom']['US']['retailPrice'])) {
+                    $legoSet->price = (int)round(((float)$set['LEGOCom']['US']['retailPrice']) * 100);
+                }
+
                 $legoSet->age = $set['ageRange']['min'] ?? 0;
                 $legoSet->rating = $set['rating'] ?? 0;
                 $legoSet->save();
@@ -100,10 +107,7 @@ class BricksetController extends Controller
                 $this->syncImages((int)$set['setID'], $legoSet);
                 sleep(1);
             }
-
         } while (count($sets) > 0);
-
-
     }
 
     private function syncImages(int $setID, Set $legoSet): void
@@ -116,7 +120,6 @@ class BricksetController extends Controller
                 SetImage::getOrCreate($legoSet, TypeEnum::IMAGE, KindEnum::ADDITIONAL, $image['imageURL']);
             }
         }
-
     }
 
     public function actionSyncThemes(): void
@@ -137,7 +140,6 @@ class BricksetController extends Controller
             $legoTheme->year_from = (int)($theme['yearFrom'] ?? 0);
             $legoTheme->save();
         }
-
     }
 
     private function sendRequest(string $url, array $data = [], string $method = 'GET'): array
@@ -177,7 +179,6 @@ class BricksetController extends Controller
             }
 
             throw new Exception("There was problem with brickset login: {$response->getContent()}");
-
         }, 60 * 60);
     }
 }

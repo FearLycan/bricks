@@ -62,7 +62,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 </div>
                 <h1 class="lego-title"><?= $this->title ?></h1>
                 <div class="lego-set-number"><?= T::tr('Set') ?> #<?= Html::encode($model->getSetNumberText()) ?></div>
-                <div class="lego-price"><?= Html::encode($model->getFormattedPriceOrDefault(T::tr('Check price in store'))) ?></div>
+                <div class="lego-price"><?= Html::encode($model->getFormattedPriceOrDefault(T::tr('Check price in store'), 'USD')) ?></div>
 
                 <div class="lego-quick-facts">
                     <div class="lego-quick-fact">
