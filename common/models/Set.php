@@ -33,6 +33,7 @@ use yii\helpers\Url;
  * @property string|null  $brickset_url
  * @property string|null  $dimensions
  * @property string|null  $availability
+ * @property string|null  $description
  * @property int|null     $age
  * @property string       $created_at
  * @property string|null  $updated_at
@@ -40,6 +41,8 @@ use yii\helpers\Url;
  * @property SetImage[]   $images
  * @property SetMinifig[] $setMinifigs
  * @property SetPrice[]   $setPrices
+ * @property SetTag[]     $setTags
+ * @property Tag[]        $tagModels
  * @property Theme        $theme
  * @property Theme|null   $subtheme
  */
@@ -89,6 +92,7 @@ class Set extends ActiveRecord
             [['theme_id', 'subtheme_id', 'status', 'number_variant', 'minifigures', 'year', 'pieces', 'released', 'age', 'price'], 'integer'],
             [['rating'], 'number'],
             [['created_at', 'updated_at'], 'safe'],
+            [['description'], 'string'],
             [['number'], 'string', 'max' => 30],
             [['name', 'slug', 'brickset_url', 'dimensions', 'availability'], 'string', 'max' => 255],
             [['theme_id'], 'exist', 'skipOnError' => true, 'targetClass' => Theme::class, 'targetAttribute' => ['theme_id' => 'id']],
@@ -117,6 +121,7 @@ class Set extends ActiveRecord
             'brickset_url'   => 'Brickset Url',
             'dimensions'     => 'Dimensions',
             'availability'   => 'Availability',
+            'description'    => 'Description',
             'age'            => 'Age',
             'created_at'     => 'Created At',
             'updated_at'     => 'Updated At',
@@ -151,6 +156,26 @@ class Set extends ActiveRecord
     public function getSetMinifigs(): ActiveQuery
     {
         return $this->hasMany(SetMinifig::class, ['set_id' => 'id']);
+    }
+
+    /**
+     * Gets query for [[SetTags]].
+     *
+     * @return ActiveQuery
+     */
+    public function getSetTags(): ActiveQuery
+    {
+        return $this->hasMany(SetTag::class, ['set_id' => 'id']);
+    }
+
+    /**
+     * Gets query for related tag models.
+     *
+     * @return ActiveQuery
+     */
+    public function getTagModels(): ActiveQuery
+    {
+        return $this->hasMany(Tag::class, ['id' => 'tag_id'])->via('setTags');
     }
 
     /**

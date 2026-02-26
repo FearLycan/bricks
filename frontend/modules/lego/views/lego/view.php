@@ -5,6 +5,7 @@ use common\models\Set;
 use common\widgets\InlineScript;
 use frontend\components\Helper;
 use frontend\components\T;
+use yii\helpers\HtmlPurifier;
 use yii\helpers\Url;
 use yii\web\View;
 
@@ -83,15 +84,42 @@ $this->params['breadcrumbs'][] = $this->title;
                     </div>
                 </div>
 
+                <?php if ($model->description): ?>
+                    <div class="mb-3">
+                        <h6 class="mb-2"><?= T::tr('Description') ?></h6>
+                        <div class="small text-body-secondary">
+                            <?= Html::encode(mb_substr(trim(strip_tags($model->description)), 0, 240)) ?>...
+                        </div>
+                    </div>
+                <?php endif; ?>
+
+                <?php if ($model->tagModels): ?>
+                    <?php $tagToggleId = 'tags-toggle-' . $model->id; ?>
+                    <div class="mb-3">
+                        <h6 class="mb-2"><?= T::tr('Tags') ?></h6>
+                        <input type="checkbox" class="lego-tags-toggle-input d-none" id="<?= Html::encode($tagToggleId) ?>">
+                        <div class="d-flex flex-wrap gap-2 lego-tags-list is-collapsed">
+                            <?php foreach ($model->tagModels as $tagModel): ?>
+                                <span class="badge rounded-pill text-bg-secondary border"><?= Html::encode($tagModel->name) ?></span>
+                            <?php endforeach; ?>
+                        </div>
+                        <?php if (count($model->tagModels) > 16): ?>
+                            <label for="<?= Html::encode($tagToggleId) ?>" class="btn btn-link btn-sm p-0 mt-2 text-decoration-none lego-tags-toggle-label">
+                                <span class="label-more"><?= T::tr('Show more') ?></span>
+                                <span class="label-less"><?= T::tr('Show less') ?></span>
+                            </label>
+                        <?php endif; ?>
+                    </div>
+                <?php endif; ?>
+
+
                 <div class="lego-cta-group">
-                    <?php if ($model->brickset_url): ?>
-                        <?= Html::a(T::tr('Open on Brickset'), $model->brickset_url, [
-                                'class'  => 'btn btn-primary btn-lg',
-                                'target' => '_blank',
-                                'rel'    => 'noopener noreferrer',
-                        ]) ?>
-                    <?php endif; ?>
                     <?= Html::a(T::tr('Browse all sets'), ['/lego'], ['class' => 'btn btn-outline-secondary btn-lg']) ?>
+                    <?= Html::a(T::tr('Got Lego Store'), " https://www.lego.com/search?q={$model->number}", [
+                            'class'  => 'btn btn-lego btn-lg',
+                            'target' => '_blank',
+                            'rel'    => 'noopener noreferrer',
+                    ]) ?>
                 </div>
             </div>
         </div>
@@ -123,6 +151,11 @@ $this->params['breadcrumbs'][] = $this->title;
                             <?= T::tr('This set contains') ?> <strong><?= Html::encode($model->getPiecesText()) ?></strong> <?= T::tr('pieces and is designed for builders aged') ?>
                             <strong><?= Html::encode($model->getAgeText()) ?></strong>.
                         </p>
+                        <?php if ($model->description): ?>
+                            <div class="mt-3">
+                                <?= HtmlPurifier::process($model->description) ?>
+                            </div>
+                        <?php endif; ?>
                     </div>
                     <div class="tab-pane fade" id="details" role="tabpanel" aria-labelledby="details-tab" tabindex="0">
                         <div class="row g-3">

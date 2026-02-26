@@ -7,6 +7,7 @@ use common\enums\image\TypeEnum;
 use common\models\Set;
 use common\models\SetImage;
 use common\models\SetPrice;
+use common\models\SetTag;
 use common\models\Theme;
 use common\models\ThemeGroup;
 use Yii;
@@ -38,9 +39,10 @@ class BricksetController extends Controller
         do {
             $response = $this->sendRequest('getSets', [
                 'params' => Json::encode([
-                    'year'       => $year,
-                    'pageSize'   => 500,
-                    'pageNumber' => $page++,
+                    'year'         => $year,
+                    'pageSize'     => 500,
+                    'pageNumber'   => $page++,
+                    'extendedData' => 1,
                 ]),
             ]);
 
@@ -81,6 +83,10 @@ class BricksetController extends Controller
                 $legoSet->minifigures = $set['minifigs'] ?? 0;
                 $legoSet->brickset_url = $set['bricksetURL'];
                 $legoSet->availability = $set['availability'] ?? null;
+                $legoSet->description = null;
+                if (isset($set['extendedData']['description']) && is_string($set['extendedData']['description'])) {
+                    $legoSet->description = $set['extendedData']['description'];
+                }
 
                 $legoSet->dimensions = null;
                 if (isset($set['modelDimensions']) && is_array($set['modelDimensions'])) {
@@ -99,6 +105,8 @@ class BricksetController extends Controller
                 if (isset($set['LEGOCom']) && is_array($set['LEGOCom'])) {
                     SetPrice::syncLegoComPrices($legoSet, $set['LEGOCom']);
                 }
+
+                SetTag::syncBySetAndNames($legoSet, isset($set['extendedData']['tags']) && is_array($set['extendedData']['tags']) ? $set['extendedData']['tags'] : []);
 
                 if (isset($set['image']['imageURL']) && $set['image']['imageURL']) {
                     SetImage::getOrCreate($legoSet, TypeEnum::IMAGE, KindEnum::MAIN, $set['image']['imageURL']);

@@ -232,6 +232,24 @@ a {
     flex-wrap: wrap;
 }
 
+.lego-product-page .lego-tags-list.is-collapsed {
+    max-height: 5.5rem;
+    overflow: hidden;
+    transition: max-height 0.48s ease;
+}
+
+.lego-product-page .lego-tags-toggle-input:checked + .lego-tags-list {
+    max-height: 40rem;
+}
+
+.lego-product-page .lego-tags-toggle-input:checked ~ .lego-tags-toggle-label .label-more {
+    display: none;
+}
+
+.lego-product-page .lego-tags-toggle-input:not(:checked) ~ .lego-tags-toggle-label .label-less {
+    display: none;
+}
+
 .lego-product-page .lego-details-card {
     padding: 1.25rem;
 }
@@ -265,4 +283,21 @@ a {
     .lego-product-page .lego-gallery-main {
         min-height: 360px;
     }
+}
+
+.btn-lego {
+    --bs-btn-color: #1f1f1f;
+    --bs-btn-bg: rgb(255, 213, 2);
+    --bs-btn-border-color: #c9a800;
+    --bs-btn-hover-color: #1f1f1f;
+    --bs-btn-hover-bg: #e9c200;
+    --bs-btn-hover-border-color: #be9f00;
+    --bs-btn-focus-shadow-rgb: 255, 213, 2;
+    --bs-btn-active-color: #1f1f1f;
+    --bs-btn-active-bg: #d4b100;
+    --bs-btn-active-border-color: #b59600;
+    --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+    --bs-btn-disabled-color: #1f1f1f;
+    --bs-btn-disabled-bg: rgb(255, 213, 2);
+    --bs-btn-disabled-border-color: #c9a800;
 }
