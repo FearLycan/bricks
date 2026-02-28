@@ -2,6 +2,8 @@
 
 use common\components\Html;
 use common\models\Set;
+use common\schema\builder\SetPageSchemaBuilder;
+use common\schema\JsonLdRenderer;
 use common\widgets\InlineScript;
 use frontend\components\Helper;
 use frontend\components\T;
@@ -25,6 +27,8 @@ if ($model->subtheme) {
 $this->params['breadcrumbs'][] = $this->title;
 
 ?>
+
+<?= JsonLdRenderer::render(SetPageSchemaBuilder::build($model, Url::current([], true))) ?>
 
 <div class="lego-product-page">
     <div class="row g-4 product">

@@ -1,6 +1,8 @@
 <?php
 
 use common\components\Html;
+use common\schema\factory\ItemListSchemaFactory;
+use common\schema\JsonLdRenderer;
 use frontend\models\searches\SetSearch;
 use yii\data\ActiveDataProvider;
 use yii\web\View;
@@ -14,6 +16,8 @@ use yii\web\View;
 $this->title = Html::encode(Yii::$app->name);
 
 ?>
+
+<?= JsonLdRenderer::render([ItemListSchemaFactory::fromDataProvider($dataProvider)]) ?>
 
 <div class="col-lg-12 mt-4">
     <h1 class="page-title">

@@ -1,6 +1,9 @@
 <?php
 
 use common\widgets\Alert;
+use common\schema\factory\BreadcrumbListSchemaFactory;
+use common\schema\factory\OrganizationSchemaFactory;
+use common\schema\JsonLdRenderer;
 use frontend\assets\AppAsset;
 use yii\bootstrap5\Breadcrumbs;
 use yii\bootstrap5\Html;
@@ -15,6 +18,17 @@ use yii\web\View;
 
 
 AppAsset::register($this);
+
+$breadcrumbLinks = $this->params['breadcrumbs'] ?? [];
+$homeBreadcrumb = [
+    'label' => Html::encode(Yii::$app->name),
+    'url' => Yii::$app->homeUrl,
+];
+
+$schemaGraph = [
+    OrganizationSchemaFactory::fromParams(),
+    BreadcrumbListSchemaFactory::fromView($breadcrumbLinks, $homeBreadcrumb, (string)$this->title),
+];
 ?>
 <?php $this->beginPage() ?>
     <!DOCTYPE html>
@@ -24,6 +38,7 @@ AppAsset::register($this);
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <?php $this->registerCsrfMetaTags() ?>
         <title><?= Html::encode($this->title) ?></title>
+        <?= JsonLdRenderer::render($schemaGraph) ?>
         <?php $this->head() ?>
     </head>
     <body class="d-flex flex-column h-100">
@@ -57,11 +72,8 @@ AppAsset::register($this);
     <main role="main" class="flex-shrink-0">
         <div class="container">
             <?= Breadcrumbs::widget([
-                    'links'        => $this->params['breadcrumbs'] ?? [],
-                    'homeLink'     => [
-                            'label' => Html::encode(Yii::$app->name),
-                            'url'   => Yii::$app->homeUrl,
-                    ],
+                    'links'        => $breadcrumbLinks,
+                    'homeLink'     => $homeBreadcrumb,
                     'encodeLabels' => false,
                     'options'      => ['class' => 'breadcrumb p-3 bg-body-tertiary rounded-3'],
             ]) ?>

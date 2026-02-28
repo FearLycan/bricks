@@ -2,6 +2,8 @@
 
 use common\components\Html;
 use common\models\Theme;
+use common\schema\factory\ItemListSchemaFactory;
+use common\schema\JsonLdRenderer;
 use frontend\components\Helper;
 use frontend\models\searches\SetSearch;
 use yii\data\ActiveDataProvider;
@@ -30,6 +32,7 @@ if ($subTheme) {
 
 ?>
 
+<?= JsonLdRenderer::render([ItemListSchemaFactory::fromDataProvider($dataProvider)]) ?>
 
 <div class="col-lg-12 mt-4">
     <h1 class="page-title">
