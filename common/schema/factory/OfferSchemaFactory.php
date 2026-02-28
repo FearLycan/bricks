@@ -3,6 +3,7 @@
 namespace common\schema\factory;
 
 use common\models\Set;
+use common\models\SetOffer;
 use common\models\SetPrice;
 
 final class OfferSchemaFactory
@@ -10,6 +11,34 @@ final class OfferSchemaFactory
     public static function fromSet(Set $set, string $productUrl): array
     {
         $offers = [];
+        foreach ($set->setOffers as $setOffer) {
+            if (!$setOffer instanceof SetOffer) {
+                continue;
+            }
+
+            $currency = strtoupper((string)$setOffer->currency_code);
+            if ($currency === '') {
+                $currency = 'USD';
+            }
+
+            $offers[] = [
+                '@type' => 'Offer',
+                'price' => number_format(($setOffer->price ?? 0) / 100, 2, '.', ''),
+                'priceCurrency' => $currency,
+                'availability' => self::resolveAvailability($setOffer->availability),
+                'priceValidUntil' => self::resolvePriceValidUntil(),
+                'url' => $setOffer->url ?: $productUrl,
+                'seller' => [
+                    '@type' => 'Organization',
+                    'name' => $setOffer->store->name ?? 'Store',
+                ],
+            ];
+        }
+
+        if ($offers !== []) {
+            return $offers;
+        }
+
         foreach ($set->setPrices as $setPrice) {
             if (!$setPrice instanceof SetPrice) {
                 continue;

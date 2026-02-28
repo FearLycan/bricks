@@ -82,7 +82,13 @@ class LegoController extends Controller
 
     private function findModel(string $slug): Set
     {
-        $model = Set::find()->where(['slug' => $slug])->one();
+        $model = Set::find()
+            ->with([
+                'setOffers.store',
+                'setOffers.setOfferReviews',
+            ])
+            ->where(['slug' => $slug])
+            ->one();
 
         if (!$model) {
             $this->notFound();

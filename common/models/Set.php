@@ -40,6 +40,7 @@ use yii\helpers\Url;
  *
  * @property SetImage[]   $images
  * @property SetMinifig[] $setMinifigs
+ * @property SetOffer[]   $setOffers
  * @property SetPrice[]   $setPrices
  * @property SetTag[]     $setTags
  * @property Tag[]        $tagModels
@@ -157,6 +158,16 @@ class Set extends ActiveRecord
     public function getSetMinifigs(): ActiveQuery
     {
         return $this->hasMany(SetMinifig::class, ['set_id' => 'id']);
+    }
+
+    /**
+     * Gets query for [[SetOffers]].
+     *
+     * @return ActiveQuery
+     */
+    public function getSetOffers(): ActiveQuery
+    {
+        return $this->hasMany(SetOffer::class, ['set_id' => 'id'])->orderBy(['price' => SORT_ASC, 'id' => SORT_ASC]);
     }
 
     /**
