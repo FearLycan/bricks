@@ -48,7 +48,8 @@ use yii\helpers\Url;
  */
 class Set extends ActiveRecord
 {
-    private ?SetImage $_mainImage = null;
+    private ?SetImage $_mainImage         = null;
+    private bool      $_mainImageResolved = false;
 
     /**
      * @return array
@@ -198,17 +199,30 @@ class Set extends ActiveRecord
         return $this->hasOne(Theme::class, ['id' => 'subtheme_id']);
     }
 
+    public function getMainImageRelation(): ActiveQuery
+    {
+        return $this->hasOne(SetImage::class, ['set_id' => 'id'])
+            ->andOnCondition([
+                'kind' => KindEnum::MAIN->value,
+                'type' => TypeEnum::IMAGE->value,
+            ]);
+    }
+
     public function getMainImage(): ?SetImage
     {
-        if ($this->_mainImage !== null) {
+        if ($this->_mainImageResolved) {
             return $this->_mainImage;
         }
 
-        $this->_mainImage = SetImage::findOne([
-            'set_id' => $this->id,
-            'kind'   => KindEnum::MAIN->value,
-            'type'   => TypeEnum::IMAGE->value,
-        ]);
+        if ($this->isRelationPopulated('mainImageRelation')) {
+            $this->_mainImage = $this->mainImageRelation;
+            $this->_mainImageResolved = true;
+
+            return $this->_mainImage;
+        }
+
+        $this->_mainImage = $this->mainImageRelation;
+        $this->_mainImageResolved = true;
 
         return $this->_mainImage;
     }
@@ -430,7 +444,7 @@ class Set extends ActiveRecord
 
             $list = [];
             foreach ($themes as $theme) {
-                $list[(int) $theme['id']] = (string) $theme['name'];
+                $list[(int)$theme['id']] = (string)$theme['name'];
             }
 
             return $list;

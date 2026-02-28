@@ -63,12 +63,34 @@ use yii\widgets\ActiveForm;
     <script>
         (() => {
             const searchForm = document.getElementById('set-search-form');
+        if (!searchForm) {
+            return;
+        }
+
             const selects = searchForm.querySelectorAll('select');
             selects.forEach((select) => {
                 select.addEventListener('change', () => {
                     searchForm.submit();
                 });
             });
+
+        const themeSearch = document.getElementById('theme-select-search');
+        const themeSelect = document.getElementById('theme_id');
+        if (!themeSearch || !themeSelect) {
+            return;
+        }
+
+        themeSearch.addEventListener('input', () => {
+            const query = themeSearch.value.trim().toLowerCase();
+            Array.from(themeSelect.options).forEach((option) => {
+                if (option.value === '') {
+                    option.hidden = false;
+                    return;
+                }
+
+                option.hidden = query !== '' && !option.text.toLowerCase().includes(query);
+            });
+        });
         })();
     </script>
 <?php InlineScript::end(); ?>

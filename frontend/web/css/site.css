@@ -301,3 +301,7 @@ a {
     --bs-btn-disabled-bg: rgb(255, 213, 2);
     --bs-btn-disabled-border-color: #c9a800;
 }
+
+.form-control:focus {
+    box-shadow: none;
+}
