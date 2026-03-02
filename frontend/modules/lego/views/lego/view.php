@@ -148,7 +148,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     </li>
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="offers-tab" data-bs-toggle="tab" data-bs-target="#offers" type="button" role="tab" aria-controls="offers" aria-selected="false">
-                            <?= T::tr('Alternative offers') ?>
+                            <?= T::tr('Alternative offers <small>({n})</small>', ['n' => count($model->setOffers)]) ?>
                         </button>
                     </li>
                 </ul>
@@ -251,7 +251,9 @@ $this->params['breadcrumbs'][] = $this->title;
                     </div>
                     <div class="tab-pane fade" id="offers" role="tabpanel" aria-labelledby="offers-tab" tabindex="0">
                         <div class="mt-1">
-                            <h5 class="mb-3"><?= T::tr('Alternative offers by store') ?></h5>
+                            <h5 class="mb-3">
+                                <?= T::tr('Alternative offers by store') ?>
+                            </h5>
                             <?php if ($model->setOffers): ?>
                                 <div class="row row-cols-1 row-cols-lg-2 g-3">
                                     <?php foreach ($model->setOffers as $offer): ?>
