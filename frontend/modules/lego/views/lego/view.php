@@ -32,7 +32,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <div class="lego-product-page">
     <div class="row g-4 product">
-        <div class="col-lg-7">
+        <div class="col-lg-7 lego-set">
             <div class="lego-gallery-card">
                 <div class="lego-gallery-main">
                     <?= Html::img($model->getDisplayMainImageUrl(), ['class' => 'lego-main-image', 'alt' => Html::encode($model->name), 'id' => 'legoMainImage', 'loading' => 'lazy']) ?>
@@ -50,7 +50,7 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
         </div>
 
-        <div class="col-lg-5">
+        <div class="col-lg-5 lego-set-information">
             <div class="lego-info-card">
                 <div class="d-flex flex-wrap gap-2 mb-3">
                     <?= Html::a(Html::encode($model->theme->name), ["/lego/theme/{$model->theme->slug}"], [
@@ -128,7 +128,99 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
         </div>
 
-        <div class="col-12">
+        <div class="col-12 alternative-offers">
+            <div class="lego-details-card">
+                <h5 class="mb-3"><?= T::tr('Alternative offers by store') ?></h5>
+                <?php if ($model->setOffers): ?>
+                    <div class="row row-cols-1 row-cols-lg-2 g-3">
+                        <?php foreach ($model->setOffers as $offer): ?>
+                            <div class="col">
+                                <div class="card h-100 shadow-sm border-0">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-start gap-3">
+                                            <?php if ($offer->image): ?>
+                                                <div class="flex-shrink-0">
+                                                    <?= Html::img($offer->image, [
+                                                            'class'         => 'rounded border js-zoomable-image',
+                                                            'alt'           => Html::encode($offer->getDisplayNameOrDefault($model->name)),
+                                                            'loading'       => 'lazy',
+                                                            'data-zoom-src' => $offer->image,
+                                                            'style'         => 'width: 84px; height: 84px; object-fit: contain; background-color: #f8f9fa;',
+                                                    ]) ?>
+                                                </div>
+                                            <?php endif; ?>
+                                            <div class="flex-grow-1">
+                                                <div class="d-flex align-items-start justify-content-between gap-3">
+                                                    <div>
+                                                        <div class="fw-semibold d-flex align-items-center gap-2">
+                                                            <?php if ($offer->store && $offer->store->logo): ?>
+                                                                <?= Html::img($offer->store->logo, [
+                                                                        'alt'     => Html::encode($offer->store->name ?? T::tr('Store logo')),
+                                                                        'loading' => 'lazy',
+                                                                        'style'   => 'width: 22px; height: 22px; object-fit: contain;',
+                                                                ]) ?>
+                                                            <?php endif; ?>
+                                                            <?= Html::encode($offer->store->name ?? T::tr('Unknown store')) ?>
+                                                        </div>
+                                                        <div class="small text-body-secondary">
+                                                            <?= Html::encode($offer->getDisplayNameOrDefault($model->name)) ?>
+                                                        </div>
+                                                    </div>
+                                                    <div class="text-end">
+                                                        <div class="fw-bold"><?= Html::encode($offer->getFormattedPriceOrDefault(T::tr('No price'))) ?></div>
+                                                        <div class="small text-body-secondary">
+                                                            <?= Html::encode($offer->availability ?: T::tr('No availability')) ?>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="mt-3 d-flex gap-3 align-items-center flex-wrap">
+                                                            <span class="badge text-bg-warning text-dark">
+                                                                <i class="bi bi-star-fill me-1"></i>
+                                                                <?= Html::encode($offer->rating_value !== null ? number_format((float)$offer->rating_value, 1, '.', '') : '0.0') ?>
+                                                            </span>
+                                                    <span class="small text-body-secondary">
+                                                                <?= T::tr('Reviews') ?>: <?= Html::encode((string)$offer->review_count) ?>
+                                                            </span>
+                                                    <?php if ($offer->url): ?>
+                                                        <?= Html::a('<i class="bi bi-bag-check me-1"></i>' . T::tr('Go to offer'), $offer->url, ['class' => 'btn btn-sm btn-success ms-auto', 'target' => '_blank', 'rel' => 'noopener noreferrer']) ?>
+                                                    <?php endif; ?>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <?php if ($offer->setOfferReviews): ?>
+                                            <div class="mt-3 pt-3 border-top">
+                                                <?php foreach (array_slice($offer->setOfferReviews, 0, 3) as $review): ?>
+                                                    <div class="mb-2">
+                                                        <div class="small fw-semibold">
+                                                            <?= Html::encode($review->author_name ?: T::tr('Anonymous')) ?>
+                                                            <?php if ($review->rating_value !== null): ?>
+                                                                <span class="text-body-secondary">· <?= Html::encode(number_format((float)$review->rating_value, 1, '.', '')) ?>/<?= Html::encode((string)($review->rating_scale_max ?? 5)) ?></span>
+                                                            <?php endif; ?>
+                                                        </div>
+                                                        <?php if ($review->title): ?>
+                                                            <div class="small"><?= Html::encode($review->title) ?></div>
+                                                        <?php endif; ?>
+                                                        <?php if ($review->content): ?>
+                                                            <div class="small text-body-secondary"><?= Html::encode(mb_substr(trim($review->content), 0, 180)) ?><?= mb_strlen(trim($review->content)) > 180 ? '...' : '' ?></div>
+                                                        <?php endif; ?>
+                                                    </div>
+                                                <?php endforeach; ?>
+                                            </div>
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                <?php else: ?>
+                    <p class="text-body-secondary mb-0"><?= T::tr('No alternative offers available') ?></p>
+                <?php endif; ?>
+            </div>
+        </div>
+
+        <div class="col-12 lego-set-details">
             <div class="lego-details-card">
                 <ul class="nav nav-tabs lego-tabs" id="legoProductTabs" role="tablist">
                     <li class="nav-item" role="presentation">
@@ -144,11 +236,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="minifigures-tab" data-bs-toggle="tab" data-bs-target="#minifigures" type="button" role="tab" aria-controls="minifigures" aria-selected="false">
                             <?= T::tr('Minifigures <small>({n})</small>', ['n' => $model->minifigures]) ?>
-                        </button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="offers-tab" data-bs-toggle="tab" data-bs-target="#offers" type="button" role="tab" aria-controls="offers" aria-selected="false">
-                            <?= T::tr('Alternative offers <small>({n})</small>', ['n' => count($model->setOffers)]) ?>
                         </button>
                     </li>
                 </ul>
@@ -246,77 +333,6 @@ $this->params['breadcrumbs'][] = $this->title;
                                 </div>
                             <?php else: ?>
                                 <p class="text-body-secondary mb-0"><?= T::tr('No minifigures available') ?></p>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-                    <div class="tab-pane fade" id="offers" role="tabpanel" aria-labelledby="offers-tab" tabindex="0">
-                        <div class="mt-1">
-                            <h5 class="mb-3">
-                                <?= T::tr('Alternative offers by store') ?>
-                            </h5>
-                            <?php if ($model->setOffers): ?>
-                                <div class="row row-cols-1 row-cols-lg-2 g-3">
-                                    <?php foreach ($model->setOffers as $offer): ?>
-                                        <div class="col">
-                                            <div class="card h-100 shadow-sm border-0">
-                                                <div class="card-body">
-                                                    <div class="d-flex align-items-start justify-content-between gap-3">
-                                                        <div>
-                                                            <div class="fw-semibold">
-                                                                <?= Html::encode($offer->store->name ?? T::tr('Unknown store')) ?>
-                                                            </div>
-                                                            <div class="small text-body-secondary">
-                                                                <?= Html::encode($offer->getDisplayNameOrDefault($model->name)) ?>
-                                                            </div>
-                                                        </div>
-                                                        <div class="text-end">
-                                                            <div class="fw-bold"><?= Html::encode($offer->getFormattedPriceOrDefault(T::tr('No price'))) ?></div>
-                                                            <div class="small text-body-secondary">
-                                                                <?= Html::encode($offer->availability ?: T::tr('No availability')) ?>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="mt-3 d-flex gap-3 align-items-center flex-wrap">
-                                                        <span class="badge text-bg-warning text-dark">
-                                                            <i class="bi bi-star-fill me-1"></i>
-                                                            <?= Html::encode($offer->rating_value !== null ? number_format((float)$offer->rating_value, 1, '.', '') : '0.0') ?>
-                                                        </span>
-                                                        <span class="small text-body-secondary">
-                                                            <?= T::tr('Reviews') ?>: <?= Html::encode((string)$offer->review_count) ?>
-                                                        </span>
-                                                        <?php if ($offer->url): ?>
-                                                            <?= Html::a(T::tr('Go to offer'), $offer->url, ['class' => 'btn btn-sm btn-outline-secondary ms-auto', 'target' => '_blank', 'rel' => 'noopener noreferrer']) ?>
-                                                        <?php endif; ?>
-                                                    </div>
-
-                                                    <?php if ($offer->setOfferReviews): ?>
-                                                        <div class="mt-3 pt-3 border-top">
-                                                            <?php foreach (array_slice($offer->setOfferReviews, 0, 3) as $review): ?>
-                                                                <div class="mb-2">
-                                                                    <div class="small fw-semibold">
-                                                                        <?= Html::encode($review->author_name ?: T::tr('Anonymous')) ?>
-                                                                        <?php if ($review->rating_value !== null): ?>
-                                                                            <span class="text-body-secondary">· <?= Html::encode(number_format((float)$review->rating_value, 1, '.', '')) ?>/<?= Html::encode((string)($review->rating_scale_max ?? 5)) ?></span>
-                                                                        <?php endif; ?>
-                                                                    </div>
-                                                                    <?php if ($review->title): ?>
-                                                                        <div class="small"><?= Html::encode($review->title) ?></div>
-                                                                    <?php endif; ?>
-                                                                    <?php if ($review->content): ?>
-                                                                        <div class="small text-body-secondary"><?= Html::encode(mb_substr(trim($review->content), 0, 180)) ?><?= mb_strlen(trim($review->content)) > 180 ? '...' : '' ?></div>
-                                                                    <?php endif; ?>
-                                                                </div>
-                                                            <?php endforeach; ?>
-                                                        </div>
-                                                    <?php endif; ?>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    <?php endforeach; ?>
-                                </div>
-                            <?php else: ?>
-                                <p class="text-body-secondary mb-0"><?= T::tr('No alternative offers available') ?></p>
                             <?php endif; ?>
                         </div>
                     </div>
