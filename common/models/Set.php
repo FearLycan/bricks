@@ -286,6 +286,121 @@ class Set extends ActiveRecord
         return $defaultText;
     }
 
+    public function getLowestAlternativeOfferPriceCents(string $currency = 'USD'): ?int
+    {
+        $normalizedCurrency = strtoupper(trim($currency));
+        if ($normalizedCurrency === '') {
+            $normalizedCurrency = 'USD';
+        }
+
+        $lowestPrice = null;
+        foreach ($this->setOffers as $offer) {
+            if (!$offer instanceof SetOffer) {
+                continue;
+            }
+
+            if ($offer->price === null || $offer->price <= 0) {
+                continue;
+            }
+
+            if (strtoupper((string)$offer->currency_code) !== $normalizedCurrency) {
+                continue;
+            }
+
+            if ($lowestPrice === null || $offer->price < $lowestPrice) {
+                $lowestPrice = (int)$offer->price;
+            }
+        }
+
+        return $lowestPrice;
+    }
+
+    public function getPromotionalPriceCents(string $currency = 'USD'): ?int
+    {
+        if ($this->price === null || $this->price <= 0) {
+            return null;
+        }
+
+        $lowestAlternativePrice = $this->getLowestAlternativeOfferPriceCents($currency);
+        if ($lowestAlternativePrice === null || $lowestAlternativePrice >= $this->price) {
+            return null;
+        }
+
+        return $lowestAlternativePrice;
+    }
+
+    public function getFormattedPromotionalPrice(string $currency = 'USD'): ?string
+    {
+        $promoPrice = $this->getPromotionalPriceCents($currency);
+        if ($promoPrice === null) {
+            return null;
+        }
+
+        return self::formatAmountFromCents($promoPrice, $currency);
+    }
+
+    public function getPromotionalSavingsPercent(string $currency = 'USD'): ?int
+    {
+        if ($this->price === null || $this->price <= 0) {
+            return null;
+        }
+
+        $promoPrice = $this->getPromotionalPriceCents($currency);
+        if ($promoPrice === null || $promoPrice >= $this->price) {
+            return null;
+        }
+
+        return (int)round((($this->price - $promoPrice) / $this->price) * 100);
+    }
+
+    public function getBestAlternativeOffer(string $currency = 'USD'): ?SetOffer
+    {
+        $normalizedCurrency = strtoupper(trim($currency));
+        if ($normalizedCurrency === '') {
+            $normalizedCurrency = 'USD';
+        }
+
+        $bestOffer = null;
+        foreach ($this->setOffers as $offer) {
+            if (!$offer instanceof SetOffer) {
+                continue;
+            }
+
+            if ($offer->price === null || $offer->price <= 0) {
+                continue;
+            }
+
+            if (strtoupper((string)$offer->currency_code) !== $normalizedCurrency) {
+                continue;
+            }
+
+            if ($bestOffer === null) {
+                $bestOffer = $offer;
+                continue;
+            }
+
+            if ($offer->price < $bestOffer->price) {
+                $bestOffer = $offer;
+                continue;
+            }
+
+            if ($offer->price === $bestOffer->price && (float)$offer->rating_value > (float)$bestOffer->rating_value) {
+                $bestOffer = $offer;
+                continue;
+            }
+
+            if (
+                $offer->price === $bestOffer->price &&
+                (float)$offer->rating_value === (float)$bestOffer->rating_value &&
+                (int)$offer->review_count > (int)$bestOffer->review_count
+            ) {
+                $bestOffer = $offer;
+            }
+        }
+
+        return $bestOffer;
+    }
+
     public function getThemeGroupNameOrDefault(string $defaultText = '-'): string
     {
         if ($this->theme->group && $this->theme->group->name) {

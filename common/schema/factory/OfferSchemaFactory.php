@@ -21,7 +21,7 @@ final class OfferSchemaFactory
                 $currency = 'USD';
             }
 
-            $offers[] = [
+            $offerSchema = [
                 '@type' => 'Offer',
                 'price' => number_format(($setOffer->price ?? 0) / 100, 2, '.', ''),
                 'priceCurrency' => $currency,
@@ -33,6 +33,12 @@ final class OfferSchemaFactory
                     'name' => $setOffer->store->name ?? 'Store',
                 ],
             ];
+
+            if ($set->price !== null && $set->price > 0 && $currency === 'USD' && $setOffer->price !== null && $setOffer->price > 0 && $setOffer->price < $set->price) {
+                $offerSchema['priceSpecification'] = self::buildPromotionPriceSpecification($set->price, $setOffer->price, $currency);
+            }
+
+            $offers[] = $offerSchema;
         }
 
         if ($offers !== []) {
@@ -108,5 +114,23 @@ final class OfferSchemaFactory
     private static function resolvePriceValidUntil(): string
     {
         return '2099-12-31';
+    }
+
+    private static function buildPromotionPriceSpecification(int $listPriceCents, int $salePriceCents, string $currency): array
+    {
+        return [
+            [
+                '@type' => 'UnitPriceSpecification',
+                'name' => 'List price',
+                'price' => number_format($listPriceCents / 100, 2, '.', ''),
+                'priceCurrency' => $currency,
+            ],
+            [
+                '@type' => 'UnitPriceSpecification',
+                'name' => 'Sale price',
+                'price' => number_format($salePriceCents / 100, 2, '.', ''),
+                'priceCurrency' => $currency,
+            ],
+        ];
     }
 }

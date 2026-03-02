@@ -25,6 +25,26 @@ if ($model->subtheme) {
 }
 
 $this->params['breadcrumbs'][] = $this->title;
+$offersSorted = $model->setOffers;
+usort($offersSorted, static function ($a, $b): int {
+    $aPrice = (int)($a->price ?? PHP_INT_MAX);
+    $bPrice = (int)($b->price ?? PHP_INT_MAX);
+    if ($aPrice !== $bPrice) {
+        return $aPrice <=> $bPrice;
+    }
+
+    $aRating = (float)($a->rating_value ?? 0.0);
+    $bRating = (float)($b->rating_value ?? 0.0);
+    if ($aRating !== $bRating) {
+        return $bRating <=> $aRating;
+    }
+
+    return ((int)($b->review_count ?? 0)) <=> ((int)($a->review_count ?? 0));
+});
+$bestOffer = $model->getBestAlternativeOffer('USD');
+$promoPriceUsd = $model->getFormattedPromotionalPrice('USD');
+$basePriceUsd = $model->getFormattedPrice('USD');
+$savingsPercent = $model->getPromotionalSavingsPercent('USD');
 
 ?>
 
@@ -67,7 +87,24 @@ $this->params['breadcrumbs'][] = $this->title;
                 </div>
                 <h1 class="lego-title"><?= $this->title ?></h1>
                 <div class="lego-set-number"><?= T::tr('Set') ?> #<?= Html::encode($model->getSetNumberText()) ?></div>
-                <div class="lego-price"><?= Html::encode($model->getFormattedPriceOrDefault(T::tr('Check price in store'), 'USD')) ?></div>
+                <div class="lego-price">
+                    <?php if ($basePriceUsd !== null && $promoPriceUsd !== null): ?>
+                        <span class="text-body-secondary text-decoration-line-through me-2"><?= Html::encode($basePriceUsd) ?></span>
+                        <span class="text-success fw-bold"><?= Html::encode($promoPriceUsd) ?></span>
+                        <?php if ($savingsPercent !== null && $savingsPercent > 0): ?>
+                            <span class="badge text-bg-danger ms-2">-<?= Html::encode((string)$savingsPercent) ?>%</span>
+                        <?php endif; ?>
+                    <?php else: ?>
+                        <?= Html::encode($model->getFormattedPriceOrDefault(T::tr('Check price in store'), 'USD')) ?>
+                    <?php endif; ?>
+                </div>
+                <?php if ($bestOffer): ?>
+                    <div class="small text-success mb-3">
+                        <i class="bi bi-tag-fill me-1"></i>
+                        <?= T::tr('Best offer') ?>: <strong><?= Html::encode($bestOffer->store->name ?? T::tr('Unknown store')) ?></strong>
+                        (<?= Html::encode($bestOffer->getFormattedPriceOrDefault(T::tr('No price'))) ?>)
+                    </div>
+                <?php endif; ?>
 
                 <div class="lego-quick-facts">
                     <div class="lego-quick-fact">
@@ -124,16 +161,17 @@ $this->params['breadcrumbs'][] = $this->title;
                             'target' => '_blank',
                             'rel'    => 'noopener noreferrer',
                     ]) ?>
+                    <?= Html::a(T::tr('Compare all offers'), '#alternative-offers', ['class' => 'btn btn-success btn-lg']) ?>
                 </div>
             </div>
         </div>
 
-        <div class="col-12 alternative-offers">
+        <div class="col-12 alternative-offers" id="alternative-offers">
             <div class="lego-details-card">
                 <h5 class="mb-3"><?= T::tr('Alternative offers by store') ?></h5>
-                <?php if ($model->setOffers): ?>
+                <?php if ($offersSorted): ?>
                     <div class="row row-cols-1 row-cols-lg-2 g-3">
-                        <?php foreach ($model->setOffers as $offer): ?>
+                        <?php foreach ($offersSorted as $offer): ?>
                             <div class="col">
                                 <div class="card h-100 shadow-sm border-0">
                                     <div class="card-body">
@@ -167,9 +205,23 @@ $this->params['breadcrumbs'][] = $this->title;
                                                         </div>
                                                     </div>
                                                     <div class="text-end">
-                                                        <div class="fw-bold"><?= Html::encode($offer->getFormattedPriceOrDefault(T::tr('No price'))) ?></div>
+                                                        <div class="d-flex align-items-center justify-content-end gap-2">
+                                                            <div class="fw-bold"><?= Html::encode($offer->getFormattedPriceOrDefault(T::tr('No price'))) ?></div>
+                                                            <?php if ($model->price !== null && $model->price > 0 && $offer->price !== null && $offer->price > 0 && strtoupper((string)$offer->currency_code) === 'USD' && $offer->price < $model->price): ?>
+                                                                <?php $offerSavingsPercent = (int)round((($model->price - $offer->price) / $model->price) * 100); ?>
+                                                                <span class="badge text-bg-dark">-<?= Html::encode((string)$offerSavingsPercent) ?>%</span>
+                                                            <?php endif; ?>
+                                                        </div>
                                                         <div class="small text-body-secondary">
                                                             <?= Html::encode($offer->availability ?: T::tr('No availability')) ?>
+                                                        </div>
+                                                        <div class="small text-body-secondary d-none">
+                                                            <?= T::tr('Price per piece') ?>:
+                                                            <?php if ($model->pieces && $model->pieces > 0 && $offer->price !== null): ?>
+                                                                <?= Html::encode(Set::formatAmountFromCents((int)round($offer->price / $model->pieces), $offer->currency_code ?: 'USD')) ?>
+                                                            <?php else: ?>
+                                                                -
+                                                            <?php endif; ?>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -183,7 +235,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                                 <?= T::tr('Reviews') ?>: <?= Html::encode((string)$offer->review_count) ?>
                                                             </span>
                                                     <?php if ($offer->url): ?>
-                                                        <?= Html::a('<i class="bi bi-bag-check me-1"></i>' . T::tr('Go to offer'), $offer->url, ['class' => 'btn btn-sm btn-success ms-auto', 'target' => '_blank', 'rel' => 'noopener noreferrer']) ?>
+                                                        <?= Html::a('<i class="bi bi-bag-check me-1"></i>' . T::tr('Go to offer'), $offer->url, ['class' => 'btn btn-sm btn-success ms-auto w-50', 'target' => '_blank', 'rel' => 'noopener noreferrer']) ?>
                                                     <?php endif; ?>
                                                 </div>
                                             </div>
@@ -224,19 +276,19 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="lego-details-card">
                 <ul class="nav nav-tabs lego-tabs" id="legoProductTabs" role="tablist">
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button" role="tab" aria-controls="overview" aria-selected="true">
+                        <a class="nav-link active" id="overview-tab" data-bs-toggle="tab" href="#overview" role="tab" aria-controls="overview" aria-selected="true">
                             <?= T::tr('Overview') ?>
-                        </button>
+                        </a>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="details-tab" data-bs-toggle="tab" data-bs-target="#details" type="button" role="tab" aria-controls="details" aria-selected="false">
+                        <a class="nav-link" id="details-tab" data-bs-toggle="tab" href="#details" role="tab" aria-controls="details" aria-selected="false">
                             <?= T::tr('Details') ?>
-                        </button>
+                        </a>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="minifigures-tab" data-bs-toggle="tab" data-bs-target="#minifigures" type="button" role="tab" aria-controls="minifigures" aria-selected="false">
+                        <a class="nav-link" id="minifigures-tab" data-bs-toggle="tab" href="#minifigures" role="tab" aria-controls="minifigures" aria-selected="false">
                             <?= T::tr('Minifigures <small>({n})</small>', ['n' => $model->minifigures]) ?>
-                        </button>
+                        </a>
                     </li>
                 </ul>
 
@@ -364,10 +416,36 @@ $this->params['breadcrumbs'][] = $this->title;
         const mainImage = document.getElementById('legoMainImage');
         const thumbnails = document.querySelectorAll('.lego-thumb');
         const zoomableImages = document.querySelectorAll('.js-zoomable-image');
+        const tabTriggers = document.querySelectorAll('#legoProductTabs [data-bs-toggle="tab"]');
         const zoomModalElement = document.getElementById('imageZoomModal');
         const zoomModalImage = document.getElementById('imageZoomModalImage');
         const zoomPrev = document.getElementById('imageZoomPrev');
         const zoomNext = document.getElementById('imageZoomNext');
+
+        if (typeof bootstrap !== 'undefined' && tabTriggers.length > 0) {
+            const activateTabFromHash = () => {
+                const {hash} = window.location;
+                if (!hash) {
+                    return;
+                }
+
+                const trigger = document.querySelector(`#legoProductTabs [href="${hash}"]`);
+                if (trigger) {
+                    bootstrap.Tab.getOrCreateInstance(trigger).show();
+                }
+            };
+
+            tabTriggers.forEach((trigger) => {
+                trigger.addEventListener('shown.bs.tab', () => {
+                    const targetHash = trigger.getAttribute('href');
+                    if (targetHash) {
+                        history.replaceState(null, '', targetHash);
+                    }
+                });
+            });
+
+            activateTabFromHash();
+        }
 
         if (zoomModalElement && zoomModalImage && zoomPrev && zoomNext && typeof bootstrap !== 'undefined') {
             const zoomModal = new bootstrap.Modal(zoomModalElement);
