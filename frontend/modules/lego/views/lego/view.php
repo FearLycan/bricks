@@ -358,7 +358,7 @@ $savingsPercent = $model->getPromotionalSavingsPercent('USD');
                         <div class="mt-1">
                             <h5 class="mb-3"><?= T::tr('Minifigures in this set') ?></h5>
                             <?php if ($model->setMinifigs): ?>
-                                <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-3">
+                                <div class="row row-cols-2 row-cols-lg-4 g-3">
                                     <?php foreach ($model->setMinifigs as $minifig): ?>
                                         <div class="col">
                                             <div class="card h-100 shadow-sm border-0">
