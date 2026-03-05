@@ -43,3 +43,5 @@ if ($subTheme) {
 <?= $this->render('/lego/_search', ['model' => $searchModel]) ?>
 
 <?= $this->render('/lego/_list', ['dataProvider' => $dataProvider]) ?>
+
+<?= $this->render('_presentation', ['model' => $subTheme ?? $theme]) ?>

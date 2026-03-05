@@ -19,6 +19,9 @@ use yii\db\BaseActiveRecord;
  * @property int|null    $sets_count
  * @property int|null    $year_from
  * @property int|null    $year_to
+ * @property string|null $description
+ * @property string|null $img
+ * @property string|null $custom_css
  * @property string      $created_at
  * @property string|null $updated_at
  *
@@ -68,7 +71,8 @@ class Theme extends ActiveRecord
         return [
             [['parent_id', 'group_id', 'sets_count', 'year_from', 'year_to'], 'integer'],
             [['created_at', 'updated_at'], 'safe'],
-            [['name'], 'string', 'max' => 255],
+            [['description', 'custom_css'], 'string'],
+            [['name', 'img'], 'string', 'max' => 255],
             [['group_id'], 'exist', 'skipOnError' => true, 'targetClass' => ThemeGroup::class, 'targetAttribute' => ['group_id' => 'id']],
             [['parent_id'], 'exist', 'skipOnError' => true, 'targetClass' => __CLASS__, 'targetAttribute' => ['parent_id' => 'id']],
         ];
@@ -88,6 +92,9 @@ class Theme extends ActiveRecord
             'sets_count' => 'Sets Count',
             'year_from'  => 'Year From',
             'year_to'    => 'Year To',
+            'description' => 'Description',
+            'img' => 'Img',
+            'custom_css' => 'Custom Css',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];

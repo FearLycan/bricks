@@ -1,9 +1,9 @@
 <?php
 
-use common\widgets\Alert;
 use common\schema\factory\BreadcrumbListSchemaFactory;
 use common\schema\factory\OrganizationSchemaFactory;
 use common\schema\JsonLdRenderer;
+use common\widgets\Alert;
 use frontend\assets\AppAsset;
 use yii\bootstrap5\Breadcrumbs;
 use yii\bootstrap5\Html;
@@ -21,13 +21,13 @@ AppAsset::register($this);
 
 $breadcrumbLinks = $this->params['breadcrumbs'] ?? [];
 $homeBreadcrumb = [
-    'label' => Html::encode(Yii::$app->name),
-    'url' => Yii::$app->homeUrl,
+        'label' => Html::encode(Yii::$app->name),
+        'url'   => Yii::$app->homeUrl,
 ];
 
 $schemaGraph = [
-    OrganizationSchemaFactory::fromParams(),
-    BreadcrumbListSchemaFactory::fromView($breadcrumbLinks, $homeBreadcrumb, (string)$this->title),
+        OrganizationSchemaFactory::fromParams(),
+        BreadcrumbListSchemaFactory::fromView($breadcrumbLinks, $homeBreadcrumb, (string)$this->title),
 ];
 ?>
 <?php $this->beginPage() ?>
@@ -70,6 +70,9 @@ $schemaGraph = [
     </header>
 
     <main role="main" class="flex-shrink-0">
+
+        <div id="presentation"></div>
+
         <div class="container">
             <?= Breadcrumbs::widget([
                     'links'        => $breadcrumbLinks,

@@ -59,10 +59,25 @@ class SetSearch extends Set
             return $dataProvider;
         }
 
+        if ($this->subtheme_id) {
+            $query->andWhere(['subtheme_id' => $this->subtheme_id]);
+        }
+
+        if ($this->theme && $this->subtheme_id) {
+            $query->andWhere(['theme_id' => $this->theme_id]);
+        }
+
+        if ($this->theme_id && !$this->subtheme_id) {
+            $allSubthemeIds = Theme::find()->select('id')->where(['name' => $this->theme->name])->column();
+            $query->andWhere([
+                'or',
+                ['theme_id' => $allSubthemeIds],
+                ['subtheme_id' => $allSubthemeIds],
+            ]);
+        }
+
         $query->andFilterWhere([
-            'theme_id'    => $this->theme_id,
-            'year'        => $this->year,
-            'subtheme_id' => $this->subtheme_id, //to show subthemes views
+            'year' => $this->year,
         ]);
 
         if ($this->name) {
