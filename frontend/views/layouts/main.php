@@ -5,10 +5,12 @@ use common\schema\factory\OrganizationSchemaFactory;
 use common\schema\JsonLdRenderer;
 use common\widgets\Alert;
 use frontend\assets\AppAsset;
+use frontend\components\SeoHelper;
 use yii\bootstrap5\Breadcrumbs;
 use yii\bootstrap5\Html;
 use yii\bootstrap5\Nav;
 use yii\bootstrap5\NavBar;
+use yii\helpers\Url;
 use yii\web\View;
 
 /**
@@ -29,6 +31,40 @@ $schemaGraph = [
         OrganizationSchemaFactory::fromParams(),
         BreadcrumbListSchemaFactory::fromView($breadcrumbLinks, $homeBreadcrumb, (string)$this->title),
 ];
+
+$pageTitle = SeoHelper::normalizeText((string)$this->title);
+$metaDescription = trim((string)($this->params['metaDescription'] ?? ''));
+$canonicalUrl = trim((string)($this->params['canonicalUrl'] ?? Url::current([], true)));
+$robots = trim((string)($this->params['robots'] ?? 'index,follow'));
+$socialTitle = trim((string)($this->params['socialTitle'] ?? $pageTitle));
+$socialDescription = trim((string)($this->params['socialDescription'] ?? $metaDescription));
+$socialImage = trim((string)($this->params['socialImage'] ?? ''));
+$ogType = trim((string)($this->params['ogType'] ?? 'website'));
+
+if ($metaDescription === '') {
+        $metaDescription = SeoHelper::defaultMetaDescription();
+}
+
+if ($socialDescription === '') {
+        $socialDescription = $metaDescription;
+}
+
+$this->registerMetaTag(['name' => 'description', 'content' => $metaDescription], 'description');
+$this->registerMetaTag(['name' => 'robots', 'content' => $robots], 'robots');
+$this->registerLinkTag(['rel' => 'canonical', 'href' => $canonicalUrl], 'canonical');
+$this->registerMetaTag(['property' => 'og:site_name', 'content' => Yii::$app->name], 'og:site_name');
+$this->registerMetaTag(['property' => 'og:type', 'content' => $ogType], 'og:type');
+$this->registerMetaTag(['property' => 'og:title', 'content' => $socialTitle], 'og:title');
+$this->registerMetaTag(['property' => 'og:description', 'content' => $socialDescription], 'og:description');
+$this->registerMetaTag(['property' => 'og:url', 'content' => $canonicalUrl], 'og:url');
+$this->registerMetaTag(['name' => 'twitter:card', 'content' => $socialImage !== '' ? 'summary_large_image' : 'summary'], 'twitter:card');
+$this->registerMetaTag(['name' => 'twitter:title', 'content' => $socialTitle], 'twitter:title');
+$this->registerMetaTag(['name' => 'twitter:description', 'content' => $socialDescription], 'twitter:description');
+
+if ($socialImage !== '') {
+        $this->registerMetaTag(['property' => 'og:image', 'content' => $socialImage], 'og:image');
+        $this->registerMetaTag(['name' => 'twitter:image', 'content' => $socialImage], 'twitter:image');
+}
 ?>
 <?php $this->beginPage() ?>
     <!DOCTYPE html>

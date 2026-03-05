@@ -16,6 +16,10 @@ final class OfferSchemaFactory
                 continue;
             }
 
+            if ($setOffer->price === null || $setOffer->price <= 0) {
+                continue;
+            }
+
             $currency = strtoupper((string)$setOffer->currency_code);
             if ($currency === '') {
                 $currency = 'USD';
@@ -26,7 +30,6 @@ final class OfferSchemaFactory
                 'price' => number_format(($setOffer->price ?? 0) / 100, 2, '.', ''),
                 'priceCurrency' => $currency,
                 'availability' => self::resolveAvailability($setOffer->availability),
-                'priceValidUntil' => self::resolvePriceValidUntil(),
                 'url' => $setOffer->url ?: $productUrl,
                 'seller' => [
                     '@type' => 'Organization',
@@ -50,6 +53,10 @@ final class OfferSchemaFactory
                 continue;
             }
 
+            if ($setPrice->retail_price_cents <= 0) {
+                continue;
+            }
+
             $currency = self::resolveCurrencyCode($setPrice->country_code);
             if ($currency === null) {
                 continue;
@@ -60,7 +67,6 @@ final class OfferSchemaFactory
                 'price'           => number_format($setPrice->retail_price_cents / 100, 2, '.', ''),
                 'priceCurrency'   => $currency,
                 'availability'    => self::resolveAvailability($set->availability),
-                'priceValidUntil' => self::resolvePriceValidUntil(),
                 'url'             => $productUrl,
             ];
         }
@@ -70,13 +76,15 @@ final class OfferSchemaFactory
         }
 
         $fallbackPriceCents = $set->price ?? 0;
+        if ($fallbackPriceCents <= 0) {
+            return [];
+        }
 
         return [[
                     '@type'           => 'Offer',
                     'price'           => number_format($fallbackPriceCents / 100, 2, '.', ''),
                     'priceCurrency'   => 'USD',
                     'availability'    => self::resolveAvailability($set->availability),
-                    'priceValidUntil' => self::resolvePriceValidUntil(),
                     'url'             => $productUrl,
                 ]];
     }
@@ -109,11 +117,6 @@ final class OfferSchemaFactory
         }
 
         return 'https://schema.org/InStock';
-    }
-
-    private static function resolvePriceValidUntil(): string
-    {
-        return '2099-12-31';
     }
 
     private static function buildPromotionPriceSpecification(int $listPriceCents, int $salePriceCents, string $currency): array

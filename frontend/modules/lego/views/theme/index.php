@@ -5,6 +5,7 @@ use common\models\Theme;
 use common\schema\factory\ItemListSchemaFactory;
 use common\schema\JsonLdRenderer;
 use frontend\components\Helper;
+use frontend\components\SeoHelper;
 use frontend\models\searches\SetSearch;
 use yii\data\ActiveDataProvider;
 use yii\web\View;
@@ -17,17 +18,33 @@ use yii\web\View;
  * @var $searchModel  SetSearch
  */
 
-$this->title = Html::encode($theme->name);
+$page = SeoHelper::resolvePageNumber();
+
+$this->title = SeoHelper::buildThemeTitle($theme, $subTheme, $page);
+$this->params['metaDescription'] = SeoHelper::buildThemeDescription($theme, $subTheme, $page);
+$this->params['canonicalUrl'] = SeoHelper::buildAbsoluteUrl($subTheme
+        ? ($page > 1
+                ? ['/lego/theme/index', 'slug' => $theme->slug, 'sub' => $subTheme->slug, 'page' => $page]
+                : ['/lego/theme/index', 'slug' => $theme->slug, 'sub' => $subTheme->slug])
+        : ($page > 1
+                ? ['/lego/theme/index', 'slug' => $theme->slug, 'page' => $page]
+                : ['/lego/theme/index', 'slug' => $theme->slug])
+);
+$this->params['robots'] = 'index,follow';
 
 $this->params['breadcrumbs'][] = ['label' => Helper::getLegoName(), 'url' => ['/lego']];
 
 if ($subTheme) {
-    $this->title = Html::encode($subTheme->name);
     $this->params['breadcrumbs'][] = ['label' => $theme->name, 'url' => ['/lego/theme/' . $theme->slug]];
-    $this->params['breadcrumbs'][] = $subTheme->name;
+    $this->params['breadcrumbs'][] = SeoHelper::normalizeText($subTheme->name);
+    if ($subTheme->img) {
+        $this->params['socialImage'] = SeoHelper::buildAbsoluteUrl($subTheme->img);
+    }
 } else {
-    $this->title = Html::encode($theme->name);
-    $this->params['breadcrumbs'][] = $this->title;
+    $this->params['breadcrumbs'][] = SeoHelper::normalizeText($theme->name);
+    if ($theme->img) {
+        $this->params['socialImage'] = SeoHelper::buildAbsoluteUrl($theme->img);
+    }
 }
 
 ?>
@@ -36,8 +53,11 @@ if ($subTheme) {
 
 <div class="col-lg-12 mt-4">
     <h1 class="page-title">
-        <?= $this->title ?>
+        <?= Html::encode($this->title) ?>
     </h1>
+    <p class="text-body-secondary mb-3">
+        <?= Html::encode(SeoHelper::buildThemeIntro($theme, $subTheme)) ?>
+    </p>
 </div>
 
 <?= $this->render('/lego/_search', ['model' => $searchModel]) ?>

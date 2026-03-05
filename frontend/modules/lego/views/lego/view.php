@@ -6,6 +6,7 @@ use common\schema\builder\SetPageSchemaBuilder;
 use common\schema\JsonLdRenderer;
 use common\widgets\InlineScript;
 use frontend\components\Helper;
+use frontend\components\SeoHelper;
 use frontend\components\T;
 use yii\helpers\HtmlPurifier;
 use yii\helpers\Url;
@@ -16,7 +17,12 @@ use yii\web\View;
  * @var $model Set
  */
 
-$this->title = Html::encode($model->name);
+$this->title = SeoHelper::buildSetTitle($model);
+$this->params['metaDescription'] = SeoHelper::buildSetDescription($model);
+$this->params['canonicalUrl'] = SeoHelper::buildAbsoluteUrl(['/lego/lego/view', 'slug' => $model->slug]);
+$this->params['robots'] = 'index,follow';
+$this->params['ogType'] = 'product';
+$this->params['socialImage'] = SeoHelper::buildAbsoluteUrl($model->getDisplayMainImageUrl());
 $this->params['breadcrumbs'][] = ['label' => Helper::getLegoName(), 'url' => ['/lego']];
 $this->params['breadcrumbs'][] = ['label' => $model->theme->name, 'url' => ["/lego/theme/{$model->theme->slug}"]];
 
@@ -24,7 +30,7 @@ if ($model->subtheme) {
     $this->params['breadcrumbs'][] = ['label' => $model->subtheme->name, 'url' => ["/lego/theme/{$model->theme->slug}/{$model->subtheme->slug}"]];
 }
 
-$this->params['breadcrumbs'][] = $this->title;
+$this->params['breadcrumbs'][] = SeoHelper::normalizeText($model->name);
 $offersSorted = $model->setOffers;
 usort($offersSorted, static function ($a, $b): int {
     $aPrice = (int)($a->price ?? PHP_INT_MAX);
@@ -85,7 +91,7 @@ $savingsPercent = $model->getPromotionalSavingsPercent('USD');
                         <?= Html::encode($model->getThemeGroupNameOrDefault()) ?>
                     </span>
                 </div>
-                <h1 class="lego-title"><?= $this->title ?></h1>
+                <h1 class="lego-title"><?= Html::encode($model->name) ?></h1>
                 <div class="lego-set-number"><?= T::tr('Set') ?> #<?= Html::encode($model->getSetNumberText()) ?></div>
                 <div class="lego-price">
                     <?php if ($basePriceUsd !== null && $promoPriceUsd !== null): ?>

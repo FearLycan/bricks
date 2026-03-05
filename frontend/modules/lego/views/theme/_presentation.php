@@ -30,6 +30,16 @@ use common\widgets\InlineScript;
         </div>
     </div>
 
+    <style>
+        main > .container, main > .container-fluid {
+            padding: 0 15px 20px;
+        }
+
+        <?php if ($model->custom_css): ?>
+        <?= $model->custom_css ?>
+        <?php endif; ?>
+    </style>
+
     <?php InlineScript::begin(); ?>
     <script>
         (() => {

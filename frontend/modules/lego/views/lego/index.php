@@ -3,6 +3,7 @@
 use common\components\Html;
 use common\schema\factory\ItemListSchemaFactory;
 use common\schema\JsonLdRenderer;
+use frontend\components\SeoHelper;
 use frontend\models\searches\SetSearch;
 use yii\data\ActiveDataProvider;
 use yii\web\View;
@@ -13,7 +14,19 @@ use yii\web\View;
  * @var $searchModel  SetSearch
  */
 
-$this->title = Html::encode(Yii::$app->name);
+$page = SeoHelper::resolvePageNumber();
+$hasActiveFilters = SeoHelper::hasActiveCatalogFilters(Yii::$app->request->queryParams);
+
+$this->title = $hasActiveFilters
+    ? SeoHelper::buildFilteredCatalogTitle()
+    : SeoHelper::buildCatalogTitle($page);
+$this->params['metaDescription'] = $hasActiveFilters
+    ? SeoHelper::buildFilteredCatalogDescription()
+    : SeoHelper::buildCatalogDescription($page);
+$this->params['canonicalUrl'] = $hasActiveFilters
+    ? SeoHelper::buildAbsoluteUrl(['/lego/lego/index'])
+    : SeoHelper::buildAbsoluteUrl($page > 1 ? ['/lego/lego/index', 'page' => $page] : ['/lego/lego/index']);
+$this->params['robots'] = $hasActiveFilters ? 'noindex,follow' : 'index,follow';
 
 ?>
 
@@ -21,8 +34,11 @@ $this->title = Html::encode(Yii::$app->name);
 
 <div class="col-lg-12 mt-4">
     <h1 class="page-title">
-        <?= $this->title ?>
+        <?= Html::encode($this->title) ?>
     </h1>
+    <p class="text-body-secondary mb-3">
+        <?= Html::encode(SeoHelper::buildCatalogIntro()) ?>
+    </p>
 </div>
 
 <?= $this->render('_search', ['model' => $searchModel]) ?>
