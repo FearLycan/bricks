@@ -1,4 +1,8 @@
 <?php
+
+use backend\modules\admin\AdminModule;
+use common\models\User;
+
 $params = array_merge(
     require __DIR__ . '/../../common/config/params.php',
     require __DIR__ . '/../../common/config/params-local.php',
@@ -10,14 +14,14 @@ return [
     'id'                  => 'app-backend',
     'basePath'            => dirname(__DIR__),
     'controllerNamespace' => 'backend\controllers',
+    'defaultRoute'        => 'admin/dashboard/index',
     'bootstrap'           => ['log'],
-    'modules'             => [],
     'components'          => [
         'request'      => [
             'csrfParam' => '_csrf-backend',
         ],
         'user'         => [
-            'identityClass'   => 'common\models\User',
+            'identityClass'   => User::class,
             'enableAutoLogin' => true,
             'identityCookie'  => ['name' => '_identity-backend', 'httpOnly' => true],
         ],
@@ -43,6 +47,9 @@ return [
             'rules'           => [
             ],
         ],
+    ],
+    'modules'             => [
+        'admin' => ['class' => AdminModule::class,],
     ],
     'params'              => $params,
 ];
