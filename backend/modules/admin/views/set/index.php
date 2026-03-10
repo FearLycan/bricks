@@ -32,8 +32,10 @@ $this->params['breadcrumbs'][] = $this->title;
             'dataProvider' => $dataProvider,
             'filterModel'  => $searchModel,
             'columns'      => [
-                    ['class' => 'yii\grid\SerialColumn'],
-                    'number',
+                    [
+                            'attribute' => 'number',
+                            'options'   => ['style' => 'width: 100px;'],
+                    ],
                     'name',
                     [
                             'attribute' => 'theme_id',
@@ -42,6 +44,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             'value'     => static function (Set $model): string {
                                 return $model->theme->name ?? '-';
                             },
+                            'options'   => ['style' => 'width: 250px;'],
                     ],
                     [
                             'attribute' => 'status',
@@ -57,6 +60,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             'value'     => static function (Set $model): string {
                                 return StatusEnum::tryFrom((int)$model->status)?->label() ?? '-';
                             },
+                            'options'   => ['style' => 'width: 150px;'],
                     ],
                     [
                             'class'      => ActionColumn::class,

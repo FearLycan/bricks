@@ -1,10 +1,7 @@
 <?php
 
-use common\enums\image\StatusEnum;
 use common\models\Set;
-use common\models\Theme;
 use yii\helpers\Html;
-use yii\helpers\ArrayHelper;
 use yii\widgets\ActiveForm;
 
 /** @var yii\web\View $this */
@@ -13,28 +10,6 @@ use yii\widgets\ActiveForm;
 ?>
 
 <div class="set-form">
-    <?php
-    $statusOptions = array_reduce(
-        StatusEnum::cases(),
-        static function (array $carry, StatusEnum $status): array {
-            $carry[$status->value] = $status->label();
-
-            return $carry;
-        },
-        []
-    );
-    $subthemeOptions = ArrayHelper::map(
-        Theme::find()
-            ->select(['id', 'name'])
-            ->where('parent_id IS NOT NULL')
-            ->orderBy(['name' => SORT_ASC])
-            ->asArray()
-            ->all(),
-        'id',
-        'name'
-    );
-    ?>
-
     <?php $form = ActiveForm::begin(); ?>
 
     <div class="row g-3">
@@ -45,7 +20,7 @@ use yii\widgets\ActiveForm;
             <?= $form->field($model, 'number_variant')->textInput() ?>
         </div>
         <div class="col-md-4">
-            <?= $form->field($model, 'status')->dropDownList($statusOptions, ['prompt' => 'Select status']) ?>
+            <?= $form->field($model, 'status')->dropDownList(Set::getStatusOptions(), ['prompt' => 'Select status']) ?>
         </div>
 
         <div class="col-12">
@@ -56,7 +31,7 @@ use yii\widgets\ActiveForm;
             <?= $form->field($model, 'theme_id')->dropDownList(Set::getAvailableThemesList(), ['prompt' => 'Select theme']) ?>
         </div>
         <div class="col-md-6">
-            <?= $form->field($model, 'subtheme_id')->dropDownList($subthemeOptions, ['prompt' => 'No subtheme']) ?>
+            <?= $form->field($model, 'subtheme_id')->dropDownList(Set::getAvailableSubthemesList(), ['prompt' => 'No subtheme']) ?>
         </div>
 
         <div class="col-md-3">

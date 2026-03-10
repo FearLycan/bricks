@@ -2,6 +2,7 @@
 
 namespace common\models;
 
+use common\enums\image\StatusEnum;
 use common\enums\image\KindEnum;
 use common\enums\image\TypeEnum;
 use Yii;
@@ -575,6 +576,35 @@ class Set extends ActiveRecord
 
             return $list;
         });
+    }
+
+    public static function getAvailableSubthemesList(): array
+    {
+        return self::getCachedList('set.availableSubthemesList', static function (): array {
+            $subthemes = Theme::find()
+                ->select(['id', 'name'])
+                ->where('parent_id IS NOT NULL')
+                ->orderBy(['name' => SORT_ASC])
+                ->asArray()
+                ->all();
+
+            $list = [];
+            foreach ($subthemes as $subtheme) {
+                $list[(int)$subtheme['id']] = (string)$subtheme['name'];
+            }
+
+            return $list;
+        });
+    }
+
+    public static function getStatusOptions(): array
+    {
+        $list = [];
+        foreach (StatusEnum::cases() as $status) {
+            $list[$status->value] = $status->label();
+        }
+
+        return $list;
     }
 
     private static function getCachedList(string $cacheKey, callable $resolver, int $duration = 3600): array
