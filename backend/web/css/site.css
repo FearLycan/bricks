@@ -102,6 +102,57 @@ body {
     padding: .2rem;
 }
 
+.dashboard-stat-card {
+    overflow: hidden;
+    position: relative;
+}
+
+.dashboard-stat-card::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 5px;
+    background: #0d6efd;
+}
+
+.dashboard-stat-label {
+    color: #6b7280;
+    letter-spacing: .04em;
+}
+
+.dashboard-stat-value {
+    color: #111827;
+}
+
+.dashboard-stat-hint {
+    color: #6b7280;
+}
+
+.dashboard-stat-card-primary::before { background: #0d6efd; }
+.dashboard-stat-card-success::before { background: #198754; }
+.dashboard-stat-card-warning::before { background: #f59e0b; }
+.dashboard-stat-card-info::before { background: #0dcaf0; }
+.dashboard-stat-card-violet::before { background: #8b5cf6; }
+.dashboard-stat-card-cyan::before { background: #06b6d4; }
+.dashboard-stat-card-slate::before { background: #475569; }
+.dashboard-stat-card-rose::before { background: #e11d48; }
+
+.dashboard-section-card {
+    border: 1px solid #e8edf5;
+}
+
+.dashboard-section-card-accent {
+    background: linear-gradient(180deg, #f8fbff 0%, #ffffff 100%);
+}
+
+.dashboard-checklist-card {
+    background: linear-gradient(180deg, #f6fffb 0%, #ffffff 100%);
+}
+
+.dashboard-section-title {
+    color: #1f2937;
+}
+
 @media (max-width: 767.98px) {
     .backend-panel {
         height: auto;

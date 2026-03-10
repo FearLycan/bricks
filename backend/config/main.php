@@ -17,6 +17,9 @@ return [
     'defaultRoute'        => 'admin/dashboard/index',
     'bootstrap'           => ['log'],
     'components'          => [
+        'assetManager' => [
+            'appendTimestamp' => true,
+        ],
         'request'      => [
             'csrfParam' => '_csrf-backend',
         ],

@@ -12,6 +12,17 @@ use yii\helpers\Html;
 
 $this->title = 'Dashboard';
 $this->params['breadcrumbs'][] = $this->title;
+
+$statAccentClasses = [
+    'dashboard-stat-card-primary',
+    'dashboard-stat-card-success',
+    'dashboard-stat-card-warning',
+    'dashboard-stat-card-info',
+    'dashboard-stat-card-violet',
+    'dashboard-stat-card-cyan',
+    'dashboard-stat-card-slate',
+    'dashboard-stat-card-rose',
+];
 ?>
 
 <div class="admin-dashboard">
@@ -26,13 +37,13 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
 
     <div class="row g-3 mb-4">
-        <?php foreach ($stats as $stat): ?>
+        <?php foreach ($stats as $index => $stat): ?>
             <div class="col-sm-6 col-xl-3">
-                <div class="card shadow-sm border-0 h-100">
+                <div class="card shadow-sm border-0 h-100 dashboard-stat-card <?= Html::encode($statAccentClasses[$index % count($statAccentClasses)]) ?>">
                     <div class="card-body">
-                        <div class="text-body-secondary small text-uppercase mb-2"><?= Html::encode($stat['label']) ?></div>
-                        <div class="display-6 fw-semibold mb-1"><?= Html::encode((string)$stat['value']) ?></div>
-                        <div class="small text-body-secondary"><?= Html::encode($stat['hint']) ?></div>
+                        <div class="small text-uppercase mb-2 dashboard-stat-label"><?= Html::encode($stat['label']) ?></div>
+                        <div class="display-6 fw-semibold mb-1 dashboard-stat-value"><?= Html::encode((string)$stat['value']) ?></div>
+                        <div class="small dashboard-stat-hint"><?= Html::encode($stat['hint']) ?></div>
                     </div>
                 </div>
             </div>
@@ -41,10 +52,10 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <div class="row g-4">
         <div class="col-xl-8">
-            <div class="card shadow-sm border-0">
+            <div class="card shadow-sm border-0 dashboard-section-card">
                 <div class="card-body">
                     <div class="d-flex align-items-center justify-content-between mb-3">
-                        <h2 class="h5 mb-0">Recently added sets</h2>
+                        <h2 class="h5 mb-0 dashboard-section-title">Recently added sets</h2>
                         <?= Html::a('View all', ['/admin/set/index'], ['class' => 'btn btn-sm btn-outline-secondary']) ?>
                     </div>
 
@@ -64,11 +75,17 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <?php foreach ($recentSets as $set): ?>
                                     <tr>
                                         <td><?= Html::encode($set->number ?: '-') ?></td>
-                                        <td><?= Html::encode($set->name ?: '-') ?></td>
+                                        <td>
+                                            <?= Html::a(
+                                                Html::encode($set->name ?: '-'),
+                                                ['/admin/set/view', 'id' => $set->id],
+                                                ['class' => 'text-decoration-none fw-semibold']
+                                            ) ?>
+                                        </td>
                                         <td><?= Html::encode($set->theme->name ?? '-') ?></td>
                                         <td>
                                             <?php $status = StatusEnum::tryFrom((int)$set->status)?->label() ?? '-'; ?>
-                                            <span class="badge rounded-pill text-bg-light border text-dark"><?= Html::encode($status) ?></span>
+                                            <span class="badge rounded-pill <?= $status === 'Active' ? 'text-bg-success' : 'text-bg-secondary' ?>"><?= Html::encode($status) ?></span>
                                         </td>
                                         <td class="text-end">
                                             <?= Html::a('Open', ['/admin/set/view', 'id' => $set->id], ['class' => 'btn btn-sm btn-outline-primary']) ?>
@@ -86,9 +103,9 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
 
         <div class="col-xl-4">
-            <div class="card shadow-sm border-0 mb-4">
+            <div class="card shadow-sm border-0 mb-4 dashboard-section-card dashboard-section-card-accent">
                 <div class="card-body">
-                    <h2 class="h5 mb-3">Top themes</h2>
+                    <h2 class="h5 mb-3 dashboard-section-title">Top themes</h2>
                     <?php if ($topThemes !== []): ?>
                         <div class="list-group list-group-flush">
                             <?php foreach ($topThemes as $theme): ?>
@@ -99,7 +116,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             <?= Html::encode((string)($theme->year_from ?? '-')) ?> - <?= Html::encode((string)($theme->year_to ?? '-')) ?>
                                         </div>
                                     </div>
-                                    <span class="badge text-bg-light border text-dark"><?= Html::encode((string)($theme->sets_count ?? 0)) ?></span>
+                                    <span class="badge rounded-pill text-bg-primary"><?= Html::encode((string)($theme->sets_count ?? 0)) ?></span>
                                 </div>
                             <?php endforeach; ?>
                         </div>
@@ -109,9 +126,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 </div>
             </div>
 
-            <div class="card shadow-sm border-0">
+            <div class="card shadow-sm border-0 dashboard-section-card dashboard-checklist-card">
                 <div class="card-body">
-                    <h2 class="h5 mb-3">Suggested next steps</h2>
+                    <h2 class="h5 mb-3 dashboard-section-title">Suggested next steps</h2>
                     <ul class="mb-0 ps-3">
                         <li>Review inactive sets and complete missing data.</li>
                         <li>Add images for sets that still do not have media.</li>

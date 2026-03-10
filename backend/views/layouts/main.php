@@ -45,11 +45,13 @@ AppAsset::register($this);
                                             'label'       => '<i class="bi bi-speedometer2"></i> ' . T::tr('Dashboard'),
                                             'linkOptions' => ['class' => 'nav-link text-white'],
                                             'url'         => ['/admin/dashboard/index'],
+                                            'active'      => Yii::$app->controller->id === 'dashboard',
                                     ],
                                     [
                                             'label'       => '<i class="bi bi-list-ul"></i> ' . T::tr('Set'),
                                             'linkOptions' => ['class' => 'nav-link text-white'],
                                             'url'         => ['/admin/set/index'],
+                                            'active'      => Yii::$app->controller->id === 'set',
                                     ],
                             ],
                     ]) ?>
