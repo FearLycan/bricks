@@ -24,18 +24,17 @@ AppAsset::register($this);
         <title><?= Html::encode($this->title) ?></title>
         <?php $this->head() ?>
     </head>
-    <body class="d-flex flex-column h-100">
+    <body class="backend-layout d-flex flex-column h-100">
     <?php $this->beginBody() ?>
 
-    <main role="main" class="flex-shrink-0">
+    <main role="main" class="backend-main flex-grow-1">
         <div class="container-fluid">
-            <div class="row">
-                <div class="d-flex flex-column flex-shrink-0 p-3 text-bg-dark col-md-3 col-lg-2">
-                    <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-                        <svg class="bi pe-none me-2" width="40" height="32" aria-hidden="true">
-                            <use xlink:href="#bootstrap"></use>
-                        </svg>
-                        <span class="fs-4">Sidebar</span> </a>
+            <div class="row min-vh-100">
+                <div class="sidebar d-flex flex-column flex-shrink-0 p-3 text-bg-dark col-md-3 col-lg-2">
+                    <a href="/" class="sidebar-brand d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+                        <i class="bi bi-boxes me-2"></i>
+                        <span class="fs-5">BrickAtlas Admin</span>
+                    </a>
                     <hr>
 
                     <?= Nav::widget([
@@ -60,7 +59,7 @@ AppAsset::register($this);
                         <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                             <img src="https://placehold.co/64" alt="" width="32" height="32" class="rounded-circle me-2"> <strong><?= Yii::$app->user->identity->username ?></strong>
                         </a>
-                        <ul class="dropdown-menu dropdown-menu-dark text-small shadow" style="">
+                        <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
                             <li><a class="dropdown-item" href="#">New project...</a></li>
                             <li><a class="dropdown-item" href="#">Settings</a></li>
                             <li><a class="dropdown-item" href="#">Profile</a></li>
@@ -72,7 +71,7 @@ AppAsset::register($this);
                     </div>
                 </div>
 
-                <div class="col-md-9 ms-sm-auto col-lg-10 px-md-4 pt-3">
+                <div class="backend-panel col-md-9 ms-sm-auto col-lg-10 px-md-3 pt-2 pb-2">
                     <header class="d-none">
                         <?php
                         NavBar::begin([
@@ -105,11 +104,13 @@ AppAsset::register($this);
                         NavBar::end();
                         ?>
                     </header>
-                    <?= Breadcrumbs::widget([
-                            'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
-                    ]) ?>
-                    <?= Alert::widget() ?>
-                    <?= $content ?>
+                    <div class="backend-content">
+                        <?= Breadcrumbs::widget([
+                                'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
+                        ]) ?>
+                        <?= Alert::widget() ?>
+                        <?= $content ?>
+                    </div>
                 </div>
             </div>
         </div>

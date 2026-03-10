@@ -1,6 +1,10 @@
 <?php
 
+use common\enums\image\StatusEnum;
+use common\models\Set;
+use common\models\Theme;
 use yii\helpers\Html;
+use yii\helpers\ArrayHelper;
 use yii\widgets\ActiveForm;
 
 /** @var yii\web\View $this */
@@ -9,51 +13,92 @@ use yii\widgets\ActiveForm;
 ?>
 
 <div class="set-form">
+    <?php
+    $statusOptions = array_reduce(
+        StatusEnum::cases(),
+        static function (array $carry, StatusEnum $status): array {
+            $carry[$status->value] = $status->label();
+
+            return $carry;
+        },
+        []
+    );
+    $subthemeOptions = ArrayHelper::map(
+        Theme::find()
+            ->select(['id', 'name'])
+            ->where('parent_id IS NOT NULL')
+            ->orderBy(['name' => SORT_ASC])
+            ->asArray()
+            ->all(),
+        'id',
+        'name'
+    );
+    ?>
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'number')->textInput(['maxlength' => true]) ?>
+    <div class="row g-3">
+        <div class="col-md-4">
+            <?= $form->field($model, 'number')->textInput(['maxlength' => true]) ?>
+        </div>
+        <div class="col-md-4">
+            <?= $form->field($model, 'number_variant')->textInput() ?>
+        </div>
+        <div class="col-md-4">
+            <?= $form->field($model, 'status')->dropDownList($statusOptions, ['prompt' => 'Select status']) ?>
+        </div>
 
-    <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
+        <div class="col-12">
+            <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
+        </div>
 
-    <?= $form->field($model, 'slug')->textInput(['maxlength' => true]) ?>
+        <div class="col-md-6">
+            <?= $form->field($model, 'theme_id')->dropDownList(Set::getAvailableThemesList(), ['prompt' => 'Select theme']) ?>
+        </div>
+        <div class="col-md-6">
+            <?= $form->field($model, 'subtheme_id')->dropDownList($subthemeOptions, ['prompt' => 'No subtheme']) ?>
+        </div>
 
-    <?= $form->field($model, 'theme_id')->textInput() ?>
+        <div class="col-md-3">
+            <?= $form->field($model, 'year')->textInput() ?>
+        </div>
+        <div class="col-md-3">
+            <?= $form->field($model, 'pieces')->textInput() ?>
+        </div>
+        <div class="col-md-3">
+            <?= $form->field($model, 'minifigures')->textInput() ?>
+        </div>
+        <div class="col-md-3">
+            <?= $form->field($model, 'age')->textInput() ?>
+        </div>
 
-    <?= $form->field($model, 'status')->textInput() ?>
+        <div class="col-md-3">
+            <?= $form->field($model, 'released')->dropDownList([1 => 'Yes', 0 => 'No'], ['prompt' => 'Unknown']) ?>
+        </div>
+        <div class="col-md-3">
+            <?= $form->field($model, 'price')->textInput() ?>
+        </div>
+        <div class="col-md-3">
+            <?= $form->field($model, 'rating')->textInput() ?>
+        </div>
+        <div class="col-md-3">
+            <?= $form->field($model, 'availability')->textInput(['maxlength' => true]) ?>
+        </div>
 
-    <?= $form->field($model, 'number_variant')->textInput() ?>
+        <div class="col-md-6">
+            <?= $form->field($model, 'brickset_url')->textInput(['maxlength' => true]) ?>
+        </div>
+        <div class="col-md-6">
+            <?= $form->field($model, 'dimensions')->textInput(['maxlength' => true]) ?>
+        </div>
 
-    <?= $form->field($model, 'minifigures')->textInput() ?>
+        <div class="col-12">
+            <?= $form->field($model, 'description')->textarea(['rows' => 7]) ?>
+        </div>
+    </div>
 
-    <?= $form->field($model, 'year')->textInput() ?>
-
-    <?= $form->field($model, 'pieces')->textInput() ?>
-
-    <?= $form->field($model, 'released')->textInput() ?>
-
-    <?= $form->field($model, 'brickset_url')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'rating')->textInput() ?>
-
-    <?= $form->field($model, 'price')->textInput() ?>
-
-    <?= $form->field($model, 'age')->textInput() ?>
-
-    <?= $form->field($model, 'dimensions')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'availability')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'created_at')->textInput() ?>
-
-    <?= $form->field($model, 'updated_at')->textInput() ?>
-
-    <?= $form->field($model, 'subtheme_id')->textInput() ?>
-
-    <?= $form->field($model, 'description')->textarea(['rows' => 6]) ?>
-
-    <div class="form-group">
-        <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
+    <div class="form-group mt-3">
+        <?= Html::submitButton($model->isNewRecord ? 'Create Set' : 'Save Changes', ['class' => 'btn btn-success']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

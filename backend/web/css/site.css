@@ -1,14 +1,35 @@
 body {
-    font-size: .875rem;
+    background: #f4f7fb;
+    color: #1f2937;
+}
+
+.backend-main {
+    background: #f4f7fb;
+}
+
+.backend-panel {
+    height: 100vh;
+    overflow-y: auto;
 }
 
 .sidebar {
     min-height: 100vh;
+    background: linear-gradient(180deg, #1c2330 0%, #161c27 100%);
+    box-shadow: 0 0 30px rgba(15, 23, 42, 0.18);
+}
+
+.sidebar hr {
+    border-color: rgba(255, 255, 255, .08);
+}
+
+.sidebar-brand {
+    font-weight: 600;
+    letter-spacing: .01em;
 }
 
 .sidebar .nav-link {
     color: rgba(255, 255, 255, .85);
-    padding: .5rem 1rem;
+    padding: .625rem .85rem;
     border-radius: .5rem;
     transition: background-color .15s ease, color .15s ease;
 }
@@ -23,6 +44,73 @@ body {
     color: #fff;
     background: #0d6efd;
     font-weight: 600;
+}
+
+.backend-content {
+    min-height: calc(100vh - 2rem);
+    background: #fff;
+    border: 1px solid #e6ebf2;
+    border-radius: 1rem;
+    box-shadow: 0 .5rem 1.5rem rgba(15, 23, 42, .05);
+    padding: 1.25rem 1.5rem;
+}
+
+.backend-content .breadcrumb {
+    margin-bottom: 1rem;
+    padding: 0;
+    background: transparent;
+}
+
+.backend-detail-view th {
+    width: 34%;
+    color: #6b7280;
+    font-weight: 600;
+}
+
+.backend-detail-view td,
+.backend-detail-view th {
+    padding: .7rem .75rem;
+    vertical-align: top;
+}
+
+.backend-description {
+    white-space: pre-line;
+    line-height: 1.6;
+}
+
+.backend-image-preview-main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 320px;
+    background: #f8fafc;
+    border: 1px solid #e6ebf2;
+    border-radius: .85rem;
+    padding: 1rem;
+}
+
+.backend-image-preview-main img {
+    max-height: 300px;
+    object-fit: contain;
+}
+
+.backend-image-thumb {
+    width: 88px;
+    height: 88px;
+    object-fit: cover;
+    background: #f8fafc;
+    padding: .2rem;
+}
+
+@media (max-width: 767.98px) {
+    .backend-panel {
+        height: auto;
+        overflow-y: visible;
+    }
+
+    .backend-content {
+        min-height: auto;
+    }
 }
 
 .table td.small {
