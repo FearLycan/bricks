@@ -15,7 +15,7 @@ $params = array_merge(
 
 return [
     'id'                  => 'brick-app',
-    'name'                => 'Brick Store',
+    'name'                => 'BrickAtlas',
     'timeZone'            => 'Europe/Warsaw',
     'basePath'            => dirname(__DIR__),
     'bootstrap'           => ['log'],

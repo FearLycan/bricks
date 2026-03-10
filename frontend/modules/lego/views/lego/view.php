@@ -31,26 +31,11 @@ if ($model->subtheme) {
 }
 
 $this->params['breadcrumbs'][] = SeoHelper::normalizeText($model->name);
-$offersSorted = $model->setOffers;
-usort($offersSorted, static function ($a, $b): int {
-    $aPrice = (int)($a->price ?? PHP_INT_MAX);
-    $bPrice = (int)($b->price ?? PHP_INT_MAX);
-    if ($aPrice !== $bPrice) {
-        return $aPrice <=> $bPrice;
-    }
-
-    $aRating = (float)($a->rating_value ?? 0.0);
-    $bRating = (float)($b->rating_value ?? 0.0);
-    if ($aRating !== $bRating) {
-        return $bRating <=> $aRating;
-    }
-
-    return ((int)($b->review_count ?? 0)) <=> ((int)($a->review_count ?? 0));
-});
 $bestOffer = $model->getBestAlternativeOffer('USD');
 $promoPriceUsd = $model->getFormattedPromotionalPrice('USD');
 $basePriceUsd = $model->getFormattedPrice('USD');
 $savingsPercent = $model->getPromotionalSavingsPercent('USD');
+$bestOfferId = $bestOffer?->id;
 
 ?>
 
@@ -73,6 +58,7 @@ $savingsPercent = $model->getPromotionalSavingsPercent('USD');
                         <?php endforeach; ?>
                     </div>
                 <?php endif; ?>
+
             </div>
         </div>
 
@@ -104,10 +90,17 @@ $savingsPercent = $model->getPromotionalSavingsPercent('USD');
                         <?= Html::encode($model->getFormattedPriceOrDefault(T::tr('Check price in store'), 'USD')) ?>
                     <?php endif; ?>
                 </div>
+                <?php if ($basePriceUsd !== null): ?>
+                    <div class="small text-body-secondary mb-2">
+                        <?= T::tr('Compared with the official LEGO retail price.') ?>
+                    </div>
+                <?php endif; ?>
+
                 <?php if ($bestOffer): ?>
                     <div class="small text-success mb-3">
                         <i class="bi bi-tag-fill me-1"></i>
-                        <?= T::tr('Best offer') ?>: <strong><?= Html::encode($bestOffer->store->name ?? T::tr('Unknown store')) ?></strong>
+                        <?= T::tr('Best offer') ?>:
+                        <strong><?= Html::encode($bestOffer->store->name ?? T::tr('Unknown store')) ?></strong>
                         (<?= Html::encode($bestOffer->getFormattedPriceOrDefault(T::tr('No price'))) ?>)
                     </div>
                 <?php endif; ?>
@@ -131,15 +124,6 @@ $savingsPercent = $model->getPromotionalSavingsPercent('USD');
                     </div>
                 </div>
 
-                <?php if ($model->description): ?>
-                    <div class="mb-3">
-                        <h6 class="mb-2"><?= T::tr('Description') ?></h6>
-                        <div class="small text-body-secondary">
-                            <?= Html::encode(mb_substr(trim(strip_tags($model->description)), 0, 240)) ?>...
-                        </div>
-                    </div>
-                <?php endif; ?>
-
                 <?php if ($model->tagModels): ?>
                     <?php $tagToggleId = 'tags-toggle-' . $model->id; ?>
                     <div class="mb-3">
@@ -159,15 +143,16 @@ $savingsPercent = $model->getPromotionalSavingsPercent('USD');
                     </div>
                 <?php endif; ?>
 
-
-                <div class="lego-cta-group">
-                    <?= Html::a(T::tr('Browse all sets'), ['/lego'], ['class' => 'btn btn-outline-secondary btn-lg']) ?>
-                    <?= Html::a(T::tr('Got Lego Store'), " https://www.lego.com/search?q={$model->number}", [
-                            'class'  => 'btn btn-lego btn-lg',
-                            'target' => '_blank',
-                            'rel'    => 'noopener noreferrer',
-                    ]) ?>
-                    <?= Html::a(T::tr('Compare all offers'), '#alternative-offers', ['class' => 'btn btn-success btn-lg']) ?>
+                <div class="lego-side-actions">
+                    <div class="lego-cta-group">
+                        <?= Html::a(T::tr('Browse all sets'), ['/lego'], ['class' => 'btn btn-outline-secondary']) ?>
+                        <?= Html::a(T::tr('Check official LEGO price'), "https://www.lego.com/search?q={$model->number}", [
+                                'class'  => 'btn btn-lego',
+                                'target' => '_blank',
+                                'rel'    => 'noopener noreferrer',
+                        ]) ?>
+                        <?= Html::a(T::tr('Compare all offers'), '#alternative-offers', ['class' => 'btn btn-success']) ?>
+                    </div>
                 </div>
             </div>
         </div>
@@ -175,11 +160,14 @@ $savingsPercent = $model->getPromotionalSavingsPercent('USD');
         <div class="col-12 alternative-offers" id="alternative-offers">
             <div class="lego-details-card">
                 <h5 class="mb-3"><?= T::tr('Alternative offers by store') ?></h5>
-                <?php if ($offersSorted): ?>
+                <p class="small text-body-secondary mb-3">
+                    <?= T::tr('These offers can be lower than the official LEGO price. Marketplace listings may vary by seller, shipping cost, taxes, and stock availability.') ?>
+                </p>
+                <?php if ($model->setOffers): ?>
                     <div class="row row-cols-1 row-cols-lg-2 g-3">
-                        <?php foreach ($offersSorted as $offer): ?>
+                        <?php foreach ($model->setOffers as $offer): ?>
                             <div class="col">
-                                <div class="card h-100 shadow-sm border-0">
+                                <div class="card h-100 shadow-sm border-0 lego-offer-card<?= $bestOfferId !== null && $offer->id === $bestOfferId ? ' is-best-offer' : '' ?>">
                                     <div class="card-body">
                                         <div class="d-flex align-items-start gap-3">
                                             <?php if ($offer->image): ?>
@@ -219,7 +207,7 @@ $savingsPercent = $model->getPromotionalSavingsPercent('USD');
                                                             <?php endif; ?>
                                                         </div>
                                                         <div class="small text-body-secondary">
-                                                            <?= Html::encode($offer->availability ?: T::tr('No availability')) ?>
+                                                            <?= T::tr('In stock') ?>
                                                         </div>
                                                         <div class="small text-body-secondary d-none">
                                                             <?= T::tr('Price per piece') ?>:
@@ -241,7 +229,7 @@ $savingsPercent = $model->getPromotionalSavingsPercent('USD');
                                                                 <?= T::tr('Reviews') ?>: <?= Html::encode((string)$offer->review_count) ?>
                                                             </span>
                                                     <?php if ($offer->url): ?>
-                                                        <?= Html::a('<i class="bi bi-bag-check me-1"></i>' . T::tr('Go to offer'), $offer->url, ['class' => 'btn btn-sm btn-success ms-auto w-50', 'target' => '_blank', 'rel' => 'noopener noreferrer']) ?>
+                                                        <?= Html::a('<i class="bi bi-bag-check me-1"></i>' . T::tr('View offer'), $offer->url, ['class' => 'btn btn-sm btn-success ms-auto w-50', 'target' => '_blank', 'rel' => 'noopener noreferrer']) ?>
                                                     <?php endif; ?>
                                                 </div>
                                             </div>
