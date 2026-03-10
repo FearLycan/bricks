@@ -1,10 +1,12 @@
 <?php
 
+use common\enums\image\StatusEnum;
 use common\models\Set;
-use yii\helpers\Html;
-use yii\helpers\Url;
+use yii\bootstrap5\LinkPager;
 use yii\grid\ActionColumn;
 use yii\grid\GridView;
+use yii\helpers\Html;
+use yii\helpers\Url;
 
 /** @var yii\web\View $this */
 /** @var backend\modules\admin\models\SetSearch $searchModel */
@@ -15,49 +17,59 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="set-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
 
-    <p>
-        <?= Html::a('Create Set', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
+    <div class="d-flex align-items-center gap-2 mb-3">
+        <h1 class="mb-0"><?= Html::encode($this->title) ?></h1>
+        <div class="ms-auto d-flex gap-2">
+            <?= Html::a('Create Set', ['create'], ['class' => 'btn btn-sm btn-success']) ?>
+        </div>
+    </div>
+
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
+            'dataProvider' => $dataProvider,
+            'filterModel'  => $searchModel,
+            'columns'      => [
+                    ['class' => 'yii\grid\SerialColumn'],
+                    'number',
+                    'name',
+                    [
+                            'attribute' => 'theme_id',
+                            'label'     => 'Theme',
+                            'filter'    => Set::getAvailableThemesList(),
+                            'value'     => static function (Set $model): string {
+                                return $model->theme->name ?? '-';
+                            },
+                    ],
+                    [
+                            'attribute' => 'status',
+                            'filter'    => array_reduce(
+                                StatusEnum::cases(),
+                                static function (array $carry, StatusEnum $status): array {
+                                    $carry[$status->value] = $status->label();
 
-            'id',
-            'number',
-            'name',
-            'slug',
-            'theme_id',
-            //'status',
-            //'number_variant',
-            //'minifigures',
-            //'year',
-            //'pieces',
-            //'released',
-            //'brickset_url:url',
-            //'rating',
-            //'price',
-            //'age',
-            //'dimensions',
-            //'availability',
-            //'created_at',
-            //'updated_at',
-            //'subtheme_id',
-            //'description:ntext',
-            [
-                'class' => ActionColumn::className(),
-                'urlCreator' => function ($action, Set $model, $key, $index, $column) {
-                    return Url::toRoute([$action, 'id' => $model->id]);
-                 }
+                                    return $carry;
+                                },
+                                []
+                            ),
+                            'value'     => static function (Set $model): string {
+                                return StatusEnum::tryFrom((int)$model->status)?->label() ?? '-';
+                            },
+                    ],
+                    [
+                            'class'      => ActionColumn::class,
+                            'urlCreator' => function ($action, Set $model, $key, $index, $column) {
+                                return Url::toRoute([$action, 'id' => $model->id]);
+                            },
+                    ],
             ],
-        ],
-    ]); ?>
+            'pager'        => [
+                    'class'   => LinkPager::class,
+                    'options' => ['class' => 'pagination justify-content-center mt-4'],
+            ],
+    ]) ?>
 
 
 </div>
