@@ -2,6 +2,7 @@
 
 namespace backend\modules\admin\controllers;
 
+use common\enums\StatusEnum;
 use common\models\Set;
 use backend\modules\admin\models\SetSearch;
 use yii\web\Controller;
@@ -25,6 +26,7 @@ class SetController extends Controller
                     'class' => VerbFilter::className(),
                     'actions' => [
                         'delete' => ['POST'],
+                        'toggle-status' => ['POST'],
                     ],
                 ],
             ]
@@ -114,6 +116,16 @@ class SetController extends Controller
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
+    }
+
+    public function actionToggleStatus($id)
+    {
+        $model = $this->findModel($id);
+        $isActive = (bool)$this->request->post('status', false);
+        $model->status = $isActive ? StatusEnum::ACTIVE->value : StatusEnum::INACTIVE->value;
+        $model->save(false, ['status']);
+
+        return $this->redirect($this->request->post('returnUrl', ['index']));
     }
 
     /**

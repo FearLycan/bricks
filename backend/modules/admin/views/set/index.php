@@ -1,6 +1,6 @@
 <?php
 
-use common\enums\image\StatusEnum;
+use common\enums\StatusEnum;
 use common\models\Set;
 use yii\bootstrap5\LinkPager;
 use yii\grid\ActionColumn;
@@ -8,9 +8,11 @@ use yii\grid\GridView;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
-/** @var yii\web\View $this */
-/** @var backend\modules\admin\models\SetSearch $searchModel */
-/** @var yii\data\ActiveDataProvider $dataProvider */
+/**
+ * @var yii\web\View                           $this
+ * @var backend\modules\admin\models\SetSearch $searchModel
+ * @var yii\data\ActiveDataProvider            $dataProvider
+ */
 
 $this->title = 'Sets';
 $this->params['breadcrumbs'][] = $this->title;
@@ -48,17 +50,20 @@ $this->params['breadcrumbs'][] = $this->title;
                     ],
                     [
                             'attribute' => 'status',
-                            'filter'    => array_reduce(
-                                    StatusEnum::cases(),
-                                    static function (array $carry, StatusEnum $status): array {
-                                        $carry[$status->value] = $status->label();
-
-                                        return $carry;
-                                    },
-                                    []
-                            ),
+                            'filter'    => StatusEnum::options(),
+                            'format'    => 'raw',
                             'value'     => static function (Set $model): string {
-                                return StatusEnum::tryFrom((int)$model->status)?->label() ?? '-';
+                                return Html::beginForm(['toggle-status', 'id' => $model->id], 'post', ['class' => 'mb-0 d-flex justify-content-center']) .
+                                        Html::hiddenInput('returnUrl', Url::current()) .
+                                        '<div class="form-check form-switch mb-0">' .
+                                        Html::checkbox('status', $model->isActive(), [
+                                                'class'    => 'form-check-input',
+                                                'role'     => 'switch',
+                                                'label'    => '',
+                                                'onchange' => 'this.form.submit()',
+                                        ]) .
+                                        '</div>' .
+                                        Html::endForm();
                             },
                             'options'   => ['style' => 'width: 150px;'],
                     ],

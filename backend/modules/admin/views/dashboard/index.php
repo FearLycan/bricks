@@ -1,27 +1,28 @@
 <?php
 
-use common\enums\image\StatusEnum;
 use common\models\Set;
 use common\models\Theme;
 use yii\helpers\Html;
 
-/** @var yii\web\View $this */
-/** @var array<int, array{label:string, value:int, hint:string}> $stats */
-/** @var Set[] $recentSets */
-/** @var Theme[] $topThemes */
+/**
+ * @var yii\web\View                                            $this
+ * @var array<int, array{label:string, value:int, hint:string}> $stats
+ * @var Set[]                                                   $recentSets
+ * @var Theme[]                                                 $topThemes
+ */
 
 $this->title = 'Dashboard';
 $this->params['breadcrumbs'][] = $this->title;
 
 $statAccentClasses = [
-    'dashboard-stat-card-primary',
-    'dashboard-stat-card-success',
-    'dashboard-stat-card-warning',
-    'dashboard-stat-card-info',
-    'dashboard-stat-card-violet',
-    'dashboard-stat-card-cyan',
-    'dashboard-stat-card-slate',
-    'dashboard-stat-card-rose',
+        'dashboard-stat-card-primary',
+        'dashboard-stat-card-success',
+        'dashboard-stat-card-warning',
+        'dashboard-stat-card-info',
+        'dashboard-stat-card-violet',
+        'dashboard-stat-card-cyan',
+        'dashboard-stat-card-slate',
+        'dashboard-stat-card-rose',
 ];
 ?>
 
@@ -76,16 +77,13 @@ $statAccentClasses = [
                                     <tr>
                                         <td><?= Html::encode($set->number ?: '-') ?></td>
                                         <td>
-                                            <?= Html::a(
-                                                Html::encode($set->name ?: '-'),
-                                                ['/admin/set/view', 'id' => $set->id],
-                                                ['class' => 'text-decoration-none fw-semibold']
-                                            ) ?>
+                                            <?= Html::a(Html::encode($set->name ?: '-'), ['/admin/set/view', 'id' => $set->id], [
+                                                    'class' => 'text-decoration-none fw-semibold',
+                                            ]) ?>
                                         </td>
                                         <td><?= Html::encode($set->theme->name ?? '-') ?></td>
                                         <td>
-                                            <?php $status = StatusEnum::tryFrom((int)$set->status)?->label() ?? '-'; ?>
-                                            <span class="badge rounded-pill <?= $status === 'Active' ? 'text-bg-success' : 'text-bg-secondary' ?>"><?= Html::encode($status) ?></span>
+                                            <span class="badge rounded-pill <?= $set->isActive() ? 'text-bg-success' : 'text-bg-secondary' ?>"><?= Html::encode($set->getStatusLabel()) ?></span>
                                         </td>
                                         <td class="text-end">
                                             <?= Html::a('Open', ['/admin/set/view', 'id' => $set->id], ['class' => 'btn btn-sm btn-outline-primary']) ?>

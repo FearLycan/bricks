@@ -1,19 +1,17 @@
 <?php
 
-use common\enums\image\StatusEnum;
-use common\models\Set;
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 
-/** @var yii\web\View $this */
-/** @var common\models\Set $model */
+/**
+ * @var yii\web\View      $this
+ * @var common\models\Set $model
+ */
 
 $this->title = $model->name;
 $this->params['breadcrumbs'][] = ['label' => 'Sets', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
-\yii\web\YiiAsset::register($this);
 
-$statusLabel = StatusEnum::tryFrom((int)$model->status)?->label() ?? '-';
 ?>
 <div class="set-view">
     <div class="d-flex align-items-center gap-2 mb-4">
@@ -37,7 +35,7 @@ $statusLabel = StatusEnum::tryFrom((int)$model->status)?->label() ?? '-';
     <div class="d-flex flex-wrap gap-2 mb-4">
         <span class="badge rounded-pill text-bg-light border text-dark">Theme: <?= Html::encode($model->theme->name ?? '-') ?></span>
         <span class="badge rounded-pill text-bg-light border text-dark">Subtheme: <?= Html::encode($model->subtheme->name ?? '-') ?></span>
-        <span class="badge rounded-pill text-bg-light border text-dark">Status: <?= Html::encode($statusLabel) ?></span>
+        <span class="badge rounded-pill <?= $model->isActive() ? 'text-bg-success' : 'text-bg-danger' ?>">Status: <?= Html::encode($model->getStatusLabel()) ?></span>
         <span class="badge rounded-pill text-bg-light border text-dark">Year: <?= Html::encode((string)($model->year ?? '-')) ?></span>
         <span class="badge rounded-pill text-bg-light border text-dark">Pieces: <?= Html::encode((string)($model->pieces ?? '-')) ?></span>
     </div>
@@ -92,7 +90,7 @@ $statusLabel = StatusEnum::tryFrom((int)$model->status)?->label() ?? '-';
                                     ],
                                     [
                                             'attribute' => 'status',
-                                            'value'     => $statusLabel,
+                                            'value'     => $model->getStatusLabel(),
                                     ],
                                     [
                                             'attribute' => 'released',

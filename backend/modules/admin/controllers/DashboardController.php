@@ -3,7 +3,7 @@
 namespace backend\modules\admin\controllers;
 
 use backend\components\Controller;
-use common\enums\image\StatusEnum;
+use common\enums\StatusEnum;
 use common\models\Set;
 use common\models\SetImage;
 use common\models\SetOffer;
@@ -46,50 +46,50 @@ class DashboardController extends Controller
             ->all();
 
         return $this->render('index', [
-            'stats' => [
+            'stats'                 => [
                 [
                     'label' => 'Total sets',
                     'value' => $totalSets,
-                    'hint' => 'All catalog entries',
+                    'hint'  => 'All catalog entries',
                 ],
                 [
                     'label' => 'Active sets',
                     'value' => $activeSets,
-                    'hint' => 'Visible in catalog',
+                    'hint'  => 'Visible in catalog',
                 ],
                 [
                     'label' => 'Inactive sets',
                     'value' => $inactiveSets,
-                    'hint' => 'Require review',
+                    'hint'  => 'Require review',
                 ],
                 [
                     'label' => 'Themes',
                     'value' => $totalThemes,
-                    'hint' => 'Main and subthemes',
+                    'hint'  => 'Main and subthemes',
                 ],
                 [
                     'label' => 'Offers',
                     'value' => $totalOffers,
-                    'hint' => 'Imported store offers',
+                    'hint'  => 'Imported store offers',
                 ],
                 [
                     'label' => 'Images',
                     'value' => $totalImages,
-                    'hint' => 'Stored set images',
+                    'hint'  => 'Stored set images',
                 ],
                 [
                     'label' => 'Sets with price',
                     'value' => $setsWithPrice,
-                    'hint' => 'Base price available',
+                    'hint'  => 'Base price available',
                 ],
                 [
                     'label' => 'Sets without images',
                     'value' => $setsWithoutImages,
-                    'hint' => 'Need asset completion',
+                    'hint'  => 'Need asset completion',
                 ],
             ],
             'recentSets' => $recentSets,
-            'topThemes' => $topThemes,
+            'topThemes'  => $topThemes,
         ]);
     }
 }

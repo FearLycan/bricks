@@ -1,12 +1,16 @@
 <?php
 
+use common\enums\StatusEnum;
 use common\models\Set;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
-/** @var yii\web\View $this */
-/** @var common\models\Set $model */
-/** @var yii\widgets\ActiveForm $form */
+/**
+ * @var yii\web\View           $this
+ * @var common\models\Set      $model
+ * @var yii\widgets\ActiveForm $form
+ */
+
 ?>
 
 <div class="set-form">
@@ -20,7 +24,7 @@ use yii\widgets\ActiveForm;
             <?= $form->field($model, 'number_variant')->textInput() ?>
         </div>
         <div class="col-md-4">
-            <?= $form->field($model, 'status')->dropDownList(Set::getStatusOptions(), ['prompt' => 'Select status']) ?>
+            <?= $form->field($model, 'status')->dropDownList(StatusEnum::options(), ['prompt' => 'Select status']) ?>
         </div>
 
         <div class="col-12">

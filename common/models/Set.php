@@ -2,9 +2,9 @@
 
 namespace common\models;
 
-use common\enums\image\StatusEnum;
 use common\enums\image\KindEnum;
 use common\enums\image\TypeEnum;
+use common\enums\StatusEnum;
 use Yii;
 use yii\behaviors\SluggableBehavior;
 use yii\behaviors\TimestampBehavior;
@@ -597,14 +597,14 @@ class Set extends ActiveRecord
         });
     }
 
-    public static function getStatusOptions(): array
+    public function isActive(): bool
     {
-        $list = [];
-        foreach (StatusEnum::cases() as $status) {
-            $list[$status->value] = $status->label();
-        }
+        return (int)$this->status === StatusEnum::ACTIVE->value;
+    }
 
-        return $list;
+    public function getStatusLabel(string $defaultText = '-'): string
+    {
+        return StatusEnum::tryFrom((int)$this->status)?->label() ?? $defaultText;
     }
 
     private static function getCachedList(string $cacheKey, callable $resolver, int $duration = 3600): array

@@ -2,7 +2,7 @@
 
 namespace frontend\models\searches;
 
-use common\enums\image\StatusEnum;
+use common\enums\StatusEnum;
 use common\models\Set;
 use common\models\Theme;
 use frontend\components\T;

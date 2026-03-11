@@ -1,11 +1,11 @@
 <?php
 
-namespace common\enums\image;
+namespace common\enums;
 
-use common\enums\BaseEnum;
-
-enum StatusEnum: int implements BaseEnum
+enum StatusEnum: int implements BaseEnumInterface
 {
+    use EnumOptionsTrait;
+
     case ACTIVE = 1;
     case INACTIVE = 0;
 

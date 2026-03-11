@@ -2,10 +2,13 @@
 
 namespace common\enums\image;
 
-use common\enums\BaseEnum;
+use common\enums\BaseEnumInterface;
+use common\enums\EnumOptionsTrait;
 
-enum TypeEnum: string implements BaseEnum
+enum TypeEnum: string implements BaseEnumInterface
 {
+    use EnumOptionsTrait;
+
     case SCREENSHOT = 'screenshot';
     case ICON = 'icon';
     case BACKGROUND = 'background';
