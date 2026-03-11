@@ -57,8 +57,11 @@ class SetController extends Controller
      */
     public function actionView($id)
     {
+        $model = $this->findModel($id);
+        $model->populateRelation('setOffers', $model->getSetOffers()->with(['store'])->all());
+
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => $model,
         ]);
     }
 

@@ -607,6 +607,15 @@ class Set extends ActiveRecord
         return StatusEnum::tryFrom((int)$this->status)?->label() ?? $defaultText;
     }
 
+    public function getReleasedLabel(string $defaultText = '-'): string
+    {
+        if ($this->released === null) {
+            return $defaultText;
+        }
+
+        return (int)$this->released === 1 ? 'Yes' : 'No';
+    }
+
     private static function getCachedList(string $cacheKey, callable $resolver, int $duration = 3600): array
     {
         $result = Yii::$app->cache->getOrSet($cacheKey, $resolver, $duration);

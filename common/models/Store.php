@@ -104,4 +104,20 @@ class Store extends ActiveRecord
     {
         return StatusEnum::tryFrom((int)$this->status)?->label() ?? $defaultText;
     }
+
+    public static function getAvailableStoresList(): array
+    {
+        $stores = self::find()
+            ->select(['id', 'name'])
+            ->orderBy(['name' => SORT_ASC])
+            ->asArray()
+            ->all();
+
+        $list = [];
+        foreach ($stores as $store) {
+            $list[(int)$store['id']] = (string)$store['name'];
+        }
+
+        return $list;
+    }
 }

@@ -94,7 +94,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     ],
                                     [
                                             'attribute' => 'released',
-                                            'value'     => $model->released === null ? '-' : ($model->released ? 'Yes' : 'No'),
+                                            'value'     => $model->getReleasedLabel(),
                                     ],
                             ],
                     ]) ?>
@@ -121,6 +121,69 @@ $this->params['breadcrumbs'][] = $this->title;
                                     'brickset_url:url',
                             ],
                     ]) ?>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12" id="offers">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <h2 class="h5 mb-0">Offers</h2>
+                        <div class="ms-auto">
+                            <?= Html::a('Add Offer', ['/admin/set-offer/create', 'setId' => $model->id], ['class' => 'btn btn-sm btn-success']) ?>
+                        </div>
+                    </div>
+
+                    <?php if ($model->setOffers !== []): ?>
+                        <div class="table-responsive mb-4">
+                            <table class="table table-sm align-middle mb-0">
+                                <thead>
+                                <tr>
+                                    <th>Store</th>
+                                    <th>Name</th>
+                                    <th>Price</th>
+                                    <th>Availability</th>
+                                    <th>Source</th>
+                                    <th>Manual</th>
+                                    <th class="text-end">Actions</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <?php foreach ($model->setOffers as $offer): ?>
+                                    <tr>
+                                        <td><?= Html::encode($offer->store->name ?? '-') ?></td>
+                                        <td><?= Html::encode($offer->getDisplayNameOrDefault()) ?></td>
+                                        <td><?= Html::encode($offer->getFormattedPriceOrDefault()) ?></td>
+                                        <td><?= Html::encode($offer->availability ?: '-') ?></td>
+                                        <td><?= Html::encode($offer->source ?: '-') ?></td>
+                                        <td>
+                                            <span class="badge rounded-pill <?= (int)$offer->is_manual_override === 1 ? 'text-bg-success' : 'text-bg-secondary' ?>">
+                                                <?= (int)$offer->is_manual_override === 1 ? 'Yes' : 'No' ?>
+                                            </span>
+                                        </td>
+                                        <td class="text-end">
+                                            <div class="d-inline-flex gap-1">
+                                                <?= Html::a('<i class="bi bi-pencil"></i>', ['/admin/set-offer/update', 'id' => $offer->id], [
+                                                        'class' => 'btn btn-sm btn-outline-primary',
+                                                        'title' => 'Update offer',
+                                                ]) ?>
+                                                <?= Html::a('<i class="bi bi-trash"></i>', ['/admin/set-offer/delete', 'id' => $offer->id], [
+                                                        'class'        => 'btn btn-sm btn-outline-danger',
+                                                        'title'        => 'Delete offer',
+                                                        'data-method'  => 'post',
+                                                        'data-confirm' => 'Are you sure you want to delete this offer?',
+                                                ]) ?>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    <?php else: ?>
+                        <p class="text-body-secondary">No offers added yet.</p>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
