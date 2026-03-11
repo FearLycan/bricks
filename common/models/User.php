@@ -2,6 +2,7 @@
 
 namespace common\models;
 
+use common\enums\UserStatusEnum;
 use Yii;
 use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
@@ -25,9 +26,9 @@ use yii\web\IdentityInterface;
  */
 class User extends ActiveRecord implements IdentityInterface
 {
-    const STATUS_DELETED  = 0;
-    const STATUS_INACTIVE = 9;
-    const STATUS_ACTIVE   = 10;
+    const STATUS_DELETED  = UserStatusEnum::DELETED->value;
+    const STATUS_INACTIVE = UserStatusEnum::INACTIVE->value;
+    const STATUS_ACTIVE   = UserStatusEnum::ACTIVE->value;
 
 
     /**
@@ -210,5 +211,20 @@ class User extends ActiveRecord implements IdentityInterface
     public function removePasswordResetToken()
     {
         $this->password_reset_token = null;
+    }
+
+    public function isActive(): bool
+    {
+        return (int)$this->status === self::STATUS_ACTIVE;
+    }
+
+    public function getStatusLabel(string $defaultText = '-'): string
+    {
+        return UserStatusEnum::tryFrom((int)$this->status)?->label() ?? $defaultText;
+    }
+
+    public static function getStatusOptions(): array
+    {
+        return UserStatusEnum::options();
     }
 }

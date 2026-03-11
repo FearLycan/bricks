@@ -53,6 +53,36 @@ AppAsset::register($this);
                                             'url'         => ['/admin/set/index'],
                                             'active'      => Yii::$app->controller->id === 'set',
                                     ],
+                                    [
+                                            'label'       => '<i class="bi bi-shop"></i> ' . T::tr('Store'),
+                                            'linkOptions' => ['class' => 'nav-link text-white'],
+                                            'url'         => ['/admin/store/index'],
+                                            'active'      => Yii::$app->controller->id === 'store',
+                                    ],
+                                    [
+                                            'label'       => '<i class="bi bi-tags"></i> ' . T::tr('Tag'),
+                                            'linkOptions' => ['class' => 'nav-link text-white'],
+                                            'url'         => ['/admin/tag/index'],
+                                            'active'      => Yii::$app->controller->id === 'tag',
+                                    ],
+                                    [
+                                            'label'       => '<i class="bi bi-collection"></i> ' . T::tr('Theme'),
+                                            'linkOptions' => ['class' => 'nav-link text-white'],
+                                            'url'         => ['/admin/theme/index'],
+                                            'active'      => Yii::$app->controller->id === 'theme',
+                                    ],
+                                    [
+                                            'label'       => '<i class="bi bi-folder"></i> ' . T::tr('Theme Group'),
+                                            'linkOptions' => ['class' => 'nav-link text-white'],
+                                            'url'         => ['/admin/theme-group/index'],
+                                            'active'      => Yii::$app->controller->id === 'theme-group',
+                                    ],
+                                    [
+                                            'label'       => '<i class="bi bi-people"></i> ' . T::tr('User'),
+                                            'linkOptions' => ['class' => 'nav-link text-white'],
+                                            'url'         => ['/admin/user/index'],
+                                            'active'      => Yii::$app->controller->id === 'user',
+                                    ],
                             ],
                     ]) ?>
 

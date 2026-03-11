@@ -2,6 +2,7 @@
 
 namespace common\models;
 
+use common\enums\StatusEnum;
 use yii\behaviors\SluggableBehavior;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveQuery;
@@ -19,6 +20,7 @@ use yii\db\BaseActiveRecord;
  * @property int|null    $sets_count
  * @property int|null    $year_from
  * @property int|null    $year_to
+ * @property int         $status
  * @property string|null $description
  * @property string|null $img
  * @property string|null $custom_css
@@ -69,7 +71,7 @@ class Theme extends ActiveRecord
     public function rules(): array
     {
         return [
-            [['parent_id', 'group_id', 'sets_count', 'year_from', 'year_to'], 'integer'],
+            [['parent_id', 'group_id', 'sets_count', 'year_from', 'year_to', 'status'], 'integer'],
             [['created_at', 'updated_at'], 'safe'],
             [['description', 'custom_css'], 'string'],
             [['name', 'img'], 'string', 'max' => 255],
@@ -92,6 +94,7 @@ class Theme extends ActiveRecord
             'sets_count' => 'Sets Count',
             'year_from'  => 'Year From',
             'year_to'    => 'Year To',
+            'status' => 'Status',
             'description' => 'Description',
             'img' => 'Img',
             'custom_css' => 'Custom Css',
@@ -161,6 +164,52 @@ class Theme extends ActiveRecord
         }
 
         return $themeSub;
+    }
+
+    public function isActive(): bool
+    {
+        return (int)$this->status === StatusEnum::ACTIVE->value;
+    }
+
+    public function getStatusLabel(string $defaultText = '-'): string
+    {
+        return StatusEnum::tryFrom((int)$this->status)?->label() ?? $defaultText;
+    }
+
+    public static function getAvailableGroupsList(): array
+    {
+        $groups = ThemeGroup::find()
+            ->select(['id', 'name'])
+            ->orderBy(['name' => SORT_ASC])
+            ->asArray()
+            ->all();
+
+        $list = [];
+        foreach ($groups as $group) {
+            $list[(int)$group['id']] = (string)$group['name'];
+        }
+
+        return $list;
+    }
+
+    public static function getAvailableParentThemesList(?int $excludeId = null): array
+    {
+        $query = self::find()
+            ->select(['id', 'name'])
+            ->orderBy(['name' => SORT_ASC])
+            ->asArray();
+
+        if ($excludeId !== null) {
+            $query->andWhere(['<>', 'id', $excludeId]);
+        }
+
+        $themes = $query->all();
+        $list = [];
+        foreach ($themes as $theme) {
+            $list[(int)$theme['id']] = (string)$theme['name'];
+        }
+
+        return $list;
     }
 
 

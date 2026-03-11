@@ -2,6 +2,7 @@
 
 namespace common\models;
 
+use common\enums\StatusEnum;
 use yii\behaviors\SluggableBehavior;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveQuery;
@@ -14,6 +15,7 @@ use yii\db\BaseActiveRecord;
  * @property int $id
  * @property string $name
  * @property string|null $slug
+ * @property int $status
  * @property string $created_at
  * @property string|null $updated_at
  *
@@ -60,6 +62,7 @@ class Tag extends ActiveRecord
     {
         return [
             [['name'], 'required'],
+            [['status'], 'integer'],
             [['created_at', 'updated_at'], 'safe'],
             [['name', 'slug'], 'string', 'max' => 255],
             [['name'], 'unique'],
@@ -75,6 +78,7 @@ class Tag extends ActiveRecord
             'id' => 'ID',
             'name' => 'Name',
             'slug' => 'Slug',
+            'status' => 'Status',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];
@@ -107,5 +111,15 @@ class Tag extends ActiveRecord
         $tag->save();
 
         return $tag;
+    }
+
+    public function isActive(): bool
+    {
+        return (int)$this->status === StatusEnum::ACTIVE->value;
+    }
+
+    public function getStatusLabel(string $defaultText = '-'): string
+    {
+        return StatusEnum::tryFrom((int)$this->status)?->label() ?? $defaultText;
     }
 }

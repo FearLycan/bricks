@@ -2,6 +2,7 @@
 
 namespace common\models;
 
+use common\enums\StatusEnum;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
@@ -15,6 +16,7 @@ use yii\db\BaseActiveRecord;
  * @property string $name
  * @property string|null $url
  * @property string|null $logo
+ * @property int $status
  * @property string $created_at
  * @property string|null $updated_at
  *
@@ -45,6 +47,7 @@ class Store extends ActiveRecord
     {
         return [
             [['code', 'name'], 'required'],
+            [['status'], 'integer'],
             [['created_at', 'updated_at'], 'safe'],
             [['code'], 'string', 'max' => 50],
             [['name', 'url', 'logo'], 'string', 'max' => 255],
@@ -60,6 +63,7 @@ class Store extends ActiveRecord
             'name' => 'Name',
             'url' => 'Url',
             'logo' => 'Logo',
+            'status' => 'Status',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];
@@ -89,5 +93,15 @@ class Store extends ActiveRecord
         $store->save();
 
         return $store;
+    }
+
+    public function isActive(): bool
+    {
+        return (int)$this->status === StatusEnum::ACTIVE->value;
+    }
+
+    public function getStatusLabel(string $defaultText = '-'): string
+    {
+        return StatusEnum::tryFrom((int)$this->status)?->label() ?? $defaultText;
     }
 }
