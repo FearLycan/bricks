@@ -4,6 +4,7 @@ namespace console\controllers;
 
 use common\enums\image\KindEnum;
 use common\enums\image\TypeEnum;
+use common\enums\StatusEnum;
 use common\models\Set;
 use common\models\SetImage;
 use common\models\SetPrice;
@@ -101,6 +102,7 @@ class BricksetController extends Controller
                 $legoSet->age = $set['ageRange']['min'] ?? 0;
                 $legoSet->rating = $set['rating'] ?? 0;
                 $legoSet->save();
+                $legoSet->refresh();
 
                 if (isset($set['LEGOCom']) && is_array($set['LEGOCom'])) {
                     SetPrice::syncLegoComPrices($legoSet, $set['LEGOCom']);
@@ -113,6 +115,11 @@ class BricksetController extends Controller
                 }
 
                 $this->syncImages((int)$set['setID'], $legoSet);
+
+                if ($legoSet->getMainImage() === null) {
+                    $legoSet->updateAttributes(['status' => StatusEnum::INACTIVE->value]);
+                }
+
                 sleep(1);
             }
         } while (count($sets) > 0);
