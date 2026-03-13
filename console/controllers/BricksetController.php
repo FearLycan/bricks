@@ -48,81 +48,109 @@ class BricksetController extends Controller
             ]);
 
             $sets = $response['sets'] ?? [];
-
-            foreach ($sets as $set) {
-                $themeGroup = null;
-                $subTheme = null;
-
-                echo $set['name'] . "\n";
-
-                $legoSet = Set::find()->where([
-                    'number' => $set['number'],
-                ])->one();
-
-                if (!$legoSet) {
-                    $legoSet = new Set();
-                }
-
-                if (isset($set['themeGroup'])) {
-                    $themeGroup = ThemeGroup::getOrCreate($set['themeGroup']);
-                }
-
-                $theme = Theme::getOrCreate($set['theme'], $themeGroup ?? null);
-
-                if (isset($set['subtheme'])) {
-                    $subTheme = Theme::getOrCreateSub($set['subtheme'], $theme);
-                }
-
-                $legoSet->name = $set['name'];
-                $legoSet->theme_id = $theme->id;
-                $legoSet->subtheme_id = $subTheme->id ?? null;
-                $legoSet->number = $set['number'];
-                $legoSet->number_variant = $set['numberVariant'] ?? 0;
-                $legoSet->year = $set['year'];
-                $legoSet->released = isset($set['released']) ? (int)$set['released'] : 0;
-                $legoSet->pieces = $set['pieces'] ?? 0;
-                $legoSet->minifigures = $set['minifigs'] ?? 0;
-                $legoSet->brickset_url = $set['bricksetURL'];
-                $legoSet->availability = $set['availability'] ?? null;
-                $legoSet->description = null;
-                if (isset($set['extendedData']['description']) && is_string($set['extendedData']['description'])) {
-                    $legoSet->description = $set['extendedData']['description'];
-                }
-
-                $legoSet->dimensions = null;
-                if (isset($set['modelDimensions']) && is_array($set['modelDimensions'])) {
-                    $legoSet->dimensions = Json::encode($set['modelDimensions']);
-                }
-
-                $legoSet->price = null;
-                if (isset($set['LEGOCom']['US']['retailPrice']) && is_numeric($set['LEGOCom']['US']['retailPrice'])) {
-                    $legoSet->price = (int)round(((float)$set['LEGOCom']['US']['retailPrice']) * 100);
-                }
-
-                $legoSet->age = $set['ageRange']['min'] ?? 0;
-                $legoSet->rating = $set['rating'] ?? 0;
-                $legoSet->save();
-                $legoSet->refresh();
-
-                if (isset($set['LEGOCom']) && is_array($set['LEGOCom'])) {
-                    SetPrice::syncLegoComPrices($legoSet, $set['LEGOCom']);
-                }
-
-                SetTag::syncBySetAndNames($legoSet, isset($set['extendedData']['tags']) && is_array($set['extendedData']['tags']) ? $set['extendedData']['tags'] : []);
-
-                if (isset($set['image']['imageURL']) && $set['image']['imageURL']) {
-                    SetImage::getOrCreate($legoSet, TypeEnum::IMAGE, KindEnum::MAIN, $set['image']['imageURL']);
-                }
-
-                $this->syncImages((int)$set['setID'], $legoSet);
-
-                if ($legoSet->getMainImage() === null) {
-                    $legoSet->updateAttributes(['status' => StatusEnum::INACTIVE->value]);
-                }
-
-                sleep(1);
+            if ($sets) {
+                $this->syncSets($sets);
             }
         } while (count($sets) > 0);
+    }
+
+    public function actionSyncRecentlyUpdatedSets(): void
+    {
+        $updatedSince = (new \DateTimeImmutable('-2 days', new \DateTimeZone('UTC')))->format('Y-m-d');
+
+        $page = 1;
+        do {
+            $response = $this->sendRequest('getSets', [
+                'params' => Json::encode([
+                    'updatedSince' => $updatedSince,
+                    'pageSize'     => 500,
+                    'pageNumber'   => $page++,
+                    'extendedData' => 1,
+                ]),
+            ]);
+
+            $sets = $response['sets'] ?? [];
+            if ($sets) {
+                $this->syncSets($sets);
+            }
+        } while (count($sets) > 0);
+    }
+
+    private function syncSets(array $sets): void
+    {
+        foreach ($sets as $set) {
+            $themeGroup = null;
+            $subTheme = null;
+
+            echo $set['name'] . "\n";
+
+            $legoSet = Set::find()->where([
+                'number' => $set['number'],
+            ])->one();
+
+            if (!$legoSet) {
+                $legoSet = new Set();
+            }
+
+            if (isset($set['themeGroup'])) {
+                $themeGroup = ThemeGroup::getOrCreate($set['themeGroup']);
+            }
+
+            $theme = Theme::getOrCreate($set['theme'], $themeGroup ?? null);
+
+            if (isset($set['subtheme'])) {
+                $subTheme = Theme::getOrCreateSub($set['subtheme'], $theme);
+            }
+
+            $legoSet->name = $set['name'];
+            $legoSet->theme_id = $theme->id;
+            $legoSet->subtheme_id = $subTheme->id ?? null;
+            $legoSet->number = $set['number'];
+            $legoSet->number_variant = $set['numberVariant'] ?? 0;
+            $legoSet->year = $set['year'];
+            $legoSet->released = isset($set['released']) ? (int)$set['released'] : 0;
+            $legoSet->pieces = $set['pieces'] ?? 0;
+            $legoSet->minifigures = $set['minifigs'] ?? 0;
+            $legoSet->brickset_url = $set['bricksetURL'];
+            $legoSet->availability = $set['availability'] ?? null;
+            $legoSet->description = null;
+            if (isset($set['extendedData']['description']) && is_string($set['extendedData']['description'])) {
+                $legoSet->description = $set['extendedData']['description'];
+            }
+
+            $legoSet->dimensions = null;
+            if (isset($set['modelDimensions']) && is_array($set['modelDimensions'])) {
+                $legoSet->dimensions = Json::encode($set['modelDimensions']);
+            }
+
+            $legoSet->price = null;
+            if (isset($set['LEGOCom']['US']['retailPrice']) && is_numeric($set['LEGOCom']['US']['retailPrice'])) {
+                $legoSet->price = (int)round(((float)$set['LEGOCom']['US']['retailPrice']) * 100);
+            }
+
+            $legoSet->age = $set['ageRange']['min'] ?? 0;
+            $legoSet->rating = $set['rating'] ?? 0;
+            $legoSet->save();
+            $legoSet->refresh();
+
+            if (isset($set['LEGOCom']) && is_array($set['LEGOCom'])) {
+                SetPrice::syncLegoComPrices($legoSet, $set['LEGOCom']);
+            }
+
+            SetTag::syncBySetAndNames($legoSet, isset($set['extendedData']['tags']) && is_array($set['extendedData']['tags']) ? $set['extendedData']['tags'] : []);
+
+            if (isset($set['image']['imageURL']) && $set['image']['imageURL']) {
+                SetImage::getOrCreate($legoSet, TypeEnum::IMAGE, KindEnum::MAIN, $set['image']['imageURL']);
+            }
+
+            $this->syncImages((int)$set['setID'], $legoSet);
+
+            if ($legoSet->getMainImage() === null) {
+                $legoSet->updateAttributes(['status' => StatusEnum::INACTIVE->value]);
+            }
+
+            sleep(1);
+        }
     }
 
     private function syncImages(int $setID, Set $legoSet): void
