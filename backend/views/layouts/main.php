@@ -32,7 +32,12 @@ AppAsset::register($this);
             <div class="row min-vh-100">
                 <div class="sidebar d-flex flex-column flex-shrink-0 p-3 text-bg-dark col-md-3 col-lg-2">
                     <a href="/" class="sidebar-brand d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-                        <i class="bi bi-boxes me-2"></i>
+                        <?= Html::img('@web/images/logo-transparent.png', [
+                                'alt'     => Yii::$app->name,
+                                'loading' => 'lazy',
+                                'style'   => 'height: 32px; width: 32px;',
+                                'class'   => 'd-inline-block align-text-top me-2',
+                        ]) ?>
                         <span class="fs-5">BrickAtlas Admin</span>
                     </a>
                     <hr>

@@ -6,6 +6,7 @@ use common\schema\JsonLdRenderer;
 use common\widgets\Alert;
 use frontend\assets\AppAsset;
 use frontend\components\SeoHelper;
+use frontend\components\T;
 use yii\bootstrap5\Breadcrumbs;
 use yii\bootstrap5\Html;
 use yii\bootstrap5\Nav;
@@ -17,7 +18,6 @@ use yii\web\View;
  * @var View   $this
  * @var string $content
  */
-
 
 AppAsset::register($this);
 
@@ -32,6 +32,8 @@ $schemaGraph = [
         BreadcrumbListSchemaFactory::fromView($breadcrumbLinks, $homeBreadcrumb, (string)$this->title),
 ];
 
+$this->params['socialImage'] = Url::to('/images/logo-social.png', true);
+
 $pageTitle = SeoHelper::normalizeText((string)$this->title);
 $metaDescription = trim((string)($this->params['metaDescription'] ?? ''));
 $canonicalUrl = trim((string)($this->params['canonicalUrl'] ?? Url::current([], true)));
@@ -42,11 +44,11 @@ $socialImage = trim((string)($this->params['socialImage'] ?? ''));
 $ogType = trim((string)($this->params['ogType'] ?? 'website'));
 
 if ($metaDescription === '') {
-        $metaDescription = SeoHelper::defaultMetaDescription();
+    $metaDescription = SeoHelper::defaultMetaDescription();
 }
 
 if ($socialDescription === '') {
-        $socialDescription = $metaDescription;
+    $socialDescription = $metaDescription;
 }
 
 $this->registerMetaTag(['name' => 'description', 'content' => $metaDescription], 'description');
@@ -62,8 +64,8 @@ $this->registerMetaTag(['name' => 'twitter:title', 'content' => $socialTitle], '
 $this->registerMetaTag(['name' => 'twitter:description', 'content' => $socialDescription], 'twitter:description');
 
 if ($socialImage !== '') {
-        $this->registerMetaTag(['property' => 'og:image', 'content' => $socialImage], 'og:image');
-        $this->registerMetaTag(['name' => 'twitter:image', 'content' => $socialImage], 'twitter:image');
+    $this->registerMetaTag(['property' => 'og:image', 'content' => $socialImage], 'og:image');
+    $this->registerMetaTag(['name' => 'twitter:image', 'content' => $socialImage], 'twitter:image');
 }
 ?>
 <?php $this->beginPage() ?>
@@ -74,6 +76,13 @@ if ($socialImage !== '') {
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <?php $this->registerCsrfMetaTags() ?>
         <title><?= Html::encode($this->title) ?></title>
+        <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96"/>
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
+        <link rel="shortcut icon" href="/favicon.ico"/>
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"/>
+        <meta name="apple-mobile-web-app-title" content="BrickAtlas"/>
+        <link rel="manifest" href="/site.webmanifest"/>
+
         <?= JsonLdRenderer::render($schemaGraph) ?>
         <?php $this->head() ?>
     </head>
@@ -83,9 +92,11 @@ if ($socialImage !== '') {
     <header class="text-bg-dark">
         <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
             <?php NavBar::begin([
-                    'brandLabel' => Html::img('@web/images/logo-theme-dark.svg', [
-                                    'alt'   => Yii::$app->name,
-                                    'class' => 'd-inline-block align-text-top',
+                    'brandLabel' => Html::img('@web/images/logo-transparent.png', [
+                                    'alt'     => Yii::$app->name,
+                                    'loading' => 'lazy',
+                                    'style'   => 'height: 32px; width: 32px;',
+                                    'class'   => 'd-inline-block align-text-top',
                             ]) . ' ' . Html::encode(Yii::$app->name),
                     'brandUrl'   => Yii::$app->homeUrl,
                     'options'    => [
@@ -93,7 +104,7 @@ if ($socialImage !== '') {
                     ],
             ]);
             $menuItems = [
-                    ['label' => 'LEGO<sup>®</sup>', 'url' => ['/lego']],
+                //['label' => 'LEGO<sup>®</sup>', 'url' => ['/lego']],
             ];
 
             echo Nav::widget([
@@ -124,7 +135,11 @@ if ($socialImage !== '') {
     <footer class="footer mt-auto py-3 text-muted">
         <div class="container">
             <p class="float-start">&copy; <?= Html::encode(Yii::$app->name) ?> <?= date('Y') ?></p>
-            <p class="float-end"></p>
+            <p class="float-end mb-0 text-end">
+                <?= T::tr('Some product links are affiliate links, which means we may earn a commission if you make a purchase through our website.') ?>
+                <br>
+                <?= T::tr('LEGO® is a trademark of the LEGO Group. This website is not sponsored, authorized, or endorsed by the LEGO Group.') ?>
+            </p>
         </div>
     </footer>
 

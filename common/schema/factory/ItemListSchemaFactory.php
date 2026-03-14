@@ -3,6 +3,7 @@
 namespace common\schema\factory;
 
 use common\models\Set;
+use Yii;
 use yii\data\ActiveDataProvider;
 use yii\helpers\Url;
 
@@ -41,7 +42,7 @@ final class ItemListSchemaFactory
             '@type'           => 'ItemList',
             '@id'             => '#set-list',
             'name'            => 'LEGO Sets',
-            'url'             => Url::current([], true),
+            'url'             => Yii::$app->request->absoluteUrl,
             'itemListOrder'   => 'https://schema.org/ItemListOrderAscending',
             'numberOfItems'   => (int)$dataProvider->getTotalCount(),
             'itemListElement' => $items,

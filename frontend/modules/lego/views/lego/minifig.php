@@ -20,11 +20,7 @@ $page = SeoHelper::resolvePageNumber();
 
 $this->title = SeoHelper::buildMinifigTitle($displayName, $page);
 $this->params['metaDescription'] = SeoHelper::buildMinifigDescription($displayName, $number, $page);
-$this->params['canonicalUrl'] = SeoHelper::buildAbsoluteUrl(
-    $page > 1
-        ? ['/lego/lego/minifig', 'number' => $number, 'page' => $page]
-        : ['/lego/lego/minifig', 'number' => $number]
-);
+$this->params['canonicalUrl'] = SeoHelper::buildAbsoluteUrl($page > 1 ? ["/lego/minifig/{$number}", 'page' => $page] : ["/lego/minifig/{$number}"]);
 $this->params['robots'] = 'index,follow';
 $this->params['breadcrumbs'][] = ['label' => Helper::getLegoName(), 'url' => ['/lego']];
 $this->params['breadcrumbs'][] = SeoHelper::normalizeText($displayName);

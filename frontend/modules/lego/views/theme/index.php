@@ -24,18 +24,18 @@ $this->title = SeoHelper::buildThemeTitle($theme, $subTheme, $page);
 $this->params['metaDescription'] = SeoHelper::buildThemeDescription($theme, $subTheme, $page);
 $this->params['canonicalUrl'] = SeoHelper::buildAbsoluteUrl($subTheme
         ? ($page > 1
-                ? ['/lego/theme/index', 'slug' => $theme->slug, 'sub' => $subTheme->slug, 'page' => $page]
-                : ['/lego/theme/index', 'slug' => $theme->slug, 'sub' => $subTheme->slug])
+                ? ["/lego/theme/{$theme->slug}/{$subTheme->slug}", 'page' => $page]
+                : ["/lego/theme/{$theme->slug}/{$subTheme->slug}"])
         : ($page > 1
-                ? ['/lego/theme/index', 'slug' => $theme->slug, 'page' => $page]
-                : ['/lego/theme/index', 'slug' => $theme->slug])
+                ? ["/lego/theme/{$theme->slug}", 'page' => $page]
+                : ["/lego/theme/{$theme->slug}"])
 );
 $this->params['robots'] = 'index,follow';
 
 $this->params['breadcrumbs'][] = ['label' => Helper::getLegoName(), 'url' => ['/lego']];
 
 if ($subTheme) {
-    $this->params['breadcrumbs'][] = ['label' => $theme->name, 'url' => ['/lego/theme/' . $theme->slug]];
+    $this->params['breadcrumbs'][] = ['label' => $theme->name, 'url' => ["/lego/theme/{$theme->slug}"]];
     $this->params['breadcrumbs'][] = SeoHelper::normalizeText($subTheme->name);
     if ($subTheme->img) {
         $this->params['socialImage'] = SeoHelper::buildAbsoluteUrl($subTheme->img);

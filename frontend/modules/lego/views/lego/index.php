@@ -18,14 +18,14 @@ $page = SeoHelper::resolvePageNumber();
 $hasActiveFilters = SeoHelper::hasActiveCatalogFilters(Yii::$app->request->queryParams);
 
 $this->title = $hasActiveFilters
-    ? SeoHelper::buildFilteredCatalogTitle()
-    : SeoHelper::buildCatalogTitle($page);
+        ? SeoHelper::buildFilteredCatalogTitle()
+        : SeoHelper::buildCatalogTitle($page);
 $this->params['metaDescription'] = $hasActiveFilters
-    ? SeoHelper::buildFilteredCatalogDescription()
-    : SeoHelper::buildCatalogDescription($page);
+        ? SeoHelper::buildFilteredCatalogDescription()
+        : SeoHelper::buildCatalogDescription($page);
 $this->params['canonicalUrl'] = $hasActiveFilters
-    ? SeoHelper::buildAbsoluteUrl(['/lego/lego/index'])
-    : SeoHelper::buildAbsoluteUrl($page > 1 ? ['/lego/lego/index', 'page' => $page] : ['/lego/lego/index']);
+        ? SeoHelper::buildAbsoluteUrl(['/lego'])
+        : SeoHelper::buildAbsoluteUrl($page > 1 ? ['/lego', 'page' => $page] : ['/lego']);
 $this->params['robots'] = $hasActiveFilters ? 'noindex,follow' : 'index,follow';
 
 ?>
