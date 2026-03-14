@@ -23,7 +23,7 @@ final class BreadcrumbListSchemaFactory
         }
 
         $title = self::sanitizeLabel($currentTitle);
-        if ($title !== '' && !self::hasSameLastLabel($items, $title)) {
+        if ($title !== '' && !self::hasSameLastLabel($items, $title) && !self::isLastItemTerminal($items)) {
             self::appendItem($items, $position, $title, null);
         }
 
@@ -75,7 +75,10 @@ final class BreadcrumbListSchemaFactory
 
     private static function sanitizeLabel(string $label): string
     {
-        return trim(strip_tags(html_entity_decode($label, ENT_QUOTES | ENT_HTML5)));
+        $sanitized = trim(strip_tags(html_entity_decode($label, ENT_QUOTES | ENT_HTML5)));
+        $sanitized = str_replace(['®', '™'], '', $sanitized);
+
+        return preg_replace('/\s+/', ' ', $sanitized) ?? '';
     }
 
     private static function hasSameLastLabel(array $items, string $label): bool
@@ -87,5 +90,16 @@ final class BreadcrumbListSchemaFactory
         $lastItem = $items[array_key_last($items)];
 
         return isset($lastItem['name']) && (string)$lastItem['name'] === $label;
+    }
+
+    private static function isLastItemTerminal(array $items): bool
+    {
+        if ($items === []) {
+            return false;
+        }
+
+        $lastItem = $items[array_key_last($items)];
+
+        return !isset($lastItem['item']) || trim((string)$lastItem['item']) === '';
     }
 }
