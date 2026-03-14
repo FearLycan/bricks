@@ -149,7 +149,7 @@ class BricksetController extends Controller
                 $legoSet->updateAttributes(['status' => StatusEnum::INACTIVE->value]);
             }
 
-            if ($legoSet->isActive()) {
+            if ($legoSet->minifigures && $legoSet->isActive()) {
                 $controller = new RebrickableController(Yii::$app->controller->id, Yii::$app);
                 $controller->actionSyncMinifigs((int)$set['number']);
             }
