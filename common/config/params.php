@@ -11,4 +11,7 @@ return [
     'brickset.apiKey'               => '',
     'rebrickable.apiKey'            => '',
     'frontend.baseUrl'              => '',
+    'schema.organization.name'      => '',
+    'schema.organization.url'       => '',
+    'schema.organization.logo'      => '',
 ];
