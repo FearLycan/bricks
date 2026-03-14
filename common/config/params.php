@@ -10,4 +10,5 @@ return [
     'brickset.password'             => '',
     'brickset.apiKey'               => '',
     'rebrickable.apiKey'            => '',
+    'frontend.baseUrl'              => '',
 ];
