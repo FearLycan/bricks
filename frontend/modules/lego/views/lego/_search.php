@@ -25,13 +25,15 @@ use yii\widgets\ActiveForm;
         ]); ?>
 
         <div class="row">
-            <div class="col-9 col-md-4 mb-3 mb-lg-0">
-                <?= $form->field($model, 'name')
-                        ->label(false) ?>
-            </div>
-
-            <div class="col-3 col-md-auto d-lg-none mb-3 mb-lg-0" style="text-align: right;">
-                <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
+            <div class="col-12 col-md-4 mb-3 mb-lg-0">
+                <div class="row g-2">
+                    <div class="col-10 col-lg-12">
+                        <?= $form->field($model, 'name')->label(false) ?>
+                    </div>
+                    <div class="col-2 d-lg-none" style="text-align: right;">
+                        <?= Html::submitButton(Html::tag('i', '', ['class' => 'bi bi-search']), ['class' => 'btn btn-primary w-100']) ?>
+                    </div>
+                </div>
             </div>
 
             <div class="col-md-3 mb-3 mb-lg-0">
