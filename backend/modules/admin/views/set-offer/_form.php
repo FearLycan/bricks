@@ -38,6 +38,9 @@ use yii\widgets\ActiveForm;
         <div class="col-md-2">
             <?= $form->field($model, 'source')->textInput(['maxlength' => true]) ?>
         </div>
+        <div class="col-md-12">
+            <?= $form->field($model, 'image')->textInput(['maxlength' => true]) ?>
+        </div>
     </div>
     <?= Html::activeHiddenInput($model, 'set_id') ?>
     <?= Html::activeHiddenInput($model, 'is_manual_override', ['value' => (int)$model->is_manual_override]) ?>

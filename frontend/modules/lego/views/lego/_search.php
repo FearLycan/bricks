@@ -25,24 +25,28 @@ use yii\widgets\ActiveForm;
         ]); ?>
 
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-9 col-md-4 mb-3 mb-lg-0">
                 <?= $form->field($model, 'name')
                         ->label(false) ?>
             </div>
 
-            <div class="col-md-3">
+            <div class="col-3 col-md-auto d-lg-none mb-3 mb-lg-0" style="text-align: right;">
+                <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
+            </div>
+
+            <div class="col-md-3 mb-3 mb-lg-0">
                 <?= $form->field($model, 'theme_id')
                         ->dropDownList(Set::getAvailableThemesList(), ['prompt' => T::tr('Any theme')])
                         ->label(false) ?>
             </div>
 
-            <div class="col-md-3">
+            <div class="col-md-3 mb-3 mb-lg-0">
                 <?= $form->field($model, 'sort_option')
                         ->dropDownList(SetSearch::getSortOptions(), ['prompt' => T::tr('Sort by')])
                         ->label(false) ?>
             </div>
 
-            <div class="col-md-2">
+            <div class="col-md-2 mb-3 mb-lg-0">
                 <?= $form->field($model, 'year')
                         ->dropDownList(Set::getAvailableYearsList(), ['prompt' => T::tr('Any year')])
                         ->label(false) ?>
@@ -63,9 +67,9 @@ use yii\widgets\ActiveForm;
     <script>
         (() => {
             const searchForm = document.getElementById('set-search-form');
-        if (!searchForm) {
-            return;
-        }
+            if (!searchForm) {
+                return;
+            }
 
             const selects = searchForm.querySelectorAll('select');
             selects.forEach((select) => {
@@ -74,23 +78,23 @@ use yii\widgets\ActiveForm;
                 });
             });
 
-        const themeSearch = document.getElementById('theme-select-search');
-        const themeSelect = document.getElementById('theme_id');
-        if (!themeSearch || !themeSelect) {
-            return;
-        }
+            const themeSearch = document.getElementById('theme-select-search');
+            const themeSelect = document.getElementById('theme_id');
+            if (!themeSearch || !themeSelect) {
+                return;
+            }
 
-        themeSearch.addEventListener('input', () => {
-            const query = themeSearch.value.trim().toLowerCase();
-            Array.from(themeSelect.options).forEach((option) => {
-                if (option.value === '') {
-                    option.hidden = false;
-                    return;
-                }
+            themeSearch.addEventListener('input', () => {
+                const query = themeSearch.value.trim().toLowerCase();
+                Array.from(themeSelect.options).forEach((option) => {
+                    if (option.value === '') {
+                        option.hidden = false;
+                        return;
+                    }
 
-                option.hidden = query !== '' && !option.text.toLowerCase().includes(query);
+                    option.hidden = query !== '' && !option.text.toLowerCase().includes(query);
+                });
             });
-        });
         })();
     </script>
 <?php InlineScript::end(); ?>

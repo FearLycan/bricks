@@ -167,7 +167,9 @@ class SetSearch extends Set
                 $query->orderBy(['minifigures' => SORT_DESC, 'id' => SORT_ASC]);
                 break;
             default:
-                $query->orderBy(['year' => SORT_DESC, 'id' => SORT_ASC]);
+                $query->orderBy(new Expression(
+                    'EXISTS (SELECT 1 FROM {{%set_offer}} so WHERE so.[[set_id]] = {{%set}}.[[id]]) DESC, {{%set}}.[[year]] DESC, {{%set}}.[[id]] ASC'
+                ));
                 break;
         }
     }
