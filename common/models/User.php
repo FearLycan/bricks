@@ -7,6 +7,8 @@ use Yii;
 use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
+use yii\db\BaseActiveRecord;
+use yii\db\Expression;
 use yii\web\IdentityInterface;
 
 /**
@@ -20,8 +22,8 @@ use yii\web\IdentityInterface;
  * @property string  $email
  * @property string  $auth_key
  * @property integer $status
- * @property integer $created_at
- * @property integer $updated_at
+ * @property string  $created_at
+ * @property string  $updated_at
  * @property string  $password write-only password
  */
 class User extends ActiveRecord implements IdentityInterface
@@ -45,7 +47,14 @@ class User extends ActiveRecord implements IdentityInterface
     public function behaviors()
     {
         return [
-            TimestampBehavior::class,
+            'timestamp' => [
+                'class' => TimestampBehavior::class,
+                'attributes' => [
+                    BaseActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
+                    BaseActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
+                ],
+                'value' => new Expression('NOW()'),
+            ],
         ];
     }
 

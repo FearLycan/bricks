@@ -15,7 +15,7 @@ use yii\widgets\ListView;
 
 <?= ListView::widget([
     'dataProvider' => $dataProvider,
-    'itemOptions'  => ['class' => 'col-lg-3 col-md-3 lego-set mb-4'],
+    'itemOptions'  => ['class' => 'col-6 col-lg-3 col-md-4 lego-set mb-4'],
     'itemView'     => '_item',
     'options'      => ['class' => 'row'],
     'summary'      => false,
