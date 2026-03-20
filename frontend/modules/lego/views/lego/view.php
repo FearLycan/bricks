@@ -444,6 +444,7 @@ $bestOfferId = $bestOffer?->id;
         const galleryThumbsToggle = document.getElementById('legoGalleryThumbsToggle');
         const galleryPrev = document.getElementById('legoGalleryPrev');
         const galleryNext = document.getElementById('legoGalleryNext');
+        const galleryMain = document.querySelector('.lego-gallery-main');
 
         if (typeof bootstrap !== 'undefined' && tabTriggers.length > 0) {
             const activateTabFromHash = () => {
@@ -606,6 +607,40 @@ $bestOfferId = $bestOffer?->id;
                 galleryNext.addEventListener('click', () => {
                     moveGalleryBy(1);
                 });
+            }
+
+            if (galleryMain) {
+                let touchStartX = 0;
+                let touchStartY = 0;
+
+                galleryMain.addEventListener('touchstart', (event) => {
+                    const touch = event.changedTouches[0];
+                    if (!touch) {
+                        return;
+                    }
+
+                    touchStartX = touch.clientX;
+                    touchStartY = touch.clientY;
+                }, {passive: true});
+
+                galleryMain.addEventListener('touchend', (event) => {
+                    const touch = event.changedTouches[0];
+                    if (!touch) {
+                        return;
+                    }
+
+                    const deltaX = touch.clientX - touchStartX;
+                    const deltaY = touch.clientY - touchStartY;
+                    const absX = Math.abs(deltaX);
+                    const absY = Math.abs(deltaY);
+                    const swipeThreshold = 40;
+
+                    if (absX < swipeThreshold || absX <= absY) {
+                        return;
+                    }
+
+                    moveGalleryBy(deltaX < 0 ? 1 : -1);
+                }, {passive: true});
             }
         }
 
