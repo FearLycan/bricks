@@ -20,7 +20,7 @@ class ThemeController extends Controller
                         'actions' => [
                             'index', 'view',
                         ],
-                        'roles'   => ['?'],
+                        'roles'   => ['?', '@'],
                     ],
                 ],
             ],

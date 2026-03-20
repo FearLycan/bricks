@@ -22,7 +22,7 @@ class LegoController extends Controller
                         'actions' => [
                             'index', 'view', 'minifig',
                         ],
-                        'roles'   => ['?'],
+                        'roles'   => ['?', '@'],
                     ],
                 ],
             ],

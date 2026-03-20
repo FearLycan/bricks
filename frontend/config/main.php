@@ -31,6 +31,7 @@ return [
         'user'         => [
             'identityClass'   => User::class,
             'enableAutoLogin' => true,
+            'loginUrl'        => ['auth/login'],
             'identityCookie'  => ['name' => '_brick-number', 'httpOnly' => true],
         ],
         'session'      => [

@@ -18,7 +18,7 @@ class ProductController extends Controller
                         'actions' => [
                             'index', 'view',
                         ],
-                        'roles'   => ['?'],
+                        'roles'   => ['?', '@'],
                     ],
                 ],
             ],

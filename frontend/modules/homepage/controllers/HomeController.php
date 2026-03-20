@@ -30,7 +30,7 @@ class HomeController extends Controller
                         'actions' => [
                             'index',
                         ],
-                        'roles'   => ['?'],
+                        'roles'   => ['?', '@'],
                     ],
                 ],
             ],
