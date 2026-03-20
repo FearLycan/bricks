@@ -1,6 +1,6 @@
 <?php
 
-use yii\bootstrap5\LinkPager;
+use frontend\components\LinkPager;
 use yii\data\ActiveDataProvider;
 use yii\web\View;
 use yii\widgets\ListView;
@@ -20,7 +20,6 @@ use yii\widgets\ListView;
     'options'      => ['class' => 'row'],
     'summary'      => false,
     'pager'        => [
-        'class'   => LinkPager::class,
-        'options' => ['class' => 'pagination justify-content-center mt-4'],
+        'class' => LinkPager::class,
     ],
 ]) ?>

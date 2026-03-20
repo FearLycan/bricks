@@ -1,8 +1,8 @@
 <?php
 
 use common\components\Html;
+use frontend\components\LinkPager;
 use frontend\models\searches\SetSearch;
-use yii\bootstrap5\LinkPager;
 use yii\data\ActiveDataProvider;
 use yii\web\View;
 use yii\widgets\ListView;
@@ -30,8 +30,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'options'      => ['class' => 'row'],
         'summary'      => false,
         'pager'        => [
-                'class'   => LinkPager::class,
-                'options' => ['class' => 'pagination justify-content-center mt-4'],
+                'class' => LinkPager::class,
         ],
 ]) ?>
 
