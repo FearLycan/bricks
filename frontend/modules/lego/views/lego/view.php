@@ -50,13 +50,22 @@ $bestOfferId = $bestOffer?->id;
                 </div>
 
                 <?php if ($model->images): ?>
-                    <div class="lego-gallery-thumbs">
+                    <div class="lego-gallery-thumbs is-collapsed" id="legoGalleryThumbs">
                         <?php foreach ($model->images as $image): ?>
                             <button class="lego-thumb <?= $model->getDisplayMainImage()?->id === $image->id ? 'is-active' : '' ?>" type="button" data-image-src="<?= Html::encode(Url::to($image->url)) ?>" aria-label="<?= Html::encode($model->name) ?>">
                                 <?= Html::img(Url::to($image->url), ['alt' => Html::encode($model->name), 'loading' => 'lazy']) ?>
                             </button>
                         <?php endforeach; ?>
                     </div>
+                    <button
+                        type="button"
+                        class="btn btn-link btn-sm px-0 mt-2 text-decoration-none lego-gallery-thumbs-toggle d-none"
+                        id="legoGalleryThumbsToggle"
+                        aria-expanded="false"
+                    >
+                        <span class="label-more"><?= T::tr('Show more') ?></span>
+                        <span class="label-less"><?= T::tr('Show less') ?></span>
+                    </button>
                 <?php endif; ?>
 
             </div>
@@ -415,6 +424,8 @@ $bestOfferId = $bestOffer?->id;
         const zoomModalImage = document.getElementById('imageZoomModalImage');
         const zoomPrev = document.getElementById('imageZoomPrev');
         const zoomNext = document.getElementById('imageZoomNext');
+        const galleryThumbs = document.getElementById('legoGalleryThumbs');
+        const galleryThumbsToggle = document.getElementById('legoGalleryThumbsToggle');
 
         if (typeof bootstrap !== 'undefined' && tabTriggers.length > 0) {
             const activateTabFromHash = () => {
@@ -532,6 +543,22 @@ $bestOfferId = $bestOffer?->id;
                     thumbnail.classList.add('is-active');
                 });
             });
+        }
+
+        if (galleryThumbs && galleryThumbsToggle) {
+            const refreshGalleryToggle = () => {
+                const hasOverflow = galleryThumbs.scrollHeight > galleryThumbs.clientHeight + 1;
+                galleryThumbsToggle.classList.toggle('d-none', !hasOverflow);
+            };
+
+            galleryThumbsToggle.addEventListener('click', () => {
+                const isExpanded = galleryThumbs.classList.toggle('is-expanded');
+                galleryThumbs.classList.toggle('is-collapsed', !isExpanded);
+                galleryThumbsToggle.setAttribute('aria-expanded', isExpanded ? 'true' : 'false');
+            });
+
+            window.addEventListener('resize', refreshGalleryToggle);
+            refreshGalleryToggle();
         }
     })();
 </script>

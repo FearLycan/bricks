@@ -156,6 +156,39 @@ a {
     gap: 0.75rem;
 }
 
+.lego-product-page .lego-gallery-thumbs.is-collapsed {
+    max-height: 200px;
+    overflow: hidden;
+    position: relative;
+}
+
+.lego-product-page .lego-gallery-thumbs.is-collapsed::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 36px;
+    pointer-events: none;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.92));
+}
+
+.lego-product-page .lego-gallery-thumbs.is-expanded {
+    max-height: none;
+}
+
+.lego-product-page .lego-gallery-thumbs-toggle .label-less {
+    display: none;
+}
+
+.lego-product-page .lego-gallery-thumbs.is-expanded + .lego-gallery-thumbs-toggle .label-more {
+    display: none;
+}
+
+.lego-product-page .lego-gallery-thumbs.is-expanded + .lego-gallery-thumbs-toggle .label-less {
+    display: inline;
+}
+
 .lego-product-page .lego-thumb {
     border: 2px solid #e5e8ed;
     border-radius: 0.6rem;
