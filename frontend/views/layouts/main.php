@@ -112,6 +112,11 @@ if ($socialImage !== '') {
                     'encodeLabels' => false,
                     'items'        => $menuItems,
             ]);
+
+            if (!Yii::$app->user->isGuest) {
+                echo $this->render('_user-dropdown-menu', ['user' => Yii::$app->user->identity]);
+            }
+
             NavBar::end(); ?>
         </div>
     </header>
