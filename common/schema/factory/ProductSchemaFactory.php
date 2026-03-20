@@ -35,14 +35,14 @@ final class ProductSchemaFactory
             $schema['image'] = $images;
         }
 
-        $aggregateRating = self::buildAggregateRating($set);
-        if ($aggregateRating !== null) {
-            $schema['aggregateRating'] = $aggregateRating;
+        $reviews = self::buildReviews($set);
+        if ($reviews !== []) {
+            $schema['review'] = count($reviews) === 1 ? $reviews[0] : $reviews;
         }
 
-        $review = self::buildReview($set);
-        if ($review !== null) {
-            $schema['review'] = $review;
+        $aggregateRating = self::buildAggregateRating($set, $reviews);
+        if ($aggregateRating !== null) {
+            $schema['aggregateRating'] = $aggregateRating;
         }
 
         if ($offers !== []) {
@@ -66,7 +66,17 @@ final class ProductSchemaFactory
         return rtrim(mb_substr($description, 0, 220)) . '...';
     }
 
-    private static function buildAggregateRating(Set $set): ?array
+    private static function buildAggregateRating(Set $set, array $reviews): ?array
+    {
+        $aggregateFromOffers = self::buildAggregateRatingFromOffers($set);
+        if ($aggregateFromOffers !== null) {
+            return $aggregateFromOffers;
+        }
+
+        return self::buildAggregateRatingFromReviews($reviews);
+    }
+
+    private static function buildAggregateRatingFromOffers(Set $set): ?array
     {
         $weightedRatingSum = 0.0;
         $reviewCount = 0;
@@ -105,8 +115,38 @@ final class ProductSchemaFactory
         ];
     }
 
-    private static function buildReview(Set $set): ?array
+    private static function buildAggregateRatingFromReviews(array $reviews): ?array
     {
+        $ratingSum = 0.0;
+        $ratingCount = 0;
+
+        foreach ($reviews as $review) {
+            $ratingValue = isset($review['reviewRating']['ratingValue']) ? (float)$review['reviewRating']['ratingValue'] : 0.0;
+            if ($ratingValue <= 0) {
+                continue;
+            }
+
+            $ratingSum += $ratingValue;
+            $ratingCount++;
+        }
+
+        if ($ratingCount < 1) {
+            return null;
+        }
+
+        return [
+            '@type'       => 'AggregateRating',
+            'ratingValue' => number_format($ratingSum / $ratingCount, 1, '.', ''),
+            'reviewCount' => $ratingCount,
+            'bestRating'  => '5',
+            'worstRating' => '1',
+        ];
+    }
+
+    private static function buildReviews(Set $set): array
+    {
+        $reviews = [];
+
         foreach ($set->setOffers as $offer) {
             if (!$offer instanceof SetOffer) {
                 continue;
@@ -118,7 +158,8 @@ final class ProductSchemaFactory
                 }
 
                 $reviewBody = self::resolveReviewBody($review);
-                if ($reviewBody === '') {
+                $hasRating = $review->rating_value !== null && (float)$review->rating_value > 0;
+                if ($reviewBody === '' && !$hasRating) {
                     continue;
                 }
 
@@ -129,10 +170,26 @@ final class ProductSchemaFactory
                         '@type' => $authorName !== '' ? 'Person' : 'Organization',
                         'name'  => $authorName !== '' ? $authorName : ($offer->store->name ?? 'Store'),
                     ],
-                    'reviewBody' => $reviewBody,
                 ];
 
-                if ($review->rating_value !== null && (float)$review->rating_value > 0) {
+                if ($reviewBody !== '') {
+                    $reviewSchema['reviewBody'] = $reviewBody;
+                }
+
+                $reviewTitle = trim(strip_tags((string)$review->title));
+                if ($reviewTitle !== '') {
+                    $reviewSchema['name'] = $reviewTitle;
+                }
+
+                $publishedAt = trim((string)$review->reviewed_at);
+                if ($publishedAt !== '') {
+                    $publishedAtTimestamp = strtotime($publishedAt);
+                    if ($publishedAtTimestamp !== false) {
+                        $reviewSchema['datePublished'] = date(DATE_ATOM, $publishedAtTimestamp);
+                    }
+                }
+
+                if ($hasRating) {
                     $ratingScaleMax = (float)$review->rating_scale_max;
                     if ($ratingScaleMax <= 0) {
                         $ratingScaleMax = 5.0;
@@ -146,11 +203,14 @@ final class ProductSchemaFactory
                     ];
                 }
 
-                return $reviewSchema;
+                $reviews[] = $reviewSchema;
+                if (count($reviews) >= 5) {
+                    return $reviews;
+                }
             }
         }
 
-        return null;
+        return $reviews;
     }
 
     private static function buildCategory(Set $set): string
