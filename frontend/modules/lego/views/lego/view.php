@@ -46,7 +46,23 @@ $bestOfferId = $bestOffer?->id;
         <div class="col-lg-7 lego-set">
             <div class="lego-gallery-card">
                 <div class="lego-gallery-main">
+                    <?php if ($model->images && count($model->images) > 1): ?>
+                        <button type="button" class="lego-gallery-nav lego-gallery-nav-prev"
+                                id="legoGalleryPrev"
+                                aria-label="<?= Html::encode(T::tr('Previous image')) ?>">
+                            <i class="bi bi-chevron-left"></i>
+                        </button>
+                    <?php endif; ?>
+
                     <?= Html::img($model->getDisplayMainImageUrl(), ['class' => 'lego-main-image', 'alt' => Html::encode($model->name), 'id' => 'legoMainImage', 'loading' => 'lazy']) ?>
+
+                    <?php if ($model->images && count($model->images) > 1): ?>
+                        <button type="button" class="lego-gallery-nav lego-gallery-nav-next"
+                                id="legoGalleryNext"
+                                aria-label="<?= Html::encode(T::tr('Next image')) ?>">
+                            <i class="bi bi-chevron-right"></i>
+                        </button>
+                    <?php endif; ?>
                 </div>
 
                 <?php if ($model->images): ?>
@@ -58,10 +74,10 @@ $bestOfferId = $bestOffer?->id;
                         <?php endforeach; ?>
                     </div>
                     <button
-                        type="button"
-                        class="btn btn-link btn-sm px-0 mt-2 text-decoration-none lego-gallery-thumbs-toggle d-none"
-                        id="legoGalleryThumbsToggle"
-                        aria-expanded="false"
+                            type="button"
+                            class="btn btn-link btn-sm px-0 mt-2 text-decoration-none lego-gallery-thumbs-toggle d-none"
+                            id="legoGalleryThumbsToggle"
+                            aria-expanded="false"
                     >
                         <span class="label-more"><?= T::tr('Show more') ?></span>
                         <span class="label-less"><?= T::tr('Show less') ?></span>
@@ -426,6 +442,8 @@ $bestOfferId = $bestOffer?->id;
         const zoomNext = document.getElementById('imageZoomNext');
         const galleryThumbs = document.getElementById('legoGalleryThumbs');
         const galleryThumbsToggle = document.getElementById('legoGalleryThumbsToggle');
+        const galleryPrev = document.getElementById('legoGalleryPrev');
+        const galleryNext = document.getElementById('legoGalleryNext');
 
         if (typeof bootstrap !== 'undefined' && tabTriggers.length > 0) {
             const activateTabFromHash = () => {
@@ -525,24 +543,70 @@ $bestOfferId = $bestOffer?->id;
         }
 
         if (mainImage && thumbnails.length > 0) {
+            const normalizeUrl = (value) => {
+                if (!value) {
+                    return '';
+                }
+
+                try {
+                    return new URL(value, window.location.origin).href;
+                } catch (error) {
+                    return String(value);
+                }
+            };
+
+            const getThumbnailSources = () => {
+                return Array.from(thumbnails)
+                    .map((thumbnail) => thumbnail.dataset.imageSrc || '')
+                    .filter((source) => source !== '');
+            };
+
+            const setMainGalleryImage = (targetSrc) => {
+                if (!targetSrc) {
+                    return;
+                }
+
+                mainImage.setAttribute('src', targetSrc);
+                mainImage.dataset.zoomSrc = targetSrc;
+
+                const normalizedTarget = normalizeUrl(targetSrc);
+                thumbnails.forEach((item) => {
+                    item.classList.toggle('is-active', normalizeUrl(item.dataset.imageSrc || '') === normalizedTarget);
+                });
+            };
+
             thumbnails.forEach((thumbnail) => {
                 thumbnail.addEventListener('click', () => {
                     const targetSrc = thumbnail.dataset.imageSrc;
 
-                    if (!targetSrc) {
-                        return;
-                    }
-
-                    mainImage.setAttribute('src', targetSrc);
-                    mainImage.dataset.zoomSrc = targetSrc;
-
-                    thumbnails.forEach((item) => {
-                        item.classList.remove('is-active');
-                    });
-
-                    thumbnail.classList.add('is-active');
+                    setMainGalleryImage(targetSrc);
                 });
             });
+
+            const moveGalleryBy = (step) => {
+                const sources = getThumbnailSources();
+                if (sources.length < 2) {
+                    return;
+                }
+
+                const currentSrc = normalizeUrl(mainImage.getAttribute('src') || '');
+                const currentIndex = sources.findIndex((source) => normalizeUrl(source) === currentSrc);
+                const safeIndex = currentIndex >= 0 ? currentIndex : 0;
+                const nextIndex = (safeIndex + step + sources.length) % sources.length;
+                setMainGalleryImage(sources[nextIndex]);
+            };
+
+            if (galleryPrev) {
+                galleryPrev.addEventListener('click', () => {
+                    moveGalleryBy(-1);
+                });
+            }
+
+            if (galleryNext) {
+                galleryNext.addEventListener('click', () => {
+                    moveGalleryBy(1);
+                });
+            }
         }
 
         if (galleryThumbs && galleryThumbsToggle) {
