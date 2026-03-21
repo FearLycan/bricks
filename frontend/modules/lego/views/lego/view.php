@@ -108,12 +108,16 @@ $bestOfferId = $bestOffer?->id;
                 <div class="lego-price">
                     <?php if ($basePriceUsd !== null && $promoPriceUsd !== null): ?>
                         <span class="text-body-secondary text-decoration-line-through me-2"><?= Html::encode($basePriceUsd) ?></span>
-                        <span class="lego-price-current">
-                            <span class="text-success fw-bold lego-price-promo"><?= Html::encode($promoPriceUsd) ?></span>
-                            <?php if ($savingsPercent !== null && $savingsPercent > 0): ?>
-                                <span class="badge text-bg-danger">-<?= Html::encode((string)$savingsPercent) ?>%</span>
-                            <?php endif; ?>
-                        </span>
+                        <?= Html::a(
+                                '<span class="lego-price-current">' .
+                                '<span class="text-success fw-bold lego-price-promo">' . Html::encode($promoPriceUsd) . '</span>' .
+                                (($savingsPercent !== null && $savingsPercent > 0)
+                                    ? '<span class="badge text-bg-danger">-' . Html::encode((string)$savingsPercent) . '%</span>'
+                                    : '') .
+                                '</span>',
+                                '#alternative-offers',
+                                ['class' => 'text-decoration-none js-smooth-scroll', 'data-scroll-target' => '#alternative-offers']
+                        ) ?>
                     <?php else: ?>
                         <?= Html::encode($model->getFormattedPriceOrDefault(T::tr('Check price in store'), 'USD')) ?>
                     <?php endif; ?>
@@ -179,7 +183,7 @@ $bestOfferId = $bestOffer?->id;
                                 'target' => '_blank',
                                 'rel'    => 'noopener noreferrer',
                         ]) ?>
-                        <?= Html::a(T::tr('Compare all offers'), '#alternative-offers', ['class' => 'btn btn-success']) ?>
+                        <?= Html::a(T::tr('Compare all offers'), '#alternative-offers', ['class' => 'btn btn-success js-smooth-scroll', 'data-scroll-target' => '#alternative-offers']) ?>
                     </div>
                 </div>
             </div>
@@ -459,7 +463,6 @@ $bestOfferId = $bestOffer?->id;
         const galleryPrev = document.getElementById('legoGalleryPrev');
         const galleryNext = document.getElementById('legoGalleryNext');
         const galleryMain = document.querySelector('.lego-gallery-main');
-
         if (typeof bootstrap !== 'undefined' && tabTriggers.length > 0) {
             const activateTabFromHash = () => {
                 const {hash} = window.location;
