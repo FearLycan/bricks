@@ -2,12 +2,14 @@
 
 use common\components\Html;
 use common\models\Set;
+use common\models\User;
 use common\schema\builder\SetPageSchemaBuilder;
 use common\schema\JsonLdRenderer;
 use common\widgets\InlineScript;
 use frontend\components\Helper;
 use frontend\components\SeoHelper;
 use frontend\components\T;
+use Yii;
 use yii\helpers\HtmlPurifier;
 use yii\helpers\Url;
 use yii\web\View;
@@ -15,6 +17,7 @@ use yii\web\View;
 /**
  * @var $this  View
  * @var $model Set
+ * @var $user  User|null
  */
 
 $this->title = SeoHelper::buildSetTitle($model);
@@ -77,8 +80,7 @@ $bestOfferId = $bestOffer?->id;
                             type="button"
                             class="btn btn-link btn-sm px-0 mt-2 text-decoration-none lego-gallery-thumbs-toggle d-none"
                             id="legoGalleryThumbsToggle"
-                            aria-expanded="false"
-                    >
+                            aria-expanded="false">
                         <span class="label-more"><?= T::tr('Show more') ?></span>
                         <span class="label-less"><?= T::tr('Show less') ?></span>
                     </button>
@@ -184,7 +186,18 @@ $bestOfferId = $bestOffer?->id;
 
         <div class="col-12 alternative-offers" id="alternative-offers">
             <div class="lego-details-card">
-                <h5 class="mb-3"><?= T::tr('Alternative offers by store') ?></h5>
+                <div class="d-flex align-items-center justify-content-between gap-2 mb-3">
+                    <h5 class="mb-0"><?= T::tr('Alternative offers by store') ?></h5>
+                    <?php if ($user?->isAdmin()): ?>
+                        <?= Html::a(T::tr('Add offer'), Yii::$app->backendUrlManager->createAbsoluteUrl([
+                                '/admin/set-offer/create',
+                                'setId' => (int)$model->id,]), [
+                                'class'  => 'btn btn-sm btn-outline-primary',
+                                'target' => '_blank',
+                                'rel'    => 'noopener noreferrer',
+                        ]) ?>
+                    <?php endif; ?>
+                </div>
                 <p class="small text-body-secondary mb-3">
                     <?= T::tr('These offers can be lower than the official LEGO price. Marketplace listings may vary by seller, shipping cost, taxes, and stock availability.') ?>
                 </p>

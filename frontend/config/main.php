@@ -61,6 +61,13 @@ return [
                 '<modules:lego>/<slug>'                         => 'lego/lego/view',
             ],
         ],
+        'backendUrlManager' => [
+            'class' => \yii\web\UrlManager::class,
+            'hostInfo' => rtrim((string)($params['backend.baseUrl'] ?? ''), '/'),
+            'baseUrl' => '',
+            'enablePrettyUrl' => true,
+            'showScriptName' => false,
+        ],
     ],
     'modules'             => [
         'homepage' => ['class' => HomepageModule::class,],

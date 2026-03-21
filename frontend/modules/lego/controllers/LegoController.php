@@ -6,6 +6,7 @@ use common\components\AccessControl;
 use common\components\Controller;
 use common\models\Set;
 use common\models\SetMinifig;
+use common\models\User;
 use frontend\models\searches\SetSearch;
 use yii\data\ActiveDataProvider;
 
@@ -43,9 +44,11 @@ class LegoController extends Controller
     public function actionView(string $slug): string
     {
         $model = $this->findModel($slug);
+        $identity = $this->user->identity;
 
         return $this->render('view', [
             'model' => $model,
+            'user' => $identity instanceof User ? $identity : null,
         ]);
     }
 

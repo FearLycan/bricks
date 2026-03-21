@@ -50,6 +50,13 @@ return [
             'rules'           => [
             ],
         ],
+        'frontendUrlManager' => [
+            'class' => \yii\web\UrlManager::class,
+            'hostInfo' => rtrim((string)($params['frontend.baseUrl'] ?? ''), '/'),
+            'baseUrl' => '',
+            'enablePrettyUrl' => true,
+            'showScriptName' => false,
+        ],
     ],
     'modules'             => [
         'admin' => ['class' => AdminModule::class,],
