@@ -31,6 +31,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <div class="d-flex flex-wrap gap-2 mb-4">
         <span class="badge rounded-pill <?= $model->isActive() ? 'text-bg-success' : 'text-bg-danger' ?>">Status: <?= Html::encode($model->getStatusLabel()) ?></span>
+        <span class="badge rounded-pill text-bg-primary">Role: <?= Html::encode($model->getRoleLabel()) ?></span>
     </div>
 
     <?= DetailView::widget([
@@ -40,6 +41,10 @@ $this->params['breadcrumbs'][] = $this->title;
             'id',
             'username',
             'email:email',
+            [
+                'attribute' => 'role',
+                'value' => $model->getRoleLabel(),
+            ],
             [
                 'attribute' => 'status',
                 'value' => $model->getStatusLabel(),

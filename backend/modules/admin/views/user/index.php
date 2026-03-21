@@ -31,6 +31,11 @@ $this->params['breadcrumbs'][] = $this->title;
             'username',
             'email:email',
             [
+                'attribute' => 'role',
+                'filter' => User::getRoleOptions(),
+                'value' => static fn(User $model): string => $model->getRoleLabel(),
+            ],
+            [
                 'attribute' => 'status',
                 'filter' => User::getStatusOptions(),
                 'format' => 'raw',

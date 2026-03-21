@@ -5,18 +5,18 @@ namespace backend\modules\admin\controllers;
 use common\models\SetOffer;
 use common\models\Store;
 use yii\filters\VerbFilter;
-use yii\web\Controller;
+use backend\components\Controller;
 use yii\web\NotFoundHttpException;
 
 class SetOfferController extends Controller
 {
-    public function behaviors()
+    public function behaviors(): array
     {
         return array_merge(
             parent::behaviors(),
             [
                 'verbs' => [
-                    'class' => VerbFilter::className(),
+                    'class'   => VerbFilter::className(),
                     'actions' => [
                         'delete' => ['POST'],
                     ],
@@ -39,7 +39,7 @@ class SetOfferController extends Controller
         }
 
         return $this->render('update', [
-            'model' => $model,
+            'model'      => $model,
             'storesList' => Store::getAvailableStoresList(),
         ]);
     }
@@ -65,7 +65,7 @@ class SetOfferController extends Controller
         }
 
         return $this->render('create', [
-            'model' => $model,
+            'model'      => $model,
             'storesList' => Store::getAvailableStoresList(),
         ]);
     }

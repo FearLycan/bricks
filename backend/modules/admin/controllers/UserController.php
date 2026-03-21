@@ -2,23 +2,24 @@
 
 namespace backend\modules\admin\controllers;
 
+use backend\components\Controller;
 use backend\modules\admin\models\UserSearch;
+use common\enums\UserRoleEnum;
 use common\models\User;
 use yii\filters\VerbFilter;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 
 class UserController extends Controller
 {
-    public function behaviors()
+    public function behaviors(): array
     {
         return array_merge(
             parent::behaviors(),
             [
                 'verbs' => [
-                    'class' => VerbFilter::className(),
+                    'class'   => VerbFilter::className(),
                     'actions' => [
-                        'delete' => ['POST'],
+                        'delete'        => ['POST'],
                         'toggle-status' => ['POST'],
                     ],
                 ],
@@ -32,7 +33,7 @@ class UserController extends Controller
         $dataProvider = $searchModel->search($this->request->queryParams);
 
         return $this->render('index', [
-            'searchModel' => $searchModel,
+            'searchModel'  => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
     }
@@ -49,6 +50,7 @@ class UserController extends Controller
     public function actionCreate()
     {
         $model = new User();
+        $model->role = UserRoleEnum::USER->value;
         $model->status = User::STATUS_ACTIVE;
         $password = '';
 
@@ -70,7 +72,7 @@ class UserController extends Controller
         }
 
         return $this->render('create', [
-            'model' => $model,
+            'model'    => $model,
             'password' => $password,
         ]);
     }
@@ -94,7 +96,7 @@ class UserController extends Controller
         }
 
         return $this->render('update', [
-            'model' => $model,
+            'model'    => $model,
             'password' => $password,
         ]);
     }

@@ -6,20 +6,20 @@ use backend\modules\admin\models\ThemeSearch;
 use common\enums\StatusEnum;
 use common\models\Theme;
 use yii\filters\VerbFilter;
-use yii\web\Controller;
+use backend\components\Controller;
 use yii\web\NotFoundHttpException;
 
 class ThemeController extends Controller
 {
-    public function behaviors()
+    public function behaviors(): array
     {
         return array_merge(
             parent::behaviors(),
             [
                 'verbs' => [
-                    'class' => VerbFilter::className(),
+                    'class'   => VerbFilter::className(),
                     'actions' => [
-                        'delete' => ['POST'],
+                        'delete'        => ['POST'],
                         'toggle-status' => ['POST'],
                     ],
                 ],
@@ -33,10 +33,10 @@ class ThemeController extends Controller
         $dataProvider = $searchModel->search($this->request->queryParams);
 
         return $this->render('index', [
-            'searchModel' => $searchModel,
+            'searchModel'  => $searchModel,
             'dataProvider' => $dataProvider,
-            'groupsList' => Theme::getAvailableGroupsList(),
-            'parentsList' => Theme::getAvailableParentThemesList(),
+            'groupsList'   => Theme::getAvailableGroupsList(),
+            'parentsList'  => Theme::getAvailableParentThemesList(),
         ]);
     }
 
@@ -59,8 +59,8 @@ class ThemeController extends Controller
         }
 
         return $this->render('create', [
-            'model' => $model,
-            'groupsList' => Theme::getAvailableGroupsList(),
+            'model'       => $model,
+            'groupsList'  => Theme::getAvailableGroupsList(),
             'parentsList' => Theme::getAvailableParentThemesList(),
         ]);
     }
@@ -74,8 +74,8 @@ class ThemeController extends Controller
         }
 
         return $this->render('update', [
-            'model' => $model,
-            'groupsList' => Theme::getAvailableGroupsList(),
+            'model'       => $model,
+            'groupsList'  => Theme::getAvailableGroupsList(),
             'parentsList' => Theme::getAvailableParentThemesList($model->id),
         ]);
     }

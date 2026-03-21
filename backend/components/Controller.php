@@ -3,6 +3,8 @@
 namespace backend\components;
 
 use common\components\AccessControl;
+use common\models\User;
+use Yii;
 use yii\filters\VerbFilter;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
@@ -21,8 +23,13 @@ class Controller extends \yii\web\Controller
                         'roles'   => ['?'],
                     ],
                     [
-                        'allow' => true,
-                        'roles' => ['@'],
+                        'allow'         => true,
+                        'roles'         => ['@'],
+                        'matchCallback' => static function (): bool {
+                            $identity = Yii::$app->user->identity;
+
+                            return $identity instanceof User && $identity->isAdmin();
+                        },
                     ],
                 ],
             ],
@@ -41,7 +48,7 @@ class Controller extends \yii\web\Controller
      * @param string|null $message
      * @throws ForbiddenHttpException
      */
-    public function accessDenied(string $message = null): void
+    public function accessDenied(?string $message = null): void
     {
         if ($message === null) {
             $message = 'Sorry, you are not authorized to view this page';
@@ -56,7 +63,7 @@ class Controller extends \yii\web\Controller
      * @param string|null $message
      * @throws NotFoundHttpException
      */
-    public function notFound(string $message = null): void
+    public function notFound(?string $message = null): void
     {
         if ($message === null) {
             $message = 'The page you\'re looking for doesn\'t exist';

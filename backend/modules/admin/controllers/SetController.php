@@ -5,7 +5,7 @@ namespace backend\modules\admin\controllers;
 use common\enums\StatusEnum;
 use common\models\Set;
 use backend\modules\admin\models\SetSearch;
-use yii\web\Controller;
+use backend\components\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
@@ -17,15 +17,15 @@ class SetController extends Controller
     /**
      * @inheritDoc
      */
-    public function behaviors()
+    public function behaviors(): array
     {
         return array_merge(
             parent::behaviors(),
             [
                 'verbs' => [
-                    'class' => VerbFilter::className(),
+                    'class'   => VerbFilter::className(),
                     'actions' => [
-                        'delete' => ['POST'],
+                        'delete'        => ['POST'],
                         'toggle-status' => ['POST'],
                     ],
                 ],
@@ -44,7 +44,7 @@ class SetController extends Controller
         $dataProvider = $searchModel->search($this->request->queryParams);
 
         return $this->render('index', [
-            'searchModel' => $searchModel,
+            'searchModel'  => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
     }

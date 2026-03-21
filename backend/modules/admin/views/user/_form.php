@@ -22,6 +22,9 @@ use yii\widgets\ActiveForm;
             <?= $form->field($model, 'email')->textInput(['maxlength' => true]) ?>
         </div>
         <div class="col-md-4">
+            <?= $form->field($model, 'role')->dropDownList(User::getRoleOptions()) ?>
+        </div>
+        <div class="col-md-4">
             <?= $form->field($model, 'status')->dropDownList(User::getStatusOptions(), ['prompt' => 'Select status']) ?>
         </div>
         <div class="col-md-8">

@@ -2,24 +2,24 @@
 
 namespace backend\modules\admin\controllers;
 
+use backend\components\Controller;
 use backend\modules\admin\models\ThemeGroupSearch;
 use common\enums\StatusEnum;
 use common\models\ThemeGroup;
 use yii\filters\VerbFilter;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 
 class ThemeGroupController extends Controller
 {
-    public function behaviors()
+    public function behaviors(): array
     {
         return array_merge(
             parent::behaviors(),
             [
                 'verbs' => [
-                    'class' => VerbFilter::className(),
+                    'class'   => VerbFilter::className(),
                     'actions' => [
-                        'delete' => ['POST'],
+                        'delete'        => ['POST'],
                         'toggle-status' => ['POST'],
                     ],
                 ],
@@ -33,7 +33,7 @@ class ThemeGroupController extends Controller
         $dataProvider = $searchModel->search($this->request->queryParams);
 
         return $this->render('index', [
-            'searchModel' => $searchModel,
+            'searchModel'  => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
     }

@@ -3,6 +3,7 @@
 namespace common\models;
 
 use common\enums\UserStatusEnum;
+use common\enums\UserRoleEnum;
 use Yii;
 use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
@@ -20,6 +21,7 @@ use yii\web\IdentityInterface;
  * @property string  $password_reset_token
  * @property string  $verification_token
  * @property string  $email
+ * @property string  $role
  * @property string  $auth_key
  * @property integer $status
  * @property string  $created_at
@@ -64,6 +66,8 @@ class User extends ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
+            ['role', 'default', 'value' => UserRoleEnum::USER->value],
+            ['role', 'in', 'range' => array_column(UserRoleEnum::cases(), 'value')],
             ['status', 'default', 'value' => self::STATUS_INACTIVE],
             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE, self::STATUS_DELETED]],
         ];
@@ -235,5 +239,20 @@ class User extends ActiveRecord implements IdentityInterface
     public static function getStatusOptions(): array
     {
         return UserStatusEnum::options();
+    }
+
+    public static function getRoleOptions(): array
+    {
+        return UserRoleEnum::options();
+    }
+
+    public function getRoleLabel(string $defaultText = '-'): string
+    {
+        return UserRoleEnum::tryFrom((string)$this->role)?->label() ?? $defaultText;
+    }
+
+    public function isAdmin(): bool
+    {
+        return UserRoleEnum::tryFrom((string)$this->role) === UserRoleEnum::ADMIN;
     }
 }
