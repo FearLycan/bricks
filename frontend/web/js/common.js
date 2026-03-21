@@ -24,7 +24,7 @@
         window.requestAnimationFrame(step);
     };
 
-    const handleSmoothScrollEvent = (event) => {
+    const handleSmoothScrollEvent = (event, duration = 450) => {
         const eventTarget = event.target;
         const target = eventTarget instanceof Element ? eventTarget : eventTarget?.parentElement;
         if (!(target instanceof Element)) {
@@ -47,7 +47,7 @@
         }
 
         event.preventDefault();
-        smoothScrollTo(section.getBoundingClientRect().top + window.scrollY);
+        smoothScrollTo(section.getBoundingClientRect().top + window.scrollY, duration);
         history.replaceState(null, '', selector);
     };
 
@@ -56,7 +56,7 @@
             return;
         }
 
-        handleSmoothScrollEvent(event);
+        handleSmoothScrollEvent(event, 220);
     }, true);
 
     document.addEventListener('click', handleSmoothScrollEvent, true);
