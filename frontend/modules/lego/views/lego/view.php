@@ -108,10 +108,12 @@ $bestOfferId = $bestOffer?->id;
                 <div class="lego-price">
                     <?php if ($basePriceUsd !== null && $promoPriceUsd !== null): ?>
                         <span class="text-body-secondary text-decoration-line-through me-2"><?= Html::encode($basePriceUsd) ?></span>
-                        <span class="text-success fw-bold"><?= Html::encode($promoPriceUsd) ?></span>
-                        <?php if ($savingsPercent !== null && $savingsPercent > 0): ?>
-                            <span class="badge text-bg-danger ms-2">-<?= Html::encode((string)$savingsPercent) ?>%</span>
-                        <?php endif; ?>
+                        <span class="lego-price-current">
+                            <span class="text-success fw-bold lego-price-promo"><?= Html::encode($promoPriceUsd) ?></span>
+                            <?php if ($savingsPercent !== null && $savingsPercent > 0): ?>
+                                <span class="badge text-bg-danger">-<?= Html::encode((string)$savingsPercent) ?>%</span>
+                            <?php endif; ?>
+                        </span>
                     <?php else: ?>
                         <?= Html::encode($model->getFormattedPriceOrDefault(T::tr('Check price in store'), 'USD')) ?>
                     <?php endif; ?>
@@ -206,7 +208,7 @@ $bestOfferId = $bestOffer?->id;
                             <div class="col">
                                 <div class="card h-100 shadow-sm border-0 lego-offer-card<?= $bestOfferId !== null && $offer->id === $bestOfferId ? ' is-best-offer' : '' ?>">
                                     <div class="card-body">
-                                        <div class="d-flex align-items-start gap-3">
+                                        <div class="d-flex align-items-start gap-3 lego-offer-layout">
                                             <?php if ($offer->image): ?>
                                                 <div class="flex-shrink-0">
                                                     <?= Html::img($offer->image, [
@@ -219,8 +221,8 @@ $bestOfferId = $bestOffer?->id;
                                                 </div>
                                             <?php endif; ?>
                                             <div class="flex-grow-1">
-                                                <div class="d-flex align-items-start justify-content-between gap-3">
-                                                    <div>
+                                                <div class="d-flex align-items-start justify-content-between gap-3 lego-offer-head">
+                                                    <div class="lego-offer-main">
                                                         <div class="fw-semibold d-flex align-items-center gap-2">
                                                             <?php if ($offer->store && $offer->store->logo): ?>
                                                                 <?= Html::img($offer->store->logo, [
@@ -231,11 +233,11 @@ $bestOfferId = $bestOffer?->id;
                                                             <?php endif; ?>
                                                             <?= Html::encode($offer->store->name ?? T::tr('Unknown store')) ?>
                                                         </div>
-                                                        <div class="small text-body-secondary">
+                                                        <div class="small text-body-secondary lego-offer-name">
                                                             <?= Html::encode($offer->getDisplayNameOrDefault($model->name)) ?>
                                                         </div>
                                                     </div>
-                                                    <div class="text-end">
+                                                    <div class="text-end lego-offer-price">
                                                         <div class="d-flex align-items-center justify-content-end gap-2">
                                                             <div class="fw-bold"><?= Html::encode($offer->getFormattedPriceOrDefault(T::tr('No price'))) ?></div>
                                                             <?php if ($model->price !== null && $model->price > 0 && $offer->price !== null && $offer->price > 0 && strtoupper((string)$offer->currency_code) === 'USD' && $offer->price < $model->price): ?>
@@ -257,7 +259,7 @@ $bestOfferId = $bestOffer?->id;
                                                     </div>
                                                 </div>
 
-                                                <div class="mt-3 d-flex gap-3 align-items-center flex-wrap">
+                                                <div class="mt-3 d-flex gap-3 align-items-center flex-wrap lego-offer-meta">
                                                             <span class="badge text-bg-warning text-dark">
                                                                 <i class="bi bi-star-fill me-1"></i>
                                                                 <?= Html::encode($offer->rating_value !== null ? number_format((float)$offer->rating_value, 1, '.', '') : '0.0') ?>
@@ -266,7 +268,7 @@ $bestOfferId = $bestOffer?->id;
                                                                 <?= T::tr('Reviews') ?>: <?= Html::encode((string)$offer->review_count) ?>
                                                             </span>
                                                     <?php if ($offer->url): ?>
-                                                        <?= Html::a('<i class="bi bi-bag-check me-1"></i>' . T::tr('View offer'), $offer->url, ['class' => 'btn btn-sm btn-success ms-auto w-50', 'target' => '_blank', 'rel' => 'noopener noreferrer']) ?>
+                                                        <?= Html::a('<i class="bi bi-bag-check me-1"></i>' . T::tr('View offer'), $offer->url, ['class' => 'btn btn-sm btn-success ms-auto lego-offer-action', 'target' => '_blank', 'rel' => 'noopener noreferrer']) ?>
                                                     <?php endif; ?>
                                                 </div>
                                             </div>

@@ -270,6 +270,12 @@ a {
     font-weight: 700;
 }
 
+.lego-product-page .lego-price-current {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
 .lego-product-page .lego-offers-summary {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -306,6 +312,14 @@ a {
 .lego-product-page .lego-offer-card.is-best-offer {
     border-color: #198754;
     box-shadow: 0 0.75rem 1.5rem rgba(25, 135, 84, 0.12) !important;
+}
+
+.lego-product-page .lego-offer-name {
+    word-break: break-word;
+}
+
+.lego-product-page .lego-offer-action {
+    white-space: nowrap;
 }
 
 .lego-product-page .lego-best-offer-banner {
@@ -425,6 +439,44 @@ a {
 
     .lego-product-page .lego-gallery-main {
         min-height: 360px;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .lego-product-page .lego-price .lego-price-promo {
+        display: block;
+    }
+
+    .lego-product-page .lego-offer-layout {
+        gap: 0.75rem !important;
+    }
+
+    .lego-product-page .lego-offer-layout .js-zoomable-image {
+        width: 72px !important;
+        height: 72px !important;
+    }
+
+    .lego-product-page .lego-offer-head {
+        flex-direction: column;
+        gap: 0.35rem !important;
+    }
+
+    .lego-product-page .lego-offer-price {
+        text-align: left !important;
+        width: 100%;
+    }
+
+    .lego-product-page .lego-offer-price > .d-flex {
+        justify-content: flex-start !important;
+    }
+
+    .lego-product-page .lego-offer-meta {
+        gap: 0.5rem !important;
+    }
+
+    .lego-product-page .lego-offer-action {
+        margin-left: 0 !important;
+        width: 100%;
     }
 }
 
