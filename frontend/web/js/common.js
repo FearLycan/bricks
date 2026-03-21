@@ -24,7 +24,7 @@
         window.requestAnimationFrame(step);
     };
 
-    document.addEventListener('click', (event) => {
+    const handleSmoothScrollEvent = (event) => {
         const eventTarget = event.target;
         const target = eventTarget instanceof Element ? eventTarget : eventTarget?.parentElement;
         if (!(target instanceof Element)) {
@@ -49,5 +49,15 @@
         event.preventDefault();
         smoothScrollTo(section.getBoundingClientRect().top + window.scrollY);
         history.replaceState(null, '', selector);
+    };
+
+    document.addEventListener('pointerup', (event) => {
+        if (event.pointerType === 'mouse') {
+            return;
+        }
+
+        handleSmoothScrollEvent(event);
     }, true);
+
+    document.addEventListener('click', handleSmoothScrollEvent, true);
 })();
