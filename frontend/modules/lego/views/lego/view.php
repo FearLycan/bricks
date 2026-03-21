@@ -9,7 +9,6 @@ use common\widgets\InlineScript;
 use frontend\components\Helper;
 use frontend\components\SeoHelper;
 use frontend\components\T;
-use Yii;
 use yii\helpers\HtmlPurifier;
 use yii\helpers\Url;
 use yii\web\View;
