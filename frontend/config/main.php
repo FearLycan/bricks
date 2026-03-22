@@ -20,7 +20,7 @@ return [
     'basePath'            => dirname(__DIR__),
     'bootstrap'           => ['log'],
     'controllerNamespace' => 'frontend\controllers',
-    'defaultRoute'        => 'lego/lego/index',
+    'defaultRoute'        => 'site/index',
     'components'          => [
         'assetManager' => [
             'appendTimestamp' => true,
