@@ -92,6 +92,7 @@ if ($socialImage !== '') {
     <header class="text-bg-dark">
         <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
             <?php NavBar::begin([
+                    'id'         => 'menu-navbar',
                     'brandLabel' => Html::img('@web/images/logo-transparent.png', [
                                     'alt'     => Yii::$app->name,
                                     'loading' => 'lazy',
