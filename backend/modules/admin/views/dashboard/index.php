@@ -1,12 +1,16 @@
 <?php
 
 use common\models\Set;
+use common\enums\SetOfferImportStatusEnum;
+use common\models\SetOfferImport;
 use common\models\Theme;
 use yii\helpers\Html;
 
 /**
  * @var yii\web\View                                            $this
  * @var array<int, array{label:string, value:int, hint:string}> $stats
+ * @var int                                                     $pendingImportLinks
+ * @var SetOfferImport[]                                        $recentImportLinks
  * @var Set[]                                                   $recentSets
  * @var Theme[]                                                 $topThemes
  */
@@ -49,6 +53,20 @@ $statAccentClasses = [
                 </div>
             </div>
         <?php endforeach; ?>
+    </div>
+
+    <div class="card shadow-sm border-0 mb-4 dashboard-section-card dashboard-section-card-accent">
+        <div class="card-body d-flex flex-wrap align-items-center gap-3">
+            <div>
+                <h2 class="h5 mb-1 dashboard-section-title">Offer import links queue</h2>
+                <div class="text-body-secondary">
+                    Pending links: <strong><?= Html::encode((string)$pendingImportLinks) ?></strong>
+                </div>
+            </div>
+            <div class="ms-auto d-flex gap-2">
+                <?= Html::a('Open links queue', ['/admin/set-offer-import/index'], ['class' => 'btn btn-sm btn-primary']) ?>
+            </div>
+        </div>
     </div>
 
     <div class="row g-4">
@@ -95,6 +113,68 @@ $statAccentClasses = [
                         </div>
                     <?php else: ?>
                         <p class="text-body-secondary mb-0">No sets available yet.</p>
+                    <?php endif; ?>
+                </div>
+            </div>
+
+            <div class="card shadow-sm border-0 mt-4 dashboard-section-card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <h2 class="h5 mb-0 dashboard-section-title">Latest import links</h2>
+                        <?= Html::a('View queue', ['/admin/set-offer-import/index'], ['class' => 'btn btn-sm btn-outline-secondary']) ?>
+                    </div>
+
+                    <?php if ($recentImportLinks !== []): ?>
+                        <div class="table-responsive">
+                            <table class="table align-middle mb-0">
+                                <thead>
+                                <tr>
+                                    <th>Set</th>
+                                    <th>Link</th>
+                                    <th>Status</th>
+                                    <th>Updated</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <?php foreach ($recentImportLinks as $import): ?>
+                                    <tr>
+                                        <td>
+                                            <?php if ($import->set !== null): ?>
+                                                <?= Html::a(
+                                                    Html::encode(trim(($import->set->number ?: '-') . ' ' . ($import->set->name ?: ''))),
+                                                    ['/admin/set/view', 'id' => $import->set_id, '#' => 'offers'],
+                                                    ['class' => 'text-decoration-none fw-semibold']
+                                                ) ?>
+                                            <?php else: ?>
+                                                -
+                                            <?php endif; ?>
+                                        </td>
+                                        <td class="text-truncate" style="max-width: 360px;">
+                                            <?= Html::a(Html::encode($import->input_url), $import->input_url, [
+                                                'target' => '_blank',
+                                                'rel' => 'noopener noreferrer',
+                                                'class' => 'text-decoration-none',
+                                            ]) ?>
+                                        </td>
+                                        <td>
+                                            <?php
+                                            $statusClass = match ($import->status) {
+                                                SetOfferImportStatusEnum::DONE->value => 'text-bg-success',
+                                                SetOfferImportStatusEnum::FAILED->value => 'text-bg-danger',
+                                                SetOfferImportStatusEnum::PROCESSING->value => 'text-bg-primary',
+                                                default => 'text-bg-secondary',
+                                            };
+                                            ?>
+                                            <span class="badge rounded-pill <?= $statusClass ?>"><?= Html::encode($import->getStatusLabel()) ?></span>
+                                        </td>
+                                        <td><?= Html::encode((string)($import->updated_at ?? $import->created_at)) ?></td>
+                                    </tr>
+                                <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    <?php else: ?>
+                        <p class="text-body-secondary mb-0">No import links yet.</p>
                     <?php endif; ?>
                 </div>
             </div>

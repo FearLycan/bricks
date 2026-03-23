@@ -128,14 +128,37 @@ body {
     color: #6b7280;
 }
 
-.dashboard-stat-card-primary::before { background: #0d6efd; }
-.dashboard-stat-card-success::before { background: #198754; }
-.dashboard-stat-card-warning::before { background: #f59e0b; }
-.dashboard-stat-card-info::before { background: #0dcaf0; }
-.dashboard-stat-card-violet::before { background: #8b5cf6; }
-.dashboard-stat-card-cyan::before { background: #06b6d4; }
-.dashboard-stat-card-slate::before { background: #475569; }
-.dashboard-stat-card-rose::before { background: #e11d48; }
+.dashboard-stat-card-primary::before {
+    background: #0d6efd;
+}
+
+.dashboard-stat-card-success::before {
+    background: #198754;
+}
+
+.dashboard-stat-card-warning::before {
+    background: #f59e0b;
+}
+
+.dashboard-stat-card-info::before {
+    background: #0dcaf0;
+}
+
+.dashboard-stat-card-violet::before {
+    background: #8b5cf6;
+}
+
+.dashboard-stat-card-cyan::before {
+    background: #06b6d4;
+}
+
+.dashboard-stat-card-slate::before {
+    background: #475569;
+}
+
+.dashboard-stat-card-rose::before {
+    background: #e11d48;
+}
 
 .dashboard-section-card {
     border: 1px solid #e8edf5;
@@ -169,4 +192,9 @@ body {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+
+.form-group.has-error .help-block {
+    color: #dc3545;
 }

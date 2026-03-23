@@ -41,6 +41,7 @@ use yii\helpers\Url;
  *
  * @property SetImage[]   $images
  * @property SetMinifig[] $setMinifigs
+ * @property SetOfferImport[] $setOfferImports
  * @property SetOffer[]   $setOffers
  * @property SetPrice[]   $setPrices
  * @property SetTag[]     $setTags
@@ -169,6 +170,11 @@ class Set extends ActiveRecord
     public function getSetOffers(): ActiveQuery
     {
         return $this->hasMany(SetOffer::class, ['set_id' => 'id'])->orderBy(['price' => SORT_ASC, 'id' => SORT_ASC]);
+    }
+
+    public function getSetOfferImports(): ActiveQuery
+    {
+        return $this->hasMany(SetOfferImport::class, ['set_id' => 'id'])->orderBy(['id' => SORT_DESC]);
     }
 
     /**

@@ -5,6 +5,7 @@
 /** @var string $content */
 
 use backend\assets\AppAsset;
+use backend\components\AdminNavigation;
 use common\widgets\Alert;
 use frontend\components\T;
 use yii\bootstrap5\Breadcrumbs;
@@ -64,6 +65,7 @@ AppAsset::register($this);
                                             'url'         => ['/admin/store/index'],
                                             'active'      => Yii::$app->controller->id === 'store',
                                     ],
+                                    AdminNavigation::buildOfferImportLinksItem('<i class="bi bi-link-45deg"></i> ' . T::tr('Offer Import Links'), Yii::$app->controller->id === 'set-offer-import'),
                                     [
                                             'label'       => '<i class="bi bi-tags"></i> ' . T::tr('Tag'),
                                             'linkOptions' => ['class' => 'nav-link text-white'],

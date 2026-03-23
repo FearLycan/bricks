@@ -2,10 +2,15 @@
 
 namespace backend\modules\admin\controllers;
 
-use common\models\SetOffer;
-use common\models\Store;
-use yii\filters\VerbFilter;
 use backend\components\Controller;
+use backend\modules\admin\models\forms\AliExpressOfferImportForm;
+use common\enums\SetOfferImportStatusEnum;
+use common\models\Set;
+use common\models\SetOffer;
+use common\models\SetOfferImport;
+use common\models\Store;
+use Yii;
+use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
 
 class SetOfferController extends Controller
@@ -77,6 +82,47 @@ class SetOfferController extends Controller
         $model->delete();
 
         return $this->redirect(['/admin/set/view', 'id' => $setId, '#' => 'offers']);
+    }
+
+    public function actionImportAliexpress($setId)
+    {
+        $set = Set::findOne((int)$setId);
+        if (!$set) {
+            throw new NotFoundHttpException('Set not found.');
+        }
+
+        $form = new AliExpressOfferImportForm();
+        if ($this->request->isPost && $form->load($this->request->post()) && $form->validate()) {
+            $alreadyPending = SetOfferImport::find()
+                ->where([
+                    'set_id'    => $set->id,
+                    'input_url' => trim($form->offerUrl),
+                    'status'    => SetOfferImportStatusEnum::PENDING->value,
+                ])
+                ->exists();
+
+            if ($alreadyPending) {
+                $form->addError('offerUrl', 'This link is already waiting in queue.');
+            } else {
+                $importTask = new SetOfferImport();
+                $importTask->set_id = $set->id;
+                $importTask->input_url = trim($form->offerUrl);
+                $importTask->status = SetOfferImportStatusEnum::PENDING->value;
+
+                if ($importTask->save()) {
+                    Yii::$app->session->setFlash('success', 'AliExpress link added to queue.');
+
+                    return $this->redirect(['/admin/set/view', 'id' => $set->id, '#' => 'offers']);
+                }
+
+                $form->addError('offerUrl', implode('; ', $importTask->getFirstErrors()));
+            }
+        }
+
+        return $this->render('import-aliexpress', [
+            'set'  => $set,
+            'form' => $form,
+        ]);
     }
 
     protected function findModel($id): SetOffer

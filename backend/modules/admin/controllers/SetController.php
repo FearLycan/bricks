@@ -59,6 +59,7 @@ class SetController extends Controller
     {
         $model = $this->findModel($id);
         $model->populateRelation('setOffers', $model->getSetOffers()->with(['store'])->all());
+        $model->populateRelation('setOfferImports', $model->getSetOfferImports()->limit(20)->all());
 
         return $this->render('view', [
             'model' => $model,

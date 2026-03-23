@@ -2,6 +2,8 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
+use common\enums\SetOfferImportStatusEnum;
+use common\models\SetOfferImport;
 
 /**
  * @var yii\web\View      $this
@@ -20,6 +22,13 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="text-body-secondary">Set #<?= Html::encode($model->number ?: '-') ?></div>
         </div>
         <div class="ms-auto d-flex gap-2">
+            <?php if ($model->slug): ?>
+                <?= Html::a('View on frontend', Yii::$app->frontendUrlManager->createAbsoluteUrl(["/lego/{$model->slug}"]), [
+                        'class'  => 'btn btn-sm btn-outline-info',
+                        'target' => '_blank',
+                        'rel'    => 'noopener noreferrer',
+                ]) ?>
+            <?php endif; ?>
             <?= Html::a('Back to list', ['index'], ['class' => 'btn btn-sm btn-outline-secondary']) ?>
             <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-sm btn-primary']) ?>
             <?= Html::a('Delete', ['delete', 'id' => $model->id], [
@@ -131,7 +140,10 @@ $this->params['breadcrumbs'][] = $this->title;
                     <div class="d-flex align-items-center gap-2 mb-3">
                         <h2 class="h5 mb-0">Offers</h2>
                         <div class="ms-auto">
-                            <?= Html::a('Add Offer', ['/admin/set-offer/create', 'setId' => $model->id], ['class' => 'btn btn-sm btn-success']) ?>
+                            <div class="d-flex gap-2">
+                                <?= Html::a('Import AliExpress', ['/admin/set-offer/import-aliexpress', 'setId' => $model->id], ['class' => 'btn btn-sm btn-outline-primary']) ?>
+                                <?= Html::a('Add Offer', ['/admin/set-offer/create', 'setId' => $model->id], ['class' => 'btn btn-sm btn-success']) ?>
+                            </div>
                         </div>
                     </div>
 
@@ -183,6 +195,54 @@ $this->params['breadcrumbs'][] = $this->title;
                         </div>
                     <?php else: ?>
                         <p class="text-body-secondary">No offers added yet.</p>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h2 class="h5 mb-3">AliExpress import queue</h2>
+                    <?php if ($model->setOfferImports !== []): ?>
+                        <div class="table-responsive">
+                            <table class="table table-sm align-middle mb-0">
+                                <thead>
+                                <tr>
+                                    <th>URL</th>
+                                    <th>Status</th>
+                                    <th>Attempts</th>
+                                    <th>Error</th>
+                                    <th>Updated</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <?php foreach ($model->setOfferImports as $import): ?>
+                                    <tr>
+                                        <td class="text-break"><?= Html::encode($import->input_url) ?></td>
+                                        <td>
+                                            <?php
+                                            $statusClass = match ($import->status) {
+                                                SetOfferImportStatusEnum::DONE->value => 'text-bg-success',
+                                                SetOfferImportStatusEnum::FAILED->value => 'text-bg-danger',
+                                                SetOfferImportStatusEnum::PROCESSING->value => 'text-bg-primary',
+                                                default => 'text-bg-secondary',
+                                            };
+                                            ?>
+                                            <span class="badge rounded-pill <?= $statusClass ?>">
+                                                <?= Html::encode($import->getStatusLabel()) ?>
+                                            </span>
+                                        </td>
+                                        <td><?= Html::encode((string)$import->attempts) ?></td>
+                                        <td><?= Html::encode($import->error_message ?: '-') ?></td>
+                                        <td><?= Html::encode((string)($import->updated_at ?? $import->created_at)) ?></td>
+                                    </tr>
+                                <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    <?php else: ?>
+                        <p class="text-body-secondary mb-0">No queued imports yet.</p>
                     <?php endif; ?>
                 </div>
             </div>

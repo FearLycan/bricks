@@ -38,7 +38,17 @@ $this->params['breadcrumbs'][] = $this->title;
                             'attribute' => 'number',
                             'options'   => ['style' => 'width: 100px;'],
                     ],
-                    'name',
+                    [
+                            'attribute' => 'name',
+                            'format'    => 'raw',
+                            'value'     => static function (Set $model): string {
+                                $label = $model->name ?: '-';
+
+                                return Html::a(Html::encode($label), ['/admin/set/view', 'id' => $model->id], [
+                                        'class' => 'text-decoration-none fw-semibold',
+                                ]);
+                            },
+                    ],
                     [
                             'attribute' => 'theme_id',
                             'label'     => 'Theme',
