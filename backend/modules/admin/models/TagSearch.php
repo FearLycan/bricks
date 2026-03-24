@@ -24,13 +24,10 @@ class TagSearch extends Tag
     public function search(array $params): ActiveDataProvider
     {
         $query = Tag::find();
-        $dataProvider = new ActiveDataProvider([
-            'query' => $query,
-        ]);
 
         $this->load($params);
         if (!$this->validate()) {
-            return $dataProvider;
+            return $this->buildQuery($query);
         }
 
         $query->andFilterWhere([
@@ -43,6 +40,19 @@ class TagSearch extends Tag
         $query->andFilterWhere(['like', 'name', $this->name])
             ->andFilterWhere(['like', 'slug', $this->slug]);
 
-        return $dataProvider;
+        return $this->buildQuery($query);
+    }
+
+    private function buildQuery($query): ActiveDataProvider
+    {
+        return new ActiveDataProvider([
+            'query'      => $query,
+            'pagination' => [
+                'pageSize' => 20,
+            ],
+            'sort'       => [
+                'defaultOrder' => ['id' => SORT_DESC],
+            ],
+        ]);
     }
 }

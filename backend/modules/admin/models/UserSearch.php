@@ -24,13 +24,10 @@ class UserSearch extends User
     public function search(array $params): ActiveDataProvider
     {
         $query = User::find();
-        $dataProvider = new ActiveDataProvider([
-            'query' => $query,
-        ]);
 
         $this->load($params);
         if (!$this->validate()) {
-            return $dataProvider;
+            return $this->buildQuery($query);
         }
 
         $query->andFilterWhere([
@@ -44,6 +41,19 @@ class UserSearch extends User
             ->andFilterWhere(['like', 'email', $this->email])
             ->andFilterWhere(['role' => $this->role]);
 
-        return $dataProvider;
+        return $this->buildQuery($query);
+    }
+
+    private function buildQuery($query): ActiveDataProvider
+    {
+        return new ActiveDataProvider([
+            'query'      => $query,
+            'pagination' => [
+                'pageSize' => 20,
+            ],
+            'sort'       => [
+                'defaultOrder' => ['id' => SORT_DESC],
+            ],
+        ]);
     }
 }

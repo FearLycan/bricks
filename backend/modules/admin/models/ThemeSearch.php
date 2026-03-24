@@ -24,13 +24,10 @@ class ThemeSearch extends Theme
     public function search(array $params): ActiveDataProvider
     {
         $query = Theme::find()->with(['group', 'parent']);
-        $dataProvider = new ActiveDataProvider([
-            'query' => $query,
-        ]);
 
         $this->load($params);
         if (!$this->validate()) {
-            return $dataProvider;
+            return $this->buildQuery($query);
         }
 
         $query->andFilterWhere([
@@ -51,6 +48,19 @@ class ThemeSearch extends Theme
             ->andFilterWhere(['like', 'img', $this->img])
             ->andFilterWhere(['like', 'custom_css', $this->custom_css]);
 
-        return $dataProvider;
+        return $this->buildQuery($query);
+    }
+
+    private function buildQuery($query): ActiveDataProvider
+    {
+        return new ActiveDataProvider([
+            'query'      => $query,
+            'pagination' => [
+                'pageSize' => 20,
+            ],
+            'sort'       => [
+                'defaultOrder' => ['id' => SORT_DESC],
+            ],
+        ]);
     }
 }

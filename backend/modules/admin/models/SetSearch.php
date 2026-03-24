@@ -39,22 +39,18 @@ class SetSearch extends Set
      *
      * @return ActiveDataProvider
      */
-    public function search($params)
+    public function search(array $params): ActiveDataProvider
     {
         $query = Set::find();
 
         // add conditions that should always apply here
-
-        $dataProvider = new ActiveDataProvider([
-            'query' => $query,
-        ]);
 
         $this->load($params);
 
         if (!$this->validate()) {
             // uncomment the following line if you do not want to return any records when validation fails
             // $query->where('0=1');
-            return $dataProvider;
+            return $this->buildQuery($query);
         }
 
         // grid filtering conditions
@@ -83,6 +79,19 @@ class SetSearch extends Set
             ->andFilterWhere(['like', 'availability', $this->availability])
             ->andFilterWhere(['like', 'description', $this->description]);
 
-        return $dataProvider;
+        return $this->buildQuery($query);
+    }
+
+    private function buildQuery($query): ActiveDataProvider
+    {
+        return new ActiveDataProvider([
+            'query'      => $query,
+            'pagination' => [
+                'pageSize' => 20,
+            ],
+            'sort'       => [
+                'defaultOrder' => ['id' => SORT_DESC],
+            ],
+        ]);
     }
 }

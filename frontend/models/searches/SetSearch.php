@@ -48,15 +48,10 @@ class SetSearch extends Set
     {
         $query = Set::find()->andFilterCompare('status', StatusEnum::ACTIVE->value);
 
-        $dataProvider = new ActiveDataProvider([
-            'query' => $query,
-            //'sort'  => ['defaultOrder' => ['year' => SORT_DESC, 'id' => SORT_ASC]], //moved to getSortOptions()
-        ]);
-
         $this->load($params);
 
         if (!$this->validate()) {
-            return $dataProvider;
+            return $this->buildQuery($query);
         }
 
         if ($this->subtheme_id) {
@@ -99,7 +94,18 @@ class SetSearch extends Set
 
         $this->applySortOption($query);
 
-        return $dataProvider;
+        return $this->buildQuery($query);
+    }
+
+    private function buildQuery($query): ActiveDataProvider
+    {
+        return new ActiveDataProvider([
+            'query'      => $query,
+            //'sort'  => ['defaultOrder' => ['year' => SORT_DESC, 'id' => SORT_ASC]], //moved to getSortOptions()
+            'pagination' => [
+                'pageSize' => 20,
+            ],
+        ]);
     }
 
     public function formName(): string
