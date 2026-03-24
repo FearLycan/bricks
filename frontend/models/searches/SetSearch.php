@@ -62,7 +62,7 @@ class SetSearch extends Set
             $query->andWhere(['theme_id' => $this->theme_id]);
         }
 
-        if ($this->theme_id && !$this->subtheme_id) {
+        if ($this->theme && !$this->subtheme_id) {
             $allSubthemeIds = Theme::find()->select('id')->where(['name' => $this->theme->name])->column();
             $query->andWhere([
                 'or',

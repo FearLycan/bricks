@@ -24,8 +24,6 @@ use yii\widgets\ActiveForm;
                 'options' => ['id' => 'set-search-form'],
         ]); ?>
 
-        <?= $form->field($model, 'subtheme_id')->hiddenInput()->label(false) ?>
-
         <div class="row">
             <div class="col-12 col-md-4 mb-3 mb-lg-0">
                 <div class="row g-2">
