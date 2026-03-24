@@ -17,37 +17,37 @@ use yii\helpers\Url;
 /**
  * This is the model class for table "{{%set}}".
  *
- * @property int          $id
- * @property string|null  $number
- * @property string|null  $name
- * @property string|null  $slug
- * @property int          $theme_id
- * @property int|null     $subtheme_id
- * @property int|null     $status
- * @property int|null     $number_variant
- * @property int|null     $minifigures
- * @property int|null     $year
- * @property int|null     $pieces
- * @property int|null     $released
- * @property float|null   $rating
- * @property int|null     $price
- * @property string|null  $brickset_url
- * @property string|null  $dimensions
- * @property string|null  $availability
- * @property string|null  $description
- * @property int|null     $age
- * @property string       $created_at
- * @property string|null  $updated_at
+ * @property int              $id
+ * @property string|null      $number
+ * @property string|null      $name
+ * @property string|null      $slug
+ * @property int              $theme_id
+ * @property int|null         $subtheme_id
+ * @property int|null         $status
+ * @property int|null         $number_variant
+ * @property int|null         $minifigures
+ * @property int|null         $year
+ * @property int|null         $pieces
+ * @property int|null         $released
+ * @property float|null       $rating
+ * @property int|null         $price
+ * @property string|null      $brickset_url
+ * @property string|null      $dimensions
+ * @property string|null      $availability
+ * @property string|null      $description
+ * @property int|null         $age
+ * @property string           $created_at
+ * @property string|null      $updated_at
  *
- * @property SetImage[]   $images
- * @property SetMinifig[] $setMinifigs
+ * @property SetImage[]       $images
+ * @property SetMinifig[]     $setMinifigs
  * @property SetOfferImport[] $setOfferImports
- * @property SetOffer[]   $setOffers
- * @property SetPrice[]   $setPrices
- * @property SetTag[]     $setTags
- * @property Tag[]        $tagModels
- * @property Theme        $theme
- * @property Theme|null   $subtheme
+ * @property SetOffer[]       $setOffers
+ * @property SetPrice[]       $setPrices
+ * @property SetTag[]         $setTags
+ * @property Tag[]            $tagModels
+ * @property Theme            $theme
+ * @property Theme|null       $subtheme
  */
 class Set extends ActiveRecord
 {
@@ -568,19 +568,28 @@ class Set extends ActiveRecord
     public static function getAvailableThemesList(): array
     {
         return self::getCachedList('set.availableThemesList', static function (): array {
+            $uniqueList = [];
+            $seenNames = [];
             $themes = Theme::find()
-                ->select(['id', 'name'])
-                ->where(['parent_id' => null])
-                ->orderBy(['name' => SORT_ASC])
+                ->select(['id', 'name', 'parent_id'])
+                ->orderBy(new \yii\db\Expression('CASE WHEN parent_id IS NULL THEN 0 ELSE 1 END ASC, name ASC, id ASC'))
                 ->asArray()
                 ->all();
 
-            $list = [];
             foreach ($themes as $theme) {
-                $list[(int)$theme['id']] = (string)$theme['name'];
+                $name = (string)$theme['name'];
+                $normalizedName = mb_strtolower(trim($name), 'UTF-8');
+                if (isset($seenNames[$normalizedName])) {
+                    continue;
+                }
+
+                $seenNames[$normalizedName] = true;
+                $uniqueList[(int)$theme['id']] = $name;
             }
 
-            return $list;
+            asort($uniqueList, SORT_NATURAL | SORT_FLAG_CASE);
+
+            return $uniqueList;
         });
     }
 
