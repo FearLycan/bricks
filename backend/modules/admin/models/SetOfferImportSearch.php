@@ -32,7 +32,7 @@ class SetOfferImportSearch extends SetOfferImport
 
         $this->load($params);
         if (!$this->validate()) {
-            return $this->createDataProvider($query);
+            return $this->buildQuery($query);
         }
 
         $query->andFilterWhere([
@@ -50,10 +50,15 @@ class SetOfferImportSearch extends SetOfferImport
             ->andFilterWhere(['like', 'import.error_message', $this->error_message])
             ->andFilterWhere(['like', 'setRelation.name', $this->setName]);
 
+        return $this->buildQuery($query);
+    }
+
+    private function buildQuery($query): ActiveDataProvider
+    {
         return new ActiveDataProvider([
             'query'      => $query,
             'pagination' => [
-                'pageSize' => 30,
+                'pageSize' => 20,
             ],
             'sort'       => [
                 'defaultOrder' => ['id' => SORT_DESC],
