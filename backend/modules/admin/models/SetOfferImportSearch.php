@@ -30,36 +30,34 @@ class SetOfferImportSearch extends SetOfferImport
             ->with(['set', 'setOffer'])
             ->joinWith(['set setRelation']);
 
-        $dataProvider = new ActiveDataProvider([
-            'query' => $query,
-            'pagination' => [
-                'pageSize' => 30,
-            ],
-            'sort' => [
-                'defaultOrder' => ['id' => SORT_DESC],
-            ],
-        ]);
-
         $this->load($params);
         if (!$this->validate()) {
-            return $dataProvider;
+            return $this->createDataProvider($query);
         }
 
         $query->andFilterWhere([
-            'import.id' => $this->id,
-            'import.set_id' => $this->set_id,
-            'import.attempts' => $this->attempts,
+            'import.id'           => $this->id,
+            'import.set_id'       => $this->set_id,
+            'import.attempts'     => $this->attempts,
             'import.set_offer_id' => $this->set_offer_id,
             'import.processed_at' => $this->processed_at,
-            'import.created_at' => $this->created_at,
-            'import.updated_at' => $this->updated_at,
+            'import.created_at'   => $this->created_at,
+            'import.updated_at'   => $this->updated_at,
         ]);
 
         $query->andFilterWhere(['like', 'import.input_url', $this->input_url])
-            ->andFilterWhere(['like', 'import.status', $this->status])
+            ->andFilterWhere(['import.status' => $this->status])
             ->andFilterWhere(['like', 'import.error_message', $this->error_message])
             ->andFilterWhere(['like', 'setRelation.name', $this->setName]);
 
-        return $dataProvider;
+        return new ActiveDataProvider([
+            'query'      => $query,
+            'pagination' => [
+                'pageSize' => 30,
+            ],
+            'sort'       => [
+                'defaultOrder' => ['id' => SORT_DESC],
+            ],
+        ]);
     }
 }

@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\widgets\DetailView;
 use common\enums\SetOfferImportStatusEnum;
 use common\models\SetOfferImport;
@@ -214,6 +215,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <th>Attempts</th>
                                     <th>Error</th>
                                     <th>Updated</th>
+                                    <th class="text-end">Actions</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -225,6 +227,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             $statusClass = match ($import->status) {
                                                 SetOfferImportStatusEnum::DONE->value => 'text-bg-success',
                                                 SetOfferImportStatusEnum::FAILED->value => 'text-bg-danger',
+                                                SetOfferImportStatusEnum::AWAITING_REVIEW->value => 'text-bg-warning text-dark',
                                                 SetOfferImportStatusEnum::PROCESSING->value => 'text-bg-primary',
                                                 default => 'text-bg-secondary',
                                             };
@@ -236,6 +239,17 @@ $this->params['breadcrumbs'][] = $this->title;
                                         <td><?= Html::encode((string)$import->attempts) ?></td>
                                         <td><?= Html::encode($import->error_message ?: '-') ?></td>
                                         <td><?= Html::encode((string)($import->updated_at ?? $import->created_at)) ?></td>
+                                        <td class="text-end">
+                                            <?php if ($import->status === SetOfferImportStatusEnum::AWAITING_REVIEW->value): ?>
+                                                <?= Html::a('Accept', ['/admin/set-offer-import/accept', 'id' => $import->id, 'returnUrl' => Url::to(['/admin/set/view', 'id' => $model->id, '#' => 'offers'])], [
+                                                    'class' => 'btn btn-sm btn-outline-success',
+                                                    'data-method' => 'post',
+                                                    'data-confirm' => 'Accept this link and move it to processing queue?',
+                                                ]) ?>
+                                            <?php else: ?>
+                                                <span class="text-body-secondary">-</span>
+                                            <?php endif; ?>
+                                        </td>
                                     </tr>
                                 <?php endforeach; ?>
                                 </tbody>

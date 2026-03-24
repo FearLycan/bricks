@@ -15,7 +15,7 @@ final class AliExpressApiClient
     {
         $baseUrl = (string)(Yii::$app->params['aliexpress.apiBaseUrl'] ?? 'https://api-sg.aliexpress.com/sync');
         $this->client = $client ?? new Client([
-            'baseUrl' => rtrim($baseUrl, '/'),
+            'baseUrl'   => rtrim($baseUrl, '/'),
             'transport' => 'yii\httpclient\CurlTransport',
         ]);
     }
@@ -23,7 +23,7 @@ final class AliExpressApiClient
     public function fetchProductByItemId(string $itemId): array
     {
         $requestParams = [
-            'product_ids' => $itemId,
+            'product_ids'     => $itemId,
             'target_currency' => (string)(Yii::$app->params['aliexpress.targetCurrency'] ?? 'USD'),
             'target_language' => (string)(Yii::$app->params['aliexpress.targetLanguage'] ?? 'EN'),
             'ship_to_country' => (string)(Yii::$app->params['aliexpress.shipToCountry'] ?? 'US'),
@@ -50,6 +50,38 @@ final class AliExpressApiClient
         return $this->normalizeProduct($products[0], $trackingId);
     }
 
+    public function fetchProductsByKeywords(string $keywords, int $page = 1, int $pageSize = 20): array
+    {
+        $normalizedKeywords = trim($keywords);
+        if ($normalizedKeywords === '') {
+            return [];
+        }
+
+        $normalizedPage = max(1, $page);
+        $normalizedPageSize = min(50, max(1, $pageSize));
+        $requestParams = [
+            'keywords'        => $normalizedKeywords,
+            'page_no'         => $normalizedPage,
+            'page_size'       => $normalizedPageSize,
+            'target_currency' => (string)(Yii::$app->params['aliexpress.targetCurrency'] ?? 'USD'),
+            'target_language' => (string)(Yii::$app->params['aliexpress.targetLanguage'] ?? 'EN'),
+            'ship_to_country' => (string)(Yii::$app->params['aliexpress.shipToCountry'] ?? 'US'),
+        ];
+
+        $data = $this->sendSignedRequest('aliexpress.affiliate.product.query', $requestParams);
+        $products = $this->extractProducts($data);
+        if ($products === []) {
+            return [];
+        }
+
+        $items = [];
+        foreach ($products as $product) {
+            $items[] = $this->normalizeProductForDiscovery($product);
+        }
+
+        return $items;
+    }
+
     private function sendSignedRequest(string $method, array $extraParams): array
     {
         $appKey = trim((string)(Yii::$app->params['aliexpress.appKey'] ?? ''));
@@ -59,12 +91,12 @@ final class AliExpressApiClient
         }
 
         $requestParams = array_merge([
-            'method' => $method,
-            'app_key' => $appKey,
+            'method'      => $method,
+            'app_key'     => $appKey,
             'sign_method' => 'md5',
-            'timestamp' => gmdate('Y-m-d H:i:s'),
-            'format' => 'json',
-            'v' => '2.0',
+            'timestamp'   => gmdate('Y-m-d H:i:s'),
+            'format'      => 'json',
+            'v'           => '2.0',
         ], $extraParams);
         $requestParams['sign'] = $this->generateSign($requestParams, $appSecret);
 
@@ -82,6 +114,14 @@ final class AliExpressApiClient
         $data = $response->getData();
         if (!is_array($data)) {
             throw new RuntimeException('AliExpress API response is not valid JSON.');
+        }
+
+        $error = $data['error_response'] ?? null;
+        if (is_array($error)) {
+            $code = (string)($error['code'] ?? '');
+            $message = (string)($error['msg'] ?? $error['sub_msg'] ?? 'Unknown API error');
+            $details = trim($code . ' ' . $message);
+            throw new RuntimeException('AliExpress API error: ' . ($details !== '' ? $details : 'unknown error'));
         }
 
         return $data;
@@ -105,7 +145,17 @@ final class AliExpressApiClient
 
     private function extractProducts(array $data): array
     {
-        $response = $data['aliexpress_affiliate_productdetail_get_response'] ?? $data;
+        $response = $data['aliexpress_affiliate_productdetail_get_response']
+            ?? $data['aliexpress_affiliate_product_query_response']
+            ?? $data;
+
+        if (!is_array($response) && count($data) === 1) {
+            $firstValue = reset($data);
+            if (is_array($firstValue)) {
+                $response = $firstValue;
+            }
+        }
+
         if (!is_array($response)) {
             return [];
         }
@@ -163,16 +213,40 @@ final class AliExpressApiClient
         $affiliateUrl = $this->generateAffiliateLink($productUrl, $trackingId);
 
         return [
-            'external_id' => $this->extractString($product, ['product_id', 'item_id', 'productId']),
-            'name' => $title,
-            'url' => $affiliateUrl,
-            'image' => $imageUrl,
-            'currency_code' => $currency !== '' ? $currency : 'USD',
-            'price_cents' => $priceAmount !== null ? (int)round($priceAmount * 100) : null,
-            'availability' => $this->extractString($product, ['availability', 'stock_status']),
-            'rating_value' => $ratingValue,
+            'external_id'      => $this->extractString($product, ['product_id', 'item_id', 'productId']),
+            'name'             => $title,
+            'url'              => $affiliateUrl,
+            'image'            => $imageUrl,
+            'currency_code'    => $currency !== '' ? $currency : 'USD',
+            'price_cents'      => $priceAmount !== null ? (int)round($priceAmount * 100) : null,
+            'availability'     => $this->extractString($product, ['availability', 'stock_status']),
+            'rating_value'     => $ratingValue,
             'rating_scale_max' => $ratingValue !== null ? 5.0 : null,
-            'review_count' => $reviewCount ?? 0,
+            'review_count'     => $reviewCount ?? 0,
+        ];
+    }
+
+    private function normalizeProductForDiscovery(array $product): array
+    {
+        $title = $this->extractString($product, ['product_title', 'title', 'product_name']);
+        $productUrl = $this->extractString($product, ['product_detail_url', 'product_url', 'promotion_link', 'promotion_link_url']);
+        $imageUrl = $this->extractString($product, ['product_main_image_url', 'main_image_url', 'image_url']);
+        $currency = strtoupper($this->extractString($product, ['target_sale_price_currency', 'sale_price_currency', 'currency_code', 'currency']) ?? 'USD');
+        $priceAmount = $this->extractPriceValue($product);
+        $reviewCount = $this->extractInt($product, ['lastest_volume', 'orders_count', 'review_count']);
+        $ratingValue = $this->extractFloat($product, ['evaluate_rate', 'rating_value']);
+
+        return [
+            'external_id'      => $this->extractString($product, ['product_id', 'item_id', 'productId']),
+            'name'             => $title,
+            'url'              => $productUrl,
+            'image'            => $imageUrl,
+            'currency_code'    => $currency !== '' ? $currency : 'USD',
+            'price_cents'      => $priceAmount !== null ? (int)round($priceAmount * 100) : null,
+            'availability'     => $this->extractString($product, ['availability', 'stock_status']),
+            'rating_value'     => $ratingValue,
+            'rating_scale_max' => $ratingValue !== null ? 5.0 : null,
+            'review_count'     => $reviewCount ?? 0,
         ];
     }
 
@@ -188,8 +262,8 @@ final class AliExpressApiClient
 
         $response = $this->sendSignedRequest('aliexpress.affiliate.link.generate', [
             'promotion_link_type' => 0,
-            'source_values' => $productUrl,
-            'tracking_id' => $trackingId,
+            'source_values'       => $productUrl,
+            'tracking_id'         => $trackingId,
         ]);
 
         $generated = $this->extractGeneratedAffiliateLink($response);
