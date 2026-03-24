@@ -23,6 +23,22 @@ return [
           ],
     ],
     'components' => [
+        'cache' => [
+            'class' => \yii\caching\FileCache::class,
+            'cachePath' => dirname(__DIR__, 2) . '/console/runtime/cache',
+        ],
+        'frontendCache' => [
+            'class' => \yii\caching\FileCache::class,
+            'cachePath' => dirname(__DIR__, 2) . '/frontend/runtime/cache',
+        ],
+        'backendCache' => [
+            'class' => \yii\caching\FileCache::class,
+            'cachePath' => dirname(__DIR__, 2) . '/backend/runtime/cache',
+        ],
+        'schemaCache' => [
+            'class' => \yii\caching\FileCache::class,
+            'cachePath' => dirname(__DIR__, 2) . '/console/runtime/schema-cache',
+        ],
         'log' => [
             'targets' => [
                 [
