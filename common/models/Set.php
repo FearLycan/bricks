@@ -572,6 +572,7 @@ class Set extends ActiveRecord
             $seenNames = [];
             $themes = Theme::find()
                 ->select(['id', 'name', 'parent_id'])
+                ->where(['status' => StatusEnum::ACTIVE->value])
                 ->orderBy(new \yii\db\Expression('CASE WHEN parent_id IS NULL THEN 0 ELSE 1 END ASC, name ASC, id ASC'))
                 ->asArray()
                 ->all();
