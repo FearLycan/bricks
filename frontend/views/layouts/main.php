@@ -149,6 +149,8 @@ if ($socialImage !== '') {
         </div>
     </footer>
 
+    <div class="modal fade" id="mainModal" tabindex="-1" aria-hidden="true"></div>
+
     <?php $this->endBody() ?>
     </body>
     </html>

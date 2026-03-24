@@ -2,6 +2,11 @@ html {
     scroll-behavior: smooth;
 }
 
+.form-control::placeholder {
+    color: #9aa0a6;
+    opacity: 0.7;
+}
+
 main > .container, main > .container-fluid {
     padding: 70px 15px 20px;
 }

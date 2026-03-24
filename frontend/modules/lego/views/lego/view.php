@@ -38,6 +38,7 @@ $promoPriceUsd = $model->getFormattedPromotionalPrice('USD');
 $basePriceUsd = $model->getFormattedPrice('USD');
 $savingsPercent = $model->getPromotionalSavingsPercent('USD');
 $bestOfferId = $bestOffer?->id;
+$queueOfferImportModalUrl = Url::to(['/management/queue-offer-import-modal', 'setId' => (int)$model->id]);
 
 ?>
 
@@ -194,13 +195,19 @@ $bestOfferId = $bestOffer?->id;
                 <div class="d-flex align-items-center justify-content-between gap-2 mb-3">
                     <h5 class="mb-0"><?= T::tr('Alternative offers by store') ?></h5>
                     <?php if ($user?->isAdmin()): ?>
-                        <?= Html::a(T::tr('Add offer'), Yii::$app->backendUrlManager->createAbsoluteUrl([
-                                '/admin/set-offer/create',
-                                'setId' => (int)$model->id,]), [
-                                'class'  => 'btn btn-sm btn-outline-primary',
-                                'target' => '_blank',
-                                'rel'    => 'noopener noreferrer',
-                        ]) ?>
+                        <div class="d-flex gap-2">
+                            <?= Html::a(T::tr('Add import link'), $queueOfferImportModalUrl, [
+                                    'class' => 'btn btn-sm btn-outline-primary js-load-modal',
+                                    'data-target' => '#mainModal',
+                            ]) ?>
+                            <?= Html::a(T::tr('Add offer'), Yii::$app->backendUrlManager->createAbsoluteUrl([
+                                    '/admin/set-offer/create',
+                                    'setId' => (int)$model->id,]), [
+                                    'class'  => 'btn btn-sm btn-outline-secondary',
+                                    'target' => '_blank',
+                                    'rel'    => 'noopener noreferrer',
+                            ]) ?>
+                        </div>
                     <?php endif; ?>
                 </div>
                 <p class="small text-body-secondary mb-3">
