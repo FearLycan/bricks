@@ -9,7 +9,6 @@ use yii\helpers\Url;
  * @var $user User
  */
 
-$displayName = trim((string)($user->username ?? 'User'));
 ?>
 
 <div class="dropdown ms-auto">
@@ -23,11 +22,14 @@ $displayName = trim((string)($user->username ?? 'User'));
                 'width'   => 20,
                 'height'  => 20,
         ]) ?>
-        <span><?= Html::encode($displayName) ?></span>
+        <span><?= Html::encode(trim((string)($user->username ?? 'User'))) ?></span>
     </button>
 
     <ul class="dropdown-menu dropdown-menu-end">
         <li><?= Html::a(T::tr('Catalog'), Url::home(), ['class' => 'dropdown-item']) ?></li>
+        <?php if ($user->isAdmin()): ?>
+            <li><?= Html::a(T::tr('Admin panel'), Yii::$app->backendUrlManager->createAbsoluteUrl(['/']), ['class' => 'dropdown-item']) ?></li>
+        <?php endif; ?>
         <li>
             <hr class="dropdown-divider">
         </li>
