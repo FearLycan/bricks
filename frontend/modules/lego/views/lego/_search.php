@@ -38,19 +38,19 @@ use yii\widgets\ActiveForm;
 
             <div class="col-md-3 mb-3 mb-lg-0">
                 <?= $form->field($model, 'theme_id')
-                        ->dropDownList(Set::getAvailableThemesList(), ['prompt' => T::tr('Any theme')])
+                        ->dropDownList(Set::getAvailableThemesList(), ['prompt' => T::tr('Any theme'), 'data-placeholder' => 'Any theme'])
                         ->label(false) ?>
             </div>
 
             <div class="col-md-3 mb-3 mb-lg-0">
                 <?= $form->field($model, 'sort_option')
-                        ->dropDownList(SetSearch::getSortOptions(), ['prompt' => T::tr('Sort by')])
+                        ->dropDownList(SetSearch::getSortOptions(), ['prompt' => T::tr('Sort by'), 'data-placeholder' => 'Sort by'])
                         ->label(false) ?>
             </div>
 
             <div class="col-md-2 mb-3 mb-lg-0">
                 <?= $form->field($model, 'year')
-                        ->dropDownList(Set::getAvailableYearsList(), ['prompt' => T::tr('Any year')])
+                        ->dropDownList(Set::getAvailableYearsList(), ['prompt' => T::tr('Any year'), 'data-placeholder' => 'Any year'])
                         ->label(false) ?>
             </div>
         </div>
@@ -68,16 +68,26 @@ use yii\widgets\ActiveForm;
 <?php InlineScript::begin(); ?>
     <script>
         (() => {
+
+            const $selects = $('form#set-search-form select');
+            $selects.each(function () {
+                const $select = $(this);
+                $select.select2({
+                    theme: "bootstrap-5",
+                    placeholder: {
+                        id: '-1',
+                        text: $select.data('placeholder'),
+                    }
+                });
+            });
+
             const searchForm = document.getElementById('set-search-form');
             if (!searchForm) {
                 return;
             }
 
-            const selects = searchForm.querySelectorAll('select');
-            selects.forEach((select) => {
-                select.addEventListener('change', () => {
-                    searchForm.submit();
-                });
+            $selects.on('change', () => {
+                searchForm.submit();
             });
 
             const themeSearch = document.getElementById('theme-select-search');

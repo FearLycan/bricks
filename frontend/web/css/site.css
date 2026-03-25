@@ -509,3 +509,8 @@ a {
 .form-control:focus {
     box-shadow: none;
 }
+
+.select2-container--bootstrap-5.select2-container--focus .select2-selection, .select2-container--bootstrap-5.select2-container--open .select2-selection {
+    border-color: #86b7fe;
+    box-shadow: none;
+}

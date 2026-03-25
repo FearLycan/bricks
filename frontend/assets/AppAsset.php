@@ -16,10 +16,13 @@ class AppAsset extends AssetBundle
     public $basePath = '@webroot';
     public $baseUrl  = '@web';
     public $css      = [
+        'libs/select2/select2.min.css',
+        'libs/select2/select2-bootstrap-5-theme.min.css',
         'css/site.css',
     ];
     public $js       = [
         'js/common.js',
+        'libs/select2/select2.full.min.js',
     ];
     public $depends  = [
         YiiAsset::class,
