@@ -11,21 +11,23 @@ use common\models\SetOffer;
 use common\models\SetOfferImport;
 use common\models\Store;
 use Throwable;
+use Yii;
 use yii\console\Controller;
 use yii\console\ExitCode;
 
 final class SetOfferDiscoveryController extends Controller
 {
     public bool $showProgress = false;
+    public int $retryAfterDays = 0;
 
     public function options($actionID): array
     {
-        return array_merge(parent::options($actionID), ['showProgress']);
+        return array_merge(parent::options($actionID), ['showProgress', 'retryAfterDays']);
     }
 
     public function optionAliases(): array
     {
-        return array_merge(parent::optionAliases(), ['p' => 'showProgress']);
+        return array_merge(parent::optionAliases(), ['p' => 'showProgress', 'r' => 'retryAfterDays']);
     }
 
     public function actionQueueMatches(int $limit = 20, int $perSet = 3, float $minScore = 0.7, int $pageSize = 20): int
@@ -34,7 +36,11 @@ final class SetOfferDiscoveryController extends Controller
         $normalizedPerSet = max(1, $perSet);
         $normalizedMinScore = max(0.0, min(1.0, $minScore));
         $normalizedPageSize = min(50, max(1, $pageSize));
-        $this->logProgress("Starting discovery: limit={$normalizedLimit}, perSet={$normalizedPerSet}, minScore={$normalizedMinScore}, pageSize={$normalizedPageSize}");
+        $defaultRetryAfterDays = (int)(Yii::$app->params['setOfferDiscovery.retryAfterDays'] ?? 30);
+        $retryAfterDays = $this->retryAfterDays > 0 ? $this->retryAfterDays : $defaultRetryAfterDays;
+        $normalizedRetryAfterDays = max(1, $retryAfterDays);
+        $retryCutoffAt = date('Y-m-d H:i:s', time() - ($normalizedRetryAfterDays * 86400));
+        $this->logProgress("Starting discovery: limit={$normalizedLimit}, perSet={$normalizedPerSet}, minScore={$normalizedMinScore}, pageSize={$normalizedPageSize}, retryAfterDays={$normalizedRetryAfterDays}");
 
         $sets = Set::find()
             ->alias('set')
@@ -42,6 +48,11 @@ final class SetOfferDiscoveryController extends Controller
             ->where(['not', ['number' => null]])
             ->andWhere(['not', ['name' => null]])
             ->andWhere(['import.id' => null])
+            ->andWhere([
+                'or',
+                ['set.offer_discovery_checked_at' => null],
+                ['<=', 'set.offer_discovery_checked_at', $retryCutoffAt],
+            ])
             ->orderBy(['set.id' => SORT_ASC])
             ->limit($normalizedLimit);
 
@@ -65,10 +76,12 @@ final class SetOfferDiscoveryController extends Controller
             $queries = $matcher->buildQueries($set);
             if ($queries === []) {
                 $this->logProgress("Set #{$set->id} skipped: no queries generated");
+                $this->markSetDiscoveryChecked($set);
                 continue;
             }
 
             $rankedCandidates = [];
+            $hasSuccessfulQuery = false;
             foreach ($queries as $query) {
                 $this->logProgress("Set #{$set->id}: searching query '{$query}'");
                 try {
@@ -78,6 +91,7 @@ final class SetOfferDiscoveryController extends Controller
                     sleep(1);
                     continue;
                 }
+                $hasSuccessfulQuery = true;
                 $this->logProgress("Set #{$set->id}: query returned " . count($items) . " item(s)");
 
                 foreach ($items as $item) {
@@ -132,6 +146,9 @@ final class SetOfferDiscoveryController extends Controller
             }
 
             if ($rankedCandidates === []) {
+                if ($hasSuccessfulQuery) {
+                    $this->markSetDiscoveryChecked($set);
+                }
                 $this->logProgress("Set #{$set->id}: no candidates matched threshold");
                 continue;
             }
@@ -167,6 +184,7 @@ final class SetOfferDiscoveryController extends Controller
             if ($queuedForSet > 0) {
                 $this->stdout("Set #{$set->id}: queued {$queuedForSet} offer(s).\n");
             } else {
+                $this->markSetDiscoveryChecked($set);
                 $this->logProgress("Set #{$set->id}: candidates found but nothing queued");
             }
         }
@@ -183,5 +201,13 @@ final class SetOfferDiscoveryController extends Controller
         }
 
         $this->stdout("[progress] {$message}\n");
+    }
+
+    private function markSetDiscoveryChecked(Set $set): void
+    {
+        $checkedAt = date('Y-m-d H:i:s');
+        if ($set->updateAttributes(['offer_discovery_checked_at' => $checkedAt]) === false) {
+            $this->stderr("Set #{$set->id}: failed to update offer_discovery_checked_at.\n");
+        }
     }
 }

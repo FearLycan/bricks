@@ -38,6 +38,7 @@ use yii\helpers\Url;
  * @property int|null         $age
  * @property string           $created_at
  * @property string|null      $updated_at
+ * @property string|null      $offer_discovery_checked_at
  *
  * @property SetImage[]       $images
  * @property SetMinifig[]     $setMinifigs
@@ -95,7 +96,7 @@ class Set extends ActiveRecord
             [['theme_id'], 'required'],
             [['theme_id', 'subtheme_id', 'status', 'number_variant', 'minifigures', 'year', 'pieces', 'released', 'age', 'price'], 'integer'],
             [['rating'], 'number'],
-            [['created_at', 'updated_at'], 'safe'],
+            [['created_at', 'updated_at', 'offer_discovery_checked_at'], 'safe'],
             [['description'], 'string'],
             [['number'], 'string', 'max' => 30],
             [['name', 'slug', 'brickset_url', 'dimensions', 'availability'], 'string', 'max' => 255],
@@ -129,6 +130,7 @@ class Set extends ActiveRecord
             'age'            => 'Age',
             'created_at'     => 'Created At',
             'updated_at'     => 'Updated At',
+            'offer_discovery_checked_at' => 'Offer Discovery Checked At',
         ];
     }
 
