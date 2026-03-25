@@ -112,6 +112,15 @@ use yii\widgets\ActiveForm;
                 }
 
                 $select.select2(select2Config);
+                $select.on('select2:unselecting', () => {
+                    $select.data('clear-opening-blocked', true);
+                });
+                $select.on('select2:opening', (event) => {
+                    if ($select.data('clear-opening-blocked')) {
+                        $select.removeData('clear-opening-blocked');
+                        event.preventDefault();
+                    }
+                });
             });
 
             const searchForm = document.getElementById('set-search-form');
