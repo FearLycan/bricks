@@ -1,10 +1,10 @@
 <?php
 
-use common\models\Set;
 use common\widgets\InlineScript;
 use frontend\components\T;
 use frontend\models\searches\SetSearch;
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\web\View;
 use yii\widgets\ActiveForm;
 
@@ -38,19 +38,30 @@ use yii\widgets\ActiveForm;
 
             <div class="col-md-3 mb-3 mb-lg-0">
                 <?= $form->field($model, 'theme_id')
-                        ->dropDownList(Set::getAvailableThemesList(), ['prompt' => T::tr('Any theme'), 'data-placeholder' => 'Any theme'])
+                        ->dropDownList($model->theme_id ? [(int)$model->theme_id => $model->theme->name] : [], [
+                                'prompt'           => T::tr('Any theme'),
+                                'data-placeholder' => T::tr('Any theme'),
+                                'data-ajax-url'    => Url::to(['/autocomplete/theme']),
+                        ])
                         ->label(false) ?>
             </div>
 
             <div class="col-md-3 mb-3 mb-lg-0">
                 <?= $form->field($model, 'sort_option')
-                        ->dropDownList(SetSearch::getSortOptions(), ['prompt' => T::tr('Sort by'), 'data-placeholder' => 'Sort by'])
+                        ->dropDownList(SetSearch::getSortOptions(), [
+                                'prompt'           => T::tr('Sort by'),
+                                'data-placeholder' => T::tr('Sort by'),
+                        ])
                         ->label(false) ?>
             </div>
 
             <div class="col-md-2 mb-3 mb-lg-0">
                 <?= $form->field($model, 'year')
-                        ->dropDownList(Set::getAvailableYearsList(), ['prompt' => T::tr('Any year'), 'data-placeholder' => 'Any year'])
+                        ->dropDownList($model->year ? [(int)$model->year => $model->year] : [], [
+                                'prompt'           => T::tr('Any year'),
+                                'data-placeholder' => T::tr('Any year'),
+                                'data-ajax-url'    => Url::to(['/autocomplete/year']),
+                        ])
                         ->label(false) ?>
             </div>
         </div>
@@ -72,13 +83,35 @@ use yii\widgets\ActiveForm;
             const $selects = $('form#set-search-form select');
             $selects.each(function () {
                 const $select = $(this);
-                $select.select2({
+                const ajaxUrl = $select.data('ajax-url');
+
+                const select2Config = {
                     theme: "bootstrap-5",
-                    placeholder: {
-                        id: '-1',
-                        text: $select.data('placeholder'),
-                    }
-                });
+                    width: $select.data('width') ? $select.data('width') : $select.hasClass('w-100') ? '100%' : 'style',
+                    placeholder: $select.data('placeholder'),
+                    allowClear: true,
+                };
+
+                if (ajaxUrl) {
+                    select2Config.ajax = {
+                        url: ajaxUrl,
+                        dataType: 'json',
+                        delay: 250,
+                        cache: true,
+                        data: (params) => ({
+                            term: params.term || '',
+                            page: params.page || 1,
+                        }),
+                        processResults: (data) => ({
+                            results: data.results || [],
+                            pagination: {
+                                more: Boolean(data.pagination && data.pagination.more),
+                            },
+                        }),
+                    };
+                }
+
+                $select.select2(select2Config);
             });
 
             const searchForm = document.getElementById('set-search-form');
