@@ -67,7 +67,7 @@ class SetOfferImportController extends Controller
                 $task->save(false);
                 $this->stderr("Failed import #{$task->id}: {$task->error_message}\n");
             }
-            sleep(1);
+            sleep(random_int(2, 5));
         }
 
         $this->stdout("Done. Successful imports: {$processedCount}\n");
