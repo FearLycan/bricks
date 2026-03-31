@@ -31,11 +31,11 @@ class SetOfferImportController extends Controller
         foreach ($pendingImportsQuery->each(50) as $task) {
             $claimed = SetOfferImport::updateAll(
                 [
-                    'status' => SetOfferImportStatusEnum::PROCESSING->value,
+                    'status'     => SetOfferImportStatusEnum::PROCESSING->value,
                     'updated_at' => date('Y-m-d H:i:s'),
                 ],
                 [
-                    'id' => $task->id,
+                    'id'     => $task->id,
                     'status' => SetOfferImportStatusEnum::PENDING->value,
                 ]
             );
@@ -67,6 +67,7 @@ class SetOfferImportController extends Controller
                 $task->save(false);
                 $this->stderr("Failed import #{$task->id}: {$task->error_message}\n");
             }
+            sleep(1);
         }
 
         $this->stdout("Done. Successful imports: {$processedCount}\n");
