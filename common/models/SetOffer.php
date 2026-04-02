@@ -23,6 +23,7 @@ use yii\db\BaseActiveRecord;
  * @property float|null $rating_value
  * @property float|null $rating_scale_max
  * @property int $review_count
+ * @property string|null $review_impressions
  * @property string|null $source
  * @property int $is_manual_override
  * @property string|null $synced_at
@@ -31,7 +32,7 @@ use yii\db\BaseActiveRecord;
  *
  * @property Set $set
  * @property Store $store
- * @property \common\models\SetOfferReview[] $setOfferReviews
+ * @property SetOfferReview[] $setOfferReviews
  */
 class SetOffer extends ActiveRecord
 {
@@ -60,6 +61,7 @@ class SetOffer extends ActiveRecord
             [['set_id', 'store_id'], 'required'],
             [['set_id', 'store_id', 'price', 'review_count', 'is_manual_override'], 'integer'],
             [['rating_value', 'rating_scale_max'], 'number'],
+            [['review_impressions'], 'string'],
             [['synced_at', 'created_at', 'updated_at'], 'safe'],
             [['external_id'], 'string', 'max' => 100],
             [['name', 'url', 'image', 'availability'], 'string', 'max' => 255],
@@ -87,6 +89,7 @@ class SetOffer extends ActiveRecord
             'rating_value' => 'Rating Value',
             'rating_scale_max' => 'Rating Scale Max',
             'review_count' => 'Review Count',
+            'review_impressions' => 'Review Impressions',
             'source' => 'Source',
             'is_manual_override' => 'Is Manual Override',
             'synced_at' => 'Synced At',
@@ -107,7 +110,7 @@ class SetOffer extends ActiveRecord
 
     public function getSetOfferReviews(): ActiveQuery
     {
-        return $this->hasMany(\common\models\SetOfferReview::class, ['set_offer_id' => 'id'])->orderBy(['reviewed_at' => SORT_DESC, 'id' => SORT_DESC]);
+        return $this->hasMany(SetOfferReview::class, ['set_offer_id' => 'id'])->orderBy(['reviewed_at' => SORT_DESC, 'id' => SORT_ASC]);
     }
 
     public function getDisplayNameOrDefault(string $default = '-'): string
@@ -130,6 +133,102 @@ class SetOffer extends ActiveRecord
         }
 
         return Set::formatAmountFromCents($this->price, $this->currency_code !== '' ? $this->currency_code : 'USD');
+    }
+
+    public function getDisplayRatingValue(): float
+    {
+        if ($this->rating_value !== null && (float)$this->rating_value > 0.0) {
+            return round((float)$this->rating_value, 1);
+        }
+
+        $ratings = [];
+        if ($this->isRelationPopulated('setOfferReviews')) {
+            foreach ($this->setOfferReviews as $review) {
+                if ($review->rating_value === null) {
+                    continue;
+                }
+                $ratings[] = (float)$review->rating_value;
+            }
+        }
+
+        if ($ratings === []) {
+            return 0.0;
+        }
+
+        return round(array_sum($ratings) / count($ratings), 1);
+    }
+
+    public function getDisplayReviewCount(): int
+    {
+        if ($this->review_count > 0) {
+            return (int)$this->review_count;
+        }
+
+        if ($this->isRelationPopulated('setOfferReviews')) {
+            return count($this->setOfferReviews);
+        }
+
+        return 0;
+    }
+
+    public function getRatingStarClasses(?float $rating = null): array
+    {
+        $normalizedRating = $rating !== null ? (float)$rating : $this->getDisplayRatingValue();
+        $classes = [];
+        for ($index = 1; $index <= 5; $index++) {
+            $fullThreshold = (float)$index;
+            $halfThreshold = $fullThreshold - 0.5;
+            if ($normalizedRating >= $fullThreshold) {
+                $classes[] = 'bi-star-fill';
+                continue;
+            }
+            if ($normalizedRating >= $halfThreshold) {
+                $classes[] = 'bi-star-half';
+                continue;
+            }
+            $classes[] = 'bi-star';
+        }
+
+        return $classes;
+    }
+
+    public function getReviewImpressions(): array
+    {
+        if ($this->review_impressions === null || trim($this->review_impressions) === '') {
+            return [];
+        }
+
+        try {
+            $decoded = \yii\helpers\Json::decode($this->review_impressions, true);
+        } catch (\Throwable) {
+            return [];
+        }
+
+        if (!is_array($decoded)) {
+            return [];
+        }
+
+        $result = [];
+        foreach ($decoded as $item) {
+            if (!is_array($item)) {
+                continue;
+            }
+
+            $label = trim((string)($item['label'] ?? ''));
+            $num = isset($item['num']) && is_numeric($item['num'])
+                ? (int)$item['num']
+                : (isset($item['count']) && is_numeric($item['count']) ? (int)$item['count'] : 0);
+            if ($label === '') {
+                continue;
+            }
+
+            $result[] = [
+                'label' => $label,
+                'num' => max(0, $num),
+            ];
+        }
+
+        return $result;
     }
 
     public static function syncBySetAndStore(Set $set, Store $store, array $items, string $source): void

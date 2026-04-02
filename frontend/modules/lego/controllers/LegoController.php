@@ -5,6 +5,7 @@ namespace frontend\modules\lego\controllers;
 use common\components\AccessControl;
 use common\components\Controller;
 use common\models\Set;
+use common\models\SetOffer;
 use common\models\SetMinifig;
 use common\models\User;
 use frontend\models\searches\SetSearch;
@@ -21,7 +22,7 @@ class LegoController extends Controller
                     [
                         'allow'   => true,
                         'actions' => [
-                            'index', 'view', 'minifig',
+                            'index', 'view', 'minifig', 'offer-reviews-modal',
                         ],
                         'roles'   => ['?', '@'],
                     ],
@@ -80,6 +81,31 @@ class LegoController extends Controller
             'number' => $number,
             'name' => $minifigName,
             'image' => $minifigImage,
+        ]);
+    }
+
+    public function actionOfferReviewsModal(int $setOfferId): string
+    {
+        $offer = SetOffer::find()
+            ->with(['setOfferReviews.setOfferReviewImages', 'store'])
+            ->where(['id' => $setOfferId])
+            ->one();
+
+        if (!$offer) {
+            $this->notFound();
+        }
+
+        $averageRating = $offer->getDisplayRatingValue();
+        $reviewsTotal = $offer->getDisplayReviewCount();
+        $ratingStarClasses = $offer->getRatingStarClasses($averageRating);
+        $reviewImpressions = $offer->getReviewImpressions();
+
+        return $this->renderAjax('_offer-reviews-modal', [
+            'offer' => $offer,
+            'averageRating' => $averageRating,
+            'reviewsTotal' => $reviewsTotal,
+            'ratingStarClasses' => $ratingStarClasses,
+            'reviewImpressions' => $reviewImpressions,
         ]);
     }
 
