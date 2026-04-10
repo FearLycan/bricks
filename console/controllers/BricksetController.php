@@ -147,6 +147,8 @@ class BricksetController extends Controller
 
             if ($legoSet->getMainImage() === null) {
                 $legoSet->updateAttributes(['status' => StatusEnum::INACTIVE->value]);
+            } else {
+                $legoSet->updateAttributes(['status' => StatusEnum::ACTIVE->value]);
             }
 
             if ($legoSet->minifigures && $legoSet->isActive()) {
