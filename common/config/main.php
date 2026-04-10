@@ -1,6 +1,7 @@
 <?php
 return [
-    'aliases' => [
+    'timeZone'   => 'Europe/Warsaw',
+    'aliases'    => [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
     ],
