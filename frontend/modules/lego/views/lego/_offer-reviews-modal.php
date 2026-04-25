@@ -2,13 +2,14 @@
 
 use common\components\Html;
 use common\models\SetOffer;
+use common\widgets\InlineScript;
 use frontend\components\T;
 
 /**
- * @var SetOffer $offer
- * @var float|null $averageRating
- * @var int $reviewsTotal
- * @var string[] $ratingStarClasses
+ * @var SetOffer                                   $offer
+ * @var float|null                                 $averageRating
+ * @var int                                        $reviewsTotal
+ * @var string[]                                   $ratingStarClasses
  * @var array<int, array{label: string, num: int}> $reviewImpressions
  */
 ?>
@@ -79,17 +80,23 @@ use frontend\components\T;
                             <?php endif; ?>
 
                             <?php if ($review->setOfferReviewImages): ?>
-                                <div class="d-flex flex-wrap gap-2">
+                                <div class="d-flex flex-wrap gap-2 offer-review-images">
                                     <?php foreach ($review->setOfferReviewImages as $reviewImage): ?>
                                         <?= Html::a(
-                                            Html::img($reviewImage->url, [
-                                                'alt' => Html::encode(T::tr('Review image')),
-                                                'loading' => 'lazy',
-                                                'style' => 'width: 64px; height: 64px; object-fit: cover;',
-                                                'class' => 'rounded border',
-                                            ]),
-                                            $reviewImage->url,
-                                            ['target' => '_blank', 'rel' => 'noopener noreferrer']
+                                                Html::img($reviewImage->url, [
+                                                        'alt'     => Html::encode(T::tr('Review image')),
+                                                        'loading' => 'lazy',
+                                                        'style'   => 'width: 64px; height: 64px; object-fit: cover;',
+                                                        'class'   => 'rounded border',
+                                                ]),
+                                                '#',
+                                                [
+                                                        "data-href"  => $reviewImage->url,
+                                                        "data-gall"  => "review{$review->id}",
+                                                        "data-title" => $review->content ?: '',
+                                                        'rel'        => 'noopener noreferrer',
+                                                        'class'      => 'venobox',
+                                                ]
                                         ) ?>
                                     <?php endforeach; ?>
                                 </div>
@@ -101,3 +108,9 @@ use frontend\components\T;
         </div>
     </div>
 </div>
+
+<?php InlineScript::begin(); ?>
+<script>
+    initVenoBox();
+</script>
+<?php InlineScript::end(); ?>

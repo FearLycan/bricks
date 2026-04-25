@@ -306,4 +306,23 @@
             return false;
         });
     });
+
+    initVenoBox();
 })(jQuery);
+
+function initVenoBox(customOptions = {}) {
+    const defaultOptions = {
+        selector: '.venobox',
+        numeration: true,
+        infinigall: true,
+        share: false,
+        spinner: 'rotating-plane',
+        titleattr: 'data-title',
+        titlePosition: 'bottom',
+        titleStyle: 'bar',
+    };
+
+    const options = {...defaultOptions, ...customOptions};
+
+    return new VenoBox(options);
+}

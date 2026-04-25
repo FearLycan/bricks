@@ -11,7 +11,7 @@ use yii\console\ExitCode;
 use yii\helpers\Json;
 use yii\httpclient\Client;
 
-final class AliExpressReviewDebugController extends Controller
+final class AliExpressReviewController extends Controller
 {
     public string $mtopToken = '';
     public string $mtopTokenEnc = '';
@@ -55,20 +55,28 @@ final class AliExpressReviewDebugController extends Controller
         ]);
     }
 
-    public function actionFetch(string $productId, string $sellerAdminSeq = '', int $pages = 1, int $pageSize = 20): int
+    public function actionFetch(int $offerId, string $sellerAdminSeq = '', int $pages = 1, int $pageSize = 20): int
     {
+        $setOffer = SetOffer::findOne($offerId);
+
+        if (!$setOffer) {
+            return ExitCode::IOERR;
+        }
+
+        if ((int)$setOffer->review_count === 0 || $setOffer->store->code !== 'ALIEXPRESS') {
+            return ExitCode::IOERR;
+        }
+
         $normalizedPages = max(1, $pages);
         $normalizedPageSize = min(50, max(1, $pageSize));
-        $normalizedProductId = trim($productId);
+        $normalizedProductId = trim($setOffer->external_id);
         if ($normalizedProductId === '') {
             $this->stderr("productId is required.\n");
 
             return ExitCode::USAGE;
         }
 
-        $client = new Client([
-            'transport' => 'yii\httpclient\CurlTransport',
-        ]);
+        $client = new Client(['transport' => 'yii\httpclient\CurlTransport']);
         $cookieHeader = $this->buildCookieHeader();
         $productPageHtml = '';
 
@@ -115,15 +123,15 @@ final class AliExpressReviewDebugController extends Controller
 
         for ($page = 1; $page <= $normalizedPages; $page++) {
             $dataPayload = [
-                'productId' => $normalizedProductId,
-                'page' => $page,
-                'pageSize' => $normalizedPageSize,
-                '_lang' => $this->lang,
-                'filter' => $this->filter,
-                'sort' => $this->sort,
-                'country' => $this->country,
+                'productId'      => $normalizedProductId,
+                'page'           => $page,
+                'pageSize'       => $normalizedPageSize,
+                '_lang'          => $this->lang,
+                'filter'         => $this->filter,
+                'sort'           => $this->sort,
+                'country'        => $this->country,
                 'sellerAdminSeq' => $normalizedSellerAdminSeq,
-                'clientType' => 'web',
+                'clientType'     => 'web',
             ];
             $data = Json::encode($dataPayload, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
             $timestamp = (string)((int)floor(microtime(true) * 1000));
@@ -131,16 +139,16 @@ final class AliExpressReviewDebugController extends Controller
             $callback = 'mtopjsonp_debug_' . $page;
 
             $query = [
-                'jsv' => '2.5.1',
-                'appKey' => $this->appKey,
-                't' => $timestamp,
-                'sign' => $sign,
-                'api' => 'mtop.aliexpress.review.pc.list',
-                'v' => '1.0',
-                'type' => 'jsonp',
+                'jsv'      => '2.5.1',
+                'appKey'   => $this->appKey,
+                't'        => $timestamp,
+                'sign'     => $sign,
+                'api'      => 'mtop.aliexpress.review.pc.list',
+                'v'        => '1.0',
+                'type'     => 'jsonp',
                 'dataType' => 'jsonp',
                 'callback' => $callback,
-                'data' => $data,
+                'data'     => $data,
             ];
 
             $request = $client
@@ -149,10 +157,10 @@ final class AliExpressReviewDebugController extends Controller
                 ->setUrl('https://acs.aliexpress.com/h5/mtop.aliexpress.review.pc.list/1.0/');
 
             $headers = [
-                'Accept' => '*/*',
+                'Accept'          => '*/*',
                 'Accept-Language' => 'en-US,en;q=0.9',
-                'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36',
-                'Referer' => 'https://www.aliexpress.com/',
+                'User-Agent'      => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36',
+                'Referer'         => 'https://www.aliexpress.com/',
             ];
 
             if ($cookieHeader !== '') {
@@ -185,15 +193,8 @@ final class AliExpressReviewDebugController extends Controller
         $dedupedReviews = $this->dedupeExtractedReviews($allExtractedReviews);
         $this->stdout("TOTAL EXTRACTED REVIEWS: " . count($dedupedReviews) . "\n");
         if ($this->saveToDb) {
-            $setOffer = $this->resolveSetOffer($normalizedProductId);
-            if (!$setOffer) {
-                $this->stderr("Could not resolve SetOffer. Pass --setOfferId or ensure ALIEXPRESS offer with external_id={$normalizedProductId} exists.\n");
-
-                return ExitCode::UNSPECIFIED_ERROR;
-            }
-
             $reviewItems = $this->mapExtractedReviewsToReviewItems($dedupedReviews);
-            SetOfferReview::syncByOffer($setOffer, $reviewItems, 'aliexpress_review_debug');
+            SetOfferReview::syncByOffer($setOffer, $reviewItems, 'aliexpress_review');
             $setOffer->review_impressions = $impressionItems !== [] ? Json::encode($impressionItems, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) : null;
             $setOffer->save(false, ['review_impressions']);
             $this->stdout("Saved " . count($reviewItems) . " review records to DB for set_offer_id={$setOffer->id}.\n");
@@ -339,16 +340,16 @@ final class AliExpressReviewDebugController extends Controller
                 ->setUrl($productUrl)
                 ->setOptions([
                     CURLOPT_FOLLOWLOCATION => true,
-                    CURLOPT_MAXREDIRS => 8,
-                    CURLOPT_TIMEOUT => 25,
+                    CURLOPT_MAXREDIRS      => 8,
+                    CURLOPT_TIMEOUT        => 25,
                     CURLOPT_CONNECTTIMEOUT => 10,
                 ]);
 
             $headers = [
-                'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                'Accept'          => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
                 'Accept-Language' => 'en-US,en;q=0.9',
-                'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36',
-                'Referer' => 'https://www.aliexpress.com/',
+                'User-Agent'      => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36',
+                'Referer'         => 'https://www.aliexpress.com/',
             ];
             if ($cookieHeader !== '') {
                 $headers['Cookie'] = $cookieHeader;
@@ -374,15 +375,15 @@ final class AliExpressReviewDebugController extends Controller
             ->setUrl('https://www.aliexpress.com/item/' . rawurlencode($productId) . '.html')
             ->setOptions([
                 CURLOPT_FOLLOWLOCATION => true,
-                CURLOPT_MAXREDIRS => 8,
-                CURLOPT_TIMEOUT => 25,
+                CURLOPT_MAXREDIRS      => 8,
+                CURLOPT_TIMEOUT        => 25,
                 CURLOPT_CONNECTTIMEOUT => 10,
             ])
             ->addHeaders([
-                'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                'Accept'          => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
                 'Accept-Language' => 'en-US,en;q=0.9',
-                'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36',
-                'Referer' => 'https://www.aliexpress.com/',
+                'User-Agent'      => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36',
+                'Referer'         => 'https://www.aliexpress.com/',
             ])
             ->send();
 
@@ -403,28 +404,28 @@ final class AliExpressReviewDebugController extends Controller
         $timestamp = (string)((int)floor(microtime(true) * 1000));
         $callback = 'mtopjsonp_bootstrap';
         $data = Json::encode([
-            'productId' => $productId,
-            'page' => 1,
-            'pageSize' => 1,
-            '_lang' => $this->lang,
-            'filter' => 'all',
-            'sort' => 'complex_default',
-            'country' => $this->country,
+            'productId'      => $productId,
+            'page'           => 1,
+            'pageSize'       => 1,
+            '_lang'          => $this->lang,
+            'filter'         => 'all',
+            'sort'           => 'complex_default',
+            'country'        => $this->country,
             'sellerAdminSeq' => '0',
-            'clientType' => 'web',
+            'clientType'     => 'web',
         ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
 
         $query = [
-            'jsv' => '2.5.1',
-            'appKey' => $this->appKey,
-            't' => $timestamp,
-            'sign' => md5('bootstrap-' . $timestamp),
-            'api' => 'mtop.aliexpress.review.pc.list',
-            'v' => '1.0',
-            'type' => 'jsonp',
+            'jsv'      => '2.5.1',
+            'appKey'   => $this->appKey,
+            't'        => $timestamp,
+            'sign'     => md5('bootstrap-' . $timestamp),
+            'api'      => 'mtop.aliexpress.review.pc.list',
+            'v'        => '1.0',
+            'type'     => 'jsonp',
             'dataType' => 'jsonp',
             'callback' => $callback,
-            'data' => $data,
+            'data'     => $data,
         ];
 
         $request = $client
@@ -432,11 +433,11 @@ final class AliExpressReviewDebugController extends Controller
             ->setMethod('GET')
             ->setUrl('https://acs.aliexpress.com/h5/mtop.aliexpress.review.pc.list/1.0/')
             ->addHeaders([
-                'Accept' => '*/*',
+                'Accept'          => '*/*',
                 'Accept-Language' => 'en-US,en;q=0.9',
-                'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36',
-                'Referer' => 'https://www.aliexpress.com/',
-                'Cookie' => $cookieHeader,
+                'User-Agent'      => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36',
+                'Referer'         => 'https://www.aliexpress.com/',
+                'Cookie'          => $cookieHeader,
             ])
             ->setData($query);
 
@@ -551,16 +552,16 @@ final class AliExpressReviewDebugController extends Controller
             ->setUrl($feedbackUrl)
             ->setOptions([
                 CURLOPT_FOLLOWLOCATION => true,
-                CURLOPT_MAXREDIRS => 8,
-                CURLOPT_TIMEOUT => 25,
+                CURLOPT_MAXREDIRS      => 8,
+                CURLOPT_TIMEOUT        => 25,
                 CURLOPT_CONNECTTIMEOUT => 10,
             ])
             ->addHeaders([
-                'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                'Accept'          => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
                 'Accept-Language' => 'en-US,en;q=0.9',
-                'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36',
-                'Referer' => 'https://www.aliexpress.com/',
-                'Cookie' => $cookieHeader,
+                'User-Agent'      => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36',
+                'Referer'         => 'https://www.aliexpress.com/',
+                'Cookie'          => $cookieHeader,
             ])
             ->send();
 
@@ -594,15 +595,15 @@ final class AliExpressReviewDebugController extends Controller
         $timestamp = (string)((int)floor(microtime(true) * 1000));
         $callback = 'mtopjsonp_probe';
         $dataPayload = [
-            'productId' => $productId,
-            'page' => 1,
-            'pageSize' => 1,
-            '_lang' => $this->lang,
-            'filter' => $this->filter,
-            'sort' => $this->sort,
-            'country' => $this->country,
+            'productId'      => $productId,
+            'page'           => 1,
+            'pageSize'       => 1,
+            '_lang'          => $this->lang,
+            'filter'         => $this->filter,
+            'sort'           => $this->sort,
+            'country'        => $this->country,
             'sellerAdminSeq' => '0',
-            'clientType' => 'web',
+            'clientType'     => 'web',
         ];
         $data = Json::encode($dataPayload, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         $sign = md5($token . '&' . $timestamp . '&' . $this->appKey . '&' . $data);
@@ -612,23 +613,23 @@ final class AliExpressReviewDebugController extends Controller
             ->setMethod('GET')
             ->setUrl('https://acs.aliexpress.com/h5/mtop.aliexpress.review.pc.list/1.0/')
             ->addHeaders([
-                'Accept' => '*/*',
+                'Accept'          => '*/*',
                 'Accept-Language' => 'en-US,en;q=0.9',
-                'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36',
-                'Referer' => 'https://www.aliexpress.com/',
-                'Cookie' => $cookieHeader,
+                'User-Agent'      => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36',
+                'Referer'         => 'https://www.aliexpress.com/',
+                'Cookie'          => $cookieHeader,
             ])
             ->setData([
-                'jsv' => '2.5.1',
-                'appKey' => $this->appKey,
-                't' => $timestamp,
-                'sign' => $sign,
-                'api' => 'mtop.aliexpress.review.pc.list',
-                'v' => '1.0',
-                'type' => 'jsonp',
+                'jsv'      => '2.5.1',
+                'appKey'   => $this->appKey,
+                't'        => $timestamp,
+                'sign'     => $sign,
+                'api'      => 'mtop.aliexpress.review.pc.list',
+                'v'        => '1.0',
+                'type'     => 'jsonp',
                 'dataType' => 'jsonp',
                 'callback' => $callback,
-                'data' => $data,
+                'data'     => $data,
             ])
             ->send();
 
@@ -747,15 +748,15 @@ final class AliExpressReviewDebugController extends Controller
         }
 
         return [
-            'id' => $reviewId,
-            'rating_raw' => $ratingRaw,
-            'rating_value' => $ratingValue,
+            'id'               => $reviewId,
+            'rating_raw'       => $ratingRaw,
+            'rating_value'     => $ratingValue,
             'rating_scale_max' => $ratingScaleMax,
-            'eval_date' => $this->extractScalarStringByKeys($evaViewItem, ['evalDate']),
-            'content' => $content !== '' ? $content : null,
-            'images' => $images,
-            'reviewer_id' => $reviewerId,
-            'reviewer_name' => $reviewerName !== '' ? $reviewerName : null,
+            'eval_date'        => $this->extractScalarStringByKeys($evaViewItem, ['evalDate']),
+            'content'          => $content !== '' ? $content : null,
+            'images'           => $images,
+            'reviewer_id'      => $reviewerId,
+            'reviewer_name'    => $reviewerName !== '' ? $reviewerName : null,
             'reviewer_country' => $reviewerCountry,
         ];
     }
@@ -942,7 +943,7 @@ final class AliExpressReviewDebugController extends Controller
 
         return SetOffer::find()
             ->where([
-                'store_id' => $store->id,
+                'store_id'    => $store->id,
                 'external_id' => $productId,
             ])
             ->orderBy(['id' => SORT_DESC])
@@ -959,13 +960,13 @@ final class AliExpressReviewDebugController extends Controller
 
             $items[] = [
                 'external_review_id' => isset($review['id']) ? (string)$review['id'] : null,
-                'author_name' => isset($review['reviewer_name']) ? (string)$review['reviewer_name'] : null,
-                'reviewer_country' => isset($review['reviewer_country']) ? (string)$review['reviewer_country'] : null,
-                'reviewed_at' => $this->normalizeReviewedAt(isset($review['eval_date']) ? (string)$review['eval_date'] : null),
-                'content' => isset($review['content']) ? (string)$review['content'] : null,
-                'rating_value' => isset($review['rating_value']) && is_numeric($review['rating_value']) ? (float)$review['rating_value'] : null,
-                'rating_scale_max' => isset($review['rating_scale_max']) && is_numeric($review['rating_scale_max']) ? (float)$review['rating_scale_max'] : 5.0,
-                'images' => isset($review['images']) && is_array($review['images']) ? $review['images'] : [],
+                'author_name'        => isset($review['reviewer_name']) ? (string)$review['reviewer_name'] : null,
+                'reviewer_country'   => isset($review['reviewer_country']) ? (string)$review['reviewer_country'] : null,
+                'reviewed_at'        => $this->normalizeReviewedAt(isset($review['eval_date']) ? (string)$review['eval_date'] : null),
+                'content'            => isset($review['content']) ? (string)$review['content'] : null,
+                'rating_value'       => isset($review['rating_value']) && is_numeric($review['rating_value']) ? (float)$review['rating_value'] : null,
+                'rating_scale_max'   => isset($review['rating_scale_max']) && is_numeric($review['rating_scale_max']) ? (float)$review['rating_scale_max'] : 5.0,
+                'images'             => isset($review['images']) && is_array($review['images']) ? $review['images'] : [],
             ];
         }
 
@@ -981,21 +982,21 @@ final class AliExpressReviewDebugController extends Controller
         if ($raw > 5.0 && $raw <= 100.0) {
             return [
                 'value' => round($raw / 20.0, 1),
-                'max' => 5.0,
+                'max'   => 5.0,
             ];
         }
 
         if ($raw > 5.0 && $raw <= 10.0) {
             return [
                 'value' => round($raw / 2.0, 1),
-                'max' => 5.0,
+                'max'   => 5.0,
             ];
         }
 
         if ($raw >= 0.0 && $raw <= 5.0) {
             return [
                 'value' => round($raw, 1),
-                'max' => 5.0,
+                'max'   => 5.0,
             ];
         }
 
@@ -1053,7 +1054,7 @@ final class AliExpressReviewDebugController extends Controller
 
             $result[] = [
                 'label' => $label,
-                'num' => max(0, $num),
+                'num'   => max(0, $num),
             ];
         }
 

@@ -395,13 +395,17 @@ $queueOfferImportModalUrl = Url::to(['/management/queue-offer-import-modal', 'se
                                         <div class="col">
                                             <div class="card h-100 shadow-sm border-0">
                                                 <?php if ($minifig->image): ?>
-                                                    <?= Html::img($minifig->image, [
-                                                            'class'         => 'card-img-top js-zoomable-image',
-                                                            'alt'           => Html::encode($minifig->name),
-                                                            'loading'       => 'lazy',
-                                                            'data-zoom-src' => $minifig->image,
-                                                            'style'         => 'height: 190px; object-fit: contain; background-color: #f8f9fa;',
-                                                    ]) ?>
+                                                    <a href="#" data-href="<?= $minifig->image ?>"
+                                                       data-title="<?= Html::encode($minifig->name) ?>"
+                                                       class="venobox" data-gall="minifig<?= $model->id ?>">
+                                                        <?= Html::img($minifig->image, [
+                                                                'class'         => 'card-img-top',
+                                                                'alt'           => Html::encode($minifig->name),
+                                                                'loading'       => 'lazy',
+                                                                'data-zoom-src' => $minifig->image,
+                                                                'style'         => 'height: 190px; object-fit: contain; background-color: #f8f9fa;',
+                                                        ]) ?>
+                                                    </a>
                                                 <?php endif; ?>
                                                 <div class="card-body d-flex flex-column">
                                                     <div class="fw-semibold mb-3">
