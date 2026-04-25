@@ -105,11 +105,16 @@
     const buildModalLoadingHtml = function () {
         return '' +
             '<div class="modal-dialog modal-dialog-centered modal-dialog-loading">' +
-            '  <div class="modal-content modal-loading">' +
+            '  <div class="modal-content modal-loading modal-loading-skeleton">' +
             '    <div class="modal-header">' +
             '<h5 class="modal-title">Loading data</h5>' +
             '    </div>' +
             '    <div class="modal-body">' +
+            '      <div class="modal-loading-lines mb-3">' +
+            '        <div class="modal-loading-line modal-loading-line-lg"></div>' +
+            '        <div class="modal-loading-line"></div>' +
+            '        <div class="modal-loading-line modal-loading-line-sm"></div>' +
+            '      </div>' +
             '      <div class="ajax-container ajax-container-search loading-ajax">' +
             '        <div class="ajax-loader">' +
             '          <div class="loading-icon" role="status">' +
@@ -118,7 +123,7 @@
             '            </div>' +
             '          </div>' +
             '          <div class="ajax-message">' +
-            '            <p class="loading-progress">Loading content</p>' +
+            '            <p class="loading-progress"></p>' +
             '          </div>' +
             '        </div>' +
             '      </div>' +
@@ -160,6 +165,13 @@
                     modal.hide();
                 } else {
                     $target.html(data);
+                    const $dialog = $target.children('.modal-dialog').first();
+                    if ($dialog.length) {
+                        $dialog.addClass('modal-content-fade-in');
+                        window.setTimeout(function () {
+                            $dialog.removeClass('modal-content-fade-in');
+                        }, 260);
+                    }
                 }
 
             },
@@ -294,4 +306,23 @@
             return false;
         });
     });
+
+    initVenoBox();
 })(jQuery);
+
+function initVenoBox(customOptions = {}) {
+    const defaultOptions = {
+        selector: '.venobox',
+        numeration: true,
+        infinigall: true,
+        share: false,
+        spinner: 'rotating-plane',
+        titleattr: 'data-title',
+        titlePosition: 'bottom',
+        titleStyle: 'bar',
+    };
+
+    const options = {...defaultOptions, ...customOptions};
+
+    return new VenoBox(options);
+}

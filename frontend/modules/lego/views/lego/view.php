@@ -113,8 +113,8 @@ $queueOfferImportModalUrl = Url::to(['/management/queue-offer-import-modal', 'se
                                 '<span class="lego-price-current">' .
                                 '<span class="text-success fw-bold lego-price-promo">' . Html::encode($promoPriceUsd) . '</span>' .
                                 (($savingsPercent !== null && $savingsPercent > 0)
-                                    ? '<span class="badge text-bg-danger">-' . Html::encode((string)$savingsPercent) . '%</span>'
-                                    : '') .
+                                        ? '<span class="badge text-bg-danger">-' . Html::encode((string)$savingsPercent) . '%</span>'
+                                        : '') .
                                 '</span>',
                                 '#alternative-offers',
                                 ['class' => 'text-decoration-none js-smooth-scroll', 'data-scroll-target' => '#alternative-offers']
@@ -197,7 +197,7 @@ $queueOfferImportModalUrl = Url::to(['/management/queue-offer-import-modal', 'se
                     <?php if ($user?->isAdmin()): ?>
                         <div class="d-flex gap-2">
                             <?= Html::a(T::tr('Add import link'), $queueOfferImportModalUrl, [
-                                    'class' => 'btn btn-sm btn-outline-primary js-load-modal',
+                                    'class'       => 'btn btn-sm btn-outline-primary js-load-modal',
                                     'data-target' => '#mainModal',
                             ]) ?>
                             <?= Html::a(T::tr('Add offer'), Yii::$app->backendUrlManager->createAbsoluteUrl([
@@ -216,6 +216,7 @@ $queueOfferImportModalUrl = Url::to(['/management/queue-offer-import-modal', 'se
                 <?php if ($model->setOffers): ?>
                     <div class="row row-cols-1 row-cols-lg-2 g-3">
                         <?php foreach ($model->setOffers as $offer): ?>
+                            <?php $offerReviewsModalUrl = Url::to(['/lego/lego/offer-reviews-modal', 'setOfferId' => (int)$offer->id]); ?>
                             <div class="col">
                                 <div class="card h-100 shadow-sm border-0 lego-offer-card<?= $bestOfferId !== null && $offer->id === $bestOfferId ? ' is-best-offer' : '' ?>">
                                     <div class="card-body">
@@ -273,38 +274,25 @@ $queueOfferImportModalUrl = Url::to(['/management/queue-offer-import-modal', 'se
                                                 <div class="mt-3 d-flex gap-3 align-items-center flex-wrap lego-offer-meta">
                                                             <span class="badge text-bg-warning text-dark">
                                                                 <i class="bi bi-star-fill me-1"></i>
-                                                                <?= Html::encode($offer->rating_value !== null ? number_format((float)$offer->rating_value, 1, '.', '') : '0.0') ?>
+                                                                <?= Html::encode(number_format((float)$offer->getDisplayRatingValue(), 1, '.', '')) ?>
                                                             </span>
                                                     <span class="small text-body-secondary">
-                                                                <?= T::tr('Reviews') ?>: <?= Html::encode((string)$offer->review_count) ?>
+                                                                <?= T::tr('Reviews') ?>: <?= Html::encode((string)$offer->getDisplayReviewCount()) ?>
                                                             </span>
+                                                    <?= Html::a(T::tr('View reviews'), $offerReviewsModalUrl, [
+                                                            'class'       => 'btn btn-sm btn-outline-secondary js-load-modal',
+                                                            'data-target' => '#mainModal',
+                                                    ]) ?>
                                                     <?php if ($offer->url): ?>
-                                                        <?= Html::a('<i class="bi bi-bag-check me-1"></i>' . T::tr('View offer'), $offer->url, ['class' => 'btn btn-sm btn-success ms-auto lego-offer-action', 'target' => '_blank', 'rel' => 'noopener noreferrer']) ?>
+                                                        <?= Html::a('<i class="bi bi-bag-check me-1"></i>' . T::tr('View offer'), $offer->url, [
+                                                                'class'  => 'btn btn-sm btn-success ms-auto lego-offer-action',
+                                                                'target' => '_blank',
+                                                                'rel'    => 'noopener noreferrer',
+                                                        ]) ?>
                                                     <?php endif; ?>
                                                 </div>
                                             </div>
                                         </div>
-
-                                        <?php if ($offer->setOfferReviews): ?>
-                                            <div class="mt-3 pt-3 border-top">
-                                                <?php foreach (array_slice($offer->setOfferReviews, 0, 3) as $review): ?>
-                                                    <div class="mb-2">
-                                                        <div class="small fw-semibold">
-                                                            <?= Html::encode($review->author_name ?: T::tr('Anonymous')) ?>
-                                                            <?php if ($review->rating_value !== null): ?>
-                                                                <span class="text-body-secondary">· <?= Html::encode(number_format((float)$review->rating_value, 1, '.', '')) ?>/<?= Html::encode((string)($review->rating_scale_max ?? 5)) ?></span>
-                                                            <?php endif; ?>
-                                                        </div>
-                                                        <?php if ($review->title): ?>
-                                                            <div class="small"><?= Html::encode($review->title) ?></div>
-                                                        <?php endif; ?>
-                                                        <?php if ($review->content): ?>
-                                                            <div class="small text-body-secondary"><?= Html::encode(mb_substr(trim($review->content), 0, 180)) ?><?= mb_strlen(trim($review->content)) > 180 ? '...' : '' ?></div>
-                                                        <?php endif; ?>
-                                                    </div>
-                                                <?php endforeach; ?>
-                                            </div>
-                                        <?php endif; ?>
                                     </div>
                                 </div>
                             </div>
@@ -407,13 +395,17 @@ $queueOfferImportModalUrl = Url::to(['/management/queue-offer-import-modal', 'se
                                         <div class="col">
                                             <div class="card h-100 shadow-sm border-0">
                                                 <?php if ($minifig->image): ?>
-                                                    <?= Html::img($minifig->image, [
-                                                            'class'         => 'card-img-top js-zoomable-image',
-                                                            'alt'           => Html::encode($minifig->name),
-                                                            'loading'       => 'lazy',
-                                                            'data-zoom-src' => $minifig->image,
-                                                            'style'         => 'height: 190px; object-fit: contain; background-color: #f8f9fa;',
-                                                    ]) ?>
+                                                    <a href="#" data-href="<?= $minifig->image ?>"
+                                                       data-title="<?= Html::encode($minifig->name) ?>"
+                                                       class="venobox" data-gall="minifig<?= $model->id ?>">
+                                                        <?= Html::img($minifig->image, [
+                                                                'class'         => 'card-img-top',
+                                                                'alt'           => Html::encode($minifig->name),
+                                                                'loading'       => 'lazy',
+                                                                'data-zoom-src' => $minifig->image,
+                                                                'style'         => 'height: 190px; object-fit: contain; background-color: #f8f9fa;',
+                                                        ]) ?>
+                                                    </a>
                                                 <?php endif; ?>
                                                 <div class="card-body d-flex flex-column">
                                                     <div class="fw-semibold mb-3">

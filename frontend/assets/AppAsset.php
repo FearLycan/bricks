@@ -18,11 +18,13 @@ class AppAsset extends AssetBundle
     public $css      = [
         'libs/select2/select2.min.css',
         'libs/select2/select2-bootstrap-5-theme.min.css',
+        'libs/venobox/venobox.min.css',
         'css/site.css',
     ];
     public $js       = [
-        'js/common.js',
         'libs/select2/select2.full.min.js',
+        'libs/venobox/venobox.min.js',
+        'js/common.js',
     ];
     public $depends  = [
         YiiAsset::class,

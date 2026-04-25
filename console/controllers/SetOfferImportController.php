@@ -7,6 +7,7 @@ use common\enums\SetOfferImportStatusEnum;
 use common\models\Set;
 use common\models\SetOfferImport;
 use Throwable;
+use Yii;
 use yii\console\Controller;
 use yii\console\ExitCode;
 
@@ -60,6 +61,10 @@ class SetOfferImportController extends Controller
                 $task->save(false);
                 $processedCount++;
                 $this->stdout("Processed import #{$task->id}\n");
+
+                $controller = new AliExpressReviewController(Yii::$app->controller->id, Yii::$app);
+                $controller->actionFetch($offer->id);
+
             } catch (Throwable $exception) {
                 $task->status = SetOfferImportStatusEnum::FAILED->value;
                 $task->attempts = (int)$task->attempts + 1;
