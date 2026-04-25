@@ -2,6 +2,7 @@
 
 namespace console\controllers;
 
+use common\enums\StatusEnum;
 use common\models\SetOffer;
 use common\models\SetOfferReview;
 use common\models\Store;
@@ -55,6 +56,34 @@ final class AliExpressReviewController extends Controller
         ]);
     }
 
+    public function actionSync(): void
+    {
+        $store = Store::findOne(['code' => 'ALIEXPRESS']);
+        if (!$store) {
+            $this->stderr("Store ALIEXPRESS not found.\n");
+        }
+
+        $date = new \DateTime('now');
+        $date->modify('-30 days');
+
+        $setOffers = SetOffer::find()
+            ->limit(200)
+            ->where(['store_id' => $store->id])
+            ->andWhere([
+                'or',
+                ['last_review_synced_at' => null],
+                ['<=', 'last_review_synced_at', $date->format('Y-m-d H:i:s')],
+            ]);
+
+        /** @var SetOffer $setOffer */
+        foreach ($setOffers->each(50) as $setOffer) {
+            $this->stdout("Processing set_offer_id={$setOffer->id}...\n");
+            $this->actionFetch($setOffer->id);
+            $setOffer->updateAttributes(['last_review_synced_at' => date('Y-m-d H:i:s')]);
+            sleep(random_int(2, 8));
+        }
+    }
+
     public function actionFetch(int $offerId, string $sellerAdminSeq = '', int $pages = 1, int $pageSize = 20): int
     {
         $setOffer = SetOffer::findOne($offerId);
@@ -63,7 +92,7 @@ final class AliExpressReviewController extends Controller
             return ExitCode::IOERR;
         }
 
-        if ((int)$setOffer->review_count === 0 || $setOffer->store->code !== 'ALIEXPRESS') {
+        if ($setOffer->store->code !== 'ALIEXPRESS') {
             return ExitCode::IOERR;
         }
 
@@ -201,6 +230,15 @@ final class AliExpressReviewController extends Controller
         }
 
         return ExitCode::OK;
+    }
+
+    public function stdout($string): string
+    {
+        if (YII_DEBUG) {
+            parent::stdout($string);
+        }
+
+        return '';
     }
 
     private function resolveToken(string $cookieHeader = ''): string

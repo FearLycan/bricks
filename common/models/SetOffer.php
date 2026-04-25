@@ -10,28 +10,29 @@ use yii\db\BaseActiveRecord;
 /**
  * This is the model class for table "{{%set_offer}}".
  *
- * @property int $id
- * @property int $set_id
- * @property int $store_id
- * @property string|null $external_id
- * @property string|null $name
- * @property string|null $url
- * @property string|null $image
- * @property string $currency_code
- * @property int|null $price
- * @property string|null $availability
- * @property float|null $rating_value
- * @property float|null $rating_scale_max
- * @property int $review_count
- * @property string|null $review_impressions
- * @property string|null $source
- * @property int $is_manual_override
- * @property string|null $synced_at
- * @property string $created_at
- * @property string|null $updated_at
+ * @property int              $id
+ * @property int              $set_id
+ * @property int              $store_id
+ * @property string|null      $external_id
+ * @property string|null      $name
+ * @property string|null      $url
+ * @property string|null      $image
+ * @property string           $currency_code
+ * @property int|null         $price
+ * @property string|null      $availability
+ * @property float|null       $rating_value
+ * @property float|null       $rating_scale_max
+ * @property int              $review_count
+ * @property string|null      $review_impressions
+ * @property string|null      $source
+ * @property int              $is_manual_override
+ * @property string|null      $synced_at
+ * @property string           $created_at
+ * @property string|null      $updated_at
+ * @property string|null      $last_review_synced_at
  *
- * @property Set $set
- * @property Store $store
+ * @property Set              $set
+ * @property Store            $store
  * @property SetOfferReview[] $setOfferReviews
  */
 class SetOffer extends ActiveRecord
@@ -40,12 +41,12 @@ class SetOffer extends ActiveRecord
     {
         return [
             'timestamp' => [
-                'class' => TimestampBehavior::class,
+                'class'      => TimestampBehavior::class,
                 'attributes' => [
                     BaseActiveRecord::EVENT_BEFORE_INSERT => ['created_at'],
                     BaseActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
                 ],
-                'value' => date("Y-m-d H:i:s"),
+                'value'      => date("Y-m-d H:i:s"),
             ],
         ];
     }
@@ -62,7 +63,7 @@ class SetOffer extends ActiveRecord
             [['set_id', 'store_id', 'price', 'review_count', 'is_manual_override'], 'integer'],
             [['rating_value', 'rating_scale_max'], 'number'],
             [['review_impressions'], 'string'],
-            [['synced_at', 'created_at', 'updated_at'], 'safe'],
+            [['synced_at', 'created_at', 'updated_at', 'last_review_synced_at'], 'safe'],
             [['external_id'], 'string', 'max' => 100],
             [['name', 'url', 'image', 'availability'], 'string', 'max' => 255],
             [['currency_code'], 'string', 'max' => 3],
@@ -76,25 +77,26 @@ class SetOffer extends ActiveRecord
     public function attributeLabels(): array
     {
         return [
-            'id' => 'ID',
-            'set_id' => 'Set ID',
-            'store_id' => 'Store ID',
-            'external_id' => 'External ID',
-            'name' => 'Name',
-            'url' => 'Url',
-            'image' => 'Image',
-            'currency_code' => 'Currency Code',
-            'price' => 'Price',
-            'availability' => 'Availability',
-            'rating_value' => 'Rating Value',
-            'rating_scale_max' => 'Rating Scale Max',
-            'review_count' => 'Review Count',
-            'review_impressions' => 'Review Impressions',
-            'source' => 'Source',
-            'is_manual_override' => 'Is Manual Override',
-            'synced_at' => 'Synced At',
-            'created_at' => 'Created At',
-            'updated_at' => 'Updated At',
+            'id'                    => 'ID',
+            'set_id'                => 'Set ID',
+            'store_id'              => 'Store ID',
+            'external_id'           => 'External ID',
+            'name'                  => 'Name',
+            'url'                   => 'Url',
+            'image'                 => 'Image',
+            'currency_code'         => 'Currency Code',
+            'price'                 => 'Price',
+            'availability'          => 'Availability',
+            'rating_value'          => 'Rating Value',
+            'rating_scale_max'      => 'Rating Scale Max',
+            'review_count'          => 'Review Count',
+            'review_impressions'    => 'Review Impressions',
+            'source'                => 'Source',
+            'is_manual_override'    => 'Is Manual Override',
+            'synced_at'             => 'Synced At',
+            'created_at'            => 'Created At',
+            'updated_at'            => 'Updated At',
+            'last_review_synced_at' => 'Last Review Synced At',
         ];
     }
 
@@ -224,7 +226,7 @@ class SetOffer extends ActiveRecord
 
             $result[] = [
                 'label' => $label,
-                'num' => max(0, $num),
+                'num'   => max(0, $num),
             ];
         }
 
