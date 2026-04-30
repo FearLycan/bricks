@@ -23,13 +23,13 @@ AppAsset::register($this);
 
 $breadcrumbLinks = $this->params['breadcrumbs'] ?? [];
 $homeBreadcrumb = [
-        'label' => Html::encode(Yii::$app->name),
-        'url'   => Yii::$app->homeUrl,
+    'label' => Html::encode(Yii::$app->name),
+    'url'   => Yii::$app->homeUrl,
 ];
 
 $schemaGraph = [
-        OrganizationSchemaFactory::fromParams(),
-        BreadcrumbListSchemaFactory::fromView($breadcrumbLinks, $homeBreadcrumb, (string)$this->title),
+    OrganizationSchemaFactory::fromParams(),
+    BreadcrumbListSchemaFactory::fromView($breadcrumbLinks, $homeBreadcrumb, (string)$this->title),
 ];
 
 $this->params['socialImage'] = Url::to('/images/logo-social.png', true);
@@ -101,6 +101,10 @@ if ($socialImage !== '') {
             </script>
         <?php endif; ?>
 
+        <?php if (isset(Yii::$app->params['leadTag']) && Yii::$app->params['leadTag']): ?>
+            <meta name="mylead-verification" content="<?= Yii::$app->params['leadTag'] ?>">
+        <?php endif; ?>
+
     </head>
     <body class="d-flex flex-column h-100">
     <?php $this->beginBody() ?>
@@ -108,26 +112,26 @@ if ($socialImage !== '') {
     <header class="text-bg-dark">
         <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
             <?php NavBar::begin([
-                    'id'         => 'menu-navbar',
-                    'brandLabel' => Html::img('@web/images/logo-transparent.png', [
-                                    'alt'     => Yii::$app->name,
-                                    'loading' => 'lazy',
-                                    'style'   => 'height: 32px; width: 32px;',
-                                    'class'   => 'd-inline-block align-text-top',
-                            ]) . ' ' . Html::encode(Yii::$app->name),
-                    'brandUrl'   => Yii::$app->homeUrl,
-                    'options'    => [
-                            'class' => 'navbar navbar-expand-md navbar-dark bg-dark fixed-top',
-                    ],
+                'id'         => 'menu-navbar',
+                'brandLabel' => Html::img('@web/images/logo-transparent.png', [
+                        'alt'     => Yii::$app->name,
+                        'loading' => 'lazy',
+                        'style'   => 'height: 32px; width: 32px;',
+                        'class'   => 'd-inline-block align-text-top',
+                    ]) . ' ' . Html::encode(Yii::$app->name),
+                'brandUrl'   => Yii::$app->homeUrl,
+                'options'    => [
+                    'class' => 'navbar navbar-expand-md navbar-dark bg-dark fixed-top',
+                ],
             ]);
             $menuItems = [
                 //['label' => 'LEGO<sup>®</sup>', 'url' => ['/lego']],
             ];
 
             echo Nav::widget([
-                    'options'      => ['class' => 'navbar-nav me-auto mb-2 mb-md-0'],
-                    'encodeLabels' => false,
-                    'items'        => $menuItems,
+                'options'      => ['class' => 'navbar-nav me-auto mb-2 mb-md-0'],
+                'encodeLabels' => false,
+                'items'        => $menuItems,
             ]);
 
             if (!Yii::$app->user->isGuest) {
@@ -144,10 +148,10 @@ if ($socialImage !== '') {
 
         <div class="container">
             <?= Breadcrumbs::widget([
-                    'links'        => $breadcrumbLinks,
-                    'homeLink'     => $homeBreadcrumb,
-                    'encodeLabels' => false,
-                    'options'      => ['class' => 'breadcrumb p-3 bg-body-tertiary rounded-3'],
+                'links'        => $breadcrumbLinks,
+                'homeLink'     => $homeBreadcrumb,
+                'encodeLabels' => false,
+                'options'      => ['class' => 'breadcrumb p-3 bg-body-tertiary rounded-3'],
             ]) ?>
             <?= Alert::widget() ?>
             <?= $content ?>
