@@ -174,8 +174,8 @@ if ($socialImage !== '') {
     <?php $this->endBody() ?>
 
 
-    <?php if (Yii::$app->user->isGuest && isset(Yii::$app->params['smart-link']['aliexpress']) && Yii::$app->params['smart-link']['aliexpress']): ?>
-        <iframe src="<?= Yii::$app->params['smart-link']['aliexpress'] ?>" style="display:none;"></iframe>
+    <?php if (Yii::$app->user->isGuest && isset(Yii::$app->params['smart-links']['aliexpress']) && Yii::$app->params['smart-links']['aliexpress']): ?>
+        <iframe src="<?= Yii::$app->params['smart-links']['aliexpress'] ?>" style="display:none;"></iframe>
     <?php endif; ?>
 
 
