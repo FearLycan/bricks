@@ -85,6 +85,22 @@ if ($socialImage !== '') {
 
         <?= JsonLdRenderer::render($schemaGraph) ?>
         <?php $this->head() ?>
+
+        <?php if (isset(Yii::$app->params['gtag']) && Yii::$app->params['gtag']): ?>
+            <!-- Google tag (gtag.js) -->
+            <script async src="https://www.googletagmanager.com/gtag/js?id=<?= Yii::$app->params['gtag'] ?>"></script>
+            <script>
+                window.dataLayer = window.dataLayer || [];
+
+                function gtag() {
+                    dataLayer.push(arguments);
+                }
+
+                gtag('js', new Date());
+                gtag('config', '<?= Yii::$app->params['gtag'] ?>');
+            </script>
+        <?php endif; ?>
+
     </head>
     <body class="d-flex flex-column h-100">
     <?php $this->beginBody() ?>
