@@ -1,6 +1,7 @@
 <?php
 return [
-    'adminEmail' => 'admin@example.com',
-    'gtag'       => '',
-    'leadTag'    => '',
+    'adminEmail'  => 'admin@example.com',
+    'gtag'        => '',
+    'leadTag'     => '',
+    'smart-links' => [],
 ];

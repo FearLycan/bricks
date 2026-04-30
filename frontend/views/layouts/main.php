@@ -172,6 +172,13 @@ if ($socialImage !== '') {
     <div class="modal fade" id="mainModal" tabindex="-1" aria-hidden="true"></div>
 
     <?php $this->endBody() ?>
+
+
+    <?php if (Yii::$app->user->isGuest && isset(Yii::$app->params['smart-link']['aliexpress']) && Yii::$app->params['smart-link']['aliexpress']): ?>
+        <iframe src="<?= Yii::$app->params['smart-link']['aliexpress'] ?>" style="display:none;"></iframe>
+    <?php endif; ?>
+
+
     </body>
     </html>
 <?php $this->endPage();
