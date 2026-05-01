@@ -56,14 +56,14 @@ use yii\web\View;
                     </span>
                 <?php endif; ?>
                 <?php if ($model->age !== null): ?>
-                    <span class="set-card-meta-item" title="<?= T::tr("Age restriction") ?>">
+                    <span class="set-card-meta-item d-none d-sm-flex" title="<?= T::tr("Age restriction") ?>">
                         <i class="bi bi-cake me-1"></i>
                         <?= Html::encode($model->age) ?>+
                     </span>
                 <?php endif; ?>
 
                 <?php if($model->minifigures): ?>
-                    <span class="set-card-meta-item" title="<?= T::tr("Minifigures") ?>">
+                    <span class="set-card-meta-item d-none d-sm-flex" title="<?= T::tr("Minifigures") ?>">
                         <i class="bi bi-people me-1"></i>
                         <?= Html::encode($model->minifigures) ?>
                     </span>
