@@ -150,6 +150,15 @@ a {
     gap: 4px;
 }
 
+.set-card-meta-item + .set-card-meta-item::before {
+    content: '';
+    display: inline-block;
+    width: 1px;
+    height: 12px;
+    background: rgba(0, 0, 0, .15);
+    margin-right: 0.75rem;
+}
+
 .lego-set .card {
     transition: box-shadow .2s ease;
 }
