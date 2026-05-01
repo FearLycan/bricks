@@ -41,7 +41,9 @@ $this->params['robots'] = $hasActiveFilters ? 'noindex,follow' : 'index,follow';
     </p>
 </div>
 
-<?= $this->render('_search', ['model' => $searchModel]) ?>
+<div class="mb-3">
+    <?= $this->render('_search', ['model' => $searchModel]) ?>
+</div>
 
 <?= $this->render('_list', ['dataProvider' => $dataProvider]) ?>
 

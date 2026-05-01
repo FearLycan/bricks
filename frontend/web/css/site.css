@@ -109,6 +109,47 @@ a {
     background-color: transparent;
 }
 
+.set-card-img-wrap {
+    position: relative;
+    overflow: hidden;
+}
+
+.set-card-discount-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: #dc3545;
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 4px;
+    line-height: 1.4;
+    letter-spacing: 0.03em;
+}
+
+.set-card-number {
+    font-size: 0.7rem;
+    letter-spacing: 0.05em;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.set-card-meta {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.5rem 1rem 0.75rem;
+    border-top: 1px solid rgba(0, 0, 0, .06);
+    font-size: 0.75rem;
+    color: #6c757d;
+}
+
+.set-card-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
 .lego-set .card {
     transition: box-shadow .2s ease;
 }
