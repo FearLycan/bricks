@@ -137,8 +137,9 @@ a {
 
 .set-card-meta {
     display: flex;
-    gap: 0.75rem;
-    padding: 0.5rem 1rem 0.75rem;
+    flex-wrap: wrap;
+    gap: 0.35rem 0.6rem;
+    padding: 0.5rem 0.75rem 0.65rem;
     border-top: 1px solid rgba(0, 0, 0, .06);
     font-size: 0.75rem;
     color: #6c757d;
@@ -147,16 +148,15 @@ a {
 .set-card-meta-item {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 3px;
+    white-space: nowrap;
+    padding-right: 0.6rem;
+    border-right: 1px solid rgba(0, 0, 0, .15);
 }
 
-.set-card-meta-item + .set-card-meta-item::before {
-    content: '';
-    display: inline-block;
-    width: 1px;
-    height: 12px;
-    background: rgba(0, 0, 0, .15);
-    margin-right: 0.75rem;
+.set-card-meta-item:last-child {
+    padding-right: 0;
+    border-right: none;
 }
 
 .lego-set .card {

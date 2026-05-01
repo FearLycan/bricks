@@ -68,7 +68,6 @@ use yii\web\View;
                         <?= Html::encode($model->minifigures) ?>
                     </span>
                 <?php endif; ?>
-
             </div>
         <?php endif; ?>
     </div>
