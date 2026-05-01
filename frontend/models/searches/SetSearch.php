@@ -97,6 +97,28 @@ class SetSearch extends Set
         return $this->buildQuery($query);
     }
 
+    public function searchPromo(): ActiveDataProvider
+    {
+        $subquery = '(SELECT set_id, MIN(price) as min_price FROM {{%set_offer}} WHERE currency_code = \'USD\' GROUP BY set_id)';
+
+        $query = Set::find()
+            ->alias('s')
+            ->select(['s.*'])
+            ->andWhere(['s.status' => StatusEnum::ACTIVE->value])
+            ->andWhere(['not', ['s.price' => null]])
+            ->andWhere(['>', 's.price', 0])
+            ->innerJoin($subquery . ' so', 'so.set_id = s.id AND so.min_price < s.price')
+            ->orderBy(new Expression('(s.price - so.min_price) / s.price DESC'));
+
+        return new ActiveDataProvider([
+            'query'      => $query,
+            'pagination' => [
+                'pageSize'  => 20,
+                'pageParam' => 'promo_page',
+            ],
+        ]);
+    }
+
     private function buildQuery($query): ActiveDataProvider
     {
         return new ActiveDataProvider([
@@ -135,13 +157,13 @@ class SetSearch extends Set
     {
         switch ($this->sort_option) {
             case 'price_asc':
-                $query->orderBy(['price' => SORT_ASC, 'id' => SORT_ASC]);
+                $query->orderBy(new Expression('price IS NULL ASC, price ASC, id ASC'));
                 break;
             case 'price_desc':
                 $query->orderBy(['price' => SORT_DESC, 'id' => SORT_ASC]);
                 break;
             case 'pieces_asc':
-                $query->orderBy(['pieces' => SORT_ASC, 'id' => SORT_ASC]);
+                $query->orderBy(new Expression('pieces IS NULL ASC, pieces ASC, id ASC'));
                 break;
             case 'pieces_desc':
                 $query->orderBy(['pieces' => SORT_DESC, 'id' => SORT_ASC]);
@@ -150,7 +172,7 @@ class SetSearch extends Set
                 $query->orderBy(['year' => SORT_DESC, 'id' => SORT_ASC]);
                 break;
             case 'year_asc':
-                $query->orderBy(['year' => SORT_ASC, 'id' => SORT_ASC]);
+                $query->orderBy(new Expression('year IS NULL ASC, year ASC, id ASC'));
                 break;
             case 'name_asc':
                 $query->orderBy(['name' => SORT_ASC, 'id' => SORT_ASC]);
@@ -159,15 +181,14 @@ class SetSearch extends Set
                 $query->orderBy(['name' => SORT_DESC, 'id' => SORT_ASC]);
                 break;
             case 'price_per_piece_asc':
-                $query->orderBy(new Expression('CASE WHEN pieces > 0 THEN price / pieces END ASC'))
-                    ->addOrderBy(['id' => SORT_ASC]);
+                $query->orderBy(new Expression('(pieces IS NULL OR pieces <= 0 OR price IS NULL) ASC, CASE WHEN pieces > 0 THEN price / pieces END ASC, id ASC'));
                 break;
             case 'price_per_piece_desc':
                 $query->orderBy(new Expression('CASE WHEN pieces > 0 THEN price / pieces END DESC'))
                     ->addOrderBy(['id' => SORT_ASC]);
                 break;
             case 'minifigures_asc':
-                $query->orderBy(['minifigures' => SORT_ASC, 'id' => SORT_ASC]);
+                $query->orderBy(new Expression('minifigures IS NULL ASC, minifigures ASC, id ASC'));
                 break;
             case 'minifigures_desc':
                 $query->orderBy(['minifigures' => SORT_DESC, 'id' => SORT_ASC]);

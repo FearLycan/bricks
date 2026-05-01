@@ -82,6 +82,18 @@ final class SeoHelper
         return self::appendPageSuffix('LEGO Sets Catalog and Price Comparison', $page);
     }
 
+    public static function buildPromoTitle(int $page = 1): string
+    {
+        return self::appendPageSuffix('LEGO Sets On Sale', $page);
+    }
+
+    public static function buildPromoDescription(int $page = 1): string
+    {
+        $description = 'Browse LEGO sets currently on sale. Find the best discounts and compare prices from top retailers.';
+
+        return self::truncate(self::appendPageDescriptionSuffix($description, $page));
+    }
+
     public static function buildCatalogDescription(int $page = 1): string
     {
         $description = 'Browse LEGO sets, compare prices, and filter the catalog by theme, release year, and sorting options.';

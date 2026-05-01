@@ -125,7 +125,8 @@ if ($socialImage !== '') {
                 ],
             ]);
             $menuItems = [
-                //['label' => 'LEGO<sup>®</sup>', 'url' => ['/lego']],
+                ['label' => 'LEGO<sup>®</sup> Sets', 'url' => ['/lego']],
+                ['label' => '<i class="bi bi-tags me-1"></i>On Sale', 'url' => ['/lego/on-sale']],
             ];
 
             echo Nav::widget([

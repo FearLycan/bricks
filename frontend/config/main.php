@@ -57,6 +57,7 @@ return [
                 '<modules:lego>/<controler:theme>/<slug>'       => 'lego/theme/index',
                 '<modules:lego>/<controler:theme>/<slug>/<sub>' => 'lego/theme/index',
                 '<alias:lego>'                                  => 'lego/lego/index',
+                'lego/on-sale'                                  => 'lego/lego/promo',
                 '<alias:lego>/minifig/<number:[A-Za-z0-9\\-]+>' => 'lego/lego/minifig',
                 '<modules:lego>/<slug>'                         => 'lego/lego/view',
             ],

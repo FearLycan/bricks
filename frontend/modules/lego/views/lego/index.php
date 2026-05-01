@@ -46,6 +46,3 @@ $this->params['robots'] = $hasActiveFilters ? 'noindex,follow' : 'index,follow';
 </div>
 
 <?= $this->render('_list', ['dataProvider' => $dataProvider]) ?>
-
-
-

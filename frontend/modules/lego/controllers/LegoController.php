@@ -22,7 +22,7 @@ class LegoController extends Controller
                     [
                         'allow'   => true,
                         'actions' => [
-                            'index', 'view', 'minifig', 'offer-reviews-modal',
+                            'index', 'view', 'minifig', 'offer-reviews-modal', 'promo',
                         ],
                         'roles'   => ['?', '@'],
                     ],
@@ -37,7 +37,17 @@ class LegoController extends Controller
         $dataProvider = $searchModel->search($this->request->queryParams);
 
         return $this->render('index', [
-            'searchModel' => $searchModel,
+            'searchModel'  => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+
+    public function actionPromo(): string
+    {
+        $searchModel = new SetSearch();
+        $dataProvider = $searchModel->searchPromo();
+
+        return $this->render('promo', [
             'dataProvider' => $dataProvider,
         ]);
     }
