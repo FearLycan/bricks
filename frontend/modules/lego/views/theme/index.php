@@ -60,7 +60,9 @@ if ($subTheme) {
     </p>
 </div>
 
-<?= $this->render('/lego/_search', ['model' => $searchModel]) ?>
+<div class="mb-3">
+    <?= $this->render('/lego/_search', ['model' => $searchModel]) ?>
+</div>
 
 <?= $this->render('/lego/_list', ['dataProvider' => $dataProvider]) ?>
 
