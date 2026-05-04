@@ -9,8 +9,6 @@ use frontend\components\SeoHelper;
 use frontend\components\T;
 use yii\bootstrap5\Breadcrumbs;
 use yii\bootstrap5\Html;
-use yii\bootstrap5\Nav;
-use yii\bootstrap5\NavBar;
 use yii\helpers\Url;
 use yii\web\View;
 
@@ -109,38 +107,46 @@ if ($socialImage !== '') {
     <body class="d-flex flex-column h-100">
     <?php $this->beginBody() ?>
 
-    <header class="text-bg-dark">
-        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-            <?php NavBar::begin([
-                'id'         => 'menu-navbar',
-                'brandLabel' => Html::img('@web/images/logo-transparent.png', [
-                        'alt'     => Yii::$app->name,
-                        'loading' => 'lazy',
-                        'style'   => 'height: 32px; width: 32px;',
-                        'class'   => 'd-inline-block align-text-top',
-                    ]) . ' ' . Html::encode(Yii::$app->name),
-                'brandUrl'   => Yii::$app->homeUrl,
-                'options'    => [
-                    'class' => 'navbar navbar-expand-md navbar-dark bg-dark fixed-top',
-                ],
-            ]);
-            $menuItems = [
-                ['label' => 'LEGO<sup>®</sup> Sets', 'url' => ['/lego']],
-                ['label' => '<i class="bi bi-tags me-1"></i>On Sale', 'url' => ['/lego/on-sale']],
-            ];
-
-            echo Nav::widget([
-                'options'      => ['class' => 'navbar-nav me-auto mb-2 mb-md-0'],
-                'encodeLabels' => false,
-                'items'        => $menuItems,
-            ]);
-
-            if (!Yii::$app->user->isGuest) {
-                echo $this->render('_user-dropdown-menu', ['user' => Yii::$app->user->identity]);
-            }
-
-            NavBar::end(); ?>
+    <header class="bricks-header fixed-top shadow-sm" id="menu-navbar">
+        <div class="bricks-topbar">
+            <div class="text-center py-2">
+                <span class="small bricks-topbar-text">
+                    <i class="bi bi-lightning-charge-fill me-1"></i>Track LEGO<sup>®</sup> prices and find the best deals in one place
+                </span>
+            </div>
         </div>
+        <nav class="navbar navbar-expand-md navbar-light bricks-nav-bar">
+            <div class="container-fluid px-3 px-lg-4">
+                <a class="navbar-brand bricks-brand d-flex align-items-center gap-2 text-decoration-none" href="<?= Yii::$app->homeUrl ?>">
+                    <?= Html::img('@web/images/logo.png', [
+                        'alt'   => Yii::$app->name,
+                        'class' => 'bricks-brand-icon',
+                    ]) ?>
+                    <span class="bricks-brand-name"><?= Html::encode(Yii::$app->name) ?></span>
+                </a>
+                <button class="navbar-toggler border-0 shadow-none" type="button"
+                        data-bs-toggle="collapse" data-bs-target="#bricksNavCollapse"
+                        aria-controls="bricksNavCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="bricksNavCollapse">
+                    <ul class="navbar-nav ms-3 me-auto mb-2 mb-md-0">
+                        <li class="nav-item">
+                            <a class="bricks-nav-link nav-link" href="<?= Url::to(['/lego']) ?>">LEGO<sup>®</sup> Sets</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="bricks-nav-link nav-link" href="<?= Url::to(['/lego/new']) ?>"><i class="bi bi-stars me-1"></i>New Arrivals</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="bricks-nav-link nav-link" href="<?= Url::to(['/lego/on-sale']) ?>"><i class="bi bi-tags me-1"></i>On Sale</a>
+                        </li>
+                    </ul>
+                    <?php if (!Yii::$app->user->isGuest): ?>
+                        <?= $this->render('_user-dropdown-menu', ['user' => Yii::$app->user->identity]) ?>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </nav>
     </header>
 
     <main role="main" class="flex-shrink-0">
@@ -152,21 +158,35 @@ if ($socialImage !== '') {
                 'links'        => $breadcrumbLinks,
                 'homeLink'     => $homeBreadcrumb,
                 'encodeLabels' => false,
-                'options'      => ['class' => 'breadcrumb p-3 bg-body-tertiary rounded-3'],
+                'options'      => ['class' => 'breadcrumb bricks-breadcrumb'],
             ]) ?>
             <?= Alert::widget() ?>
             <?= $content ?>
         </div>
     </main>
 
-    <footer class="footer mt-auto py-3 text-muted">
-        <div class="container">
-            <p class="float-start">&copy; <?= Html::encode(Yii::$app->name) ?> <?= date('Y') ?></p>
-            <p class="float-end mb-0 text-end">
-                <?= T::tr('Some product links are affiliate links, which means we may earn a commission if you make a purchase through our website.') ?>
-                <br>
-                <?= T::tr('LEGO® is a trademark of the LEGO Group. This website is not sponsored, authorized, or endorsed by the LEGO Group.') ?>
-            </p>
+    <footer class="bricks-footer mt-auto">
+        <div class="container py-4">
+            <div class="row align-items-center g-3">
+                <div class="col-md-4">
+                    <div class="d-flex align-items-center gap-2 mb-1">
+                        <?= Html::img('@web/images/logo.png', [
+                            'alt'   => Yii::$app->name,
+                            'class' => 'bricks-footer-logo',
+                        ]) ?>
+                        <strong class="text-white"><?= Html::encode(Yii::$app->name) ?></strong>
+                    </div>
+                    <p class="bricks-footer-text small mb-0">&copy; <?= Html::encode(Yii::$app->name) ?> <?= date('Y') ?></p>
+                </div>
+                <div class="col-md-8 text-md-end">
+                    <p class="bricks-footer-text small mb-1">
+                        <?= T::tr('Some product links are affiliate links, which means we may earn a commission if you make a purchase through our website.') ?>
+                    </p>
+                    <p class="bricks-footer-text small mb-0">
+                        <?= T::tr('LEGO® is a trademark of the LEGO Group. This website is not sponsored, authorized, or endorsed by the LEGO Group.') ?>
+                    </p>
+                </div>
+            </div>
         </div>
     </footer>
 

@@ -11,17 +11,12 @@ use yii\helpers\Url;
 
 ?>
 
-<div class="dropdown ms-auto">
-    <button class="btn btn-sm btn-dark text-white border border-light dropdown-toggle d-flex align-items-center gap-2"
+<div class="dropdown">
+    <button class="bricks-user-btn dropdown-toggle d-flex align-items-center gap-2"
             type="button"
             data-bs-toggle="dropdown"
             aria-expanded="false">
-        <?= Html::img('@web/images/logo-transparent.png', [
-                'alt'     => Yii::$app->name,
-                'loading' => 'lazy',
-                'width'   => 20,
-                'height'  => 20,
-        ]) ?>
+        <i class="bi bi-person-circle"></i>
         <span><?= Html::encode(trim((string)($user->username ?? 'User'))) ?></span>
     </button>
 

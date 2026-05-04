@@ -8,7 +8,7 @@ html {
 }
 
 main > .container, main > .container-fluid {
-    padding: 70px 15px 20px;
+    padding: 110px 15px 20px;
 }
 
 .footer {
@@ -619,4 +619,156 @@ a {
     width: auto !important;
     height: auto !important;
     object-fit: contain !important;
+}
+
+/* ===== BrickAtlas Breadcrumb ===== */
+
+.bricks-breadcrumb {
+    padding: 0.5rem 0 0.75rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.82rem;
+    background: none;
+    border-bottom: 1px solid #f0f0f0;
+    --bs-breadcrumb-divider: '›';
+}
+
+.bricks-breadcrumb .breadcrumb-item a {
+    color: #6c757d;
+}
+
+.bricks-breadcrumb .breadcrumb-item a:hover {
+    color: #1a1a2e;
+}
+
+.bricks-breadcrumb .breadcrumb-item.active {
+    color: #1a1a2e;
+    font-weight: 600;
+}
+
+.bricks-breadcrumb .breadcrumb-item + .breadcrumb-item::before {
+    color: #adb5bd;
+}
+
+/* ===== BrickAtlas Header ===== */
+
+.bricks-topbar {
+    background: #1a1a2e;
+}
+
+.bricks-topbar-text {
+    color: rgba(255, 255, 255, 0.85);
+    font-weight: 500;
+    letter-spacing: 0.015em;
+}
+
+.bricks-header {
+    background: #fff;
+}
+
+.bricks-nav-bar {
+    background: #ffffff;
+    border-bottom: 3px solid #FFD700;
+}
+
+.bricks-brand-icon {
+    width: 38px;
+    height: 38px;
+    object-fit: contain;
+}
+
+.bricks-brand-name {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #1a1a2e;
+    letter-spacing: -0.02em;
+}
+
+.bricks-nav-link {
+    color: #1a1a2e !important;
+    font-weight: 600;
+    font-size: 0.92rem;
+    padding: 0.4rem 0.8rem !important;
+    border-radius: 0.5rem;
+    transition: background-color 0.18s ease;
+}
+
+.bricks-nav-link:hover {
+    background-color: #FFD700;
+    color: #1a1a2e !important;
+}
+
+.bricks-user-btn {
+    background: none;
+    border: none;
+    color: #1a1a2e;
+    font-weight: 600;
+    font-size: 0.92rem;
+    padding: 0.4rem 0.8rem;
+    border-radius: 0.5rem;
+    transition: background-color 0.18s ease;
+    cursor: pointer;
+    line-height: 1.5;
+}
+
+.bricks-user-btn:hover,
+.bricks-user-btn.show {
+    background-color: #FFD700;
+    color: #1a1a2e;
+}
+
+/* ===== BrickAtlas Footer ===== */
+
+.bricks-footer {
+    background: #1a1a2e;
+    border-top: 3px solid #FFD700;
+}
+
+.bricks-footer-logo {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+    filter: invert(1);
+    opacity: 0.8;
+}
+
+.bricks-footer-text {
+    color: rgba(255, 255, 255, 0.55);
+}
+
+/* ===== New Arrivals month grouping ===== */
+
+.new-arrivals-month-section {
+    margin-bottom: 2.5rem;
+}
+
+.new-arrivals-month-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.new-arrivals-month-header::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: #e5e7eb;
+}
+
+.new-arrivals-month-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: #4b5563;
+    font-weight: 600;
+    font-size: 0.85rem;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.new-arrivals-month-label i {
+    font-size: 1.2em;
+    opacity: 1;
 }

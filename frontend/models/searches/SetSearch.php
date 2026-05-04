@@ -97,6 +97,21 @@ class SetSearch extends Set
         return $this->buildQuery($query);
     }
 
+    public function searchNew(): ActiveDataProvider
+    {
+        $query = Set::find()
+            ->andWhere(['status' => StatusEnum::ACTIVE->value])
+            ->orderBy(['year' => SORT_DESC, 'created_at' => SORT_DESC, 'id' => SORT_DESC]);
+
+        return new ActiveDataProvider([
+            'query'      => $query,
+            'pagination' => [
+                'pageSize' => 24,
+                'pageParam' => 'new_page',
+            ],
+        ]);
+    }
+
     public function searchPromo(): ActiveDataProvider
     {
         $subquery = '(SELECT set_id, MIN(price) as min_price FROM {{%set_offer}} WHERE currency_code = \'USD\' GROUP BY set_id)';
