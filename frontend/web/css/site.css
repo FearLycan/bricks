@@ -193,7 +193,7 @@ a {
 }
 
 .lego-product-page .lego-gallery-main {
-    background: linear-gradient(180deg, #f8fbff 0%, #f0f4ff 100%);
+    background: transparent;
     border-radius: 0.75rem;
     min-height: 520px;
     display: flex;
