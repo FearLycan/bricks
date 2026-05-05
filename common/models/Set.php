@@ -29,6 +29,7 @@ use yii\helpers\Url;
  * @property int|null         $year
  * @property int|null         $pieces
  * @property int|null         $released
+ * @property string|null      $release_date
  * @property float|null       $rating
  * @property int|null         $price
  * @property string|null      $brickset_url
@@ -96,6 +97,7 @@ class Set extends ActiveRecord
             [['theme_id'], 'required'],
             [['theme_id', 'subtheme_id', 'status', 'number_variant', 'minifigures', 'year', 'pieces', 'released', 'age', 'price'], 'integer'],
             [['rating'], 'number'],
+            [['release_date'], 'date', 'format' => 'php:Y-m-d'],
             [['created_at', 'updated_at', 'offer_discovery_checked_at'], 'safe'],
             [['description'], 'string'],
             [['number'], 'string', 'max' => 30],
@@ -123,6 +125,7 @@ class Set extends ActiveRecord
             'year'           => 'Year',
             'pieces'         => 'Pieces',
             'released'       => 'Released',
+            'release_date'   => 'Release Date',
             'brickset_url'   => 'Brickset Url',
             'dimensions'     => 'Dimensions',
             'availability'   => 'Availability',

@@ -104,7 +104,7 @@ class SetSearch extends Set
             ->alias('s')
             ->andWhere(['s.status' => StatusEnum::ACTIVE->value])
             ->innerJoin('{{%theme}} t', 't.id = s.theme_id AND t.status = ' . StatusEnum::ACTIVE->value)
-            ->orderBy(new Expression('s.year IS NULL ASC, s.year DESC, s.created_at DESC, s.id DESC'));
+            ->orderBy(new Expression('COALESCE(s.release_date, MAKEDATE(s.year, 365)) IS NULL ASC, COALESCE(s.release_date, MAKEDATE(s.year, 365)) DESC, s.created_at DESC, s.id DESC'));
 
         return new ActiveDataProvider([
             'query'      => $query,
@@ -188,10 +188,10 @@ class SetSearch extends Set
                 $query->orderBy(new Expression('pieces IS NULL ASC, pieces DESC, id ASC'));
                 break;
             case 'year_desc':
-                $query->orderBy(['year' => SORT_DESC, 'id' => SORT_ASC]);
+                $query->orderBy(new Expression('year IS NULL ASC, year DESC, release_date IS NULL ASC, release_date DESC, id ASC'));
                 break;
             case 'year_asc':
-                $query->orderBy(new Expression('year IS NULL ASC, year ASC, id ASC'));
+                $query->orderBy(new Expression('year IS NULL ASC, year ASC, release_date IS NULL ASC, release_date ASC, id ASC'));
                 break;
             case 'name_asc':
                 $query->orderBy(['name' => SORT_ASC, 'id' => SORT_ASC]);
@@ -213,7 +213,7 @@ class SetSearch extends Set
                 break;
             default:
                 $query->orderBy(new Expression(
-                    'EXISTS (SELECT 1 FROM {{%set_offer}} so WHERE so.[[set_id]] = {{%set}}.[[id]]) DESC, {{%set}}.[[year]] DESC, {{%set}}.[[id]] ASC'
+                    'EXISTS (SELECT 1 FROM {{%set_offer}} so WHERE so.[[set_id]] = {{%set}}.[[id]]) DESC, COALESCE({{%set}}.[[release_date]], MAKEDATE({{%set}}.[[year]], 365)) DESC, {{%set}}.[[id]] ASC'
                 ));
                 break;
         }

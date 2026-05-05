@@ -128,6 +128,14 @@ class BricksetController extends Controller
                 $legoSet->price = (int)round(((float)$set['LEGOCom']['US']['retailPrice']) * 100);
             }
 
+            $legoSet->release_date = null;
+            if (isset($set['LEGOCom']['US']['dateFirstAvailable']) && $set['LEGOCom']['US']['dateFirstAvailable']) {
+                $date = date_create($set['LEGOCom']['US']['dateFirstAvailable']);
+                if ($date !== false) {
+                    $legoSet->release_date = $date->format('Y-m-d');
+                }
+            }
+
             $legoSet->age = $set['ageRange']['min'] ?? 0;
             $legoSet->rating = $set['rating'] ?? 0;
             $legoSet->save();
