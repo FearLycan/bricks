@@ -4,6 +4,7 @@ use common\components\Html;
 use common\schema\factory\ItemListSchemaFactory;
 use common\schema\JsonLdRenderer;
 use frontend\components\SeoHelper;
+use frontend\components\T;
 use yii\data\ActiveDataProvider;
 use yii\web\View;
 
@@ -16,8 +17,7 @@ $page = max(1, (int)Yii::$app->request->get('new_page', 1));
 
 $this->title = SeoHelper::buildNewArrivalsTitle($page);
 $this->params['metaDescription'] = SeoHelper::buildNewArrivalsDescription($page);
-$this->params['canonicalUrl'] = SeoHelper::buildAbsoluteUrl(
-    $page > 1 ? ['/lego/new', 'new_page' => $page] : ['/lego/new']
+$this->params['canonicalUrl'] = SeoHelper::buildAbsoluteUrl($page > 1 ? ['/lego/new', 'new_page' => $page] : ['/lego/new']
 );
 $this->params['robots'] = 'index,follow';
 
@@ -33,7 +33,7 @@ $this->params['breadcrumbs'][] = 'New Arrivals';
         <i class="bi bi-stars me-2 text-warning"></i><?= Html::encode($this->title) ?>
     </h1>
     <p class="text-body-secondary mb-3">
-        Recently added LEGO sets, newest first. Check back often to discover what's new in the catalog.
+        <?= T::tr("Recently added LEGO sets, the newest first. Check back often to discover what's new in the catalog.") ?>
     </p>
 </div>
 

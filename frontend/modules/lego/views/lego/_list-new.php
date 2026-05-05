@@ -18,6 +18,9 @@ $groups = [];
 foreach ($models as $model) {
     /** @var Set $model */
     $month = date('F Y', strtotime($model->created_at));
+    if ($model->release_date) {
+        $month = date('F Y', strtotime($model->release_date));
+    }
     $groups[$month][] = $model;
 }
 
