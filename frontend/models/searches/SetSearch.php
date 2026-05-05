@@ -58,12 +58,12 @@ class SetSearch extends Set
             $query->andWhere(['subtheme_id' => $this->subtheme_id]);
         }
 
-        if ($this->theme && $this->subtheme_id) {
+        if ($this->theme_id && $this->subtheme_id) {
             $query->andWhere(['theme_id' => $this->theme_id]);
         }
 
-        if ($this->theme && !$this->subtheme_id) {
-            $allSubthemeIds = Theme::find()->select('id')->where(['name' => $this->theme->name])->column();
+        if ($this->theme_id && !$this->subtheme_id) {
+            $allSubthemeIds = Theme::find()->select('id')->where(['name' => $this->theme->name])->andWhere(['status' => StatusEnum::ACTIVE->value])->column();
             $query->andWhere([
                 'or',
                 ['theme_id' => $allSubthemeIds],
@@ -81,7 +81,8 @@ class SetSearch extends Set
             } else {
                 $themeIdsQuery = Theme::find()
                     ->select('id')
-                    ->where(['like', 'name', $this->name]);
+                    ->where(['like', 'name', $this->name])
+                    ->andWhere(['status' => StatusEnum::ACTIVE->value]);
 
                 $query->andWhere([
                     'or',
@@ -175,13 +176,13 @@ class SetSearch extends Set
                 $query->orderBy(new Expression('price IS NULL ASC, price ASC, id ASC'));
                 break;
             case 'price_desc':
-                $query->orderBy(['price' => SORT_DESC, 'id' => SORT_ASC]);
+                $query->orderBy(new Expression('price IS NULL ASC, price DESC, id ASC'));
                 break;
             case 'pieces_asc':
                 $query->orderBy(new Expression('pieces IS NULL ASC, pieces ASC, id ASC'));
                 break;
             case 'pieces_desc':
-                $query->orderBy(['pieces' => SORT_DESC, 'id' => SORT_ASC]);
+                $query->orderBy(new Expression('pieces IS NULL ASC, pieces DESC, id ASC'));
                 break;
             case 'year_desc':
                 $query->orderBy(['year' => SORT_DESC, 'id' => SORT_ASC]);
@@ -199,14 +200,13 @@ class SetSearch extends Set
                 $query->orderBy(new Expression('(pieces IS NULL OR pieces <= 0 OR price IS NULL) ASC, CASE WHEN pieces > 0 THEN price / pieces END ASC, id ASC'));
                 break;
             case 'price_per_piece_desc':
-                $query->orderBy(new Expression('CASE WHEN pieces > 0 THEN price / pieces END DESC'))
-                    ->addOrderBy(['id' => SORT_ASC]);
+                $query->orderBy(new Expression('(pieces IS NULL OR pieces <= 0 OR price IS NULL) ASC, CASE WHEN pieces > 0 THEN price / pieces END DESC, id ASC'));
                 break;
             case 'minifigures_asc':
                 $query->orderBy(new Expression('minifigures IS NULL ASC, minifigures ASC, id ASC'));
                 break;
             case 'minifigures_desc':
-                $query->orderBy(['minifigures' => SORT_DESC, 'id' => SORT_ASC]);
+                $query->orderBy(new Expression('minifigures IS NULL ASC, minifigures DESC, id ASC'));
                 break;
             default:
                 $query->orderBy(new Expression(
