@@ -63,11 +63,11 @@ class SetSearch extends Set
         }
 
         if ($this->theme_id && !$this->subtheme_id) {
-            $allSubthemeIds = Theme::find()->select('id')->where(['name' => $this->theme->name])->andWhere(['status' => StatusEnum::ACTIVE->value])->column();
+            $activeThemeIds = Theme::find()->select('id')->where(['name' => $this->theme->name])->andWhere(['status' => StatusEnum::ACTIVE->value]);
             $query->andWhere([
                 'or',
-                ['theme_id' => $allSubthemeIds],
-                ['subtheme_id' => $allSubthemeIds],
+                ['theme_id' => $activeThemeIds],
+                ['subtheme_id' => $activeThemeIds],
             ]);
         }
 
@@ -101,8 +101,10 @@ class SetSearch extends Set
     public function searchNew(): ActiveDataProvider
     {
         $query = Set::find()
-            ->andWhere(['status' => StatusEnum::ACTIVE->value])
-            ->orderBy(['year' => SORT_DESC, 'created_at' => SORT_DESC, 'id' => SORT_DESC]);
+            ->alias('s')
+            ->andWhere(['s.status' => StatusEnum::ACTIVE->value])
+            ->innerJoin('{{%theme}} t', 't.id = s.theme_id AND t.status = ' . StatusEnum::ACTIVE->value)
+            ->orderBy(new Expression('s.year IS NULL ASC, s.year DESC, s.created_at DESC, s.id DESC'));
 
         return new ActiveDataProvider([
             'query'      => $query,
@@ -115,12 +117,13 @@ class SetSearch extends Set
 
     public function searchPromo(): ActiveDataProvider
     {
-        $subquery = '(SELECT set_id, MIN(price) as min_price FROM {{%set_offer}} WHERE currency_code = \'USD\' GROUP BY set_id)';
+        $subquery = '(SELECT set_id, MIN(price) as min_price FROM {{%set_offer}} WHERE currency_code = \'USD\' AND price > 0 GROUP BY set_id)';
 
         $query = Set::find()
             ->alias('s')
             ->select(['s.*'])
             ->andWhere(['s.status' => StatusEnum::ACTIVE->value])
+            ->innerJoin('{{%theme}} t', 't.id = s.theme_id AND t.status = ' . StatusEnum::ACTIVE->value)
             ->andWhere(['not', ['s.price' => null]])
             ->andWhere(['>', 's.price', 0])
             ->innerJoin($subquery . ' so', 'so.set_id = s.id AND so.min_price < s.price')
