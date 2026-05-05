@@ -152,8 +152,8 @@ $queueOfferImportModalUrl = Url::to(['/management/queue-offer-import-modal', 'se
                         <span class="value"><?= Html::encode($model->getMinifiguresText()) ?></span>
                     </div>
                     <div class="lego-quick-fact">
-                        <span class="label"><i class="bi bi-calendar-check me-1"></i><?= T::tr('Release year') ?></span>
-                        <span class="value"><?= Html::encode($model->getYearText()) ?></span>
+                        <span class="label"><i class="bi bi-calendar-check me-1"></i><?= T::tr('Release date') ?></span>
+                        <span class="value"><?= Html::encode($model->release_date !== null ? date('d.m.Y', strtotime($model->release_date)) : $model->getYearText()) ?></span>
                     </div>
                 </div>
 
