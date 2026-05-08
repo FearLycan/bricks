@@ -7,6 +7,7 @@ use common\components\Controller;
 use common\models\Set;
 use common\models\SetOffer;
 use common\models\SetMinifig;
+use common\models\Tag;
 use common\models\User;
 use frontend\models\searches\SetSearch;
 use yii\data\ActiveDataProvider;
@@ -22,7 +23,7 @@ class LegoController extends Controller
                     [
                         'allow'   => true,
                         'actions' => [
-                            'index', 'view', 'minifig', 'offer-reviews-modal', 'promo', 'new',
+                            'index', 'view', 'minifig', 'offer-reviews-modal', 'promo', 'new', 'tag',
                         ],
                         'roles'   => ['?', '@'],
                     ],
@@ -48,6 +49,24 @@ class LegoController extends Controller
         $dataProvider = $searchModel->searchPromo();
 
         return $this->render('promo', [
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+
+    public function actionTag(string $slug): string
+    {
+        $tag = Tag::findOne(['slug' => $slug]);
+        if (!$tag) {
+            $this->notFound();
+        }
+
+        $searchModel = new SetSearch();
+        $params = array_merge($this->request->queryParams, ['tag_slug' => $slug]);
+        $dataProvider = $searchModel->search($params);
+
+        return $this->render('tag', [
+            'tag'          => $tag,
+            'searchModel'  => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
     }

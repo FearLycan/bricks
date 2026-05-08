@@ -164,7 +164,7 @@ $queueOfferImportModalUrl = Url::to(['/management/queue-offer-import-modal', 'se
                         <input type="checkbox" class="lego-tags-toggle-input d-none" id="<?= Html::encode($tagToggleId) ?>">
                         <div class="d-flex flex-wrap gap-2 lego-tags-list is-collapsed">
                             <?php foreach ($model->tagModels as $tagModel): ?>
-                                <span class="badge rounded-pill text-bg-secondary border"><?= Html::encode($tagModel->name) ?></span>
+                                <a href="<?= Url::to(['/lego/lego/tag', 'slug' => $tagModel->slug]) ?>" class="badge rounded-pill text-bg-secondary border text-decoration-none"><?= Html::encode($tagModel->name) ?></a>
                             <?php endforeach; ?>
                         </div>
                         <?php if (count($model->tagModels) > 16): ?>

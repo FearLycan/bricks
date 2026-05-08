@@ -60,6 +60,7 @@ return [
                 'lego/on-sale'                                  => 'lego/lego/promo',
                 'lego/new'                                      => 'lego/lego/new',
                 '<alias:lego>/minifig/<number:[A-Za-z0-9\\-]+>' => 'lego/lego/minifig',
+                'lego/tag/<slug:[a-z0-9-]+>'                    => 'lego/lego/tag',
                 '<modules:lego>/<slug>'                         => 'lego/lego/view',
             ],
         ],

@@ -16,6 +16,7 @@ use yii\db\Expression;
 class SetSearch extends Set
 {
     public ?string $sort_option = null;
+    public ?string $tag_slug = null;
     public $month = null;
 
     /**
@@ -25,7 +26,7 @@ class SetSearch extends Set
     {
         return [
             [['id', 'theme_id', 'status', 'number_variant', 'minifigures', 'year', 'month', 'pieces', 'released', 'price', 'age', 'subtheme_id'], 'integer'],
-            [['number', 'name', 'slug', 'brickset_url', 'created_at', 'updated_at', 'sort_option'], 'safe'],
+            [['number', 'name', 'slug', 'brickset_url', 'created_at', 'updated_at', 'sort_option', 'tag_slug'], 'safe'],
             [['rating'], 'number'],
         ];
     }
@@ -47,7 +48,7 @@ class SetSearch extends Set
      */
     public function search(array $params): ActiveDataProvider
     {
-        $query = Set::find()->andFilterCompare('status', StatusEnum::ACTIVE->value);
+        $query = Set::find()->andFilterCompare('{{%set}}.status', StatusEnum::ACTIVE->value);
 
         $this->load($params);
 
@@ -77,6 +78,12 @@ class SetSearch extends Set
         ]);
 
         $this->applyNameFilter($query);
+
+        if ($this->tag_slug) {
+            $query->innerJoin('{{%set_tag}} st_tag', 'st_tag.set_id = {{%set}}.id')
+                  ->innerJoin('{{%tag}} t_tag', 't_tag.id = st_tag.tag_id')
+                  ->andWhere(['t_tag.slug' => $this->tag_slug]);
+        }
 
         $this->applySortOption($query);
 
