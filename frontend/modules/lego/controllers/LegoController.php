@@ -4,6 +4,7 @@ namespace frontend\modules\lego\controllers;
 
 use common\components\AccessControl;
 use common\components\Controller;
+use common\enums\StatusEnum;
 use common\models\Set;
 use common\models\SetOffer;
 use common\models\SetMinifig;
@@ -55,7 +56,7 @@ class LegoController extends Controller
 
     public function actionTag(string $slug): string
     {
-        $tag = Tag::findOne(['slug' => $slug]);
+        $tag = Tag::findOne(['slug' => $slug, 'status' => StatusEnum::ACTIVE->value]);
         if (!$tag) {
             $this->notFound();
         }
@@ -89,7 +90,7 @@ class LegoController extends Controller
 
         return $this->render('view', [
             'model' => $model,
-            'user' => $identity instanceof User ? $identity : null,
+            'user'  => $identity instanceof User ? $identity : null,
         ]);
     }
 
@@ -103,7 +104,7 @@ class LegoController extends Controller
             ->orderBy(['set.year' => SORT_DESC, 'set.id' => SORT_DESC]);
 
         $dataProvider = new ActiveDataProvider([
-            'query' => $query,
+            'query'      => $query,
             'pagination' => ['pageSize' => 24],
         ]);
 
@@ -113,14 +114,14 @@ class LegoController extends Controller
             ->asArray()
             ->one();
 
-        $minifigName = (string) ($minifigPreview['name'] ?? '');
-        $minifigImage = isset($minifigPreview['image']) ? (string) $minifigPreview['image'] : '';
+        $minifigName = (string)($minifigPreview['name'] ?? '');
+        $minifigImage = isset($minifigPreview['image']) ? (string)$minifigPreview['image'] : '';
 
         return $this->render('minifig', [
             'dataProvider' => $dataProvider,
-            'number' => $number,
-            'name' => $minifigName,
-            'image' => $minifigImage,
+            'number'       => $number,
+            'name'         => $minifigName,
+            'image'        => $minifigImage,
         ]);
     }
 
@@ -141,9 +142,9 @@ class LegoController extends Controller
         $reviewImpressions = $offer->getReviewImpressions();
 
         return $this->renderAjax('_offer-reviews-modal', [
-            'offer' => $offer,
-            'averageRating' => $averageRating,
-            'reviewsTotal' => $reviewsTotal,
+            'offer'             => $offer,
+            'averageRating'     => $averageRating,
+            'reviewsTotal'      => $reviewsTotal,
             'ratingStarClasses' => $ratingStarClasses,
             'reviewImpressions' => $reviewImpressions,
         ]);

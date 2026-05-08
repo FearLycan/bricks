@@ -37,8 +37,6 @@ class AutocompleteController extends Controller
 
     public function actionTheme(string $term = '', int $page = 1): array
     {
-        // Yii::$app->response->format = Response::FORMAT_JSON;
-
         $page = max(1, $page);
         $term = trim($term);
 
@@ -47,8 +45,6 @@ class AutocompleteController extends Controller
 
     public function actionYear(string $term = '', int $page = 1): array
     {
-        // Yii::$app->response->format = Response::FORMAT_JSON;
-
         $page = max(1, $page);
         $term = trim($term);
 

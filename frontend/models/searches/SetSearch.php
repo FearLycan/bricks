@@ -48,7 +48,10 @@ class SetSearch extends Set
      */
     public function search(array $params): ActiveDataProvider
     {
-        $query = Set::find()->andFilterCompare('{{%set}}.status', StatusEnum::ACTIVE->value);
+        $query = Set::find()
+            ->andFilterCompare('{{%set}}.status', StatusEnum::ACTIVE->value);
+
+        $this->joinActiveTheme($query);
 
         $this->load($params);
 
@@ -96,8 +99,9 @@ class SetSearch extends Set
             ->alias('s')
             ->andWhere(['s.status' => StatusEnum::ACTIVE->value])
             ->andWhere(['not', ['s.release_date' => null]])
-            ->innerJoin('{{%theme}} t', 't.id = s.theme_id AND t.status = ' . StatusEnum::ACTIVE->value)
             ->orderBy('s.release_date DESC, s.id DESC');
+
+        $this->joinActiveTheme($query, 's');
 
         $this->load($params);
 
@@ -146,11 +150,12 @@ class SetSearch extends Set
             ->alias('s')
             ->select(['s.*'])
             ->andWhere(['s.status' => StatusEnum::ACTIVE->value])
-            ->innerJoin('{{%theme}} t', 't.id = s.theme_id AND t.status = ' . StatusEnum::ACTIVE->value)
             ->andWhere(['not', ['s.price' => null]])
             ->andWhere(['>', 's.price', 0])
             ->innerJoin($subquery . ' so', 'so.set_id = s.id AND so.min_price < s.price')
             ->orderBy(new Expression('(s.price - so.min_price) / s.price DESC'));
+
+        $this->joinActiveTheme($query, 's');
 
         return new ActiveDataProvider([
             'query'      => $query,
@@ -159,6 +164,12 @@ class SetSearch extends Set
                 'pageParam' => 'promo_page',
             ],
         ]);
+    }
+
+    private function joinActiveTheme($query, string $setAlias = ''): void
+    {
+        $setRef = $setAlias ? "$setAlias.theme_id" : '{{%set}}.theme_id';
+        $query->innerJoin('{{%theme}} t_theme', "t_theme.id = $setRef AND t_theme.status = " . StatusEnum::ACTIVE->value);
     }
 
     private function buildQuery($query): ActiveDataProvider

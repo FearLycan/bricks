@@ -2,14 +2,14 @@
 
 namespace backend\modules\admin\controllers;
 
+use backend\components\Controller;
+use backend\modules\admin\models\SetSearch;
 use common\enums\StatusEnum;
 use common\models\Set;
-use backend\modules\admin\models\SetSearch;
-use backend\components\Controller;
-use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
-use yii\web\Response;
 use Yii;
+use yii\filters\VerbFilter;
+use yii\web\NotFoundHttpException;
+use yii\web\Response;
 
 /**
  * SetController implements the CRUD actions for Set model.
