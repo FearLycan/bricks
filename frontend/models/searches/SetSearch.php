@@ -16,7 +16,7 @@ use yii\db\Expression;
 class SetSearch extends Set
 {
     public ?string $sort_option = null;
-    public ?int $month = null;
+    public $month = null;
 
     /**
      * {@inheritdoc}
