@@ -7,6 +7,7 @@ use common\enums\image\TypeEnum;
 use common\enums\StatusEnum;
 use common\models\Set;
 use common\models\SetImage;
+use common\models\SetMinifig;
 use common\models\SetPrice;
 use common\models\SetTag;
 use common\models\Theme;
@@ -159,9 +160,14 @@ class BricksetController extends Controller
                 $legoSet->updateAttributes(['status' => StatusEnum::ACTIVE->value]);
             }
 
-            if ($legoSet->minifigures && $legoSet->isActive()) {
+            if ($legoSet->isActive()) {
                 $controller = new RebrickableController(Yii::$app->controller->id, Yii::$app);
                 $controller->actionSyncMinifigs($set['number']);
+
+                $actualCount = (int) SetMinifig::find()->where(['set_id' => $legoSet->id])->count();
+                if ($actualCount !== (int) $legoSet->minifigures) {
+                    $legoSet->updateAttributes(['minifigures' => $actualCount]);
+                }
             }
 
             sleep(1);

@@ -54,13 +54,15 @@ use yii\widgets\ActiveForm;
                     ->label(false) ?>
         </div>
 
-        <div class="col-12 col-md-2">
-            <?= Html::a(Html::tag('i', '', ['class' => 'bi bi-stars me-1']) . T::tr('This month'),
-                    Url::to(['/lego/new', 'year' => date('Y'), 'month' => date('n')]), [
-                            'class' => 'btn btn-outline-warning',
-                    ]
-            ) ?>
-        </div>
+        <?php if ((int)$model->year !== (int)date('Y') || (int)$model->month !== (int)date('n')): ?>
+            <div class="col-12 col-md-2">
+                <?= Html::a(Html::tag('i', '', ['class' => 'bi bi-stars me-1']) . T::tr('This month'),
+                        Url::to(['/lego/new', 'year' => date('Y'), 'month' => date('n')]), [
+                                'class' => 'btn btn-outline-warning',
+                        ]
+                ) ?>
+            </div>
+        <?php endif; ?>
 
     </div>
 
