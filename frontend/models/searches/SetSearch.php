@@ -104,7 +104,7 @@ class SetSearch extends Set
         $this->applyNameFilter($query, 's');
 
         if ($this->year) {
-            $query->andWhere(['s.year' => (int)$this->year]);
+            $query->andWhere(new Expression('YEAR(s.release_date) = :year', [':year' => (int)$this->year]));
         }
 
         if ($this->month) {
