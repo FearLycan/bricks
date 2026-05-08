@@ -36,20 +36,20 @@ use yii\widgets\ActiveForm;
         </div>
 
         <div class="col-6 col-md-2">
-            <?= $form->field($model, 'year')
-                    ->dropDownList($model->year ? [(int)$model->year => $model->year] : [], [
-                            'prompt'           => T::tr('Any year'),
-                            'data-placeholder' => T::tr('Any year'),
-                            'data-ajax-url'    => Url::to(['/autocomplete/year']),
+            <?= $form->field($model, 'month')
+                    ->dropDownList(SetSearch::getMonthOptions(), [
+                            'prompt'           => T::tr('Any month'),
+                            'data-placeholder' => T::tr('Any month'),
                     ])
                     ->label(false) ?>
         </div>
 
         <div class="col-6 col-md-2">
-            <?= $form->field($model, 'month')
-                    ->dropDownList(SetSearch::getMonthOptions(), [
-                            'prompt'           => T::tr('Any month'),
-                            'data-placeholder' => T::tr('Any month'),
+            <?= $form->field($model, 'year')
+                    ->dropDownList($model->year ? [(int)$model->year => $model->year] : [], [
+                            'prompt'           => T::tr('Any year'),
+                            'data-placeholder' => T::tr('Any year'),
+                            'data-ajax-url'    => Url::to(['/autocomplete/year']),
                     ])
                     ->label(false) ?>
         </div>
@@ -65,61 +65,61 @@ use yii\widgets\ActiveForm;
 
 
 <?php InlineScript::begin(); ?>
-    <script>
-        (() => {
+<script>
+    (() => {
 
-            const $selects = $('form#new-search-form select');
-            $selects.each(function () {
-                const $select = $(this);
-                const ajaxUrl = $select.data('ajax-url');
+        const $selects = $('form#new-search-form select');
+        $selects.each(function () {
+            const $select = $(this);
+            const ajaxUrl = $select.data('ajax-url');
 
-                const select2Config = {
-                    theme: "bootstrap-5",
-                    width: $select.data('width') ? $select.data('width') : $select.hasClass('w-100') ? '100%' : 'style',
-                    placeholder: $select.data('placeholder'),
-                    allowClear: true,
+            const select2Config = {
+                theme: "bootstrap-5",
+                width: $select.data('width') ? $select.data('width') : $select.hasClass('w-100') ? '100%' : 'style',
+                placeholder: $select.data('placeholder'),
+                allowClear: true,
+            };
+
+            if (ajaxUrl) {
+                select2Config.ajax = {
+                    url: ajaxUrl,
+                    dataType: 'json',
+                    delay: 250,
+                    cache: true,
+                    data: (params) => ({
+                        term: params.term || '',
+                        page: params.page || 1,
+                    }),
+                    processResults: (data) => ({
+                        results: data.results || [],
+                        pagination: {
+                            more: Boolean(data.pagination && data.pagination.more),
+                        },
+                    }),
                 };
-
-                if (ajaxUrl) {
-                    select2Config.ajax = {
-                        url: ajaxUrl,
-                        dataType: 'json',
-                        delay: 250,
-                        cache: true,
-                        data: (params) => ({
-                            term: params.term || '',
-                            page: params.page || 1,
-                        }),
-                        processResults: (data) => ({
-                            results: data.results || [],
-                            pagination: {
-                                more: Boolean(data.pagination && data.pagination.more),
-                            },
-                        }),
-                    };
-                }
-
-                $select.select2(select2Config);
-                $select.on('select2:unselecting', () => {
-                    $select.data('clear-opening-blocked', true);
-                });
-                $select.on('select2:opening', (event) => {
-                    if ($select.data('clear-opening-blocked')) {
-                        $select.removeData('clear-opening-blocked');
-                        event.preventDefault();
-                    }
-                });
-            });
-
-            const searchForm = document.getElementById('new-search-form');
-            if (!searchForm) {
-                return;
             }
 
-            $selects.on('change', () => {
-                searchForm.submit();
+            $select.select2(select2Config);
+            $select.on('select2:unselecting', () => {
+                $select.data('clear-opening-blocked', true);
             });
+            $select.on('select2:opening', (event) => {
+                if ($select.data('clear-opening-blocked')) {
+                    $select.removeData('clear-opening-blocked');
+                    event.preventDefault();
+                }
+            });
+        });
 
-        })();
-    </script>
+        const searchForm = document.getElementById('new-search-form');
+        if (!searchForm) {
+            return;
+        }
+
+        $selects.on('change', () => {
+            searchForm.submit();
+        });
+
+    })();
+</script>
 <?php InlineScript::end(); ?>
