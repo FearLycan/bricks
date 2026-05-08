@@ -88,8 +88,9 @@ class SetSearch extends Set
         $query = Set::find()
             ->alias('s')
             ->andWhere(['s.status' => StatusEnum::ACTIVE->value])
+            ->andWhere(['not', ['s.release_date' => null]])
             ->innerJoin('{{%theme}} t', 't.id = s.theme_id AND t.status = ' . StatusEnum::ACTIVE->value)
-            ->orderBy(new Expression('COALESCE(s.release_date, MAKEDATE(s.year, 365)) IS NULL ASC, COALESCE(s.release_date, MAKEDATE(s.year, 365)) DESC, s.created_at DESC, s.id DESC'));
+            ->orderBy('s.release_date DESC, s.id DESC');
 
         $this->load($params);
 
@@ -100,13 +101,13 @@ class SetSearch extends Set
         }
 
         if ($this->month) {
-            $query->andWhere(new Expression('MONTH(COALESCE(s.release_date, s.created_at)) = :month', [':month' => (int)$this->month]));
+            $query->andWhere(new Expression('MONTH(s.release_date) = :month', [':month' => (int)$this->month]));
         }
 
         return new ActiveDataProvider([
             'query'      => $query,
             'pagination' => [
-                'pageSize' => 24,
+                'pageSize' => 48,
                 'pageParam' => 'new_page',
             ],
         ]);

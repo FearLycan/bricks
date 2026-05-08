@@ -4,6 +4,7 @@ use common\models\Set;
 use frontend\components\LinkPager;
 use yii\data\ActiveDataProvider;
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\web\View;
 
 /**
@@ -17,21 +18,18 @@ $models = $dataProvider->getModels();
 $groups = [];
 foreach ($models as $model) {
     /** @var Set $model */
-    $month = date('F Y', strtotime($model->created_at));
-    if ($model->release_date) {
-        $month = date('F Y', strtotime($model->release_date));
-    }
-    $groups[$month][] = $model;
+    $groups[date('Y-m', strtotime($model->release_date))][] = $model;
 }
 
 ?>
 
-<?php foreach ($groups as $month => $items): ?>
-    <div class="new-arrivals-month-section">
+<?php foreach ($groups as $key => $items): ?>
+    <div class="new-arrivals-month-section" data-key="<?= $key ?>">
         <div class="new-arrivals-month-header">
-            <span class="new-arrivals-month-label">
-                <i class="bi bi-calendar3 me-2"></i><?= Html::encode($month) ?>
-            </span>
+            <a href="<?= Html::encode(Url::to(['/lego/new', 'year' => date('Y', strtotime("$key-01")), 'month' => date('n', strtotime("$key-01"))])) ?>" class="new-arrivals-month-label">
+                <i class="bi bi-calendar3 me-2"></i>
+                <?= Html::encode(date('F Y', strtotime("$key-01"))) ?>
+            </a>
         </div>
         <div class="row">
             <?php foreach ($items as $model): ?>

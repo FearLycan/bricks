@@ -53,6 +53,15 @@ use yii\widgets\ActiveForm;
                     ])
                     ->label(false) ?>
         </div>
+
+        <div class="col-12 col-md-2">
+            <?= Html::a(Html::tag('i', '', ['class' => 'bi bi-stars me-1']) . T::tr('This month'),
+                    Url::to(['/lego/new', 'year' => date('Y'), 'month' => date('n')]), [
+                            'class' => 'btn btn-outline-warning',
+                    ]
+            ) ?>
+        </div>
+
     </div>
 
     <div class="form-group d-none">
