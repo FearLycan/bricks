@@ -5,6 +5,8 @@ namespace console\controllers;
 use common\enums\StatusEnum;
 use common\models\Set;
 use common\models\SetMinifig;
+use common\models\SetTag;
+use common\models\Tag;
 use common\models\Theme;
 use DateTimeImmutable;
 use DateTimeInterface;
@@ -60,6 +62,8 @@ class SitemapController extends Controller
 
         $staticEntries = [];
         $this->addEntry($staticEntries, $this->buildAbsoluteUrl($baseUrl, '/lego'), null, 'daily', '1.0');
+        $this->addEntry($staticEntries, $this->buildAbsoluteUrl($baseUrl, '/lego/new'), null, 'daily', '0.7');
+        $this->addEntry($staticEntries, $this->buildAbsoluteUrl($baseUrl, '/lego/on-sale'), null, 'daily', '0.7');
         $this->appendCustomEntries($staticEntries, $baseUrl);
 
         $themeEntries = [];
@@ -71,11 +75,15 @@ class SitemapController extends Controller
         $minifigEntries = [];
         $this->appendMinifigEntries($minifigEntries, $baseUrl);
 
+        $tagEntries = [];
+        $this->appendTagEntries($tagEntries, $baseUrl);
+
         $sitemapFiles = [
             'sitemap-static.xml'   => $staticEntries,
             'sitemap-themes.xml'   => $themeEntries,
             'sitemap-sets.xml'     => $setEntries,
             'sitemap-minifigs.xml' => $minifigEntries,
+            'sitemap-tags.xml'     => $tagEntries,
         ];
 
         $indexEntries = [];
@@ -209,6 +217,32 @@ class SitemapController extends Controller
                 $this->resolveLastModified($row['updated_at'] ?? null, $row['created_at'] ?? null),
                 'weekly',
                 '0.6'
+            );
+        }
+    }
+
+    private function appendTagEntries(array &$entries, string $baseUrl): void
+    {
+        $tags = Tag::find()
+            ->alias('t')
+            ->select(['t.slug', 'MAX(t.updated_at) AS updated_at', 'MAX(t.created_at) AS created_at'])
+            ->innerJoin(SetTag::tableName() . ' st', 'st.tag_id = t.id')
+            ->innerJoin(Set::tableName() . ' s', 's.id = st.set_id AND s.status = :status', [':status' => StatusEnum::ACTIVE->value])
+            ->where(['t.status' => StatusEnum::ACTIVE->value])
+            ->andWhere(['not', ['t.slug' => null]])
+            ->andWhere(['<>', 't.slug', ''])
+            ->groupBy(['t.id', 't.slug'])
+            ->asArray()
+            ->all();
+
+        foreach ($tags as $tag) {
+            $slug = (string)$tag['slug'];
+            $this->addEntry(
+                $entries,
+                $this->buildAbsoluteUrl($baseUrl, '/lego/tag/' . rawurlencode($slug)),
+                $this->resolveLastModified($tag['updated_at'] ?? null, $tag['created_at'] ?? null),
+                'weekly',
+                '0.5'
             );
         }
     }
