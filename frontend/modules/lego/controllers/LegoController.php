@@ -55,9 +55,10 @@ class LegoController extends Controller
     public function actionNew(): string
     {
         $searchModel = new SetSearch();
-        $dataProvider = $searchModel->searchNew();
+        $dataProvider = $searchModel->searchNew($this->request->queryParams);
 
         return $this->render('new', [
+            'searchModel'  => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
     }

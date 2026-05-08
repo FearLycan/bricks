@@ -161,7 +161,7 @@ class BricksetController extends Controller
 
             if ($legoSet->minifigures && $legoSet->isActive()) {
                 $controller = new RebrickableController(Yii::$app->controller->id, Yii::$app);
-                $controller->actionSyncMinifigs((int)$set['number']);
+                $controller->actionSyncMinifigs($set['number']);
             }
 
             sleep(1);

@@ -16,6 +16,7 @@ use yii\db\Expression;
 class SetSearch extends Set
 {
     public ?string $sort_option = null;
+    public ?int $month = null;
 
     /**
      * {@inheritdoc}
@@ -23,7 +24,7 @@ class SetSearch extends Set
     public function rules(): array
     {
         return [
-            [['id', 'theme_id', 'status', 'number_variant', 'minifigures', 'year', 'pieces', 'released', 'price', 'age', 'subtheme_id'], 'integer'],
+            [['id', 'theme_id', 'status', 'number_variant', 'minifigures', 'year', 'month', 'pieces', 'released', 'price', 'age', 'subtheme_id'], 'integer'],
             [['number', 'name', 'slug', 'brickset_url', 'created_at', 'updated_at', 'sort_option'], 'safe'],
             [['rating'], 'number'],
         ];
@@ -75,36 +76,32 @@ class SetSearch extends Set
             'year' => $this->year,
         ]);
 
-        if ($this->name) {
-            if (is_numeric($this->name)) {
-                $query->andFilterWhere(['=', 'number', $this->name]);
-            } else {
-                $themeIdsQuery = Theme::find()
-                    ->select('id')
-                    ->where(['like', 'name', $this->name])
-                    ->andWhere(['status' => StatusEnum::ACTIVE->value]);
-
-                $query->andWhere([
-                    'or',
-                    ['like', Set::tableName() . '.name', $this->name],
-                    ['theme_id' => $themeIdsQuery],
-                    ['subtheme_id' => $themeIdsQuery],
-                ]);
-            }
-        }
+        $this->applyNameFilter($query);
 
         $this->applySortOption($query);
 
         return $this->buildQuery($query);
     }
 
-    public function searchNew(): ActiveDataProvider
+    public function searchNew(array $params = []): ActiveDataProvider
     {
         $query = Set::find()
             ->alias('s')
             ->andWhere(['s.status' => StatusEnum::ACTIVE->value])
             ->innerJoin('{{%theme}} t', 't.id = s.theme_id AND t.status = ' . StatusEnum::ACTIVE->value)
             ->orderBy(new Expression('COALESCE(s.release_date, MAKEDATE(s.year, 365)) IS NULL ASC, COALESCE(s.release_date, MAKEDATE(s.year, 365)) DESC, s.created_at DESC, s.id DESC'));
+
+        $this->load($params);
+
+        $this->applyNameFilter($query, 's');
+
+        if ($this->year) {
+            $query->andWhere(['s.year' => (int)$this->year]);
+        }
+
+        if ($this->month) {
+            $query->andWhere(new Expression('MONTH(COALESCE(s.release_date, s.created_at)) = :month', [':month' => (int)$this->month]));
+        }
 
         return new ActiveDataProvider([
             'query'      => $query,
@@ -113,6 +110,24 @@ class SetSearch extends Set
                 'pageParam' => 'new_page',
             ],
         ]);
+    }
+
+    public static function getMonthOptions(): array
+    {
+        return [
+            1  => T::tr('January'),
+            2  => T::tr('February'),
+            3  => T::tr('March'),
+            4  => T::tr('April'),
+            5  => T::tr('May'),
+            6  => T::tr('June'),
+            7  => T::tr('July'),
+            8  => T::tr('August'),
+            9  => T::tr('September'),
+            10 => T::tr('October'),
+            11 => T::tr('November'),
+            12 => T::tr('December'),
+        ];
     }
 
     public function searchPromo(): ActiveDataProvider
@@ -170,6 +185,31 @@ class SetSearch extends Set
             'minifigures_asc'      => T::tr('minifigures: low to high'),
             'minifigures_desc'     => T::tr('minifigures: high to low'),
         ];
+    }
+
+    private function applyNameFilter($query, string $alias = ''): void
+    {
+        if (!$this->name) {
+            return;
+        }
+
+        $col = fn(string $c) => $alias ? "$alias.$c" : $c;
+
+        if (is_numeric($this->name)) {
+            $query->andWhere([$col('number') => $this->name]);
+        } else {
+            $themeIdsQuery = Theme::find()
+                ->select('id')
+                ->where(['like', 'name', $this->name])
+                ->andWhere(['status' => StatusEnum::ACTIVE->value]);
+
+            $query->andWhere([
+                'or',
+                ['like', $col('name'), $this->name],
+                [$col('theme_id') => $themeIdsQuery],
+                [$col('subtheme_id') => $themeIdsQuery],
+            ]);
+        }
     }
 
     private function applySortOption($query): void

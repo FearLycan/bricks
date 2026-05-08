@@ -4,6 +4,7 @@ namespace console\controllers;
 
 use common\models\Set;
 use common\models\SetMinifig;
+use Random\RandomException;
 use Yii;
 use yii\caching\CacheInterface;
 use yii\console\Controller;
@@ -12,7 +13,7 @@ use yii\httpclient\Client;
 
 class RebrickableController extends Controller
 {
-    public Client         $client;
+    public Client $client;
     public CacheInterface $cache;
 
     public function __construct($id, $module, $config = [])
@@ -22,7 +23,11 @@ class RebrickableController extends Controller
         parent::__construct($id, $module, $config);
     }
 
-    public function actionSyncMinifigs(?int $setNumber = null): void
+    /**
+     * @throws Exception
+     * @throws RandomException
+     */
+    public function actionSyncMinifigs(?string $setNumber = null): void
     {
         $sets = Set::find();
 
@@ -41,7 +46,7 @@ class RebrickableController extends Controller
                 SetMinifig::syncBySet($set, $response['results']);
             }
 
-            sleep(1);
+            sleep(random_int(1, 5));
         }
     }
 

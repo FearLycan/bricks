@@ -5,11 +5,13 @@ use common\schema\factory\ItemListSchemaFactory;
 use common\schema\JsonLdRenderer;
 use frontend\components\SeoHelper;
 use frontend\components\T;
+use frontend\models\searches\SetSearch;
 use yii\data\ActiveDataProvider;
 use yii\web\View;
 
 /**
  * @var $this         View
+ * @var $searchModel  SetSearch
  * @var $dataProvider ActiveDataProvider
  */
 
@@ -36,5 +38,7 @@ $this->params['breadcrumbs'][] = 'New Arrivals';
         <?= T::tr("Recently added LEGO sets, the newest first. Check back often to discover what's new in the catalog.") ?>
     </p>
 </div>
+
+<?= $this->render('_search-new', ['model' => $searchModel]) ?>
 
 <?= $this->render('_list-new', ['dataProvider' => $dataProvider]) ?>
