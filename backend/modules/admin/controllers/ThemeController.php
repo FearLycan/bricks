@@ -5,9 +5,11 @@ namespace backend\modules\admin\controllers;
 use backend\modules\admin\models\ThemeSearch;
 use common\enums\StatusEnum;
 use common\models\Theme;
+use Yii;
 use yii\filters\VerbFilter;
 use backend\components\Controller;
 use yii\web\NotFoundHttpException;
+use yii\web\Response;
 
 class ThemeController extends Controller
 {
@@ -93,6 +95,11 @@ class ThemeController extends Controller
         $isActive = (bool)$this->request->post('status', false);
         $model->status = $isActive ? StatusEnum::ACTIVE->value : StatusEnum::INACTIVE->value;
         $model->save(false, ['status']);
+
+        if ($this->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return ['success' => true];
+        }
 
         return $this->redirect($this->request->post('returnUrl', ['index']));
     }

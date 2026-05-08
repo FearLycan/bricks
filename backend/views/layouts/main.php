@@ -155,6 +155,41 @@ AppAsset::register($this);
         </div>
     </main>
 
+    <script>
+        document.addEventListener('change', function (e) {
+            const checkbox = e.target;
+            if (!checkbox.matches('.form-check-input[role="switch"]')) {
+                return;
+            }
+
+            const form = checkbox.closest('form');
+            if (!form) {
+                return;
+            }
+
+            const formData = new FormData(form);
+            checkbox.disabled = true;
+
+            fetch(form.action, {
+                method: 'POST',
+                body: formData,
+                headers: {'X-Requested-With': 'XMLHttpRequest'},
+            })
+            .then(function (response) {
+                if (!response.ok) throw new Error();
+                return response.json();
+            })
+            .then(function (data) {
+                if (!data.success) throw new Error();
+            })
+            .catch(function () {
+                checkbox.checked = !checkbox.checked;
+            })
+            .finally(function () {
+                checkbox.disabled = false;
+            });
+        });
+    </script>
     <?php $this->endBody() ?>
     </body>
     </html>

@@ -45,10 +45,9 @@ $this->params['breadcrumbs'][] = $this->title;
                                         Html::hiddenInput('returnUrl', Url::current()) .
                                         '<div class="form-check form-switch mb-0">' .
                                         Html::checkbox('status', $model->isActive(), [
-                                                'class'    => 'form-check-input',
-                                                'role'     => 'switch',
-                                                'label'    => '',
-                                                'onchange' => 'this.form.submit()',
+                                                'class' => 'form-check-input',
+                                                'role'  => 'switch',
+                                                'label' => '',
                                         ]) .
                                         '</div>' .
                                         Html::endForm();

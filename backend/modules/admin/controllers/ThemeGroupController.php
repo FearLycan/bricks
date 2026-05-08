@@ -8,6 +8,8 @@ use common\enums\StatusEnum;
 use common\models\ThemeGroup;
 use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
+use yii\web\Response;
+use Yii;
 
 class ThemeGroupController extends Controller
 {
@@ -87,6 +89,11 @@ class ThemeGroupController extends Controller
         $isActive = (bool)$this->request->post('status', false);
         $model->status = $isActive ? StatusEnum::ACTIVE->value : StatusEnum::INACTIVE->value;
         $model->save(false, ['status']);
+
+        if ($this->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return ['success' => true];
+        }
 
         return $this->redirect($this->request->post('returnUrl', ['index']));
     }

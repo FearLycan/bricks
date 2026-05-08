@@ -8,6 +8,8 @@ use common\enums\UserRoleEnum;
 use common\models\User;
 use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
+use yii\web\Response;
+use Yii;
 
 class UserController extends Controller
 {
@@ -114,6 +116,11 @@ class UserController extends Controller
         $isActive = (bool)$this->request->post('status', false);
         $model->status = $isActive ? User::STATUS_ACTIVE : User::STATUS_INACTIVE;
         $model->save(false, ['status']);
+
+        if ($this->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return ['success' => true];
+        }
 
         return $this->redirect($this->request->post('returnUrl', ['index']));
     }

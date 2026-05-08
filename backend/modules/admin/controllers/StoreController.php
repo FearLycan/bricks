@@ -8,6 +8,8 @@ use common\models\Store;
 use yii\filters\VerbFilter;
 use backend\components\Controller;
 use yii\web\NotFoundHttpException;
+use yii\web\Response;
+use Yii;
 
 class StoreController extends Controller
 {
@@ -87,6 +89,11 @@ class StoreController extends Controller
         $isActive = (bool)$this->request->post('status', false);
         $model->status = $isActive ? StatusEnum::ACTIVE->value : StatusEnum::INACTIVE->value;
         $model->save(false, ['status']);
+
+        if ($this->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return ['success' => true];
+        }
 
         return $this->redirect($this->request->post('returnUrl', ['index']));
     }

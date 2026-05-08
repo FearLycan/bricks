@@ -8,6 +8,8 @@ use backend\modules\admin\models\SetSearch;
 use backend\components\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\Response;
+use Yii;
 
 /**
  * SetController implements the CRUD actions for Set model.
@@ -128,6 +130,11 @@ class SetController extends Controller
         $isActive = (bool)$this->request->post('status', false);
         $model->status = $isActive ? StatusEnum::ACTIVE->value : StatusEnum::INACTIVE->value;
         $model->save(false, ['status']);
+
+        if ($this->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return ['success' => true];
+        }
 
         return $this->redirect($this->request->post('returnUrl', ['index']));
     }
