@@ -2,6 +2,8 @@
 
 use common\components\Html;
 use common\models\Tag;
+use common\schema\factory\ItemListSchemaFactory;
+use common\schema\JsonLdRenderer;
 use frontend\components\SeoHelper;
 use frontend\components\T;
 use frontend\models\searches\SetSearch;
@@ -22,10 +24,14 @@ $this->params['metaDescription'] = T::tr('Browse LEGO sets tagged "{tag}". Compa
 $this->params['canonicalUrl'] = SeoHelper::buildAbsoluteUrl($page > 1 ? ['/lego/lego/tag', 'slug' => $tag->slug, 'page' => $page] : ['/lego/lego/tag', 'slug' => $tag->slug]);
 $this->params['robots'] = 'index,follow';
 
+SeoHelper::registerPaginationLinks($this, $dataProvider, $page, ['/lego/lego/tag', 'slug' => $tag->slug]);
+
 $this->params['breadcrumbs'][] = ['label' => 'LEGO Sets', 'url' => ['/lego']];
 $this->params['breadcrumbs'][] = Html::encode($tag->name);
 
 ?>
+
+<?= JsonLdRenderer::render([ItemListSchemaFactory::fromDataProvider($dataProvider)]) ?>
 
 <div class="col-lg-12 mt-4">
     <h1 class="page-title">

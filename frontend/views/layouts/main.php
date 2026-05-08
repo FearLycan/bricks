@@ -30,7 +30,9 @@ $schemaGraph = [
     BreadcrumbListSchemaFactory::fromView($breadcrumbLinks, $homeBreadcrumb, (string)$this->title),
 ];
 
-$this->params['socialImage'] = Url::to('/images/logo-social.png', true);
+if (empty($this->params['socialImage'])) {
+    $this->params['socialImage'] = Url::to('/images/logo-social.png', true);
+}
 
 $pageTitle = SeoHelper::normalizeText((string)$this->title);
 $metaDescription = trim((string)($this->params['metaDescription'] ?? ''));

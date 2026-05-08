@@ -28,6 +28,10 @@ $this->params['canonicalUrl'] = $hasActiveFilters
         : SeoHelper::buildAbsoluteUrl($page > 1 ? ['/lego', 'page' => $page] : ['/lego']);
 $this->params['robots'] = $hasActiveFilters ? 'noindex,follow' : 'index,follow';
 
+if (!$hasActiveFilters) {
+    SeoHelper::registerPaginationLinks($this, $dataProvider, $page, ['/lego']);
+}
+
 ?>
 
 <?= JsonLdRenderer::render([ItemListSchemaFactory::fromDataProvider($dataProvider)]) ?>

@@ -1,6 +1,8 @@
 <?php
 
 use common\components\Html;
+use common\schema\factory\ItemListSchemaFactory;
+use common\schema\JsonLdRenderer;
 use frontend\components\Helper;
 use frontend\components\SeoHelper;
 use frontend\components\T;
@@ -28,7 +30,11 @@ $this->params['breadcrumbs'][] = SeoHelper::normalizeText($displayName);
 if ($image !== '') {
     $this->params['socialImage'] = SeoHelper::buildAbsoluteUrl($image);
 }
+
+SeoHelper::registerPaginationLinks($this, $dataProvider, $page, ["/lego/minifig/{$number}"]);
 ?>
+
+<?= JsonLdRenderer::render([ItemListSchemaFactory::fromDataProvider($dataProvider)]) ?>
 
 <div class="col-lg-12 mt-4">
     <h1 class="page-title"><?= Html::encode($this->title) ?></h1>

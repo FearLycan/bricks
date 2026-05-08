@@ -23,6 +23,8 @@ $this->params['canonicalUrl'] = SeoHelper::buildAbsoluteUrl($page > 1 ? ['/lego/
 );
 $this->params['robots'] = 'index,follow';
 
+SeoHelper::registerPaginationLinks($this, $dataProvider, $page, ['/lego/new'], 'new_page');
+
 $this->params['breadcrumbs'][] = ['label' => 'LEGO Sets', 'url' => ['/lego']];
 $this->params['breadcrumbs'][] = 'New Arrivals';
 

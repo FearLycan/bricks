@@ -21,6 +21,8 @@ $this->params['canonicalUrl'] = SeoHelper::buildAbsoluteUrl(
 );
 $this->params['robots'] = 'index,follow';
 
+SeoHelper::registerPaginationLinks($this, $dataProvider, $page, ['/lego/on-sale'], 'promo_page');
+
 $this->params['breadcrumbs'][] = ['label' => 'LEGO Sets', 'url' => ['/lego']];
 $this->params['breadcrumbs'][] = 'On Sale';
 

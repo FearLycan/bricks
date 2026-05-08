@@ -5,7 +5,9 @@ namespace frontend\components;
 use common\models\Set;
 use common\models\Theme;
 use Yii;
+use yii\data\ActiveDataProvider;
 use yii\helpers\Url;
+use yii\web\View;
 
 final class SeoHelper
 {
@@ -214,6 +216,30 @@ final class SeoHelper
         $description = self::truncate('Browse LEGO sets that include minifigure ' . self::normalizeText($displayName) . ' and compare current offers for minifigure number ' . self::normalizeText($number) . '.');
 
         return self::appendPageDescriptionSuffix($description, $page);
+    }
+
+    public static function registerPaginationLinks(View $view, ActiveDataProvider $dataProvider, int $page, array $baseUrlParts, string $pageParam = 'page'): void
+    {
+        $pagination = $dataProvider->getPagination();
+        if ($pagination === false) {
+            return;
+        }
+
+        $totalPages = (int)$pagination->getPageCount();
+
+        if ($page > 1) {
+            $prevUrl = $page === 2
+                ? self::buildAbsoluteUrl($baseUrlParts)
+                : self::buildAbsoluteUrl(array_merge($baseUrlParts, [$pageParam => $page - 1]));
+            $view->registerLinkTag(['rel' => 'prev', 'href' => $prevUrl], 'pagination-prev');
+        }
+
+        if ($page < $totalPages) {
+            $view->registerLinkTag([
+                'rel'  => 'next',
+                'href' => self::buildAbsoluteUrl(array_merge($baseUrlParts, [$pageParam => $page + 1])),
+            ], 'pagination-next');
+        }
     }
 
     private static function appendPageSuffix(string $value, int $page): string

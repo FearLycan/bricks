@@ -32,6 +32,11 @@ $this->params['canonicalUrl'] = SeoHelper::buildAbsoluteUrl($subTheme
 );
 $this->params['robots'] = 'index,follow';
 
+$themeBaseUrl = $subTheme
+    ? ["/lego/theme/{$theme->slug}/{$subTheme->slug}"]
+    : ["/lego/theme/{$theme->slug}"];
+SeoHelper::registerPaginationLinks($this, $dataProvider, $page, $themeBaseUrl);
+
 $this->params['breadcrumbs'][] = ['label' => Helper::getLegoName(), 'url' => ['/lego']];
 
 if ($subTheme) {
