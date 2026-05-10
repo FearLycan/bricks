@@ -4,6 +4,7 @@ use common\models\User;
 use frontend\modules\homepage\HomepageModule;
 use frontend\modules\lego\LegoModule;
 use frontend\modules\product\ProductModule;
+use frontend\modules\wizard\WizardModule;
 use yii\log\FileTarget;
 
 $params = array_merge(
@@ -53,6 +54,8 @@ return [
             'enablePrettyUrl' => true,
             'showScriptName'  => false,
             'rules'           => [
+                'wizard/save'                                   => 'wizard/default/save',
+                'wizard/load'                                   => 'wizard/default/load',
                 '<alias:products>'                              => 'product/product/index',
                 '<modules:lego>/<controler:theme>/<slug>'       => 'lego/theme/index',
                 '<modules:lego>/<controler:theme>/<slug>/<sub>' => 'lego/theme/index',
@@ -76,6 +79,7 @@ return [
         'homepage' => ['class' => HomepageModule::class,],
         'product'  => ['class' => ProductModule::class,],
         'lego'     => ['class' => LegoModule::class,],
+        'wizard'   => ['class' => WizardModule::class,],
     ],
     'params'              => $params,
 ];

@@ -21,13 +21,13 @@ AppAsset::register($this);
 
 $breadcrumbLinks = $this->params['breadcrumbs'] ?? [];
 $homeBreadcrumb = [
-    'label' => Html::encode(Yii::$app->name),
-    'url'   => Yii::$app->homeUrl,
+        'label' => Html::encode(Yii::$app->name),
+        'url'   => Yii::$app->homeUrl,
 ];
 
 $schemaGraph = [
-    OrganizationSchemaFactory::fromParams(),
-    BreadcrumbListSchemaFactory::fromView($breadcrumbLinks, $homeBreadcrumb, (string)$this->title),
+        OrganizationSchemaFactory::fromParams(),
+        BreadcrumbListSchemaFactory::fromView($breadcrumbLinks, $homeBreadcrumb, (string)$this->title),
 ];
 
 if (empty($this->params['socialImage'])) {
@@ -121,8 +121,8 @@ if ($socialImage !== '') {
             <div class="container-fluid px-3 px-lg-4">
                 <a class="navbar-brand bricks-brand d-flex align-items-center gap-2 text-decoration-none" href="<?= Yii::$app->homeUrl ?>">
                     <?= Html::img('@web/images/logo.png', [
-                        'alt'   => Yii::$app->name,
-                        'class' => 'bricks-brand-icon',
+                            'alt'   => Yii::$app->name,
+                            'class' => 'bricks-brand-icon',
                     ]) ?>
                     <span class="bricks-brand-name"><?= Html::encode(Yii::$app->name) ?></span>
                 </a>
@@ -142,6 +142,11 @@ if ($socialImage !== '') {
                         <li class="nav-item">
                             <a class="bricks-nav-link nav-link" href="<?= Url::to(['/lego/on-sale']) ?>"><i class="bi bi-tags me-1"></i>On Sale</a>
                         </li>
+                        <li class="nav-item ms-md-2">
+                            <a class="bricks-nav-link nav-link bricks-wizard-nav-btn" href="#" data-bs-toggle="modal" data-bs-target="#wizardModal">
+                                <i class="bi bi-magic me-1"></i>Find a Set
+                            </a>
+                        </li>
                     </ul>
                     <?php if (!Yii::$app->user->isGuest): ?>
                         <?= $this->render('_user-dropdown-menu', ['user' => Yii::$app->user->identity]) ?>
@@ -157,10 +162,10 @@ if ($socialImage !== '') {
 
         <div class="container">
             <?= Breadcrumbs::widget([
-                'links'        => $breadcrumbLinks,
-                'homeLink'     => $homeBreadcrumb,
-                'encodeLabels' => false,
-                'options'      => ['class' => 'breadcrumb bricks-breadcrumb'],
+                    'links'        => $breadcrumbLinks,
+                    'homeLink'     => $homeBreadcrumb,
+                    'encodeLabels' => false,
+                    'options'      => ['class' => 'breadcrumb bricks-breadcrumb'],
             ]) ?>
             <?= Alert::widget() ?>
             <?= $content ?>
@@ -173,8 +178,8 @@ if ($socialImage !== '') {
                 <div class="col-md-4">
                     <div class="d-flex align-items-center gap-2 mb-1">
                         <?= Html::img('@web/images/logo.png', [
-                            'alt'   => Yii::$app->name,
-                            'class' => 'bricks-footer-logo',
+                                'alt'   => Yii::$app->name,
+                                'class' => 'bricks-footer-logo',
                         ]) ?>
                         <strong class="text-white"><?= Html::encode(Yii::$app->name) ?></strong>
                     </div>
@@ -193,6 +198,8 @@ if ($socialImage !== '') {
     </footer>
 
     <div class="modal fade" id="mainModal" tabindex="-1" aria-hidden="true"></div>
+
+    <?= $this->renderFile(Yii::$app->getModule('wizard')->getViewPath() . '/_modal.php') ?>
 
     <?php $this->endBody() ?>
 

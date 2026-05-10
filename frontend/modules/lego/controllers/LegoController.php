@@ -5,6 +5,7 @@ namespace frontend\modules\lego\controllers;
 use common\components\AccessControl;
 use common\components\Controller;
 use common\enums\StatusEnum;
+use common\models\SearchWizardHash;
 use common\models\Set;
 use common\models\SetOffer;
 use common\models\SetMinifig;
@@ -35,12 +36,27 @@ class LegoController extends Controller
 
     public function actionIndex()
     {
-        $searchModel = new SetSearch();
+        $searchModel  = new SetSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
+
+        $wizardData = null;
+        $wizardHash = (string)($this->request->get('wizard') ?? '');
+        if ($wizardHash !== '') {
+            $wizardRecord = SearchWizardHash::findByHash($wizardHash);
+            if ($wizardRecord !== null) {
+                $wizardRecord->applyToQuery($dataProvider->query);
+                $wizardData = $wizardRecord->getPublicData();
+                $dataProvider->setTotalCount(null);
+                if ($dataProvider->getPagination() !== false) {
+                    $dataProvider->getPagination()->totalCount = $dataProvider->getTotalCount();
+                }
+            }
+        }
 
         return $this->render('index', [
             'searchModel'  => $searchModel,
             'dataProvider' => $dataProvider,
+            'wizardData'   => $wizardData,
         ]);
     }
 

@@ -25,6 +25,7 @@ class AppAsset extends AssetBundle
         'libs/select2/select2.full.min.js',
         'libs/venobox/venobox.min.js',
         'js/common.js',
+        'js/wizard.js',
     ];
     public $depends  = [
         YiiAsset::class,
