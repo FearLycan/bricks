@@ -212,15 +212,16 @@ class SetSearch extends Set
             return;
         }
 
-        $col = fn(string $c) => $alias ? "$alias.$c" : $c;
+        $col = fn(string $c) => $alias ? "$alias.$c" : "{{%set}}.$c";
 
         if (is_numeric($this->name)) {
             $query->andWhere([$col('number') => $this->name]);
         } else {
             $themeIdsQuery = Theme::find()
-                ->select('id')
-                ->where(['like', 'name', $this->name])
-                ->andWhere(['status' => StatusEnum::ACTIVE->value]);
+                ->alias('t')
+                ->select('t.id')
+                ->where(['like', 't.name', $this->name])
+                ->andWhere(['t.status' => StatusEnum::ACTIVE->value]);
 
             $query->andWhere([
                 'or',
