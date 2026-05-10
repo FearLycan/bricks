@@ -108,26 +108,29 @@
     }
 
     function buildStepHtml(config) {
+        console.log(config);
+
+        const count = config.options.length;
+        let gridMod = count === 2 ? ' wizard-options-grid--2' : (count >= 6 ? ' wizard-options-grid--sm' : '');
+
         let html = '<div class="wizard-step">';
-        html += '<h5 class="wizard-step-title mb-1">' + escHtml(config.title) + '</h5>';
+        html += '<h5 class="wizard-step-title">' + escHtml(config.title) + '</h5>';
         if (config.subtitle) {
-            html += '<p class="text-muted small mb-3">' + escHtml(config.subtitle) + '</p>';
+            html += '<p class="wizard-step-subtitle">' + escHtml(config.subtitle) + '</p>';
         } else {
-            html += '<div class="mb-3"></div>';
+            html += '<div class="wizard-step-subtitle-spacer"></div>';
         }
 
         if (config.type === 'radio') {
-            html += '<div class="wizard-options-grid">';
+            html += '<div class="wizard-options-grid' + gridMod + '">';
             for (const opt of config.options) {
-                const isSelected = state.answers[config.key] === opt.value;
-                html += buildOptionCard(opt, config.key, 'radio', isSelected);
+                html += buildOptionCard(opt, config.key, 'radio', state.answers[config.key] === opt.value);
             }
             html += '</div>';
         } else if (config.type === 'checkbox') {
-            html += '<div class="wizard-options-grid">';
+            html += '<div class="wizard-options-grid' + gridMod + '">';
             for (const opt of config.options) {
-                const isSelected = state.answers.interests.includes(opt.value);
-                html += buildOptionCard(opt, config.key, 'checkbox', isSelected);
+                html += buildOptionCard(opt, config.key, 'checkbox', state.answers.interests.includes(opt.value));
             }
             html += '</div>';
         }
@@ -141,6 +144,7 @@
         const desc = opt.description ? '<span class="wizard-option-desc">' + escHtml(opt.description) + '</span>' : '';
         return (
             '<div class="wizard-option' + selectedClass + '" data-group="' + escHtml(groupKey) + '" data-value="' + escHtml(opt.value) + '" data-type="' + type + '">' +
+            '<span class="wizard-option-check"><i class="bi bi-check-lg"></i></span>' +
             '<span class="wizard-option-emoji">' + (opt.emoji || '') + '</span>' +
             '<span class="wizard-option-label">' + escHtml(opt.label) + '</span>' +
             desc +
@@ -196,11 +200,17 @@
     // ─── Navigation ────────────────────────────────────────────────────────────
 
     function updateProgress() {
-        const pct = ((state.step - 1) / TOTAL_STEPS) * 100;
-        const bar = document.getElementById('wizardProgressBar');
-        const ind = document.getElementById('wizardStepIndicator');
-        if (bar) { bar.style.width = pct + '%'; bar.setAttribute('aria-valuenow', pct); }
-        if (ind)   ind.textContent = 'Step ' + state.step + ' of ' + TOTAL_STEPS;
+        const dots = document.getElementById('wizardDots');
+        const ind  = document.getElementById('wizardStepIndicator');
+        if (dots) {
+            let html = '';
+            for (let i = 1; i <= TOTAL_STEPS; i++) {
+                const cls = i < state.step ? 'wizard-dot--done' : (i === state.step ? 'wizard-dot--active' : '');
+                html += '<span class="wizard-dot ' + cls + '"></span>';
+            }
+            dots.innerHTML = html;
+        }
+        if (ind) ind.textContent = 'Step ' + state.step + ' of ' + TOTAL_STEPS;
     }
 
     function updateButtons(config) {
