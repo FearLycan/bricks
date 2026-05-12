@@ -8,11 +8,11 @@ use yii\base\Model;
 
 class SignupForm extends Model
 {
-    public $username;
-    public $email;
-    public $password;
+    public string $username = '';
+    public string $email = '';
+    public string $password = '';
 
-    public function rules()
+    public function rules(): array
     {
         return [
             ['username', 'trim'],
@@ -35,7 +35,7 @@ class SignupForm extends Model
         ];
     }
 
-    public function validatePasswordStrength($attribute)
+    public function validatePasswordStrength(string $attribute): void
     {
         if ($this->hasErrors($attribute)) {
             return;
@@ -62,7 +62,7 @@ class SignupForm extends Model
         }
     }
 
-    public function signup()
+    public function signup(): ?User
     {
         if (!$this->validate()) {
             return null;

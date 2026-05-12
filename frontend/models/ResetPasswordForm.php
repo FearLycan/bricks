@@ -9,7 +9,7 @@ use yii\base\Model;
 
 class ResetPasswordForm extends Model
 {
-    public $password;
+    public string $password = '';
 
     private User $_user;
 
@@ -29,7 +29,7 @@ class ResetPasswordForm extends Model
         parent::__construct($config);
     }
 
-    public function rules()
+    public function rules(): array
     {
         return [
             ['password', 'required'],
@@ -38,7 +38,7 @@ class ResetPasswordForm extends Model
         ];
     }
 
-    public function validatePasswordStrength($attribute)
+    public function validatePasswordStrength(string $attribute): void
     {
         if ($this->hasErrors($attribute)) {
             return;

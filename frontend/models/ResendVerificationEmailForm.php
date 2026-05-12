@@ -8,9 +8,9 @@ use yii\base\Model;
 
 class ResendVerificationEmailForm extends Model
 {
-    public $email;
+    public string $email = '';
 
-    public function rules()
+    public function rules(): array
     {
         return [
             ['email', 'trim'],

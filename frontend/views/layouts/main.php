@@ -194,9 +194,9 @@ if ($socialImage !== '') {
 
     <footer class="bricks-footer mt-auto">
         <div class="container py-4">
-            <div class="row align-items-center g-3">
+            <div class="row g-4 mb-3">
                 <div class="col-md-4">
-                    <div class="d-flex align-items-center gap-2 mb-1">
+                    <div class="d-flex align-items-center gap-2 mb-2">
                         <?= Html::img('@web/images/logo.png', [
                                 'alt'   => Yii::$app->name,
                                 'class' => 'bricks-footer-logo',
@@ -205,7 +205,16 @@ if ($socialImage !== '') {
                     </div>
                     <p class="bricks-footer-text small mb-0">&copy; <?= Html::encode(Yii::$app->name) ?> <?= date('Y') ?></p>
                 </div>
-                <div class="col-md-8 text-md-end">
+                <div class="col-md-2">
+                    <p class="bricks-footer-nav-label">Company</p>
+                    <ul class="bricks-footer-nav">
+                        <li><?= Html::a('Contact', ['/site/contact'], ['class' => 'bricks-footer-nav-link']) ?></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="bricks-footer-divider"></div>
+            <div class="row pt-3">
+                <div class="col-12">
                     <p class="bricks-footer-text small mb-1">
                         <?= T::tr('Some product links are affiliate links, which means we may earn a commission if you make a purchase through our website.') ?>
                     </p>
