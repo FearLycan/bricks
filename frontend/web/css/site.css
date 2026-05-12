@@ -245,7 +245,8 @@ a {
 
 .lego-set .card {
     transition: box-shadow 0.25s ease, transform 0.25s ease;
-    border: 1px solid #e9ecef; !important;
+    border: 1px solid #e9ecef;
+!important;
     border-radius: 14px !important;
     overflow: hidden;
 }
@@ -1105,11 +1106,21 @@ a {
 /* ── Shake animation ──────────────────────────────────── */
 
 @keyframes wizard-shake {
-    0%, 100% { transform: translateX(0); }
-    20%       { transform: translateX(-6px); }
-    40%       { transform: translateX(6px); }
-    60%       { transform: translateX(-4px); }
-    80%       { transform: translateX(4px); }
+    0%, 100% {
+        transform: translateX(0);
+    }
+    20% {
+        transform: translateX(-6px);
+    }
+    40% {
+        transform: translateX(6px);
+    }
+    60% {
+        transform: translateX(-4px);
+    }
+    80% {
+        transform: translateX(4px);
+    }
 }
 
 .wizard-shake {
@@ -1167,4 +1178,219 @@ a {
     background: #dbeafe;
     color: #1e40af;
     border-color: #93c5fd;
+}
+
+/* ===== BrickAtlas Search ===== */
+
+.bricks-search-toggle {
+    background: none;
+    border: none;
+    color: #1a1a2e;
+    font-size: 1rem;
+    padding: 0.45rem 0.6rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.18s ease;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+.bricks-search-toggle:hover {
+    background-color: #FFD700;
+}
+
+.bricks-search-input {
+    width: 0;
+    min-width: 0;
+    padding: 0;
+    border: none;
+    border-bottom: 2px solid transparent;
+    background: transparent;
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: #1a1a2e;
+    outline: none;
+    transition: width 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+    padding 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.28s ease,
+    opacity 0.28s ease;
+    overflow: hidden;
+    opacity: 0;
+}
+
+.bricks-search-box.is-open .bricks-search-input {
+    width: 320px;
+    padding: 0.32rem 0.55rem 0.32rem 0;
+    border-bottom-color: #FFD700;
+    opacity: 1;
+}
+
+.bricks-search-dropdown {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    min-width: 360px;
+    background: #fff;
+    border-radius: 0.875rem;
+    box-shadow: 0 8px 32px rgba(26, 26, 46, 0.12), 0 2px 8px rgba(0, 0, 0, 0.06);
+    border: 1px solid #e9ecef;
+    overflow: hidden;
+    display: none;
+    z-index: 1060;
+    padding: 0.35rem 0 0.35rem;
+}
+
+.bricks-search-dropdown.is-visible {
+    display: block;
+    animation: searchDropIn 0.18s ease;
+}
+
+@keyframes searchDropIn {
+    from {
+        opacity: 0;
+        transform: translateY(-6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.bricks-search-group-label {
+    padding: 0.4rem 0.875rem 0.2rem;
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #94a3b8;
+}
+
+.bricks-search-divider {
+    height: 1px;
+    background: #f0f4f8;
+    margin: 0.3rem 0;
+}
+
+.bricks-search-item {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.45rem 0.875rem;
+    color: #1a1a2e;
+    text-decoration: none;
+    transition: background-color 0.14s ease;
+}
+
+.bricks-search-item:hover {
+    background-color: #fffbeb;
+    color: #1a1a2e;
+    text-decoration: none;
+}
+
+.bricks-search-item-img {
+    width: 70px;
+    height: 39px;
+    object-fit: contain;
+    border-radius: 0.35rem;
+    background: #f8fafc;
+    flex-shrink: 0;
+}
+
+.bricks-search-item-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    min-width: 0;
+}
+
+.bricks-search-item-name {
+    font-size: 0.84rem;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.bricks-search-item-number {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: #94a3b8;
+}
+
+.bricks-search-theme-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 0.4rem;
+    background: #f1f5f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #64748b;
+    font-size: 0.85rem;
+    flex-shrink: 0;
+}
+
+.bricks-search-footer {
+    border-top: 1px solid #f0f4f8;
+    margin-top: 0.3rem;
+}
+
+.bricks-search-footer-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.6rem 0.875rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #1a1a2e;
+    text-decoration: none;
+    transition: background-color 0.14s ease, color 0.14s ease;
+}
+
+.bricks-search-footer-link:hover {
+    background-color: #FFD700;
+    color: #1a1a2e;
+    text-decoration: none;
+}
+
+.bricks-search-theme-breadcrumb {
+    color: #94a3b8;
+    font-weight: 500;
+}
+
+.bricks-search-theme-breadcrumb .bi-chevron-right {
+    font-size: 0.65rem;
+    vertical-align: middle;
+}
+
+.bricks-search-empty {
+    padding: 0.9rem 0.875rem;
+    font-size: 0.84rem;
+    color: #94a3b8;
+    text-align: center;
+}
+
+@media (max-width: 767.98px) {
+    .bricks-search-wrap {
+        width: 100%;
+        padding: 0.25rem 0;
+    }
+
+    .bricks-search-box {
+        width: 100%;
+    }
+
+    .bricks-search-box.is-open .bricks-search-input {
+        flex: 1;
+        width: auto;
+    }
+
+    .bricks-search-dropdown {
+        width: 100%;
+        right: 0;
+        left: 0;
+        min-width: 0;
+    }
 }

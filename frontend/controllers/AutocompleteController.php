@@ -4,14 +4,15 @@ namespace frontend\controllers;
 
 use common\components\AccessControl;
 use common\components\Controller;
+use common\enums\StatusEnum;
 use common\models\Set;
+use common\models\Theme;
 use Yii;
 use yii\web\Response;
 
 class AutocompleteController extends Controller
 {
     private const PAGE_SIZE = 20;
-
 
     public function behaviors(): array
     {
@@ -21,7 +22,7 @@ class AutocompleteController extends Controller
                 'rules' => [
                     [
                         'allow'   => true,
-                        'actions' => ['theme', 'year'],
+                        'actions' => ['theme', 'year', 'search'],
                         'roles'   => ['?', '@'],
                     ],
                 ],
@@ -49,6 +50,57 @@ class AutocompleteController extends Controller
         $term = trim($term);
 
         return $this->buildYearResponse($term, $page);
+    }
+
+    public function actionSearch(string $term = ''): array
+    {
+        $term = trim($term);
+        if (strlen($term) < 2) {
+            return ['sets' => [], 'themes' => []];
+        }
+
+        $setsQuery = Set::find()
+            ->alias('s')
+            ->where(['s.status' => StatusEnum::ACTIVE->value])
+            ->andWhere(['or', ['like', 's.name', $term], ['like', 's.number', $term]]);
+
+        $setsTotal = (int)$setsQuery->count();
+
+        $sets = (clone $setsQuery)
+            ->with(['mainImageRelation'])
+            ->orderBy([
+                new \yii\db\Expression('CASE WHEN s.number = :t THEN 0 ELSE 1 END', [':t' => $term]),
+                's.rating' => SORT_DESC,
+                's.year'   => SORT_DESC,
+            ])
+            ->limit(5)
+            ->all();
+
+        $themes = Theme::find()
+            ->alias('t')
+            ->where(['like', 't.name', $term])
+            ->andWhere(['t.status' => StatusEnum::ACTIVE->value])
+            ->with(['parent'])
+            ->orderBy(['t.sets_count' => SORT_DESC])
+            ->limit(4)
+            ->all();
+
+        return [
+            'setsTotal' => $setsTotal,
+            'sets'      => array_map(fn(Set $s) => [
+                'name'   => $s->name,
+                'number' => $s->number,
+                'url'    => '/lego/' . $s->slug,
+                'img'    => $s->getDisplayMainImageUrl(),
+            ], $sets),
+            'themes' => array_map(fn(Theme $t) => [
+                'name'   => $t->name,
+                'parent' => $t->parent?->name,
+                'url'    => $t->parent_id !== null && $t->parent !== null
+                    ? '/lego/theme/' . $t->parent->slug . '/' . $t->slug
+                    : '/lego/theme/' . $t->slug,
+            ], $themes),
+        ];
     }
 
     private function buildThemeResponse(string $term, int $page): array
