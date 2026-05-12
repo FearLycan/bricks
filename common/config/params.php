@@ -1,11 +1,11 @@
 <?php
 return [
-    'adminEmail'                    => 'admin@example.com',
-    'supportEmail'                  => 'support@example.com',
-    'senderEmail'                   => 'noreply@example.com',
-    'senderName'                    => 'Example.com mailer',
+    'adminEmail'                    => 'no-reply@brickatlas.shop',
+    'supportEmail'                  => 'no-reply@brickatlas.shop',
+    'senderEmail'                   => 'no-reply@brickatlas.shop',
+    'senderName'                    => 'BricksAtlas',
     'user.passwordResetTokenExpire' => 3600,
-    'user.passwordMinLength'        => 8,
+    'user.passwordMinLength'        => 12,
     'brickset.username'             => '',
     'brickset.password'             => '',
     'brickset.apiKey'               => '',

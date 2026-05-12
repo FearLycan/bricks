@@ -165,6 +165,11 @@ if ($socialImage !== '') {
                     </ul>
                     <?php if (!Yii::$app->user->isGuest): ?>
                         <?= $this->render('_user-dropdown-menu', ['user' => Yii::$app->user->identity]) ?>
+                    <?php else: ?>
+                        <div class="d-flex align-items-center gap-2 ms-md-3">
+                            <?= Html::a('Sign in', ['/auth/login'], ['class' => 'bricks-nav-link nav-link']) ?>
+                            <?= Html::a('Register', ['/auth/signup'], ['class' => 'btn btn-primary btn-sm px-3']) ?>
+                        </div>
                     <?php endif; ?>
                 </div>
             </div>
