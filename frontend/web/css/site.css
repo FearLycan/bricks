@@ -773,6 +773,18 @@ a {
     font-weight: 600;
     color: #1a1a2e;
     letter-spacing: -0.02em;
+    max-width: 200px;
+    overflow: hidden;
+    white-space: nowrap;
+    transition: max-width 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.2s ease;
+}
+
+@media (max-width: 767.98px) {
+    .bricks-nav-bar:has(.bricks-search-box.is-open) .bricks-brand-name {
+        max-width: 0;
+        opacity: 0;
+    }
 }
 
 .bricks-nav-link {
@@ -1301,6 +1313,8 @@ a {
     flex-direction: column;
     gap: 0.1rem;
     min-width: 0;
+    flex: 1;
+    overflow: hidden;
 }
 
 .bricks-search-item-name {
@@ -1372,13 +1386,22 @@ a {
     text-align: center;
 }
 
+@media (min-width: 768px) {
+    .bricks-search-wrap {
+        order: 5;
+        margin-left: 0.5rem;
+    }
+}
+
 @media (max-width: 767.98px) {
     .bricks-search-wrap {
-        width: 100%;
-        padding: 0.25rem 0;
+        margin-left: auto;
+        margin-right: 0.25rem;
+        flex: 1;
+        min-width: 0;
     }
 
-    .bricks-search-box {
+    .bricks-search-box.is-open {
         width: 100%;
     }
 
@@ -1387,10 +1410,5 @@ a {
         width: auto;
     }
 
-    .bricks-search-dropdown {
-        width: 100%;
-        right: 0;
-        left: 0;
-        min-width: 0;
-    }
+    /* dropdown position handled by JS (position: fixed) */
 }

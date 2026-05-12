@@ -126,6 +126,21 @@ if ($socialImage !== '') {
                     ]) ?>
                     <span class="bricks-brand-name"><?= Html::encode(Yii::$app->name) ?></span>
                 </a>
+                <div class="bricks-search-wrap position-relative" id="bricksSearchWrap">
+                    <div class="bricks-search-box d-flex align-items-center" id="bricksSearchBox">
+                        <input type="text"
+                               class="bricks-search-input"
+                               id="bricksSearchInput"
+                               placeholder="Search sets, themes…"
+                               autocomplete="off"
+                               spellcheck="false"
+                               aria-label="Search LEGO sets and themes">
+                        <button class="bricks-search-toggle" id="bricksSearchToggle" type="button" aria-label="Search">
+                            <i class="bi bi-search" id="bricksSearchIcon"></i>
+                        </button>
+                    </div>
+                    <div class="bricks-search-dropdown" id="bricksSearchDropdown" role="listbox" aria-live="polite"></div>
+                </div>
                 <button class="navbar-toggler border-0 shadow-none" type="button"
                         data-bs-toggle="collapse" data-bs-target="#bricksNavCollapse"
                         aria-controls="bricksNavCollapse" aria-expanded="false" aria-label="Toggle navigation">
@@ -148,21 +163,6 @@ if ($socialImage !== '') {
                             </a>
                         </li>
                     </ul>
-                    <div class="bricks-search-wrap position-relative ms-2 me-1" id="bricksSearchWrap">
-                        <div class="bricks-search-box d-flex align-items-center" id="bricksSearchBox">
-                            <input type="text"
-                                   class="bricks-search-input"
-                                   id="bricksSearchInput"
-                                   placeholder="Search sets, themes…"
-                                   autocomplete="off"
-                                   spellcheck="false"
-                                   aria-label="Search LEGO sets and themes">
-                            <button class="bricks-search-toggle" id="bricksSearchToggle" type="button" aria-label="Search">
-                                <i class="bi bi-search" id="bricksSearchIcon"></i>
-                            </button>
-                        </div>
-                        <div class="bricks-search-dropdown" id="bricksSearchDropdown" role="listbox" aria-live="polite"></div>
-                    </div>
                     <?php if (!Yii::$app->user->isGuest): ?>
                         <?= $this->render('_user-dropdown-menu', ['user' => Yii::$app->user->identity]) ?>
                     <?php endif; ?>

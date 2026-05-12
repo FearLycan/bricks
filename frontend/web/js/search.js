@@ -91,7 +91,22 @@
         }
 
         searchDrop.innerHTML = html;
+        applyDropdownPosition();
         searchDrop.classList.add('is-visible');
+    }
+
+    function applyDropdownPosition() {
+        if (window.innerWidth >= 768) {
+            searchDrop.style.cssText = '';
+            return;
+        }
+        var rect = searchWrap.getBoundingClientRect();
+        searchDrop.style.position = 'fixed';
+        searchDrop.style.top      = (rect.bottom + 6) + 'px';
+        searchDrop.style.left     = '0.75rem';
+        searchDrop.style.right    = '0.75rem';
+        searchDrop.style.width    = 'auto';
+        searchDrop.style.minWidth = '0';
     }
 
     function fetchResults(term) {
