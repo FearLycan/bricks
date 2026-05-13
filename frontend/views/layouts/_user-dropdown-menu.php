@@ -26,6 +26,10 @@ use yii\helpers\Url;
                 'class'  => 'dropdown-item',
                 'encode' => false,
         ]) ?></li>
+        <li><?= Html::a('<i class="bi bi-box-seam me-2"></i>' . T::tr('Owned sets'), ['/owned-set/index'], [
+                'class'  => 'dropdown-item',
+                'encode' => false,
+        ]) ?></li>
         <?php if ($user->isAdmin()): ?>
             <li><?= Html::a(T::tr('Admin panel'), Yii::$app->backendUrlManager->createAbsoluteUrl(['/']), ['class' => 'dropdown-item']) ?></li>
         <?php endif; ?>

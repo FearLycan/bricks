@@ -1,5 +1,6 @@
 <?php
 
+use common\models\OwnedSet;
 use common\models\Set;
 use common\models\Wishlist;
 use frontend\components\T;
@@ -14,6 +15,7 @@ use yii\web\View;
 
 $isGuest = Yii::$app->user->isGuest;
 $isWishlisted = !$isGuest && Wishlist::isInCurrentUserWishlist((int)$model->id);
+$isOwned = !$isGuest && OwnedSet::isOwnedByCurrentUser((int)$model->id);
 
 ?>
 
@@ -21,6 +23,15 @@ $isWishlisted = !$isGuest && Wishlist::isInCurrentUserWishlist((int)$model->id);
     <div class="card h-100">
         <div class="set-card-img-wrap">
             <?php if (!$isGuest): ?>
+                <button type="button"
+                        class="js-owned-set-toggle set-card-owned-btn <?= $isOwned ? 'is-active' : '' ?>"
+                        data-set-id="<?= (int)$model->id ?>"
+                        data-toggle-url="<?= Html::encode(Url::to(['/owned-set/toggle'])) ?>"
+                        aria-pressed="<?= $isOwned ? 'true' : 'false' ?>"
+                        aria-label="<?= Html::encode(T::tr('Toggle owned set')) ?>"
+                        title="<?= Html::encode($isOwned ? T::tr('Remove from owned sets') : T::tr('Add to owned sets')) ?>">
+                    <i class="bi <?= $isOwned ? 'bi-box-seam-fill' : 'bi-box-seam' ?>"></i>
+                </button>
                 <button type="button"
                         class="js-wishlist-toggle set-card-wishlist-btn <?= $isWishlisted ? 'is-active' : '' ?>"
                         data-set-id="<?= (int)$model->id ?>"

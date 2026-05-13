@@ -28,6 +28,7 @@ class AppAsset extends AssetBundle
         'js/search.js',
         'js/wizard.js',
         'js/wishlist.js',
+        'js/owned-set.js',
     ];
     public $depends  = [
         YiiAsset::class,
