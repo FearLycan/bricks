@@ -1,8 +1,10 @@
 <?php
 
 use common\models\Set;
+use common\models\Wishlist;
 use frontend\components\T;
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\web\View;
 
 /**
@@ -10,11 +12,25 @@ use yii\web\View;
  * @var $model Set
  */
 
+$isGuest = Yii::$app->user->isGuest;
+$isWishlisted = !$isGuest && Wishlist::isInCurrentUserWishlist((int)$model->id);
+
 ?>
 
 <a href="<?= "/lego/{$model->slug}" ?>" class="text-decoration-none text-reset">
     <div class="card h-100">
         <div class="set-card-img-wrap">
+            <?php if (!$isGuest): ?>
+                <button type="button"
+                        class="js-wishlist-toggle set-card-wishlist-btn <?= $isWishlisted ? 'is-active' : '' ?>"
+                        data-set-id="<?= (int)$model->id ?>"
+                        data-toggle-url="<?= Html::encode(Url::to(['/wishlist/toggle'])) ?>"
+                        aria-pressed="<?= $isWishlisted ? 'true' : 'false' ?>"
+                        aria-label="<?= Html::encode(T::tr('Toggle wishlist')) ?>"
+                        title="<?= Html::encode($isWishlisted ? T::tr('Remove from wishlist') : T::tr('Add to wishlist')) ?>">
+                    <i class="bi <?= $isWishlisted ? 'bi-heart-fill' : 'bi-heart' ?>"></i>
+                </button>
+            <?php endif; ?>
             <img src="<?= $model->getMainImage()->url ?? "https://placehold.co/300x220?text={$model->number}" ?>"
                  class="card-img-top img-fluid set-card-image"
                  loading="lazy"

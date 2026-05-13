@@ -22,6 +22,10 @@ use yii\helpers\Url;
 
     <ul class="dropdown-menu dropdown-menu-end">
         <li><?= Html::a(T::tr('Catalog'), Url::home(), ['class' => 'dropdown-item']) ?></li>
+        <li><?= Html::a('<i class="bi bi-heart me-2"></i>' . T::tr('Wishlist'), ['/wishlist/index'], [
+                'class'  => 'dropdown-item',
+                'encode' => false,
+        ]) ?></li>
         <?php if ($user->isAdmin()): ?>
             <li><?= Html::a(T::tr('Admin panel'), Yii::$app->backendUrlManager->createAbsoluteUrl(['/']), ['class' => 'dropdown-item']) ?></li>
         <?php endif; ?>
