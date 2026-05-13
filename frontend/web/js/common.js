@@ -270,7 +270,23 @@
             }
         });
 
+    const initFlashToasts = function () {
+        if (typeof bootstrap === 'undefined' || !bootstrap.Toast) {
+            return;
+        }
+
+        document.querySelectorAll('.bx-toast-container .toast').forEach(function (toastEl) {
+            const delay = parseInt(toastEl.getAttribute('data-bs-delay'), 10) || 5000;
+            bootstrap.Toast.getOrCreateInstance(toastEl, {
+                autohide: toastEl.getAttribute('data-bs-autohide') !== 'false',
+                delay: delay,
+            }).show();
+        });
+    };
+
     $(function () {
+        initFlashToasts();
+
         $(document).on('click', '.js-load-modal', function (event) {
             event.stopPropagation();
             event.preventDefault();
