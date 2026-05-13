@@ -18,7 +18,7 @@ class VerifyEmailForm extends Model
 
         $user = User::findByVerificationToken($token);
         if (!$user) {
-            throw new InvalidArgumentException('Wrong email verification token.');
+            throw new InvalidArgumentException('Wrong or expired email verification token.');
         }
 
         $this->_user = $user;
@@ -30,7 +30,9 @@ class VerifyEmailForm extends Model
     {
         $user = $this->_user;
         $user->status = User::STATUS_ACTIVE;
+        $user->removeVerificationToken();
+        $user->generateAuthKey();
 
-        return $user->save(false) ? $user : null;
+        return $user->save() ? $user : null;
     }
 }

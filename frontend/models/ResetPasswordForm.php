@@ -10,6 +10,7 @@ use yii\base\Model;
 class ResetPasswordForm extends Model
 {
     public string $password = '';
+    public string $password_repeat = '';
 
     private User $_user;
 
@@ -34,7 +35,18 @@ class ResetPasswordForm extends Model
         return [
             ['password', 'required'],
             ['password', 'string', 'min' => Yii::$app->params['user.passwordMinLength']],
+            ['password', 'string', 'max' => 72],
             ['password', 'validatePasswordStrength'],
+
+            ['password_repeat', 'required'],
+            ['password_repeat', 'compare', 'compareAttribute' => 'password', 'message' => 'Passwords do not match.'],
+        ];
+    }
+
+    public function attributeLabels(): array
+    {
+        return [
+            'password_repeat' => 'Repeat password',
         ];
     }
 
@@ -72,6 +84,6 @@ class ResetPasswordForm extends Model
         $user->removePasswordResetToken();
         $user->generateAuthKey();
 
-        return $user->save(false);
+        return $user->save();
     }
 }

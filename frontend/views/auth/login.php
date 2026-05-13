@@ -185,7 +185,7 @@ $this->registerCss('
         <div class="d-flex align-items-center justify-content-between mb-3">
             <?= $form->field($model, 'rememberMe', [
                 'template'     => '{input}{label}',
-                'options'      => ['class' => 'form-check mb-0'],
+                'options'      => ['class' => 'form-check mb-0 ps-0'],
                 'labelOptions' => ['class' => 'form-check-label'],
             ])->checkbox(['class' => 'form-check-input']) ?>
 

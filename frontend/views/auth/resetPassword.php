@@ -44,7 +44,7 @@ $this->registerCss('
 
         <?php $form = ActiveForm::begin(['id' => 'reset-password-form']); ?>
 
-        <div class="mb-4">
+        <div class="mb-3">
             <?= $form->field($model, 'password', [
                 'options'  => ['class' => 'mb-0'],
                 'template' => '{label}<div class="pass-field" style="position:relative">{input}<button type="button" class="pass-toggle" id="passToggle" tabindex="-1" aria-label="Show password">
@@ -62,13 +62,19 @@ $this->registerCss('
             <div class="strength-bar-wrap"><div class="strength-bar" id="strengthBar"></div></div>
 
             <ul class="pw-reqs">
-                <li id="req-length"><span class="req-icon"></span>8+ characters</li>
+                <li id="req-length"><span class="req-icon"></span><?= (int)Yii::$app->params['user.passwordMinLength'] ?>+ characters</li>
                 <li id="req-upper"><span class="req-icon"></span>Uppercase letter</li>
                 <li id="req-lower"><span class="req-icon"></span>Lowercase letter</li>
                 <li id="req-number"><span class="req-icon"></span>Number</li>
                 <li id="req-special"><span class="req-icon"></span>Special character</li>
             </ul>
         </div>
+
+        <?= $form->field($model, 'password_repeat', ['options' => ['class' => 'mb-4']])->passwordInput([
+            'placeholder' => 'Repeat new password',
+            'class'       => 'form-control',
+            'id'          => 'resetpasswordform-password-repeat',
+        ])->label('Repeat new password') ?>
 
         <?= Html::submitButton('Save new password', ['class' => 'btn btn-primary w-100 btn-auth']) ?>
 
@@ -89,7 +95,7 @@ $this->registerCss('
 
     passInput.addEventListener("input", function() {
         var p = this.value;
-        var checks = {"req-length":p.length>=8,"req-upper":/[A-Z]/.test(p),"req-lower":/[a-z]/.test(p),"req-number":/\d/.test(p),"req-special":/[^a-zA-Z0-9]/.test(p)};
+        var checks = {"req-length":p.length>=' . (int)Yii::$app->params['user.passwordMinLength'] . ',"req-upper":/[A-Z]/.test(p),"req-lower":/[a-z]/.test(p),"req-number":/\d/.test(p),"req-special":/[^a-zA-Z0-9]/.test(p)};
         var score = 0;
         for (var id in checks) {
             document.getElementById(id).classList.toggle("met", checks[id]);

@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 
+use common\helpers\RateLimiter;
 use common\models\LoginForm;
 use frontend\models\PasswordResetRequestForm;
 use frontend\models\ResendVerificationEmailForm;
@@ -14,9 +15,18 @@ use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\BadRequestHttpException;
 use yii\web\Controller;
+use yii\web\Response;
+use yii\web\TooManyRequestsHttpException;
 
 class AuthController extends Controller
 {
+    /** Rate-limit windows (max attempts, seconds). */
+    private const LOGIN_LIMIT          = [5, 900];
+    private const SIGNUP_LIMIT         = [10, 3600];
+    private const PASSWORD_RESET_LIMIT = [5, 900];
+    private const RESEND_VERIFY_LIMIT  = [5, 900];
+    private const PER_EMAIL_LIMIT      = [1, 300];
+
     public function behaviors()
     {
         return [
@@ -52,7 +62,13 @@ class AuthController extends Controller
         }
 
         $model = new LoginForm();
+
+        if (Yii::$app->request->isPost) {
+            $this->throttle('login:' . Yii::$app->request->userIP, self::LOGIN_LIMIT);
+        }
+
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
+            RateLimiter::reset('login:' . Yii::$app->request->userIP);
             return $this->goBack();
         }
 
@@ -70,16 +86,20 @@ class AuthController extends Controller
         return $this->goHome();
     }
 
-    /**
-     * Signs user up.
-     *
-     * @return mixed
-     */
     public function actionSignup()
     {
         $model = new SignupForm();
+
+        if (Yii::$app->request->isPost) {
+            $this->throttle('signup:' . Yii::$app->request->userIP, self::SIGNUP_LIMIT);
+        }
+
         if ($model->load(Yii::$app->request->post()) && $model->validate() && $model->signup()) {
-            Yii::$app->session->setFlash('success', 'Thank you for registration. Please check your inbox for verification email.');
+            $hours = (int)(Yii::$app->params['user.verificationTokenExpire'] / 3600);
+            Yii::$app->session->setFlash('success', sprintf(
+                'Thank you for registration. Please check your inbox for a verification email — the link is valid for %d hours.',
+                $hours
+            ));
             return $this->goHome();
         }
 
@@ -88,15 +108,20 @@ class AuthController extends Controller
         ]);
     }
 
-    /**
-     * Requests password reset.
-     *
-     * @return mixed
-     */
     public function actionRequestPasswordReset()
     {
+        if (($redirect = $this->guestOnly()) !== null) {
+            return $redirect;
+        }
+
         $model = new PasswordResetRequestForm();
+
+        if (Yii::$app->request->isPost) {
+            $this->throttle('pwreset:ip:' . Yii::$app->request->userIP, self::PASSWORD_RESET_LIMIT);
+        }
+
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            $this->throttle('pwreset:email:' . strtolower($model->email), self::PER_EMAIL_LIMIT);
             $model->sendEmail();
             Yii::$app->session->setFlash('success', 'If an account with this email exists, you will receive a reset link shortly.');
 
@@ -108,15 +133,12 @@ class AuthController extends Controller
         ]);
     }
 
-    /**
-     * Resets password.
-     *
-     * @param string $token
-     * @return mixed
-     * @throws BadRequestHttpException
-     */
     public function actionResetPassword($token)
     {
+        if (($redirect = $this->guestOnly()) !== null) {
+            return $redirect;
+        }
+
         try {
             $model = new ResetPasswordForm($token);
         } catch (InvalidArgumentException $e) {
@@ -124,9 +146,9 @@ class AuthController extends Controller
         }
 
         if ($model->load(Yii::$app->request->post()) && $model->validate() && $model->resetPassword()) {
-            Yii::$app->session->setFlash('success', 'New password saved.');
+            Yii::$app->session->setFlash('success', 'New password saved. You can now sign in.');
 
-            return $this->goHome();
+            return $this->redirect(['auth/login']);
         }
 
         return $this->render('resetPassword', [
@@ -134,20 +156,18 @@ class AuthController extends Controller
         ]);
     }
 
-    /**
-     * Verify email address
-     *
-     * @param string $token
-     * @return yii\web\Response
-     * @throws BadRequestHttpException
-     */
     public function actionVerifyEmail($token)
     {
+        if (($redirect = $this->guestOnly()) !== null) {
+            return $redirect;
+        }
+
         try {
             $model = new VerifyEmailForm($token);
         } catch (InvalidArgumentException $e) {
             throw new BadRequestHttpException($e->getMessage());
         }
+
         if (($user = $model->verifyEmail()) && Yii::$app->user->login($user)) {
             Yii::$app->session->setFlash('success', 'Your email has been confirmed!');
             return $this->goHome();
@@ -157,15 +177,20 @@ class AuthController extends Controller
         return $this->goHome();
     }
 
-    /**
-     * Resend verification email
-     *
-     * @return mixed
-     */
     public function actionResendVerificationEmail()
     {
+        if (($redirect = $this->guestOnly()) !== null) {
+            return $redirect;
+        }
+
         $model = new ResendVerificationEmailForm();
+
+        if (Yii::$app->request->isPost) {
+            $this->throttle('resend:ip:' . Yii::$app->request->userIP, self::RESEND_VERIFY_LIMIT);
+        }
+
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            $this->throttle('resend:email:' . strtolower($model->email), self::PER_EMAIL_LIMIT);
             $model->sendEmail();
             Yii::$app->session->setFlash('success', 'If an account with this email is awaiting verification, you will receive a new link shortly.');
 
@@ -175,5 +200,28 @@ class AuthController extends Controller
         return $this->render('resendVerificationEmail', [
             'model' => $model,
         ]);
+    }
+
+    /**
+     * Redirects logged-in users away from guest-only auth flows
+     * (verify-email, reset-password, etc.) to prevent identity swaps and confusion.
+     */
+    private function guestOnly(): ?Response
+    {
+        if (!Yii::$app->user->isGuest) {
+            return $this->goHome();
+        }
+        return null;
+    }
+
+    /**
+     * @param array{0:int,1:int} $limit
+     */
+    private function throttle(string $key, array $limit): void
+    {
+        [$maxAttempts, $window] = $limit;
+        if (!RateLimiter::hit($key, $maxAttempts, $window)) {
+            throw new TooManyRequestsHttpException('Too many attempts. Please try again later.');
+        }
     }
 }

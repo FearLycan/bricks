@@ -11,6 +11,7 @@ class SignupForm extends Model
     public string $username = '';
     public string $email = '';
     public string $password = '';
+    public string $password_repeat = '';
 
     public function rules(): array
     {
@@ -18,7 +19,8 @@ class SignupForm extends Model
             ['username', 'trim'],
             ['username', 'required'],
             ['username', 'string', 'min' => 3, 'max' => 50],
-            ['username', 'match', 'pattern' => '/^[a-zA-Z0-9_\-\.]+$/', 'message' => 'Username may only contain letters, numbers, underscores, hyphens and dots.'],
+            ['username', 'match', 'pattern' => '/^[a-zA-Z0-9][a-zA-Z0-9_.\-]*[a-zA-Z0-9]$/', 'message' => 'Username must start and end with a letter or number, and may contain letters, numbers, underscores, hyphens and dots.'],
+            ['username', 'match', 'pattern' => '/[._\-]{2,}/', 'not' => true, 'message' => 'Username cannot contain consecutive dots, hyphens or underscores.'],
             ['username', 'match', 'pattern' => '/admin/i', 'not' => true, 'message' => 'This username is not allowed.'],
             ['username', 'unique', 'targetClass' => User::class, 'message' => 'This username has already been taken.'],
 
@@ -30,8 +32,18 @@ class SignupForm extends Model
 
             ['password', 'required'],
             ['password', 'string', 'min' => Yii::$app->params['user.passwordMinLength']],
-            ['password', 'string', 'max' => 60],
+            ['password', 'string', 'max' => 72],
             ['password', 'validatePasswordStrength'],
+
+            ['password_repeat', 'required'],
+            ['password_repeat', 'compare', 'compareAttribute' => 'password', 'message' => 'Passwords do not match.'],
+        ];
+    }
+
+    public function attributeLabels(): array
+    {
+        return [
+            'password_repeat' => 'Repeat password',
         ];
     }
 

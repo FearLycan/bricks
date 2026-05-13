@@ -5,6 +5,7 @@ return [
     'senderEmail'                   => 'no-reply@brickatlas.shop',
     'senderName'                    => 'BricksAtlas',
     'user.passwordResetTokenExpire' => 3600,
+    'user.verificationTokenExpire'  => 86400,
     'user.passwordMinLength'        => 12,
     'brickset.username'             => '',
     'brickset.password'             => '',

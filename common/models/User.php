@@ -126,6 +126,10 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function findByVerificationToken($token)
     {
+        if (!static::isVerificationTokenValid($token)) {
+            return null;
+        }
+
         return static::findOne([
             'verification_token' => $token,
             'status'             => self::STATUS_INACTIVE,
@@ -140,13 +144,30 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function isPasswordResetTokenValid($token)
     {
-        if (empty($token)) {
+        return static::isTokenValid($token, (int)Yii::$app->params['user.passwordResetTokenExpire']);
+    }
+
+    /**
+     * Finds out if email verification token is valid
+     */
+    public static function isVerificationTokenValid($token): bool
+    {
+        return static::isTokenValid($token, (int)Yii::$app->params['user.verificationTokenExpire']);
+    }
+
+    private static function isTokenValid($token, int $expire): bool
+    {
+        if (empty($token) || !is_string($token)) {
             return false;
         }
 
-        $timestamp = (int)substr($token, strrpos($token, '_') + 1);
-        $expire = Yii::$app->params['user.passwordResetTokenExpire'];
-        return $timestamp + $expire >= time();
+        $pos = strrpos($token, '_');
+        if ($pos === false) {
+            return false;
+        }
+
+        $timestamp = (int)substr($token, $pos + 1);
+        return $timestamp > 0 && $timestamp + $expire >= time();
     }
 
     /**
@@ -170,7 +191,19 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function validateAuthKey($authKey)
     {
-        return $this->getAuthKey() === $authKey;
+        if (!is_string($authKey)) {
+            return false;
+        }
+
+        return hash_equals((string)$this->getAuthKey(), $authKey);
+    }
+
+    /**
+     * Removes email verification token
+     */
+    public function removeVerificationToken(): void
+    {
+        $this->verification_token = null;
     }
 
     /**

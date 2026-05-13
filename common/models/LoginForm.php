@@ -14,8 +14,8 @@ class LoginForm extends Model
     public $password;
     public $rememberMe = true;
 
-    private $_user;
-
+    private ?User $_user = null;
+    private bool $_userResolved = false;
 
     /**
      * {@inheritdoc}
@@ -23,29 +23,37 @@ class LoginForm extends Model
     public function rules()
     {
         return [
-            // username and password are both required
             [['username', 'password'], 'required'],
-            // rememberMe must be a boolean value
             ['rememberMe', 'boolean'],
-            // password is validated by validatePassword()
             ['password', 'validatePassword'],
         ];
     }
 
     /**
      * Validates the password.
-     * This method serves as the inline validation for password.
-     *
-     * @param string $attribute the attribute currently being validated
-     * @param array $params the additional name-value pairs given in the rule
      */
     public function validatePassword($attribute, $params)
     {
-        if (!$this->hasErrors()) {
-            $user = $this->getUser();
-            if (!$user || !$user->validatePassword($this->password)) {
-                $this->addError($attribute, 'Incorrect username or password.');
-            }
+        if ($this->hasErrors()) {
+            return;
+        }
+
+        $user = $this->getUser();
+
+        if (!$user || !$user->validatePassword($this->password)) {
+            $this->addError($attribute, 'Incorrect username or password.');
+            return;
+        }
+
+        $status = (int)$user->status;
+
+        if ($status === User::STATUS_INACTIVE) {
+            $this->addError($attribute, 'Please verify your email address before signing in. You can request a new verification link from the sign-in page.');
+            return;
+        }
+
+        if ($status !== User::STATUS_ACTIVE) {
+            $this->addError($attribute, 'Incorrect username or password.');
         }
     }
 
@@ -56,22 +64,30 @@ class LoginForm extends Model
      */
     public function login()
     {
-        if ($this->validate()) {
-            return Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600 * 24 * 30 : 0);
+        if (!$this->validate()) {
+            return false;
         }
-        
-        return false;
+
+        $user = $this->getUser();
+        if (!$user || (int)$user->status !== User::STATUS_ACTIVE) {
+            return false;
+        }
+
+        return Yii::$app->user->login($user, $this->rememberMe ? 3600 * 24 * 30 : 0);
     }
 
     /**
-     * Finds user by [[username]]
-     *
-     * @return User|null
+     * Finds user by [[username]] regardless of status, so we can give better
+     * feedback for inactive accounts. The login() method gates by status.
      */
-    protected function getUser()
+    protected function getUser(): ?User
     {
-        if ($this->_user === null) {
-            $this->_user = User::findByUsername($this->username);
+        if (!$this->_userResolved) {
+            $this->_user = User::find()
+                ->where(['username' => $this->username])
+                ->andWhere(['!=', 'status', User::STATUS_DELETED])
+                ->one();
+            $this->_userResolved = true;
         }
 
         return $this->_user;

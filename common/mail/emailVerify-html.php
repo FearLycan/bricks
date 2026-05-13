@@ -6,6 +6,8 @@ use yii\helpers\Html;
 /** @var common\models\User $user */
 
 $verifyLink = Yii::$app->urlManager->createAbsoluteUrl(['auth/verify-email', 'token' => $user->verification_token]);
+$expireHours = (int)(Yii::$app->params['user.verificationTokenExpire'] / 3600);
+$expireLabel = $expireHours . ' ' . ($expireHours === 1 ? 'hour' : 'hours');
 $this->title = 'Confirm your email address';
 ?>
 
@@ -34,7 +36,7 @@ $this->title = 'Confirm your email address';
     <tr>
         <td style="background:#f8fafc;border-radius:10px;padding:14px 18px;border-left:3px solid #FFD700;">
             <p style="margin:0;font-size:13px;color:#6b7280;line-height:1.5;">
-                This link expires in <strong style="color:#111827;">24 hours</strong>. If it expires, you can request a new one from the sign-in page.
+                This link expires in <strong style="color:#111827;"><?= Html::encode($expireLabel) ?></strong>. If it expires, you can request a new one from the sign-in page.
             </p>
         </td>
     </tr>

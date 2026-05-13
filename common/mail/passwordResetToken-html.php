@@ -6,6 +6,14 @@ use yii\helpers\Html;
 /** @var common\models\User $user */
 
 $resetLink = Yii::$app->urlManager->createAbsoluteUrl(['auth/reset-password', 'token' => $user->password_reset_token]);
+$expireSeconds = (int)Yii::$app->params['user.passwordResetTokenExpire'];
+if ($expireSeconds % 3600 === 0) {
+    $count = $expireSeconds / 3600;
+    $expireLabel = $count . ' ' . ($count === 1 ? 'hour' : 'hours');
+} else {
+    $count = max(1, (int)round($expireSeconds / 60));
+    $expireLabel = $count . ' ' . ($count === 1 ? 'minute' : 'minutes');
+}
 $this->title = 'Reset your password';
 ?>
 
@@ -24,7 +32,7 @@ $this->title = 'Reset your password';
 <p style="margin:0 0 28px;font-size:15px;color:#6b7280;line-height:1.65;">
     Hi <strong style="color:#111827;"><?= Html::encode($user->username) ?></strong>,<br>
     We received a request to reset your password. Click the button below to choose a new one.
-    This link expires in <strong style="color:#111827;">1 hour</strong>.
+    This link expires in <strong style="color:#111827;"><?= Html::encode($expireLabel) ?></strong>.
 </p>
 
 <!-- CTA button -->

@@ -98,7 +98,7 @@ a.desc:after {
     outline: none;
 }
 
-a {
+a, button {
     text-decoration: none;
     transition: all .2s;
 }
@@ -777,7 +777,7 @@ a {
     overflow: hidden;
     white-space: nowrap;
     transition: max-width 0.28s cubic-bezier(0.4, 0, 0.2, 1),
-                opacity 0.2s ease;
+    opacity 0.2s ease;
 }
 
 @media (max-width: 767.98px) {
