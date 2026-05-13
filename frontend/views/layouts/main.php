@@ -163,6 +163,7 @@ if ($socialImage !== '') {
                             </a>
                         </li>
                     </ul>
+                    <div id="bricksSearchDesktopSlot" class="d-none d-md-flex align-items-center"></div>
                     <?php if (!Yii::$app->user->isGuest): ?>
                         <?= $this->render('_user-dropdown-menu', ['user' => Yii::$app->user->identity]) ?>
                     <?php else: ?>

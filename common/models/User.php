@@ -27,6 +27,8 @@ use yii\web\IdentityInterface;
  * @property string  $created_at
  * @property string  $updated_at
  * @property string  $password write-only password
+ *
+ * @property UserSettings|null $settings
  */
 class User extends ActiveRecord implements IdentityInterface
 {
@@ -287,5 +289,26 @@ class User extends ActiveRecord implements IdentityInterface
     public function isAdmin(): bool
     {
         return UserRoleEnum::tryFrom((string)$this->role) === UserRoleEnum::ADMIN;
+    }
+
+    public function getSettings(): \yii\db\ActiveQuery
+    {
+        return $this->hasOne(UserSettings::class, ['user_id' => 'id']);
+    }
+
+    public function getOrCreateSettings(): UserSettings
+    {
+        $settings = $this->settings;
+        if ($settings === null) {
+            $settings = new UserSettings();
+            $settings->user_id = (int)$this->id;
+        }
+
+        return $settings;
+    }
+
+    public function shouldHideOwnedSets(): bool
+    {
+        return (bool)($this->settings->hide_owned_sets ?? false);
     }
 }

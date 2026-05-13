@@ -67,6 +67,10 @@
                         }
                         updateHeartButton($other, !!data.in_wishlist);
                     });
+
+                    if (data.in_wishlist && window.BricksFx) {
+                        window.BricksFx.burst($button[0], 'heart');
+                    }
                 }
             },
             complete: function () {

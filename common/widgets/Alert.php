@@ -1,12 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace common\widgets;
 
 use Yii;
+use yii\bootstrap5\Alert as BootstrapAlert;
+use yii\bootstrap5\Widget;
 
 /**
- * Alert widget renders a message from session flash. All flash messages are displayed
- * in the sequence they were assigned using setFlash. You can set message as following:
+ * Alert widget renders messages from session flash. All flash messages are displayed
+ * in the sequence they were assigned using setFlash. You can set a message as follows:
  *
  * ```php
  * Yii::$app->session->setFlash('error', 'This is the message');
@@ -14,7 +18,7 @@ use Yii;
  * Yii::$app->session->setFlash('info', 'This is the message');
  * ```
  *
- * Multiple messages could be set as follows:
+ * Multiple messages can be set per type:
  *
  * ```php
  * Yii::$app->session->setFlash('error', ['Error 1', 'Error 2']);
@@ -23,32 +27,36 @@ use Yii;
  * @author Kartik Visweswaran <kartikv2@gmail.com>
  * @author Alexander Makarov <sam@rmcreative.ru>
  */
-class Alert extends \yii\bootstrap5\Widget
+class Alert extends Widget
 {
     /**
-     * @var array the alert types configuration for the flash messages.
-     * This array is setup as $key => $value, where:
-     * - key: the name of the session flash variable
-     * - value: the bootstrap alert type (i.e. danger, success, info, warning)
+     * @var array<string, string> Map of a flash key to Bootstrap alert class.
      */
-    public $alertTypes = [
+    public array $alertTypes = [
         'error'   => 'alert-danger',
         'danger'  => 'alert-danger',
         'success' => 'alert-success',
         'info'    => 'alert-info',
-        'warning' => 'alert-warning'
+        'warning' => 'alert-warning',
     ];
-    /**
-     * @var array the options for rendering the close button tag.
-     * Array will be passed to [[\yii\bootstrap\Alert::closeButton]].
-     */
-    public $closeButton = [];
-
 
     /**
-     * {@inheritdoc}
+     * @var array<string, string> Map of a flash key to Bootstrap Icons class.
      */
-    public function run()
+    public array $alertIcons = [
+        'error'   => 'bi-exclamation-octagon-fill',
+        'danger'  => 'bi-exclamation-octagon-fill',
+        'success' => 'bi-check-circle-fill',
+        'info'    => 'bi-info-circle-fill',
+        'warning' => 'bi-exclamation-triangle-fill',
+    ];
+
+    /**
+     * @var array<string, mixed>|false Options for the close button tag, or false to hide it.
+     */
+    public array|false $closeButton = [];
+
+    public function run(): void
     {
         $session = Yii::$app->session;
         $flashes = $session->getAllFlashes();
@@ -59,18 +67,29 @@ class Alert extends \yii\bootstrap5\Widget
                 continue;
             }
 
-            foreach ((array) $flash as $i => $message) {
-                echo \yii\bootstrap5\Alert::widget([
-                    'body' => $message,
+            $iconClass = $this->alertIcons[$type] ?? '';
+
+            foreach ((array)$flash as $i => $message) {
+                echo BootstrapAlert::widget([
+                    'body'        => $this->renderBody($iconClass, (string)$message),
                     'closeButton' => $this->closeButton,
-                    'options' => array_merge($this->options, [
-                        'id' => $this->getId() . '-' . $type . '-' . $i,
-                        'class' => $this->alertTypes[$type] . $appendClass,
+                    'options'     => array_merge($this->options, [
+                        'id'    => $this->getId() . '-' . $type . '-' . $i,
+                        'class' => $this->alertTypes[$type] . ' d-flex align-items-center' . $appendClass,
                     ]),
                 ]);
             }
 
             $session->removeFlash($type);
         }
+    }
+
+    private function renderBody(string $iconClass, string $message): string
+    {
+        $icon = $iconClass !== ''
+            ? '<i class="bi ' . $iconClass . ' me-2 flex-shrink-0"></i>'
+            : '';
+
+        return $icon . '<span>' . $message . '</span>';
     }
 }

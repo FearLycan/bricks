@@ -637,6 +637,15 @@ class Set extends ActiveRecord
         return (int)$this->released === 1 ? 'Yes' : 'No';
     }
 
+    public function isReleased(): bool
+    {
+        if ($this->release_date === null || $this->release_date === '') {
+            return true;
+        }
+
+        return strtotime($this->release_date) <= strtotime(date('Y-m-d'));
+    }
+
     private static function getCachedList(string $cacheKey, callable $resolver, int $duration = 3600): array
     {
         $result = Yii::$app->cache->getOrSet($cacheKey, $resolver, $duration);

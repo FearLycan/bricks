@@ -87,6 +87,13 @@ class OwnedSetController extends Controller
             ];
         }
 
+        if (!$set->isReleased()) {
+            return [
+                'success' => false,
+                'message' => T::tr('This set has not been released yet.'),
+            ];
+        }
+
         $entry = new OwnedSet();
         $entry->user_id = $userId;
         $entry->set_id = $setId;

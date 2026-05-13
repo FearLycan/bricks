@@ -3,12 +3,16 @@
 namespace frontend\models\searches;
 
 use common\enums\StatusEnum;
+use common\models\OwnedSet;
 use common\models\Set;
 use common\models\Theme;
+use common\models\User;
 use frontend\components\T;
+use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use yii\db\Expression;
+use yii\db\Query;
 
 /**
  * SetSearch represents the model behind the search form of `common\models\Set`.
@@ -90,6 +94,8 @@ class SetSearch extends Set
 
         $this->applySortOption($query);
 
+        $this->applyHideOwnedFilter($query);
+
         return $this->buildQuery($query);
     }
 
@@ -114,6 +120,8 @@ class SetSearch extends Set
         if ($this->month) {
             $query->andWhere(new Expression('MONTH(s.release_date) = :month', [':month' => (int)$this->month]));
         }
+
+        $this->applyHideOwnedFilter($query, 's');
 
         return new ActiveDataProvider([
             'query'      => $query,
@@ -157,6 +165,8 @@ class SetSearch extends Set
 
         $this->joinActiveTheme($query, 's');
 
+        $this->applyHideOwnedFilter($query, 's');
+
         return new ActiveDataProvider([
             'query'      => $query,
             'pagination' => [
@@ -164,6 +174,29 @@ class SetSearch extends Set
                 'pageParam' => 'promo_page',
             ],
         ]);
+    }
+
+    private function applyHideOwnedFilter($query, string $alias = ''): void
+    {
+        if (Yii::$app->user->isGuest) {
+            return;
+        }
+
+        /** @var User|null $identity */
+        $identity = Yii::$app->user->identity;
+        if (!$identity instanceof User || !$identity->shouldHideOwnedSets()) {
+            return;
+        }
+
+        $setIdColumn = $alias ? "$alias.id" : '{{%set}}.id';
+        $userId = (int)$identity->id;
+
+        $ownedSubquery = (new Query())
+            ->select('os.set_id')
+            ->from(OwnedSet::tableName() . ' os')
+            ->where(['os.user_id' => $userId]);
+
+        $query->andWhere(['not in', $setIdColumn, $ownedSubquery]);
     }
 
     private function joinActiveTheme($query, string $setAlias = ''): void

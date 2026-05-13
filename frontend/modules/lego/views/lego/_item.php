@@ -22,7 +22,7 @@ $isOwned = !$isGuest && OwnedSet::isOwnedByCurrentUser((int)$model->id);
 <a href="<?= "/lego/{$model->slug}" ?>" class="text-decoration-none text-reset">
     <div class="card h-100">
         <div class="set-card-img-wrap">
-            <?php if (!$isGuest): ?>
+            <?php if (!$isGuest && $model->isReleased()): ?>
                 <button type="button"
                         class="js-owned-set-toggle set-card-owned-btn <?= $isOwned ? 'is-active' : '' ?>"
                         data-set-id="<?= (int)$model->id ?>"
@@ -32,6 +32,8 @@ $isOwned = !$isGuest && OwnedSet::isOwnedByCurrentUser((int)$model->id);
                         title="<?= Html::encode($isOwned ? T::tr('Remove from owned sets') : T::tr('Add to owned sets')) ?>">
                     <i class="bi <?= $isOwned ? 'bi-box-seam-fill' : 'bi-box-seam' ?>"></i>
                 </button>
+            <?php endif; ?>
+            <?php if (!$isGuest): ?>
                 <button type="button"
                         class="js-wishlist-toggle set-card-wishlist-btn <?= $isWishlisted ? 'is-active' : '' ?>"
                         data-set-id="<?= (int)$model->id ?>"

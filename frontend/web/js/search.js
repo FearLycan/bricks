@@ -10,6 +10,32 @@
 
     if (!searchBox) return;
 
+    (function setupPlacement() {
+        var desktopSlot = document.getElementById('bricksSearchDesktopSlot');
+        if (!searchWrap || !desktopSlot) return;
+
+        var mobileParent = searchWrap.parentNode;
+        var mobileAnchor = mobileParent.querySelector('.navbar-toggler');
+        var mq = window.matchMedia('(min-width: 768px)');
+
+        function place() {
+            if (mq.matches) {
+                if (searchWrap.parentNode !== desktopSlot) {
+                    desktopSlot.appendChild(searchWrap);
+                }
+            } else if (searchWrap.parentNode !== mobileParent) {
+                mobileParent.insertBefore(searchWrap, mobileAnchor);
+            }
+        }
+
+        place();
+        if (mq.addEventListener) {
+            mq.addEventListener('change', place);
+        } else if (mq.addListener) {
+            mq.addListener(place);
+        }
+    })();
+
     var debounceTimer   = null;
     var lastFetchedTerm = '';
     var isOpen          = false;

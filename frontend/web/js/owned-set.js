@@ -67,6 +67,10 @@
                         }
                         updateBoxButton($other, !!data.is_owned);
                     });
+
+                    if (data.is_owned && window.BricksFx) {
+                        window.BricksFx.burst($button[0], 'box');
+                    }
                 }
             },
             complete: function () {
