@@ -648,6 +648,16 @@ class Set extends ActiveRecord
         return (int)$this->released === 1 ? 'Yes' : 'No';
     }
 
+    public function rebuildSlug(): void
+    {
+        $this->slug = null;
+        $this->trigger(self::EVENT_BEFORE_VALIDATE);
+
+        if ($this->slug !== null && $this->slug !== '') {
+            $this->updateAttributes(['slug' => $this->slug]);
+        }
+    }
+
     public function isReleased(): bool
     {
         if ($this->release_date === null || $this->release_date === '') {

@@ -159,6 +159,9 @@ class BricksetController extends Controller
             if ($legoSet->getMainImage() === null) {
                 $legoSet->updateAttributes(['status' => StatusEnum::INACTIVE->value]);
             } else {
+                if ((int)$legoSet->status !== StatusEnum::ACTIVE->value) {
+                    $legoSet->rebuildSlug();
+                }
                 $legoSet->updateAttributes(['status' => StatusEnum::ACTIVE->value]);
             }
 
