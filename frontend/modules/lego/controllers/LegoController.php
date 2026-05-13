@@ -36,7 +36,7 @@ class LegoController extends Controller
 
     public function actionIndex()
     {
-        $searchModel  = new SetSearch();
+        $searchModel = new SetSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
         $wizardData = null;
@@ -168,12 +168,17 @@ class LegoController extends Controller
 
     private function findModel(string $slug): Set
     {
+        $conditions = ['or', ['slug' => $slug]];
+        if (ctype_digit($slug)) {
+            $conditions[] = ['number' => (int)$slug];
+        }
+
         $model = Set::find()
             ->with([
                 'setOffers.store',
                 'setOffers.setOfferReviews',
             ])
-            ->where(['slug' => $slug])
+            ->where($conditions)
             ->one();
 
         if (!$model) {
