@@ -6,6 +6,7 @@ use common\components\AccessControl;
 use common\components\Controller;
 use common\models\Set;
 use common\models\Wishlist;
+use frontend\components\T;
 use Yii;
 use yii\data\ActiveDataProvider;
 use yii\filters\VerbFilter;
@@ -82,7 +83,7 @@ class WishlistController extends Controller
             return [
                 'success'      => true,
                 'in_wishlist'  => false,
-                'message'      => Yii::t('app', 'Removed from wishlist.'),
+                'message'      => T::tr('Removed from wishlist.'),
             ];
         }
 
@@ -92,7 +93,7 @@ class WishlistController extends Controller
         if (!$entry->save()) {
             return [
                 'success' => false,
-                'message' => Yii::t('app', 'Could not update wishlist.'),
+                'message' => T::tr('Could not update wishlist.'),
             ];
         }
 
@@ -101,7 +102,7 @@ class WishlistController extends Controller
         return [
             'success'     => true,
             'in_wishlist' => true,
-            'message'     => Yii::t('app', 'Added to wishlist.'),
+            'message'     => T::tr('Added to wishlist.'),
         ];
     }
 
@@ -124,7 +125,7 @@ class WishlistController extends Controller
         return [
             'success'     => true,
             'in_wishlist' => false,
-            'message'     => Yii::t('app', 'Removed from wishlist.'),
+            'message'     => T::tr('Removed from wishlist.'),
         ];
     }
 }
