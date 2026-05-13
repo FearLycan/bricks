@@ -7,6 +7,7 @@ use common\enums\image\TypeEnum;
 use common\enums\StatusEnum;
 use common\models\Set;
 use common\models\SetImage;
+use common\models\SetInstruction;
 use common\models\SetMinifig;
 use common\models\SetPrice;
 use common\models\SetTag;
@@ -113,6 +114,7 @@ class BricksetController extends Controller
             $legoSet->pieces = $set['pieces'] ?? 0;
             $legoSet->minifigures = $set['minifigs'] ?? 0;
             $legoSet->brickset_url = $set['bricksetURL'];
+            $legoSet->brickset_id = isset($set['setID']) && is_numeric($set['setID']) ? (int)$set['setID'] : $legoSet->brickset_id;
             $legoSet->availability = $set['availability'] ?? null;
             $legoSet->description = null;
             if (isset($set['extendedData']['description']) && is_string($set['extendedData']['description'])) {
@@ -168,6 +170,8 @@ class BricksetController extends Controller
                 if ($actualCount !== (int) $legoSet->minifigures) {
                     $legoSet->updateAttributes(['minifigures' => $actualCount]);
                 }
+
+                $this->syncInstructionsFor($legoSet);
             }
 
             sleep(1);
@@ -184,6 +188,34 @@ class BricksetController extends Controller
                 SetImage::getOrCreate($legoSet, TypeEnum::IMAGE, KindEnum::ADDITIONAL, $image['imageURL']);
             }
         }
+    }
+
+    public function actionSyncInstructions(?string $setNumber = null): void
+    {
+        $query = Set::find()->andWhere(['not', ['brickset_id' => null]]);
+
+        if ($setNumber !== null) {
+            $query->andWhere(['number' => $setNumber]);
+        }
+
+        /** @var Set $set */
+        foreach ($query->each() as $set) {
+            echo $set->name . " sync instructions \n";
+            $this->syncInstructionsFor($set);
+            sleep(1);
+        }
+    }
+
+    private function syncInstructionsFor(Set $set): void
+    {
+        if ($set->brickset_id === null) {
+            return;
+        }
+
+        $response = $this->sendRequest('getInstructions', ['setID' => $set->brickset_id]);
+        $instructions = $response['instructions'] ?? [];
+
+        SetInstruction::syncBySet($set, is_array($instructions) ? $instructions : []);
     }
 
     public function actionSyncThemes(): void

@@ -153,7 +153,21 @@ $queueOfferImportModalUrl = Url::to(['/management/queue-offer-import-modal', 'se
                     </div>
                     <div class="lego-quick-fact">
                         <span class="label"><i class="bi bi-calendar-check me-1"></i><?= T::tr('Release date') ?></span>
-                        <span class="value"><?= Html::encode($model->release_date !== null ? date('d.m.Y', strtotime($model->release_date)) : $model->getYearText()) ?></span>
+                        <span class="value">
+                            <?php if ($model->release_date !== null): ?>
+                                <?= Html::a(
+                                        Html::encode(date('d.m.Y', strtotime($model->release_date))),
+                                        Url::to([
+                                                '/lego/new',
+                                                'year'  => (int)date('Y', strtotime($model->release_date)),
+                                                'month' => (int)date('n', strtotime($model->release_date)),
+                                        ]),
+                                        ['class' => 'text-decoration-none text-body']
+                                ) ?>
+                            <?php else: ?>
+                                <?= Html::encode($model->getYearText()) ?>
+                            <?php endif; ?>
+                        </span>
                     </div>
                 </div>
 
@@ -322,6 +336,13 @@ $queueOfferImportModalUrl = Url::to(['/management/queue-offer-import-modal', 'se
                             <?= T::tr('Minifigures <small>({n})</small>', ['n' => $model->minifigures]) ?>
                         </a>
                     </li>
+                    <?php if ($model->setInstructions): ?>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link" id="instructions-tab" data-bs-toggle="tab" href="#instructions" role="tab" aria-controls="instructions" aria-selected="false">
+                                <?= T::tr('Instructions <small>({n})</small>', ['n' => count($model->setInstructions)]) ?>
+                            </a>
+                        </li>
+                    <?php endif; ?>
                 </ul>
 
                 <div class="tab-content pt-4" id="legoProductTabsContent">
@@ -386,6 +407,26 @@ $queueOfferImportModalUrl = Url::to(['/management/queue-offer-import-modal', 'se
                             <?php endif; ?>
                         </div>
                     </div>
+                    <?php if ($model->setInstructions): ?>
+                        <div class="tab-pane fade" id="instructions" role="tabpanel" aria-labelledby="instructions-tab" tabindex="0">
+                            <div class="mt-1">
+                                <h5 class="mb-3"><?= T::tr('Building instructions') ?></h5>
+                                <ul class="list-unstyled mb-0">
+                                    <?php foreach ($model->setInstructions as $instruction): ?>
+                                        <li class="mb-2">
+                                            <?= Html::a('<i class="bi bi-file-earmark-pdf me-2"></i>' . Html::encode($instruction->description ?: T::tr('Instruction PDF')),
+                                                    $instruction->url, [
+                                                            'class'  => 'text-decoration-none',
+                                                            'target' => '_blank',
+                                                            'rel'    => 'noopener noreferrer',
+                                                    ]
+                                            ) ?>
+                                        </li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            </div>
+                        </div>
+                    <?php endif; ?>
                     <div class="tab-pane fade" id="minifigures" role="tabpanel" aria-labelledby="minifigures-tab" tabindex="0">
                         <div class="mt-1">
                             <h5 class="mb-3"><?= T::tr('Minifigures in this set') ?></h5>

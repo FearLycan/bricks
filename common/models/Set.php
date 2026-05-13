@@ -33,6 +33,7 @@ use yii\helpers\Url;
  * @property float|null       $rating
  * @property int|null         $price
  * @property string|null      $brickset_url
+ * @property int|null         $brickset_id
  * @property string|null      $dimensions
  * @property string|null      $availability
  * @property string|null      $description
@@ -43,6 +44,7 @@ use yii\helpers\Url;
  *
  * @property SetImage[]       $images
  * @property SetMinifig[]     $setMinifigs
+ * @property SetInstruction[] $setInstructions
  * @property SetOfferImport[] $setOfferImports
  * @property SetOffer[]       $setOffers
  * @property SetPrice[]       $setPrices
@@ -53,8 +55,10 @@ use yii\helpers\Url;
  */
 class Set extends ActiveRecord
 {
-    private ?SetImage $_mainImage         = null;
-    private bool      $_mainImageResolved = false;
+    public const RELATIONS_CACHE_DURATION = 600;
+
+    private ?SetImage $_mainImage = null;
+    private bool $_mainImageResolved = false;
 
     /**
      * @return array
@@ -95,7 +99,7 @@ class Set extends ActiveRecord
     {
         return [
             [['theme_id'], 'required'],
-            [['theme_id', 'subtheme_id', 'status', 'number_variant', 'minifigures', 'year', 'pieces', 'released', 'age', 'price'], 'integer'],
+            [['theme_id', 'subtheme_id', 'status', 'number_variant', 'minifigures', 'year', 'pieces', 'released', 'age', 'price', 'brickset_id'], 'integer'],
             [['rating'], 'number'],
             [['release_date'], 'date', 'format' => 'php:Y-m-d'],
             [['created_at', 'updated_at', 'offer_discovery_checked_at'], 'safe'],
@@ -113,26 +117,26 @@ class Set extends ActiveRecord
     public function attributeLabels(): array
     {
         return [
-            'id'             => 'ID',
-            'number'         => 'Number',
-            'name'           => 'Name',
-            'slug'           => 'Slug',
-            'theme_id'       => 'Theme ID',
-            'subtheme_id'    => 'Subtheme ID',
-            'status'         => 'Status',
-            'number_variant' => 'Number Variant',
-            'minifigures'    => 'Minifigures',
-            'year'           => 'Year',
-            'pieces'         => 'Pieces',
-            'released'       => 'Released',
-            'release_date'   => 'Release Date',
-            'brickset_url'   => 'Brickset Url',
-            'dimensions'     => 'Dimensions',
-            'availability'   => 'Availability',
-            'description'    => 'Description',
-            'age'            => 'Age',
-            'created_at'     => 'Created At',
-            'updated_at'     => 'Updated At',
+            'id'                         => 'ID',
+            'number'                     => 'Number',
+            'name'                       => 'Name',
+            'slug'                       => 'Slug',
+            'theme_id'                   => 'Theme ID',
+            'subtheme_id'                => 'Subtheme ID',
+            'status'                     => 'Status',
+            'number_variant'             => 'Number Variant',
+            'minifigures'                => 'Minifigures',
+            'year'                       => 'Year',
+            'pieces'                     => 'Pieces',
+            'released'                   => 'Released',
+            'release_date'               => 'Release Date',
+            'brickset_url'               => 'Brickset Url',
+            'dimensions'                 => 'Dimensions',
+            'availability'               => 'Availability',
+            'description'                => 'Description',
+            'age'                        => 'Age',
+            'created_at'                 => 'Created At',
+            'updated_at'                 => 'Updated At',
             'offer_discovery_checked_at' => 'Offer Discovery Checked At',
         ];
     }
@@ -144,7 +148,7 @@ class Set extends ActiveRecord
      */
     public function getImages(): ActiveQuery
     {
-        return $this->hasMany(SetImage::class, ['set_id' => 'id']);
+        return $this->hasMany(SetImage::class, ['set_id' => 'id'])->cache(self::RELATIONS_CACHE_DURATION);
     }
 
     /**
@@ -154,7 +158,7 @@ class Set extends ActiveRecord
      */
     public function getSetPrices(): ActiveQuery
     {
-        return $this->hasMany(SetPrice::class, ['set_id' => 'id']);
+        return $this->hasMany(SetPrice::class, ['set_id' => 'id'])->cache(self::RELATIONS_CACHE_DURATION);
     }
 
     /**
@@ -164,7 +168,14 @@ class Set extends ActiveRecord
      */
     public function getSetMinifigs(): ActiveQuery
     {
-        return $this->hasMany(SetMinifig::class, ['set_id' => 'id']);
+        return $this->hasMany(SetMinifig::class, ['set_id' => 'id'])->cache(self::RELATIONS_CACHE_DURATION);
+    }
+
+    public function getSetInstructions(): ActiveQuery
+    {
+        return $this->hasMany(SetInstruction::class, ['set_id' => 'id'])
+            ->cache(self::RELATIONS_CACHE_DURATION)
+            ->orderBy(['sort_order' => SORT_ASC, 'id' => SORT_ASC]);
     }
 
     /**
@@ -174,12 +185,12 @@ class Set extends ActiveRecord
      */
     public function getSetOffers(): ActiveQuery
     {
-        return $this->hasMany(SetOffer::class, ['set_id' => 'id'])->orderBy(['price' => SORT_ASC, 'id' => SORT_ASC]);
+        return $this->hasMany(SetOffer::class, ['set_id' => 'id'])->orderBy(['price' => SORT_ASC, 'id' => SORT_ASC])->cache(self::RELATIONS_CACHE_DURATION);
     }
 
     public function getSetOfferImports(): ActiveQuery
     {
-        return $this->hasMany(SetOfferImport::class, ['set_id' => 'id'])->orderBy(['id' => SORT_DESC]);
+        return $this->hasMany(SetOfferImport::class, ['set_id' => 'id'])->orderBy(['id' => SORT_DESC])->cache(self::RELATIONS_CACHE_DURATION);
     }
 
     /**
@@ -189,7 +200,7 @@ class Set extends ActiveRecord
      */
     public function getSetTags(): ActiveQuery
     {
-        return $this->hasMany(SetTag::class, ['set_id' => 'id']);
+        return $this->hasMany(SetTag::class, ['set_id' => 'id'])->cache(self::RELATIONS_CACHE_DURATION);
     }
 
     /**
@@ -199,7 +210,7 @@ class Set extends ActiveRecord
      */
     public function getTagModels(): ActiveQuery
     {
-        return $this->hasMany(Tag::class, ['id' => 'tag_id'])->via('setTags');
+        return $this->hasMany(Tag::class, ['id' => 'tag_id'])->via('setTags')->cache(self::RELATIONS_CACHE_DURATION);
     }
 
     /**
@@ -209,7 +220,7 @@ class Set extends ActiveRecord
      */
     public function getTheme(): ActiveQuery
     {
-        return $this->hasOne(Theme::class, ['id' => 'theme_id']);
+        return $this->hasOne(Theme::class, ['id' => 'theme_id'])->cache(self::RELATIONS_CACHE_DURATION);
     }
 
     /**
@@ -219,7 +230,7 @@ class Set extends ActiveRecord
      */
     public function getSubtheme(): ActiveQuery
     {
-        return $this->hasOne(Theme::class, ['id' => 'subtheme_id']);
+        return $this->hasOne(Theme::class, ['id' => 'subtheme_id'])->cache(self::RELATIONS_CACHE_DURATION);
     }
 
     public function getMainImageRelation(): ActiveQuery
@@ -228,7 +239,7 @@ class Set extends ActiveRecord
             ->andOnCondition([
                 'kind' => KindEnum::MAIN->value,
                 'type' => TypeEnum::IMAGE->value,
-            ]);
+            ])->cache(self::RELATIONS_CACHE_DURATION);
     }
 
     public function getMainImage(): ?SetImage
