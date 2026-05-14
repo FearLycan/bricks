@@ -1,6 +1,7 @@
 <?php
 
 use common\models\User;
+use common\models\UserSettings;
 use frontend\components\T;
 use frontend\modules\user\models\SettingsForm;
 use yii\helpers\Html;
@@ -13,6 +14,21 @@ use yii\widgets\ActiveForm;
  * @var User         $user
  * @var SettingsForm $model
  */
+
+$languageNames = [
+    'en' => 'English',
+    'pl' => 'Polski',
+    'de' => 'Deutsch',
+    'fr' => 'Français',
+    'es' => 'Español',
+    'it' => 'Italiano',
+    'ja' => '日本語',
+    'zh' => '中文',
+];
+$languageOptions = [];
+foreach (UserSettings::SUPPORTED_LANGUAGES as $code) {
+    $languageOptions[$code] = ($languageNames[$code] ?? $code) . ' (' . $code . ')';
+}
 
 $this->title = T::tr('Settings') . ' · ' . $user->username;
 $this->params['metaDescription'] = T::tr('Manage your BrickAtlas preferences.');
@@ -63,6 +79,33 @@ $this->params['breadcrumbs'][] = T::tr('Settings');
                             'class'   => 'form-check-input',
                             'id'      => 'settings-hide-owned',
                             'role'    => 'switch',
+                        ]) ?>
+                    </div>
+                </div>
+            </section>
+
+            <section class="user-page-card mt-3">
+                <div class="d-flex justify-content-between align-items-baseline mb-2">
+                    <h3 class="user-page-card-title">
+                        <i class="bi bi-translate"></i><?= Html::encode(T::tr('Language')) ?>
+                    </h3>
+                    <span class="user-page-eyebrow"><?= Html::encode(T::tr('Preferences')) ?></span>
+                </div>
+                <div class="user-page-card-divider"></div>
+
+                <div class="user-page-setting-row">
+                    <div class="user-page-setting-text">
+                        <p class="user-page-setting-label">
+                            <?= Html::encode(T::tr('Preferred language')) ?>
+                        </p>
+                        <p class="user-page-setting-hint">
+                            <?= Html::encode(T::tr('Choose the language used for the interface. Your preference is remembered between sessions and applied after signing in on any device.')) ?>
+                        </p>
+                    </div>
+                    <div class="user-page-setting-switch">
+                        <?= Html::activeDropDownList($model, 'preferred_language', $languageOptions, [
+                            'class' => 'form-select',
+                            'id'    => 'settings-preferred-language',
                         ]) ?>
                     </div>
                 </div>

@@ -4,6 +4,7 @@ use common\components\Html;
 use common\schema\factory\ItemListSchemaFactory;
 use common\schema\JsonLdRenderer;
 use frontend\components\SeoHelper;
+use frontend\components\T;
 use frontend\models\searches\SetSearch;
 use yii\data\ActiveDataProvider;
 use yii\helpers\Json;
@@ -52,7 +53,7 @@ if (!$hasActiveFilters) {
     <div class="alert wizard-banner mb-3 d-flex align-items-start gap-3">
         <i class="bi bi-magic wizard-banner-icon flex-shrink-0"></i>
         <div class="flex-grow-1 min-w-0">
-            <div class="fw-semibold wizard-banner-title">Results matched by the finder</div>
+            <div class="fw-semibold wizard-banner-title"><?= Html::encode(T::tr('Results matched by the finder')) ?></div>
             <div class="wizard-banner-tags mt-1">
                 <?php foreach ($wizardData['labels'] as $label): ?>
                     <span class="wizard-banner-tag"><?= Html::encode($label) ?></span>
@@ -61,10 +62,10 @@ if (!$hasActiveFilters) {
         </div>
         <button type="button" class="btn btn-sm wizard-banner-edit flex-shrink-0"
                 data-wizard-answers="<?= Html::encode(Json::encode($wizardData['answers'])) ?>"
-                title="Edit finder selections">
+                title="<?= Html::encode(T::tr('Edit finder selections')) ?>">
             <i class="bi bi-pencil"></i>
         </button>
-        <a href="<?= Html::encode(Url::to(['/lego'])) ?>" class="btn btn-sm wizard-banner-clear flex-shrink-0" title="Clear finder filters">
+        <a href="<?= Html::encode(Url::to(['/lego'])) ?>" class="btn btn-sm wizard-banner-clear flex-shrink-0" title="<?= Html::encode(T::tr('Clear finder filters')) ?>">
             <i class="bi bi-x-lg"></i>
         </a>
     </div>

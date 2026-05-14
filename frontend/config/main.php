@@ -1,6 +1,7 @@
 <?php
 
 use common\models\User;
+use frontend\components\LanguageSyncBootstrap;
 use frontend\modules\homepage\HomepageModule;
 use frontend\modules\lego\LegoModule;
 use frontend\modules\product\ProductModule;
@@ -19,11 +20,25 @@ return [
     'id'                  => 'brick-app',
     'name'                => 'BrickAtlas',
     'timeZone'            => 'Europe/Warsaw',
+    'language'            => 'en',
+    'sourceLanguage'      => 'en',
     'basePath'            => dirname(__DIR__),
-    'bootstrap'           => ['log'],
+    'bootstrap'           => ['log', LanguageSyncBootstrap::class],
     'controllerNamespace' => 'frontend\controllers',
     'defaultRoute'        => 'site/index',
     'components'          => [
+        'i18n'         => [
+            'translations' => [
+                'app*' => [
+                    'class'          => \yii\i18n\PhpMessageSource::class,
+                    'basePath'       => '@frontend/messages',
+                    'sourceLanguage' => 'en',
+                    'fileMap'        => [
+                        'app' => 'app.php',
+                    ],
+                ],
+            ],
+        ],
         'assetManager' => [
             'appendTimestamp' => true,
         ],
@@ -52,9 +67,28 @@ return [
             'errorAction' => 'site/error',
         ],
         'urlManager'   => [
-            'enablePrettyUrl' => true,
-            'showScriptName'  => false,
-            'rules'           => [
+            'class'                       => \codemix\localeurls\UrlManager::class,
+            'languages'                   => ['en', 'pl', 'de', 'fr', 'es', 'it', 'ja', 'zh'],
+            'enableLanguageDetection'     => true,
+            'enableLanguagePersistence'   => true,
+            'enableDefaultLanguageUrlCode' => false,
+            'languageCookieDuration'      => 60 * 60 * 24 * 365,
+            // Endpoints that bypass language processing entirely. Use ONLY for endpoints
+            // that:
+            //   - return JSON (no translated user-facing strings rendered)
+            //   - or operate on data that has no language (autocomplete results from DB)
+            // Modal/HTML endpoints (e.g. *-modal) MUST stay out of this list so the
+            // rendered markup uses the active language.
+            'ignoreLanguageUrlPatterns'   => [
+                '#^autocomplete/#'                       => '#^/?autocomplete/#',
+                '#^wishlist/(toggle|remove)$#'           => '#^/?wishlist/(toggle|remove)$#',
+                '#^owned-set/(toggle|remove)$#'          => '#^/?owned-set/(toggle|remove)$#',
+                '#^management/queue-offer-import$#'      => '#^/?management/queue-offer-import$#',
+                '#^wizard/(save|load)$#'                 => '#^/?wizard/(save|load)$#',
+            ],
+            'enablePrettyUrl'             => true,
+            'showScriptName'              => false,
+            'rules'                       => [
                 'wizard/save'                                   => 'wizard/default/save',
                 'wizard/load'                                   => 'wizard/default/load',
                 'user'                                          => 'user/profile/index',

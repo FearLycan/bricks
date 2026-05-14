@@ -4,10 +4,11 @@
 /** @var yii\bootstrap5\ActiveForm $form */
 /** @var \common\models\LoginForm $model */
 
+use frontend\components\T;
 use yii\bootstrap5\Html;
 use yii\bootstrap5\ActiveForm;
 
-$this->title = 'Sign in';
+$this->title = T::tr('Sign in');
 
 $this->registerCssFile('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&display=swap');
 
@@ -155,31 +156,31 @@ $this->registerCss('
                 'loading' => 'lazy',
                 'alt'     => Yii::$app->name,
             ]) ?>
-            <h1 class="auth-title">Welcome back</h1>
-            <p class="auth-subtitle">Sign in to your account to continue</p>
+            <h1 class="auth-title"><?= Html::encode(T::tr('Welcome back')) ?></h1>
+            <p class="auth-subtitle"><?= Html::encode(T::tr('Sign in to your account to continue')) ?></p>
         </div>
 
         <?php $form = ActiveForm::begin(['id' => 'login-form']); ?>
 
         <?= $form->field($model, 'username', ['options' => ['class' => 'mb-3']])->textInput([
             'autofocus'   => true,
-            'placeholder' => 'Username',
+            'placeholder' => T::tr('Username'),
             'class'       => 'form-control',
-        ])->label('Username') ?>
+        ])->label(T::tr('Username')) ?>
 
         <div class="mb-3">
             <?= $form->field($model, 'password', [
                 'options' => ['class' => 'mb-0'],
-                'template' => '{label}<div class="pass-field" style="position:relative">{input}<button type="button" class="pass-toggle" id="passToggle" tabindex="-1" aria-label="Show password">
+                'template' => '{label}<div class="pass-field" style="position:relative">{input}<button type="button" class="pass-toggle" id="passToggle" tabindex="-1" aria-label="' . Html::encode(T::tr('Show password')) . '">
                     <svg id="eyeIcon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                         <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
                     </svg></button></div>{error}',
             ])->passwordInput([
-                'placeholder' => 'Password',
+                'placeholder' => T::tr('Password'),
                 'class'       => 'form-control',
                 'id'          => 'loginform-password',
-            ])->label('Password') ?>
+            ])->label(T::tr('Password')) ?>
         </div>
 
         <div class="d-flex align-items-center justify-content-between mb-3">
@@ -189,10 +190,10 @@ $this->registerCss('
                 'labelOptions' => ['class' => 'form-check-label'],
             ])->checkbox(['class' => 'form-check-input']) ?>
 
-            <a href="<?= \yii\helpers\Url::to(['auth/request-password-reset']) ?>" class="text-decoration-none" style="font-size:.82rem; color:#1a1a2e; font-family:'Rubik',sans-serif; font-weight:500;">Forgot password?</a>
+            <a href="<?= \yii\helpers\Url::to(['auth/request-password-reset']) ?>" class="text-decoration-none" style="font-size:.82rem; color:#1a1a2e; font-family:'Rubik',sans-serif; font-weight:500;"><?= Html::encode(T::tr('Forgot password?')) ?></a>
         </div>
 
-        <?= Html::submitButton('Sign in', [
+        <?= Html::submitButton(T::tr('Sign in'), [
             'class' => 'btn btn-primary w-100 btn-auth',
             'name'  => 'login-button',
         ]) ?>
@@ -202,12 +203,12 @@ $this->registerCss('
         <hr class="auth-divider">
 
         <p class="text-center auth-links mb-0">
-            Don't have an account?
-            <a href="<?= \yii\helpers\Url::to(['auth/signup']) ?>">Register now</a>
+            <?= Html::encode(T::tr("Don't have an account?")) ?>
+            <a href="<?= \yii\helpers\Url::to(['auth/signup']) ?>"><?= Html::encode(T::tr('Register now')) ?></a>
         </p>
         <p class="text-center auth-links mt-2 mb-0">
-            Didn't receive verification email?
-            <a href="<?= \yii\helpers\Url::to(['auth/resend-verification-email']) ?>">Resend it</a>
+            <?= Html::encode(T::tr("Didn't receive verification email?")) ?>
+            <a href="<?= \yii\helpers\Url::to(['auth/resend-verification-email']) ?>"><?= Html::encode(T::tr('Resend it')) ?></a>
         </p>
     </div>
 </div>

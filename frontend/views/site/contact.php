@@ -4,10 +4,11 @@
 /** @var yii\bootstrap5\ActiveForm $form */
 /** @var \frontend\models\ContactForm $model */
 
+use frontend\components\T;
 use yii\bootstrap5\Html;
 use yii\bootstrap5\ActiveForm;
 
-$this->title = 'Contact';
+$this->title = T::tr('Contact');
 $this->params['breadcrumbs'][] = $this->title;
 
 $this->registerCssFile('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&display=swap');
@@ -192,19 +193,19 @@ $this->registerCss('
         <div class="contact-card">
 
             <div class="contact-header">
-                <h1 class="contact-header-title">Get in touch</h1>
-                <p class="contact-header-sub">Have a question or business inquiry? We'll get back to you shortly.</p>
+                <h1 class="contact-header-title"><?= Html::encode(T::tr('Get in touch')) ?></h1>
+                <p class="contact-header-sub"><?= Html::encode(T::tr("Have a question or business inquiry? We'll get back to you shortly.")) ?></p>
             </div>
 
             <div class="contact-body">
 
                 <div class="contact-info">
-                    <p class="contact-info-label">Contact info</p>
+                    <p class="contact-info-label"><?= Html::encode(T::tr('Contact info')) ?></p>
 
                     <div class="contact-info-item">
                         <div class="contact-info-icon"><i class="bi bi-envelope"></i></div>
                         <div class="contact-info-text">
-                            <strong>Email</strong>
+                            <strong><?= Html::encode(T::tr('Email')) ?></strong>
                             <span><?= Html::encode(Yii::$app->params['supportEmail']) ?></span>
                         </div>
                     </div>
@@ -212,15 +213,15 @@ $this->registerCss('
                     <div class="contact-info-item">
                         <div class="contact-info-icon"><i class="bi bi-clock"></i></div>
                         <div class="contact-info-text">
-                            <strong>Response time</strong>
-                            <span>Usually within 24 hours</span>
+                            <strong><?= Html::encode(T::tr('Response time')) ?></strong>
+                            <span><?= Html::encode(T::tr('Usually within 24 hours')) ?></span>
                         </div>
                     </div>
 
                     <div class="contact-info-item">
                         <div class="contact-info-icon"><i class="bi bi-globe2"></i></div>
                         <div class="contact-info-text">
-                            <strong>Platform</strong>
+                            <strong><?= Html::encode(T::tr('Platform')) ?></strong>
                             <span><?= Html::encode(Yii::$app->name) ?></span>
                         </div>
                     </div>
@@ -233,35 +234,35 @@ $this->registerCss('
                         <div class="col-sm-6">
                             <?= $form->field($model, 'name', ['options' => ['class' => 'mb-0']])->textInput([
                                 'autofocus'   => true,
-                                'placeholder' => 'Your name',
+                                'placeholder' => T::tr('Your name'),
                                 'class'       => 'form-control',
-                            ])->label('Name') ?>
+                            ])->label(T::tr('Name')) ?>
                         </div>
                         <div class="col-sm-6">
                             <?= $form->field($model, 'email', ['options' => ['class' => 'mb-0']])->textInput([
                                 'type'        => 'email',
-                                'placeholder' => 'Email address',
+                                'placeholder' => T::tr('Email address'),
                                 'class'       => 'form-control',
-                            ])->label('Email') ?>
+                            ])->label(T::tr('Email')) ?>
                         </div>
                     </div>
 
                     <div class="mb-3">
                         <?= $form->field($model, 'subject', ['options' => ['class' => 'mb-0']])->textInput([
-                            'placeholder' => 'Subject',
+                            'placeholder' => T::tr('Subject'),
                             'class'       => 'form-control',
-                        ])->label('Subject') ?>
+                        ])->label(T::tr('Subject')) ?>
                     </div>
 
                     <div class="mb-3">
                         <?= $form->field($model, 'body', ['options' => ['class' => 'mb-0']])->textarea([
                             'rows'        => 5,
-                            'placeholder' => 'Your message...',
+                            'placeholder' => T::tr('Your message...'),
                             'class'       => 'form-control',
-                        ])->label('Message') ?>
+                        ])->label(T::tr('Message')) ?>
                     </div>
 
-                    <?= Html::submitButton('Send message <i class="bi bi-arrow-right ms-1"></i>', [
+                    <?= Html::submitButton(T::tr('Send message') . ' <i class="bi bi-arrow-right ms-1"></i>', [
                         'class'          => 'btn btn-contact',
                         'name'           => 'contact-button',
                         'encode'         => false,

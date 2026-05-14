@@ -1,4 +1,11 @@
 (function ($) {
+    const t = function (key, fallback) {
+        const value = document && document.body && document.body.dataset
+            ? document.body.dataset[key]
+            : '';
+        return value && value.length ? value : fallback;
+    };
+
     const getOrCreateModalTarget = function (target) {
         const selector = target || '#mainModal';
         let $target = $(selector);
@@ -107,7 +114,7 @@
             '<div class="modal-dialog modal-dialog-centered modal-dialog-loading">' +
             '  <div class="modal-content modal-loading modal-loading-skeleton">' +
             '    <div class="modal-header">' +
-            '<h5 class="modal-title">Loading data</h5>' +
+            '<h5 class="modal-title">' + t('i18nLoading', 'Loading data') + '</h5>' +
             '    </div>' +
             '    <div class="modal-body">' +
             '      <div class="modal-loading-lines mb-3">' +
@@ -213,7 +220,7 @@
             },
             success: function (data) {
                 if (data && data.success) {
-                    showFormAlert($form, 'success', data.message || 'Saved.');
+                    showFormAlert($form, 'success', data.message || t('i18nSaved', 'Saved.'));
 
                     if (typeof callback === 'function') {
                         callback();
@@ -229,7 +236,7 @@
 
             },
             error: function () {
-                showFormAlert($form, 'danger', 'Could not submit form.');
+                showFormAlert($form, 'danger', t('i18nSubmitError', 'Could not submit form.'));
             },
             complete: function () {
                 if ($submitButton.length) {

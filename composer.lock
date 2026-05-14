@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "11e5ebea85134f6c9593742812fd686f",
+    "content-hash": "9a6d099964a901fb93372af85c0def80",
     "packages": [
         {
             "name": "bower-asset/bootstrap",
@@ -159,6 +159,54 @@
                 "source": "https://github.com/cebe/markdown"
             },
             "time": "2018-03-26T11:24:36+00:00"
+        },
+        {
+            "name": "codemix/yii2-localeurls",
+            "version": "1.8.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/codemix/yii2-localeurls.git",
+                "reference": "3f360b9f3bba76e607dcdef86000d3033b214387"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/codemix/yii2-localeurls/zipball/3f360b9f3bba76e607dcdef86000d3033b214387",
+                "reference": "3f360b9f3bba76e607dcdef86000d3033b214387",
+                "shasum": ""
+            },
+            "require": {
+                "yiisoft/yii2": "*"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^9.6"
+            },
+            "type": "yii2-extension",
+            "autoload": {
+                "psr-4": {
+                    "codemix\\localeurls\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Michael Härtl",
+                    "email": "haertl.mike@gmail.com"
+                }
+            ],
+            "description": "Automatic locale/language management for URLs.",
+            "keywords": [
+                "i18n",
+                "locale",
+                "yii2"
+            ],
+            "support": {
+                "issues": "https://github.com/codemix/yii2-localeurls/issues",
+                "source": "https://github.com/codemix/yii2-localeurls/tree/1.8.1"
+            },
+            "time": "2023-11-20T17:05:15+00:00"
         },
         {
             "name": "doctrine/lexer",
@@ -5800,5 +5848,5 @@
         "php": ">=8.2.0"
     },
     "platform-dev": {},
-    "plugin-api-version": "2.9.0"
+    "plugin-api-version": "2.6.0"
 }

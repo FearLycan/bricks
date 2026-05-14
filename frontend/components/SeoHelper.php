@@ -11,7 +11,8 @@ use yii\web\View;
 
 final class SeoHelper
 {
-    private const DEFAULT_META_DESCRIPTION = 'Browse LEGO sets, compare prices, explore themes, and find minifigure appearances in the Brick Store catalog.';
+    public const SUPPORTED_LANGUAGES = ['en', 'pl', 'de', 'fr', 'es', 'it', 'ja', 'zh'];
+    public const DEFAULT_HREFLANG_LANGUAGE = 'en';
 
     public static function resolvePageNumber(): int
     {
@@ -42,7 +43,90 @@ final class SeoHelper
 
     public static function defaultMetaDescription(): string
     {
-        return self::DEFAULT_META_DESCRIPTION;
+        return T::tr('Browse LEGO sets, compare prices, explore themes, and find minifigure appearances in the Brick Store catalog.');
+    }
+
+    /**
+     * Build the same URL for every supported language plus an `x-default` entry,
+     * used to emit `<link rel="alternate" hreflang="…">` tags.
+     *
+     * Pass `null` to build alternates for the *current* request — this works
+     * for routes with path-mapped parameters (e.g. `/lego/<slug>`) where
+     * the parameters are not present in `queryParams`. Pass an explicit
+     * `Url::to`-style array to build alternates for an arbitrary route.
+     *
+     * @return array<string,string> map of hreflang code → absolute URL
+     */
+    public static function buildHreflangUrls(array|string|null $urlParts = null): array
+    {
+        $result = [];
+        foreach (self::SUPPORTED_LANGUAGES as $lang) {
+            if ($urlParts === null) {
+                $result[$lang] = Url::current(['language' => $lang], true);
+            } else {
+                $parts = is_array($urlParts) ? $urlParts : [$urlParts];
+                $parts['language'] = $lang;
+                $result[$lang] = Url::to($parts, true);
+            }
+        }
+
+        $result['x-default'] = $result[self::DEFAULT_HREFLANG_LANGUAGE];
+
+        return $result;
+    }
+
+    /**
+     * Build a URL for the current request in the given language. Use this for the
+     * language-switcher dropdown so the user lands on the same page in the new
+     * language.
+     */
+    public static function buildCurrentUrlInLanguage(string $language, bool $absolute = false): string
+    {
+        return Url::current(['language' => $language], $absolute);
+    }
+
+    /**
+     * Rewrite the language prefix in an existing relative URL string.
+     * Used for redirects where we only have a raw path (returnUrl, current URL)
+     * and want to switch languages without re-running URL generation.
+     */
+    public static function rewriteUrlLanguage(string $url, string $newLanguage): string
+    {
+        $queryStart = strpos($url, '?');
+        if ($queryStart !== false) {
+            $path = substr($url, 0, $queryStart);
+            $query = substr($url, $queryStart);
+        } else {
+            $path = $url;
+            $query = '';
+        }
+
+        $pattern = '#^/(?:' . implode('|', self::SUPPORTED_LANGUAGES) . ')(?=/|$)#';
+        $path = preg_replace($pattern, '', (string)$path, 1) ?? $path;
+        if ($path === '') {
+            $path = '/';
+        }
+
+        if ($newLanguage !== self::DEFAULT_HREFLANG_LANGUAGE) {
+            $path = '/' . $newLanguage . ($path === '/' ? '' : $path);
+        }
+
+        return $path . $query;
+    }
+
+    /**
+     * Emit hreflang link tags for the given route. Pass `null` to use the current request.
+     */
+    public static function registerHreflangLinks(View $view, array|string|null $urlParts = null): void
+    {
+        $urls = self::buildHreflangUrls($urlParts);
+        foreach ($urls as $hreflang => $href) {
+            $view->registerLinkTag([
+                'rel'      => 'alternate',
+                'hreflang' => $hreflang,
+                'href'     => $href,
+            ], 'hreflang-' . $hreflang);
+        }
     }
 
     public static function normalizeText(?string $value): string
@@ -81,74 +165,77 @@ final class SeoHelper
 
     public static function buildCatalogTitle(int $page = 1): string
     {
-        return self::appendPageSuffix('LEGO Sets Catalog and Price Comparison', $page);
+        return self::appendPageSuffix(T::tr('LEGO Sets Catalog and Price Comparison'), $page);
     }
 
     public static function buildNewArrivalsTitle(int $page = 1): string
     {
-        return self::appendPageSuffix('New LEGO Sets', $page);
+        return self::appendPageSuffix(T::tr('New LEGO Sets'), $page);
     }
 
     public static function buildNewArrivalsDescription(int $page = 1): string
     {
-        $description = 'Browse the newest LEGO sets added to the catalog, sorted by date. Discover recent releases and find the latest sets with prices and details.';
+        $description = T::tr('Browse the newest LEGO sets added to the catalog, sorted by date. Discover recent releases and find the latest sets with prices and details.');
 
         return self::truncate(self::appendPageDescriptionSuffix($description, $page));
     }
 
     public static function buildPromoTitle(int $page = 1): string
     {
-        return self::appendPageSuffix('LEGO Sets On Sale', $page);
+        return self::appendPageSuffix(T::tr('LEGO Sets On Sale'), $page);
     }
 
     public static function buildPromoDescription(int $page = 1): string
     {
-        $description = 'Browse LEGO sets currently on sale. Find the best discounts and compare prices from top retailers.';
+        $description = T::tr('Browse LEGO sets currently on sale. Find the best discounts and compare prices from top retailers.');
 
         return self::truncate(self::appendPageDescriptionSuffix($description, $page));
     }
 
     public static function buildCatalogDescription(int $page = 1): string
     {
-        $description = 'Browse LEGO sets, compare prices, and filter the catalog by theme, release year, and sorting options.';
+        $description = T::tr('Browse LEGO sets, compare prices, and filter the catalog by theme, release year, and sorting options.');
 
         return self::appendPageDescriptionSuffix(self::truncate($description), $page);
     }
 
     public static function buildFilteredCatalogTitle(): string
     {
-        return 'Filtered LEGO Sets Results';
+        return T::tr('Filtered LEGO Sets Results');
     }
 
     public static function buildFilteredCatalogDescription(): string
     {
-        return self::truncate('Filtered LEGO set results for the current catalog view. Refine the listing by keyword, theme, release year, and sorting options.');
+        return self::truncate(T::tr('Filtered LEGO set results for the current catalog view. Refine the listing by keyword, theme, release year, and sorting options.'));
     }
 
     public static function buildCatalogIntro(): string
     {
-        return 'Explore the latest LEGO sets, compare prices, and quickly narrow the catalog by theme, release year, or sorting preferences.';
+        return T::tr('Explore the latest LEGO sets, compare prices, and quickly narrow the catalog by theme, release year, or sorting preferences.');
     }
 
     public static function buildThemeTitle(Theme $theme, ?Theme $subTheme = null, int $page = 1): string
     {
         $name = self::normalizeText($subTheme?->name ?? $theme->name);
 
-        return self::appendPageSuffix($name . ' LEGO Sets and Price Comparison', $page);
+        return self::appendPageSuffix(T::tr('{name} LEGO Sets and Price Comparison', ['name' => $name]), $page);
     }
 
     public static function buildThemeDescription(Theme $theme, ?Theme $subTheme = null, int $page = 1): string
     {
         $targetTheme = $subTheme ?? $theme;
         $name = self::normalizeText($targetTheme->name);
-        $parts = ['Browse ' . $name . ' LEGO sets with current prices, release years, piece counts, and minifigure details.'];
+        $parts = [T::tr('Browse {name} LEGO sets with current prices, release years, piece counts, and minifigure details.', ['name' => $name])];
 
         if ($targetTheme->sets_count) {
-            $parts[] = 'This category currently lists ' . (int)$targetTheme->sets_count . ' sets.';
+            $parts[] = T::tr('This category currently lists {count} sets.', ['count' => (int)$targetTheme->sets_count]);
         }
 
         if ($targetTheme->year_from && $targetTheme->year_to) {
-            $parts[] = 'The range covers releases from ' . (int)$targetTheme->year_from . ' to ' . (int)$targetTheme->year_to . '.';
+            $parts[] = T::tr('The range covers releases from {from} to {to}.', [
+                'from' => (int)$targetTheme->year_from,
+                'to'   => (int)$targetTheme->year_to,
+            ]);
         }
 
         return self::appendPageDescriptionSuffix(self::truncate(implode(' ', $parts)), $page);
@@ -170,7 +257,10 @@ final class SeoHelper
         $setName = self::normalizeText($set->name);
         $setNumber = self::normalizeText($set->getSetNumberText());
 
-        return $setName . ' LEGO Set ' . $setNumber . ' - Price Comparison and Details';
+        return T::tr('{name} LEGO Set {number} - Price Comparison and Details', [
+            'name'   => $setName,
+            'number' => $setNumber,
+        ]);
     }
 
     public static function buildSetDescription(Set $set): string
@@ -183,24 +273,27 @@ final class SeoHelper
         $details = [];
         $themeName = self::normalizeText($set->theme->name ?? null);
         if ($themeName !== '') {
-            $details[] = $themeName . ' theme';
+            $details[] = T::tr('{theme} theme', ['theme' => $themeName]);
         }
 
         if ($set->year) {
-            $details[] = 'released in ' . (int)$set->year;
+            $details[] = T::tr('released in {year}', ['year' => (int)$set->year]);
         }
 
         if ($set->pieces) {
-            $details[] = (int)$set->pieces . ' pieces';
+            $details[] = T::tr('{n} pieces', ['n' => (int)$set->pieces]);
         }
 
         if ($set->minifigures) {
-            $details[] = (int)$set->minifigures . ' minifigures';
+            $details[] = T::tr('{n} minifigures', ['n' => (int)$set->minifigures]);
         }
 
-        $summary = 'Compare prices and details for LEGO set ' . self::normalizeText($set->name) . ' (' . self::normalizeText($set->getSetNumberText()) . ').';
+        $summary = T::tr('Compare prices and details for LEGO set {name} ({number}).', [
+            'name'   => self::normalizeText($set->name),
+            'number' => self::normalizeText($set->getSetNumberText()),
+        ]);
         if ($details !== []) {
-            $summary .= ' Includes ' . implode(', ', $details) . '.';
+            $summary .= ' ' . T::tr('Includes {details}.', ['details' => implode(', ', $details)]);
         }
 
         return self::truncate($summary);
@@ -208,12 +301,15 @@ final class SeoHelper
 
     public static function buildMinifigTitle(string $displayName, int $page = 1): string
     {
-        return self::appendPageSuffix('LEGO Sets with Minifigure: ' . self::normalizeText($displayName), $page);
+        return self::appendPageSuffix(T::tr('LEGO Sets with Minifigure: {name}', ['name' => self::normalizeText($displayName)]), $page);
     }
 
     public static function buildMinifigDescription(string $displayName, string $number, int $page = 1): string
     {
-        $description = self::truncate('Browse LEGO sets that include minifigure ' . self::normalizeText($displayName) . ' and compare current offers for minifigure number ' . self::normalizeText($number) . '.');
+        $description = self::truncate(T::tr('Browse LEGO sets that include minifigure {name} and compare current offers for minifigure number {number}.', [
+            'name'   => self::normalizeText($displayName),
+            'number' => self::normalizeText($number),
+        ]));
 
         return self::appendPageDescriptionSuffix($description, $page);
     }
@@ -248,7 +344,7 @@ final class SeoHelper
             return $value;
         }
 
-        return $value . ' - Page ' . $page;
+        return $value . ' - ' . T::tr('Page {page}', ['page' => $page]);
     }
 
     private static function appendPageDescriptionSuffix(string $value, int $page): string
@@ -257,6 +353,6 @@ final class SeoHelper
             return $value;
         }
 
-        return self::truncate($value . ' Page ' . $page . '.');
+        return self::truncate($value . ' ' . T::tr('Page {page}', ['page' => $page]) . '.');
     }
 }

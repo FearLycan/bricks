@@ -3,6 +3,7 @@
 namespace frontend\modules\wizard\controllers;
 
 use common\models\SearchWizardHash;
+use frontend\components\T;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
@@ -43,13 +44,13 @@ class DefaultController extends Controller
         $data = json_decode($body, true);
 
         if (!is_array($data) || empty($data['answers'])) {
-            throw new BadRequestHttpException('Invalid request body');
+            throw new BadRequestHttpException(T::tr('Invalid request body'));
         }
 
         $answers = $data['answers'];
 
         if (empty($answers['recipient']) || empty($answers['profile']) || empty($answers['budget'])) {
-            return ['error' => 'Incomplete answers'];
+            return ['error' => T::tr('Incomplete answers')];
         }
 
         $userId = Yii::$app->user->isGuest ? null : Yii::$app->user->id;
@@ -67,7 +68,7 @@ class DefaultController extends Controller
 
         if (!$record) {
             Yii::$app->response->statusCode = 404;
-            return ['error' => 'Not found'];
+            return ['error' => T::tr('Not found')];
         }
 
         return $record->getPublicData();

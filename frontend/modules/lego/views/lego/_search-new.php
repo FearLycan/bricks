@@ -67,7 +67,7 @@ use yii\widgets\ActiveForm;
     </div>
 
     <div class="form-group d-none">
-        <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
+        <?= Html::submitButton(T::tr('Search'), ['class' => 'btn btn-primary']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

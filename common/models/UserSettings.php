@@ -9,15 +9,18 @@ use yii\db\BaseActiveRecord;
 use yii\db\Expression;
 
 /**
- * @property int    $user_id
- * @property int    $hide_owned_sets
- * @property string $created_at
- * @property string $updated_at
+ * @property int         $user_id
+ * @property int         $hide_owned_sets
+ * @property string|null $preferred_language
+ * @property string      $created_at
+ * @property string      $updated_at
  *
  * @property User $user
  */
 class UserSettings extends ActiveRecord
 {
+    public const SUPPORTED_LANGUAGES = ['en', 'pl', 'de', 'fr', 'es', 'it', 'ja', 'zh'];
+
     public static function tableName(): string
     {
         return '{{%user_settings}}';
@@ -44,6 +47,9 @@ class UserSettings extends ActiveRecord
             [['user_id', 'hide_owned_sets'], 'integer'],
             [['hide_owned_sets'], 'boolean'],
             [['hide_owned_sets'], 'default', 'value' => 0],
+            [['preferred_language'], 'string', 'max' => 5],
+            [['preferred_language'], 'in', 'range' => self::SUPPORTED_LANGUAGES, 'strict' => true, 'skipOnEmpty' => true],
+            [['preferred_language'], 'default', 'value' => null],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
             [['user_id'], 'unique'],
         ];

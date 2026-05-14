@@ -4,6 +4,7 @@ use common\components\Html;
 use common\schema\factory\ItemListSchemaFactory;
 use common\schema\JsonLdRenderer;
 use frontend\components\SeoHelper;
+use frontend\components\T;
 use yii\data\ActiveDataProvider;
 use yii\web\View;
 
@@ -23,8 +24,8 @@ $this->params['robots'] = 'index,follow';
 
 SeoHelper::registerPaginationLinks($this, $dataProvider, $page, ['/lego/on-sale'], 'promo_page');
 
-$this->params['breadcrumbs'][] = ['label' => 'LEGO Sets', 'url' => ['/lego']];
-$this->params['breadcrumbs'][] = 'On Sale';
+$this->params['breadcrumbs'][] = ['label' => T::tr('LEGO Sets'), 'url' => ['/lego']];
+$this->params['breadcrumbs'][] = T::tr('On Sale');
 
 ?>
 

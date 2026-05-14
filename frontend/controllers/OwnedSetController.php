@@ -65,12 +65,12 @@ class OwnedSetController extends Controller
 
         $setId = (int)Yii::$app->request->post('set_id', 0);
         if ($setId <= 0) {
-            throw new BadRequestHttpException('Invalid set.');
+            throw new BadRequestHttpException(T::tr('Invalid set.'));
         }
 
         $set = Set::findOne($setId);
         if (!$set) {
-            throw new BadRequestHttpException('Set not found.');
+            throw new BadRequestHttpException(T::tr('Set not found.'));
         }
 
         $userId = (int)Yii::$app->user->id;
@@ -119,7 +119,7 @@ class OwnedSetController extends Controller
 
         $setId = (int)Yii::$app->request->post('set_id', 0);
         if ($setId <= 0) {
-            throw new BadRequestHttpException('Invalid set.');
+            throw new BadRequestHttpException(T::tr('Invalid set.'));
         }
 
         $userId = (int)Yii::$app->user->id;

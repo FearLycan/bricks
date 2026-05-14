@@ -4,10 +4,11 @@
 /** @var yii\bootstrap5\ActiveForm $form */
 /** @var \frontend\models\ResetPasswordForm $model */
 
+use frontend\components\T;
 use yii\bootstrap5\Html;
 use yii\bootstrap5\ActiveForm;
 
-$this->title = 'Reset password';
+$this->title = T::tr('Reset password');
 
 $this->registerCssFile('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&display=swap');
 $this->registerCss('
@@ -38,8 +39,8 @@ $this->registerCss('
     <div class="auth-card">
         <div class="text-center mb-4">
             <?= Html::img('@web/images/logo-social.png', ['class' => 'mb-3', 'style' => 'width:80px;height:80px;object-fit:contain;', 'loading' => 'lazy', 'alt' => Yii::$app->name]) ?>
-            <h1 class="auth-title">Choose new password</h1>
-            <p class="auth-subtitle">Make it strong — you won't need to remember it often.</p>
+            <h1 class="auth-title"><?= Html::encode(T::tr('Choose new password')) ?></h1>
+            <p class="auth-subtitle"><?= Html::encode(T::tr("Make it strong — you won't need to remember it often.")) ?></p>
         </div>
 
         <?php $form = ActiveForm::begin(['id' => 'reset-password-form']); ?>
@@ -47,36 +48,36 @@ $this->registerCss('
         <div class="mb-3">
             <?= $form->field($model, 'password', [
                 'options'  => ['class' => 'mb-0'],
-                'template' => '{label}<div class="pass-field" style="position:relative">{input}<button type="button" class="pass-toggle" id="passToggle" tabindex="-1" aria-label="Show password">
+                'template' => '{label}<div class="pass-field" style="position:relative">{input}<button type="button" class="pass-toggle" id="passToggle" tabindex="-1" aria-label="' . Html::encode(T::tr('Show password')) . '">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                         <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
                     </svg></button></div>{error}',
             ])->passwordInput([
                 'autofocus'   => true,
-                'placeholder' => 'New password',
+                'placeholder' => T::tr('New password'),
                 'class'       => 'form-control',
                 'id'          => 'resetpasswordform-password',
-            ])->label('New password') ?>
+            ])->label(T::tr('New password')) ?>
 
             <div class="strength-bar-wrap"><div class="strength-bar" id="strengthBar"></div></div>
 
             <ul class="pw-reqs">
-                <li id="req-length"><span class="req-icon"></span><?= (int)Yii::$app->params['user.passwordMinLength'] ?>+ characters</li>
-                <li id="req-upper"><span class="req-icon"></span>Uppercase letter</li>
-                <li id="req-lower"><span class="req-icon"></span>Lowercase letter</li>
-                <li id="req-number"><span class="req-icon"></span>Number</li>
-                <li id="req-special"><span class="req-icon"></span>Special character</li>
+                <li id="req-length"><span class="req-icon"></span><?= Html::encode(T::tr('{n}+ characters', ['n' => (int)Yii::$app->params['user.passwordMinLength']])) ?></li>
+                <li id="req-upper"><span class="req-icon"></span><?= Html::encode(T::tr('Uppercase letter')) ?></li>
+                <li id="req-lower"><span class="req-icon"></span><?= Html::encode(T::tr('Lowercase letter')) ?></li>
+                <li id="req-number"><span class="req-icon"></span><?= Html::encode(T::tr('Number')) ?></li>
+                <li id="req-special"><span class="req-icon"></span><?= Html::encode(T::tr('Special character')) ?></li>
             </ul>
         </div>
 
         <?= $form->field($model, 'password_repeat', ['options' => ['class' => 'mb-4']])->passwordInput([
-            'placeholder' => 'Repeat new password',
+            'placeholder' => T::tr('Repeat new password'),
             'class'       => 'form-control',
             'id'          => 'resetpasswordform-password-repeat',
-        ])->label('Repeat new password') ?>
+        ])->label(T::tr('Repeat new password')) ?>
 
-        <?= Html::submitButton('Save new password', ['class' => 'btn btn-primary w-100 btn-auth']) ?>
+        <?= Html::submitButton(T::tr('Save new password'), ['class' => 'btn btn-primary w-100 btn-auth']) ?>
 
         <?php ActiveForm::end(); ?>
     </div>

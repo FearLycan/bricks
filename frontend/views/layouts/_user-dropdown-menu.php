@@ -17,7 +17,7 @@ use yii\helpers\Url;
             data-bs-toggle="dropdown"
             aria-expanded="false">
         <i class="bi bi-person-circle"></i>
-        <span><?= Html::encode(trim((string)($user->username ?? 'User'))) ?></span>
+        <span><?= Html::encode(trim((string)($user->username ?? T::tr('User')))) ?></span>
     </button>
 
     <ul class="dropdown-menu dropdown-menu-end">

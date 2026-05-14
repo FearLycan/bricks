@@ -54,6 +54,10 @@ if ($socialDescription === '') {
 $this->registerMetaTag(['name' => 'description', 'content' => $metaDescription], 'description');
 $this->registerMetaTag(['name' => 'robots', 'content' => $robots], 'robots');
 $this->registerLinkTag(['rel' => 'canonical', 'href' => $canonicalUrl], 'canonical');
+
+if (!str_contains((string)$robots, 'noindex')) {
+    SeoHelper::registerHreflangLinks($this);
+}
 $this->registerMetaTag(['property' => 'og:site_name', 'content' => Yii::$app->name], 'og:site_name');
 $this->registerMetaTag(['property' => 'og:type', 'content' => $ogType], 'og:type');
 $this->registerMetaTag(['property' => 'og:title', 'content' => $socialTitle], 'og:title');
@@ -106,14 +110,17 @@ if ($socialImage !== '') {
         <?php endif; ?>
 
     </head>
-    <body class="d-flex flex-column h-100">
+    <body class="d-flex flex-column h-100"
+          data-i18n-loading="<?= Html::encode(T::tr('Loading data')) ?>"
+          data-i18n-saved="<?= Html::encode(T::tr('Saved.')) ?>"
+          data-i18n-submit-error="<?= Html::encode(T::tr('Could not submit form.')) ?>">
     <?php $this->beginBody() ?>
 
     <header class="bricks-header fixed-top shadow-sm" id="menu-navbar">
         <div class="bricks-topbar">
             <div class="text-center py-2">
                 <span class="small bricks-topbar-text">
-                    <i class="bi bi-lightning-charge-fill me-1"></i>Track LEGO<sup>®</sup> prices and find the best deals in one place
+                    <i class="bi bi-lightning-charge-fill me-1"></i><?= T::tr('Track LEGO{sup} prices and find the best deals in one place', ['sup' => '<sup>®</sup>']) ?>
                 </span>
             </div>
         </div>
@@ -131,11 +138,11 @@ if ($socialImage !== '') {
                         <input type="text"
                                class="bricks-search-input"
                                id="bricksSearchInput"
-                               placeholder="Search sets, themes…"
+                               placeholder="<?= Html::encode(T::tr('Search sets, themes…')) ?>"
                                autocomplete="off"
                                spellcheck="false"
-                               aria-label="Search LEGO sets and themes">
-                        <button class="bricks-search-toggle" id="bricksSearchToggle" type="button" aria-label="Search">
+                               aria-label="<?= Html::encode(T::tr('Search LEGO sets and themes')) ?>">
+                        <button class="bricks-search-toggle" id="bricksSearchToggle" type="button" aria-label="<?= Html::encode(T::tr('Search')) ?>">
                             <i class="bi bi-search" id="bricksSearchIcon"></i>
                         </button>
                     </div>
@@ -143,33 +150,34 @@ if ($socialImage !== '') {
                 </div>
                 <button class="navbar-toggler border-0 shadow-none" type="button"
                         data-bs-toggle="collapse" data-bs-target="#bricksNavCollapse"
-                        aria-controls="bricksNavCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                        aria-controls="bricksNavCollapse" aria-expanded="false" aria-label="<?= Html::encode(T::tr('Toggle navigation')) ?>">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="bricksNavCollapse">
                     <ul class="navbar-nav ms-3 me-auto mb-2 mb-md-0">
                         <li class="nav-item">
-                            <a class="bricks-nav-link nav-link" href="<?= Url::to(['/lego']) ?>">LEGO<sup>®</sup> Sets</a>
+                            <a class="bricks-nav-link nav-link" href="<?= Url::to(['/lego']) ?>"><?= T::tr('LEGO{sup} Sets', ['sup' => '<sup>®</sup>']) ?></a>
                         </li>
                         <li class="nav-item">
-                            <a class="bricks-nav-link nav-link" href="<?= Url::to(['/lego/new']) ?>"><i class="bi bi-stars me-1"></i>New Arrivals</a>
+                            <a class="bricks-nav-link nav-link" href="<?= Url::to(['/lego/new']) ?>"><i class="bi bi-stars me-1"></i><?= Html::encode(T::tr('New Arrivals')) ?></a>
                         </li>
                         <li class="nav-item">
-                            <a class="bricks-nav-link nav-link" href="<?= Url::to(['/lego/on-sale']) ?>"><i class="bi bi-tags me-1"></i>On Sale</a>
+                            <a class="bricks-nav-link nav-link" href="<?= Url::to(['/lego/on-sale']) ?>"><i class="bi bi-tags me-1"></i><?= Html::encode(T::tr('On Sale')) ?></a>
                         </li>
                         <li class="nav-item ms-md-2">
                             <a class="bricks-nav-link nav-link bricks-wizard-nav-btn" href="#" data-bs-toggle="modal" data-bs-target="#wizardModal">
-                                <i class="bi bi-magic me-1"></i>Find a Set
+                                <i class="bi bi-magic me-1"></i><?= Html::encode(T::tr('Find a Set')) ?>
                             </a>
                         </li>
                     </ul>
                     <div id="bricksSearchDesktopSlot" class="d-none d-md-flex align-items-center"></div>
+                    <?= $this->render('_language-switcher') ?>
                     <?php if (!Yii::$app->user->isGuest): ?>
                         <?= $this->render('_user-dropdown-menu', ['user' => Yii::$app->user->identity]) ?>
                     <?php else: ?>
                         <div class="d-flex align-items-center gap-2 ms-md-3">
-                            <?= Html::a('Sign in', ['/auth/login'], ['class' => 'bricks-nav-link nav-link']) ?>
-                            <?= Html::a('Register', ['/auth/signup'], ['class' => 'btn btn-primary btn-sm px-3']) ?>
+                            <?= Html::a(T::tr('Sign in'), ['/auth/login'], ['class' => 'bricks-nav-link nav-link']) ?>
+                            <?= Html::a(T::tr('Register'), ['/auth/signup'], ['class' => 'btn btn-primary btn-sm px-3']) ?>
                         </div>
                     <?php endif; ?>
                 </div>
@@ -207,9 +215,9 @@ if ($socialImage !== '') {
                     <p class="bricks-footer-text small mb-0">&copy; <?= Html::encode(Yii::$app->name) ?> <?= date('Y') ?></p>
                 </div>
                 <div class="col-md-2">
-                    <p class="bricks-footer-nav-label">Company</p>
+                    <p class="bricks-footer-nav-label"><?= Html::encode(T::tr('Company')) ?></p>
                     <ul class="bricks-footer-nav">
-                        <li><?= Html::a('Contact', ['/site/contact'], ['class' => 'bricks-footer-nav-link']) ?></li>
+                        <li><?= Html::a(T::tr('Contact'), ['/site/contact'], ['class' => 'bricks-footer-nav-link']) ?></li>
                     </ul>
                 </div>
             </div>

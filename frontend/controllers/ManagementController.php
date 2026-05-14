@@ -3,6 +3,7 @@
 namespace frontend\controllers;
 
 use common\models\User;
+use frontend\components\T;
 use frontend\models\QueueOfferImportForm;
 use Yii;
 use yii\filters\AccessControl;
@@ -58,7 +59,7 @@ final class ManagementController extends Controller
         if ($model->saveToQueue()) {
             return [
                 'success' => true,
-                'message' => 'Import link queued.',
+                'message' => T::tr('Import link queued.'),
             ];
         }
 

@@ -829,6 +829,51 @@ a, button {
     color: #1a1a2e;
 }
 
+.bricks-language-switcher .dropdown-toggle {
+    text-decoration: none;
+    border: 1px solid transparent;
+    border-radius: 0.5rem;
+    padding: 0.35rem 0.55rem !important;
+    line-height: 1;
+}
+
+.bricks-language-switcher .dropdown-toggle:hover,
+.bricks-language-switcher .dropdown-toggle:focus,
+.bricks-language-switcher .dropdown-toggle.show {
+    background-color: #FFD700;
+    color: #1a1a2e !important;
+}
+
+.bricks-flag {
+    display: inline-block;
+    width: 22px;
+    height: 14px;
+    border-radius: 2px;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08);
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.bricks-language-switcher .dropdown-toggle .bricks-flag {
+    width: 24px;
+    height: 16px;
+}
+
+.bricks-language-switcher .dropdown-menu {
+    min-width: 11rem;
+}
+
+.bricks-language-switcher .dropdown-item {
+    font-size: 0.92rem;
+}
+
+.bricks-language-switcher .dropdown-item.active,
+.bricks-language-switcher .dropdown-item.active:focus,
+.bricks-language-switcher .dropdown-item.active:hover {
+    background-color: #FFF6CC;
+    color: #1a1a2e;
+}
+
 /* ===== BrickAtlas Footer ===== */
 
 .bricks-footer {

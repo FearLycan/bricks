@@ -476,10 +476,10 @@ $queueOfferImportModalUrl = Url::to(['/management/queue-offer-import-modal', 'se
         <div class="modal-content border-0 bg-transparent">
             <div class="modal-body p-0 text-center position-relative">
                 <img id="imageZoomModalImage" src="" alt="" class="img-fluid rounded">
-                <button id="imageZoomPrev" type="button" class="btn btn-light position-absolute top-50 start-0 translate-middle-y ms-2" aria-label="Previous image">
+                <button id="imageZoomPrev" type="button" class="btn btn-light position-absolute top-50 start-0 translate-middle-y ms-2" aria-label="<?= Html::encode(T::tr('Previous image')) ?>">
                     <i class="bi bi-chevron-left"></i>
                 </button>
-                <button id="imageZoomNext" type="button" class="btn btn-light position-absolute top-50 end-0 translate-middle-y me-2" aria-label="Next image">
+                <button id="imageZoomNext" type="button" class="btn btn-light position-absolute top-50 end-0 translate-middle-y me-2" aria-label="<?= Html::encode(T::tr('Next image')) ?>">
                     <i class="bi bi-chevron-right"></i>
                 </button>
             </div>

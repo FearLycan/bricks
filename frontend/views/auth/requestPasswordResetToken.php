@@ -4,10 +4,11 @@
 /** @var yii\bootstrap5\ActiveForm $form */
 /** @var \frontend\models\PasswordResetRequestForm $model */
 
+use frontend\components\T;
 use yii\bootstrap5\Html;
 use yii\bootstrap5\ActiveForm;
 
-$this->title = 'Forgot password';
+$this->title = T::tr('Forgot password');
 
 $this->registerCssFile('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&display=swap');
 $this->registerCss('
@@ -31,26 +32,26 @@ $this->registerCss('
     <div class="auth-card">
         <div class="text-center mb-4">
             <?= Html::img('@web/images/logo-social.png', ['class' => 'mb-3', 'style' => 'width:80px;height:80px;object-fit:contain;', 'loading' => 'lazy', 'alt' => Yii::$app->name]) ?>
-            <h1 class="auth-title">Forgot password?</h1>
-            <p class="auth-subtitle">Enter your email and we'll send you a reset link.</p>
+            <h1 class="auth-title"><?= Html::encode(T::tr('Forgot password?')) ?></h1>
+            <p class="auth-subtitle"><?= Html::encode(T::tr("Enter your email and we'll send you a reset link.")) ?></p>
         </div>
 
         <?php $form = ActiveForm::begin(['id' => 'request-password-reset-form']); ?>
 
         <?= $form->field($model, 'email', ['options' => ['class' => 'mb-4']])->textInput([
             'autofocus'   => true,
-            'placeholder' => 'Email address',
+            'placeholder' => T::tr('Email address'),
             'type'        => 'email',
             'class'       => 'form-control',
-        ])->label('Email') ?>
+        ])->label(T::tr('Email')) ?>
 
-        <?= Html::submitButton('Send reset link', ['class' => 'btn btn-primary w-100 btn-auth', 'name' => 'reset-button']) ?>
+        <?= Html::submitButton(T::tr('Send reset link'), ['class' => 'btn btn-primary w-100 btn-auth', 'name' => 'reset-button']) ?>
 
         <?php ActiveForm::end(); ?>
 
         <hr class="auth-divider">
         <p class="text-center auth-links mb-0">
-            <a href="<?= \yii\helpers\Url::to(['auth/login']) ?>">&larr; Back to sign in</a>
+            <a href="<?= \yii\helpers\Url::to(['auth/login']) ?>">&larr; <?= Html::encode(T::tr('Back to sign in')) ?></a>
         </p>
     </div>
 </div>

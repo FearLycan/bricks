@@ -5,10 +5,11 @@
 
 /** @var \frontend\models\SignupForm $model */
 
+use frontend\components\T;
 use yii\bootstrap5\ActiveForm;
 use yii\bootstrap5\Html;
 
-$this->title = 'Create account';
+$this->title = T::tr('Create account');
 
 $this->registerCssFile('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&display=swap');
 
@@ -179,58 +180,58 @@ $this->registerCss('
                     'loading' => 'lazy',
                     'alt'     => Yii::$app->name,
             ]) ?>
-            <h1 class="auth-title">Create account</h1>
-            <p class="auth-subtitle">Fill in the details below to get started</p>
+            <h1 class="auth-title"><?= Html::encode(T::tr('Create account')) ?></h1>
+            <p class="auth-subtitle"><?= Html::encode(T::tr('Fill in the details below to get started')) ?></p>
         </div>
 
         <?php $form = ActiveForm::begin(['id' => 'form-signup']); ?>
 
         <?= $form->field($model, 'username', ['options' => ['class' => 'mb-3']])->textInput([
                 'autofocus'   => true,
-                'placeholder' => 'Username',
+                'placeholder' => T::tr('Username'),
                 'class'       => 'form-control',
-        ])->label('Username') ?>
+        ])->label(T::tr('Username')) ?>
 
         <?= $form->field($model, 'email', ['options' => ['class' => 'mb-3']])->textInput([
-                'placeholder' => 'Email address',
+                'placeholder' => T::tr('Email address'),
                 'type'        => 'email',
                 'class'       => 'form-control',
-        ])->label('Email') ?>
+        ])->label(T::tr('Email')) ?>
 
         <div class="mb-3">
             <?= $form->field($model, 'password', [
                     'options'  => ['class' => 'mb-0'],
-                    'template' => '{label}<div class="pass-field" style="position:relative">{input}<button type="button" class="pass-toggle" id="passToggle" tabindex="-1" aria-label="Show password">
+                    'template' => '{label}<div class="pass-field" style="position:relative">{input}<button type="button" class="pass-toggle" id="passToggle" tabindex="-1" aria-label="' . Html::encode(T::tr('Show password')) . '">
                     <svg id="eyeIcon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                         <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
                     </svg></button>{error}</div>',
             ])->passwordInput([
-                    'placeholder' => 'Password',
+                    'placeholder' => T::tr('Password'),
                     'class'       => 'form-control',
                     'id'          => 'signupform-password',
-            ])->label('Password') ?>
+            ])->label(T::tr('Password')) ?>
 
             <div class="strength-bar-wrap">
                 <div class="strength-bar" id="strengthBar"></div>
             </div>
 
             <ul class="pw-reqs">
-                <li id="req-length"><span class="req-icon"></span><?= (int)Yii::$app->params['user.passwordMinLength'] ?>+ characters</li>
-                <li id="req-upper"><span class="req-icon"></span>Uppercase letter</li>
-                <li id="req-lower"><span class="req-icon"></span>Lowercase letter</li>
-                <li id="req-number"><span class="req-icon"></span>Number</li>
-                <li id="req-special"><span class="req-icon"></span>Special character</li>
+                <li id="req-length"><span class="req-icon"></span><?= Html::encode(T::tr('{n}+ characters', ['n' => (int)Yii::$app->params['user.passwordMinLength']])) ?></li>
+                <li id="req-upper"><span class="req-icon"></span><?= Html::encode(T::tr('Uppercase letter')) ?></li>
+                <li id="req-lower"><span class="req-icon"></span><?= Html::encode(T::tr('Lowercase letter')) ?></li>
+                <li id="req-number"><span class="req-icon"></span><?= Html::encode(T::tr('Number')) ?></li>
+                <li id="req-special"><span class="req-icon"></span><?= Html::encode(T::tr('Special character')) ?></li>
             </ul>
         </div>
 
         <?= $form->field($model, 'password_repeat', ['options' => ['class' => 'mb-3']])->passwordInput([
-                'placeholder' => 'Repeat password',
+                'placeholder' => T::tr('Repeat password'),
                 'class'       => 'form-control',
                 'id'          => 'signupform-password-repeat',
-        ])->label('Repeat password') ?>
+        ])->label(T::tr('Repeat password')) ?>
 
-        <?= Html::submitButton('Create account', [
+        <?= Html::submitButton(T::tr('Create account'), [
                 'class' => 'btn btn-primary w-100 btn-auth',
                 'name'  => 'signup-button',
         ]) ?>
@@ -240,8 +241,8 @@ $this->registerCss('
         <hr class="auth-divider">
 
         <p class="text-center auth-links mb-0">
-            Already have an account?
-            <a href="<?= \yii\helpers\Url::to(['auth/login']) ?>">Sign in</a>
+            <?= Html::encode(T::tr('Already have an account?')) ?>
+            <a href="<?= \yii\helpers\Url::to(['auth/login']) ?>"><?= Html::encode(T::tr('Sign in')) ?></a>
         </p>
     </div>
 </div>

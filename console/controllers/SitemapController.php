@@ -18,6 +18,14 @@ class SitemapController extends Controller
 {
     private const SITEMAP_DIRECTORY_ALIAS = '@frontend/web/sitemap';
 
+    /**
+     * Supported front-end locales. The first entry is the default language and is served
+     * without a URL prefix; every other locale gets a `/<lang>/...` prefix. This must
+     * mirror the `languages` setting in `frontend/config/main.php`.
+     */
+    private const LANGUAGES = ['en', 'pl', 'de', 'fr', 'es', 'it', 'ja', 'zh'];
+    private const DEFAULT_LANGUAGE = 'en';
+
     private const CUSTOM_LINKS = [
         /*[
             'path' => '/contact',
@@ -263,17 +271,100 @@ class SitemapController extends Controller
 
     private function addEntry(array &$entries, string $loc, ?string $lastmod, string $changefreq, string $priority): void
     {
-        $entry = [
-            'loc'        => $loc,
-            'changefreq' => $changefreq,
-            'priority'   => $priority,
-        ];
+        $path = $this->extractPath($loc);
+        $alternates = $this->buildLanguageAlternates($loc, $path);
 
-        if ($lastmod !== null) {
-            $entry['lastmod'] = $lastmod;
+        foreach (self::LANGUAGES as $language) {
+            $entry = [
+                'loc'        => $alternates[$language],
+                'changefreq' => $changefreq,
+                'priority'   => $priority,
+                'alternates' => $alternates,
+            ];
+
+            if ($lastmod !== null) {
+                $entry['lastmod'] = $lastmod;
+            }
+
+            $entries[] = $entry;
+        }
+    }
+
+    /**
+     * Strip the absolute base URL prefix from a fully-qualified URL, returning the path part.
+     */
+    private function extractPath(string $loc): string
+    {
+        $parts = parse_url($loc);
+        if ($parts === false) {
+            return '/';
         }
 
-        $entries[] = $entry;
+        $path = $parts['path'] ?? '/';
+        if (!str_starts_with($path, '/')) {
+            $path = '/' . $path;
+        }
+
+        if (isset($parts['query']) && $parts['query'] !== '') {
+            $path .= '?' . $parts['query'];
+        }
+
+        return $path;
+    }
+
+    /**
+     * Build per-language URLs for the same logical path. The default language keeps the
+     * unprefixed path; other languages get `/<lang>` prefix. The map also contains an
+     * `x-default` entry pointing at the default language URL.
+     *
+     * @return array<string,string>
+     */
+    private function buildLanguageAlternates(string $absoluteUrl, string $path): array
+    {
+        $baseUrl = $this->stripPath($absoluteUrl, $path);
+        $alternates = [];
+        foreach (self::LANGUAGES as $language) {
+            $alternates[$language] = $baseUrl . $this->prefixLanguage($path, $language);
+        }
+        $alternates['x-default'] = $alternates[self::DEFAULT_LANGUAGE];
+
+        return $alternates;
+    }
+
+    private function stripPath(string $absoluteUrl, string $path): string
+    {
+        if ($path === '' || $path === '/') {
+            return rtrim($absoluteUrl, '/');
+        }
+
+        if (str_ends_with($absoluteUrl, $path)) {
+            return substr($absoluteUrl, 0, -strlen($path));
+        }
+
+        $parsed = parse_url($absoluteUrl);
+        if (!is_array($parsed) || !isset($parsed['scheme'], $parsed['host'])) {
+            return rtrim($absoluteUrl, '/');
+        }
+
+        $base = $parsed['scheme'] . '://' . $parsed['host'];
+        if (isset($parsed['port'])) {
+            $base .= ':' . $parsed['port'];
+        }
+
+        return $base;
+    }
+
+    private function prefixLanguage(string $path, string $language): string
+    {
+        if ($language === self::DEFAULT_LANGUAGE) {
+            return $path;
+        }
+
+        if ($path === '' || $path === '/') {
+            return '/' . $language;
+        }
+
+        return '/' . $language . $path;
     }
 
     private function buildUrlSetXml(array $entries): string
@@ -285,6 +376,7 @@ class SitemapController extends Controller
 
         $writer->startElement('urlset');
         $writer->writeAttribute('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9');
+        $writer->writeAttribute('xmlns:xhtml', 'http://www.w3.org/1999/xhtml');
 
         foreach ($entries as $entry) {
             $writer->startElement('url');
@@ -296,6 +388,17 @@ class SitemapController extends Controller
 
             $writer->writeElement('changefreq', $entry['changefreq']);
             $writer->writeElement('priority', $entry['priority']);
+
+            if (isset($entry['alternates']) && is_array($entry['alternates'])) {
+                foreach ($entry['alternates'] as $hreflang => $href) {
+                    $writer->startElement('xhtml:link');
+                    $writer->writeAttribute('rel', 'alternate');
+                    $writer->writeAttribute('hreflang', (string)$hreflang);
+                    $writer->writeAttribute('href', (string)$href);
+                    $writer->endElement();
+                }
+            }
+
             $writer->endElement();
         }
 

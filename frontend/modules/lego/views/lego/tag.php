@@ -26,7 +26,7 @@ $this->params['robots'] = 'index,follow';
 
 SeoHelper::registerPaginationLinks($this, $dataProvider, $page, ['/lego/lego/tag', 'slug' => $tag->slug]);
 
-$this->params['breadcrumbs'][] = ['label' => 'LEGO Sets', 'url' => ['/lego']];
+$this->params['breadcrumbs'][] = ['label' => T::tr('LEGO Sets'), 'url' => ['/lego']];
 $this->params['breadcrumbs'][] = Html::encode($tag->name);
 
 ?>
