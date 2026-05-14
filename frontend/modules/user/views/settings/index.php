@@ -84,7 +84,7 @@ $this->params['breadcrumbs'][] = T::tr('Settings');
                 </div>
             </section>
 
-            <section class="user-page-card mt-3">
+            <section class="user-page-card mt-3 d-none">
                 <div class="d-flex justify-content-between align-items-baseline mb-2">
                     <h3 class="user-page-card-title">
                         <i class="bi bi-translate"></i><?= Html::encode(T::tr('Language')) ?>

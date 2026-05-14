@@ -3,7 +3,6 @@
 namespace frontend\components;
 
 use common\models\User;
-use Yii;
 use yii\base\ActionEvent;
 use yii\base\BootstrapInterface;
 use yii\web\Application;
