@@ -5,6 +5,21 @@
 
     const TOTAL_STEPS = 6;
 
+    // ─── i18n ──────────────────────────────────────────────────────────────────
+
+    let _i18n = null;
+
+    function i18n() {
+        if (_i18n) return _i18n;
+        const modal = document.getElementById('wizardModal');
+        try {
+            _i18n = JSON.parse(modal.dataset.i18n);
+        } catch (_) {
+            _i18n = {};
+        }
+        return _i18n;
+    }
+
     // ─── State ─────────────────────────────────────────────────────────────────
 
     let _skipReset = false;
@@ -34,30 +49,34 @@
 
     function getStepConfig(step) {
         const cfg = window.WizardConfig;
+        const t = i18n();
+        const titles = t.stepTitles || {};
+        const subtitles = t.stepSubtitles || {};
+        const isGift = state.answers.recipient === 'gift';
         switch (step) {
             case 1:
                 return {
                     key: 'recipient',
-                    title: 'Who are you shopping for?',
+                    title: titles[1] || '',
                     type: 'radio',
                     required: true,
                     options: [
-                        { value: 'self', label: 'For myself', emoji: '👤', description: 'Looking for something for myself' },
-                        { value: 'gift', label: 'As a gift',  emoji: '🎁', description: 'Want to make someone happy' },
+                        { value: 'self', label: (t.recipient && t.recipient.self && t.recipient.self.label) || '', emoji: '👤', description: (t.recipient && t.recipient.self && t.recipient.self.description) || '' },
+                        { value: 'gift', label: (t.recipient && t.recipient.gift && t.recipient.gift.label) || '', emoji: '🎁', description: (t.recipient && t.recipient.gift && t.recipient.gift.description) || '' },
                     ],
                 };
             case 2:
                 return {
                     key: 'profile',
-                    title: state.answers.recipient === 'gift' ? 'Who is the gift for?' : 'What is your profile?',
+                    title: isGift ? (titles['2gift'] || '') : (titles['2self'] || ''),
                     type: 'radio',
                     required: true,
-                    options: state.answers.recipient === 'gift' ? cfg.giftProfiles : cfg.selfProfiles,
+                    options: isGift ? cfg.giftProfiles : cfg.selfProfiles,
                 };
             case 3:
                 return {
                     key: 'budget',
-                    title: 'What is your budget?',
+                    title: titles[3] || '',
                     type: 'radio',
                     required: true,
                     options: cfg.budgetOptions,
@@ -65,8 +84,8 @@
             case 4:
                 return {
                     key: 'interests',
-                    title: state.answers.recipient === 'gift' ? 'What does this person like?' : 'What do you like?',
-                    subtitle: 'Choose up to 3 options (optional)',
+                    title: isGift ? (titles['4gift'] || '') : (titles['4self'] || ''),
+                    subtitle: subtitles[4] || '',
                     type: 'checkbox',
                     required: false,
                     maxSelect: 3,
@@ -77,7 +96,7 @@
             case 5:
                 return {
                     key: 'size',
-                    title: 'How large should the set be?',
+                    title: titles[5] || '',
                     type: 'radio',
                     required: true,
                     options: cfg.sizeOptions,
@@ -85,7 +104,7 @@
             case 6:
                 return {
                     key: 'year',
-                    title: 'When should it be released?',
+                    title: titles[6] || '',
                     type: 'radio',
                     required: true,
                     options: cfg.yearOptions,
@@ -210,7 +229,10 @@
             }
             dots.innerHTML = html;
         }
-        if (ind) ind.textContent = 'Step ' + state.step + ' of ' + TOTAL_STEPS;
+        if (ind) {
+            const template = i18n().stepOf || 'Step {current} of {total}';
+            ind.textContent = template.replace('{current}', state.step).replace('{total}', TOTAL_STEPS);
+        }
     }
 
     function updateButtons(config) {
@@ -223,10 +245,11 @@
         const hasAnswer = isStepAnswered(config);
         nextBtn.disabled = config.required && !hasAnswer;
 
+        const t = i18n();
         if (state.step === TOTAL_STEPS) {
-            nextBtn.innerHTML = '<i class="bi bi-search me-1"></i>Find Sets';
+            nextBtn.innerHTML = '<i class="bi bi-search me-1"></i>' + escHtml(t.findSets || 'Find Sets');
         } else {
-            nextBtn.innerHTML = 'Next<i class="bi bi-arrow-right ms-1"></i>';
+            nextBtn.innerHTML = escHtml(t.next || 'Next') + '<i class="bi bi-arrow-right ms-1"></i>';
         }
     }
 
@@ -272,7 +295,7 @@
         const nextBtn = document.getElementById('wizardNextBtn');
         if (nextBtn) {
             nextBtn.disabled = true;
-            nextBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Searching...';
+            nextBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>' + escHtml(i18n().searching || 'Searching...');
         }
 
         const csrfToken = (document.querySelector('meta[name="csrf-token"]') || {}).content || '';
@@ -290,12 +313,12 @@
             if (data.hash) {
                 window.location.href = '/lego?wizard=' + encodeURIComponent(data.hash);
             } else {
-                showError(data.error || 'An error occurred. Please try again.');
+                showError(data.error || i18n().errorGeneric || 'An error occurred. Please try again.');
                 resetSubmitButton();
             }
         })
         .catch(function () {
-            showError('Connection error. Check your internet and try again.');
+            showError(i18n().errorConnection || 'Connection error. Check your internet and try again.');
             resetSubmitButton();
         });
     }
@@ -305,7 +328,7 @@
         const nextBtn = document.getElementById('wizardNextBtn');
         if (nextBtn) {
             nextBtn.disabled = false;
-            nextBtn.innerHTML = '<i class="bi bi-search me-1"></i>Find Sets';
+            nextBtn.innerHTML = '<i class="bi bi-search me-1"></i>' + escHtml(i18n().findSets || 'Find Sets');
         }
     }
 

@@ -6,8 +6,41 @@ use yii\helpers\Html;
 use yii\helpers\Json;
 
 ?>
+<?php
+$wizardI18n = [
+    'stepTitles'    => [
+        1      => T::tr('Who are you shopping for?'),
+        '2gift' => T::tr('Who is the gift for?'),
+        '2self' => T::tr('What is your profile?'),
+        3      => T::tr('What is your budget?'),
+        '4gift' => T::tr('What does this person like?'),
+        '4self' => T::tr('What do you like?'),
+        5      => T::tr('How large should the set be?'),
+        6      => T::tr('When should it be released?'),
+    ],
+    'stepSubtitles' => [
+        4 => T::tr('Choose up to 3 options (optional)'),
+    ],
+    'recipient'     => [
+        'self' => [
+            'label'       => T::tr('For myself'),
+            'description' => T::tr('Looking for something for myself'),
+        ],
+        'gift' => [
+            'label'       => T::tr('As a gift'),
+            'description' => T::tr('Want to make someone happy'),
+        ],
+    ],
+    'stepOf'           => T::tr('Step {current} of {total}', ['current' => '{current}', 'total' => '{total}']),
+    'next'             => T::tr('Next'),
+    'findSets'         => T::tr('Find Sets'),
+    'searching'        => T::tr('Searching...'),
+    'errorGeneric'     => T::tr('An error occurred. Please try again.'),
+    'errorConnection'  => T::tr('Connection error. Check your internet and try again.'),
+];
+?>
 <script>window.WizardConfig = <?= Json::encode(SearchWizardHash::getJsConfig()) ?>;</script>
-<div class="modal fade" id="wizardModal" tabindex="-1" aria-labelledby="wizardModalLabel" aria-hidden="true">
+<div class="modal fade" id="wizardModal" tabindex="-1" aria-labelledby="wizardModalLabel" aria-hidden="true" data-i18n="<?= Html::encode(Json::encode($wizardI18n)) ?>">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content wizard-modal-content">
 
