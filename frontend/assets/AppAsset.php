@@ -24,12 +24,14 @@ class AppAsset extends AssetBundle
     public $js       = [
         'libs/select2/select2.full.min.js',
         'libs/venobox/venobox.min.js',
+        ['https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js', 'crossorigin' => 'anonymous'],
         'js/common.js',
         'js/search.js',
         'js/wizard.js',
         'js/effects.js',
         'js/wishlist.js',
         'js/owned-set.js',
+        'js/review.js',
     ];
     public $depends  = [
         YiiAsset::class,

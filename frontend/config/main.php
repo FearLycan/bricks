@@ -5,6 +5,7 @@ use frontend\components\LanguageSyncBootstrap;
 use frontend\modules\homepage\HomepageModule;
 use frontend\modules\lego\LegoModule;
 use frontend\modules\product\ProductModule;
+use frontend\modules\review\ReviewModule;
 use frontend\modules\user\UserModule;
 use frontend\modules\wizard\WizardModule;
 use yii\log\FileTarget;
@@ -85,6 +86,7 @@ return [
                 '#^owned-set/(toggle|remove)$#'          => '#^/?owned-set/(toggle|remove)$#',
                 '#^management/queue-offer-import$#'      => '#^/?management/queue-offer-import$#',
                 '#^wizard/(save|load)$#'                 => '#^/?wizard/(save|load)$#',
+                '#^review/(save-simple|save-detailed|delete)$#' => '#^/?review/(save-simple|save-detailed|delete)$#',
                 '#^user/set-language/#'                  => '#^/?user/set-language/#',
             ],
             'enablePrettyUrl'             => true,
@@ -92,6 +94,9 @@ return [
             'rules'                       => [
                 'wizard/save'                                   => 'wizard/default/save',
                 'wizard/load'                                   => 'wizard/default/load',
+                'review/save-simple'                            => 'review/default/save-simple',
+                'review/save-detailed'                          => 'review/default/save-detailed',
+                'review/delete'                                 => 'review/default/delete',
                 'user'                                          => 'user/profile/index',
                 'user/profile'                                  => 'user/profile/index',
                 'user/settings'                                 => 'user/settings/index',
@@ -120,6 +125,7 @@ return [
         'product'  => ['class' => ProductModule::class,],
         'lego'     => ['class' => LegoModule::class,],
         'wizard'   => ['class' => WizardModule::class,],
+        'review'   => ['class' => ReviewModule::class,],
         'user'     => ['class' => UserModule::class,],
     ],
     'params'              => $params,

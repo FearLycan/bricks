@@ -9,9 +9,11 @@ use common\models\SearchWizardHash;
 use common\models\Set;
 use common\models\SetOffer;
 use common\models\SetMinifig;
+use common\models\SetReview;
 use common\models\Tag;
 use common\models\User;
 use frontend\models\searches\SetSearch;
+use Yii;
 use yii\data\ActiveDataProvider;
 
 class LegoController extends Controller
@@ -104,9 +106,25 @@ class LegoController extends Controller
         $model = $this->findModel($slug);
         $identity = $this->user->identity;
 
+        $reviewStats = SetReview::getSetStats((int)$model->id);
+        $reviewList = SetReview::find()
+            ->with(['user', 'scores', 'answers'])
+            ->where(['set_id' => (int)$model->id, 'status' => SetReview::STATUS_PUBLISHED])
+            ->orderBy(['published_at' => SORT_DESC, 'id' => SORT_DESC])
+            ->limit(10)
+            ->all();
+
+        $userReview = null;
+        if (!Yii::$app->user->isGuest) {
+            $userReview = SetReview::findByUserAndSet((int)Yii::$app->user->id, (int)$model->id);
+        }
+
         return $this->render('view', [
-            'model' => $model,
-            'user'  => $identity instanceof User ? $identity : null,
+            'model'       => $model,
+            'user'        => $identity instanceof User ? $identity : null,
+            'reviewStats' => $reviewStats,
+            'reviewList'  => $reviewList,
+            'userReview'  => $userReview,
         ]);
     }
 

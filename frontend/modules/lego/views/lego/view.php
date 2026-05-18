@@ -2,6 +2,7 @@
 
 use common\components\Html;
 use common\models\Set;
+use common\models\SetReview;
 use common\models\User;
 use common\schema\builder\SetPageSchemaBuilder;
 use common\schema\JsonLdRenderer;
@@ -14,10 +15,36 @@ use yii\helpers\Url;
 use yii\web\View;
 
 /**
- * @var $this  View
- * @var $model Set
- * @var $user  User|null
+ * @var $this        View
+ * @var $model       Set
+ * @var $user        User|null
+ * @var $reviewStats array
+ * @var $reviewList  SetReview[]
+ * @var $userReview  SetReview|null
  */
+
+$reviewChoiceUrl = Url::to(['/review/default/choice-modal', 'setId' => (int)$model->id]);
+$reviewAverage = $reviewStats['average'] ?? null;
+$reviewCount = (int)($reviewStats['review_count'] ?? 0);
+
+$buildRatingStars = static function (?float $score): array {
+    if ($score === null) {
+        return array_fill(0, 5, 'bi-star');
+    }
+    $value = max(0.0, min(10.0, $score)) / 2.0;
+    $classes = [];
+    for ($i = 1; $i <= 5; $i++) {
+        if ($value >= $i) {
+            $classes[] = 'bi-star-fill';
+        } elseif ($value >= $i - 0.5) {
+            $classes[] = 'bi-star-half';
+        } else {
+            $classes[] = 'bi-star';
+        }
+    }
+    return $classes;
+};
+$ratingStarClasses = $buildRatingStars($reviewAverage !== null ? (float)$reviewAverage : null);
 
 $this->title = SeoHelper::buildSetTitle($model);
 $this->params['metaDescription'] = SeoHelper::buildSetDescription($model);
@@ -106,6 +133,30 @@ $queueOfferImportModalUrl = Url::to(['/management/queue-offer-import-modal', 'se
                 </div>
                 <h1 class="lego-title"><?= Html::encode($model->name) ?></h1>
                 <div class="lego-set-number"><?= T::tr('Set') ?> #<?= Html::encode($model->getSetNumberText()) ?></div>
+
+                <?php if ($reviewCount > 0): ?>
+                    <a href="#reviews" class="lego-rating-badge js-tab-jump" data-tab-target="#reviews">
+                        <span class="lego-rating-badge-score"><?= Html::encode(number_format((float)$reviewAverage, 2, '.', '')) ?></span>
+                        <span class="lego-rating-badge-stars">
+                            <?php foreach ($ratingStarClasses as $cls): ?>
+                                <i class="bi <?= Html::encode($cls) ?>"></i>
+                            <?php endforeach; ?>
+                        </span>
+                        <span class="text-body-secondary">
+                            <?= T::tr('{n, plural, =1{# review} other{# reviews}}', ['n' => $reviewCount]) ?>
+                        </span>
+                    </a>
+                <?php else: ?>
+                    <?= Html::a(
+                        '<i class="bi bi-stars me-1 text-warning"></i>' . T::tr('Be the first to rate this set'),
+                        $reviewChoiceUrl,
+                        [
+                            'class'       => 'lego-rating-badge lego-rating-badge-empty js-load-modal',
+                            'data-target' => '#mainModal',
+                        ]
+                    ) ?>
+                <?php endif; ?>
+
                 <div class="lego-price">
                     <?php if ($basePriceUsd !== null && $promoPriceUsd !== null): ?>
                         <span class="text-body-secondary text-decoration-line-through me-2"><?= Html::encode($basePriceUsd) ?></span>
@@ -332,6 +383,11 @@ $queueOfferImportModalUrl = Url::to(['/management/queue-offer-import-modal', 'se
                         </a>
                     </li>
                     <li class="nav-item" role="presentation">
+                        <a class="nav-link" id="reviews-tab" data-bs-toggle="tab" href="#reviews" role="tab" aria-controls="reviews" aria-selected="false">
+                            <?= T::tr('Reviews <small>({n})</small>', ['n' => $reviewCount]) ?>
+                        </a>
+                    </li>
+                    <li class="nav-item" role="presentation">
                         <a class="nav-link" id="minifigures-tab" data-bs-toggle="tab" href="#minifigures" role="tab" aria-controls="minifigures" aria-selected="false">
                             <?= T::tr('Minifigures <small>({n})</small>', ['n' => $model->minifigures]) ?>
                         </a>
@@ -406,6 +462,14 @@ $queueOfferImportModalUrl = Url::to(['/management/queue-offer-import-modal', 'se
                                 <p class="text-body-secondary mb-0"><?= T::tr('No prices available') ?></p>
                             <?php endif; ?>
                         </div>
+                    </div>
+                    <div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab" tabindex="0">
+                        <?= $this->render('@frontend/modules/review/views/default/_stats', [
+                            'set'        => $model,
+                            'stats'      => $reviewStats,
+                            'reviews'    => $reviewList,
+                            'userReview' => $userReview,
+                        ]) ?>
                     </div>
                     <?php if ($model->setInstructions): ?>
                         <div class="tab-pane fade" id="instructions" role="tabpanel" aria-labelledby="instructions-tab" tabindex="0">
@@ -526,7 +590,41 @@ $queueOfferImportModalUrl = Url::to(['/management/queue-offer-import-modal', 'se
             });
 
             activateTabFromHash();
+            window.addEventListener('hashchange', activateTabFromHash);
         }
+
+        document.querySelectorAll('.js-tab-jump').forEach((link) => {
+            link.addEventListener('click', (event) => {
+                const targetSelector = link.dataset.tabTarget || link.getAttribute('href');
+                if (!targetSelector || !targetSelector.startsWith('#')) {
+                    return;
+                }
+                const targetPane = document.querySelector(targetSelector);
+                const trigger = document.querySelector(`#legoProductTabs [href="${targetSelector}"]`);
+                if (!targetPane || !trigger || typeof bootstrap === 'undefined') {
+                    return;
+                }
+
+                event.preventDefault();
+
+                const scrollToPane = () => {
+                    const menuHeight = (document.getElementById('menu-navbar')?.offsetHeight || 0) + 8;
+                    const top = targetPane.getBoundingClientRect().top + window.pageYOffset - menuHeight;
+                    window.scrollTo({ top: top, behavior: 'smooth' });
+                    if (history.replaceState) {
+                        history.replaceState(null, '', targetSelector);
+                    }
+                };
+
+                if (trigger.classList.contains('active')) {
+                    scrollToPane();
+                    return;
+                }
+
+                trigger.addEventListener('shown.bs.tab', scrollToPane, { once: true });
+                bootstrap.Tab.getOrCreateInstance(trigger).show();
+            });
+        });
 
         if (zoomModalElement && zoomModalImage && zoomPrev && zoomNext && typeof bootstrap !== 'undefined') {
             const zoomModal = new bootstrap.Modal(zoomModalElement);
