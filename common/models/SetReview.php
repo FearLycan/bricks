@@ -418,6 +418,376 @@ class SetReview extends ActiveRecord
     }
 
     /**
+     * Aggregated review profile for a single user, used by the profile widgets.
+     *
+     * Returns:
+     *  - detailed_count: how many published detailed reviews the user has authored
+     *  - preferences:    per-preference-question aggregate, percent of reviews
+     *  - dimensions:     per-dimension average + count
+     *  - dimension_diffs: user-vs-community delta per dimension (positive = stricter)
+     *
+     * @return array{
+     *   detailed_count: int,
+     *   total_count: int,
+     *   preferences: array<string, array{total: int, counts: array<string, array{count: int, pct: int}>}>,
+     *   dimensions: array<string, array{avg: float, count: int}>,
+     *   dimension_diffs: array<string, float>
+     * }
+     */
+    public static function getUserReviewProfile(int $userId): array
+    {
+        $counts = (new Query())
+            ->select([
+                'detailed' => new Expression('SUM(CASE WHEN sr.review_type = :td THEN 1 ELSE 0 END)', [':td' => self::TYPE_DETAILED]),
+                'total'    => new Expression('COUNT(*)'),
+            ])
+            ->from(['sr' => self::tableName()])
+            ->where(['sr.user_id' => $userId, 'sr.status' => self::STATUS_PUBLISHED])
+            ->one();
+
+        $detailedCount = (int)($counts['detailed'] ?? 0);
+        $totalCount = (int)($counts['total'] ?? 0);
+
+        // Preference aggregates: how often the user picks each set_purpose / priority value.
+        // Total = number of distinct reviews that contributed an answer to that question.
+        $prefRows = (new Query())
+            ->select([
+                'sra.question_key',
+                'sra.answer_value',
+                'cnt' => new Expression('COUNT(*)'),
+            ])
+            ->from(['sra' => SetReviewAnswer::tableName()])
+            ->innerJoin(['sr' => self::tableName()], 'sr.id = sra.set_review_id')
+            ->where(['sr.user_id' => $userId, 'sr.status' => self::STATUS_PUBLISHED])
+            ->andWhere(['sra.question_key' => array_column(self::PREFERENCE_QUESTIONS, 'key')])
+            ->andWhere(['not', ['sra.answer_value' => null]])
+            ->groupBy(['sra.question_key', 'sra.answer_value'])
+            ->all();
+
+        $prefTotals = (new Query())
+            ->select([
+                'sra.question_key',
+                'reviewers' => new Expression('COUNT(DISTINCT sra.set_review_id)'),
+            ])
+            ->from(['sra' => SetReviewAnswer::tableName()])
+            ->innerJoin(['sr' => self::tableName()], 'sr.id = sra.set_review_id')
+            ->where(['sr.user_id' => $userId, 'sr.status' => self::STATUS_PUBLISHED])
+            ->andWhere(['sra.question_key' => array_column(self::PREFERENCE_QUESTIONS, 'key')])
+            ->andWhere(['not', ['sra.answer_value' => null]])
+            ->groupBy(['sra.question_key'])
+            ->all();
+
+        $totals = [];
+        foreach ($prefTotals as $row) {
+            $totals[(string)$row['question_key']] = (int)$row['reviewers'];
+        }
+
+        $preferences = [];
+        foreach ($prefRows as $row) {
+            $qKey = (string)$row['question_key'];
+            $value = (string)$row['answer_value'];
+            $count = (int)$row['cnt'];
+            $total = $totals[$qKey] ?? 0;
+            $pct = $total > 0 ? (int)round(($count / $total) * 100) : 0;
+
+            if (!isset($preferences[$qKey])) {
+                $preferences[$qKey] = ['total' => $total, 'counts' => []];
+            }
+            $preferences[$qKey]['counts'][$value] = ['count' => $count, 'pct' => $pct];
+        }
+        foreach ($preferences as $qKey => &$entry) {
+            uasort($entry['counts'], static fn($a, $b) => $b['count'] <=> $a['count']);
+        }
+        unset($entry);
+
+        $dimRows = (new Query())
+            ->select([
+                'srs.dimension_key',
+                'avg_score' => new Expression('AVG(srs.score)'),
+                'cnt'       => new Expression('COUNT(*)'),
+            ])
+            ->from(['srs' => SetReviewScore::tableName()])
+            ->innerJoin(['sr' => self::tableName()], 'sr.id = srs.set_review_id')
+            ->where(['sr.user_id' => $userId, 'sr.status' => self::STATUS_PUBLISHED])
+            ->groupBy(['srs.dimension_key'])
+            ->all();
+
+        $dimensions = [];
+        foreach ($dimRows as $row) {
+            $dimensions[(string)$row['dimension_key']] = [
+                'avg'   => round((float)$row['avg_score'], 2),
+                'count' => (int)$row['cnt'],
+            ];
+        }
+
+        $diffs = [];
+        if ($dimensions !== []) {
+            $community = self::getCommunityDimensionAverages();
+            foreach ($dimensions as $dimKey => $entry) {
+                if (isset($community[$dimKey])) {
+                    $diffs[$dimKey] = round($entry['avg'] - $community[$dimKey], 2);
+                }
+            }
+        }
+
+        return [
+            'detailed_count'  => $detailedCount,
+            'total_count'     => $totalCount,
+            'preferences'     => $preferences,
+            'dimensions'      => $dimensions,
+            'dimension_diffs' => $diffs,
+        ];
+    }
+
+    /**
+     * Community-wide average score per dimension across all published detailed reviews.
+     * Cached per request via a static — these are the same numbers for every user.
+     *
+     * @return array<string, float> dimension_key => avg_score
+     */
+    public static function getCommunityDimensionAverages(): array
+    {
+        static $cached = null;
+        if ($cached !== null) {
+            return $cached;
+        }
+
+        $rows = (new Query())
+            ->select([
+                'srs.dimension_key',
+                'avg_score' => new Expression('AVG(srs.score)'),
+            ])
+            ->from(['srs' => SetReviewScore::tableName()])
+            ->innerJoin(['sr' => self::tableName()], 'sr.id = srs.set_review_id')
+            ->where(['sr.status' => self::STATUS_PUBLISHED])
+            ->groupBy(['srs.dimension_key'])
+            ->all();
+
+        $cached = [];
+        foreach ($rows as $row) {
+            $cached[(string)$row['dimension_key']] = round((float)$row['avg_score'], 2);
+        }
+        return $cached;
+    }
+
+    /**
+     * Computes how well a set matches a user's taste profile (0–100).
+     *
+     * Logic: for each preference question (set_purpose, priority), compute the
+     * distribution of answers from the user's own reviews and from this set's
+     * reviews. Score = 100 minus average L1 distance of the two distributions,
+     * weighted equally across questions.
+     *
+     * Returns null when there isn't enough data to be meaningful (default
+     * thresholds: user has < 3 detailed reviews OR set has < 3 reviews).
+     */
+    public static function getMatchScoreForSet(int $userId, int $setId, int $minUserReviews = 3, int $minSetReviews = 3): ?int
+    {
+        $userCount = (int)self::find()
+            ->where(['user_id' => $userId, 'status' => self::STATUS_PUBLISHED, 'review_type' => self::TYPE_DETAILED])
+            ->count();
+
+        if ($userCount < $minUserReviews) {
+            return null;
+        }
+
+        $setCount = (int)self::find()
+            ->where(['set_id' => $setId, 'status' => self::STATUS_PUBLISHED])
+            ->count();
+        if ($setCount < $minSetReviews) {
+            return null;
+        }
+
+        $userProfile = self::getUserReviewProfile($userId);
+        $setStats = self::getAnswerAggregates($setId);
+
+        $prefKeys = array_column(self::PREFERENCE_QUESTIONS, 'key');
+        $similarities = [];
+        foreach ($prefKeys as $qKey) {
+            $userDist = self::distributionForQuestion($userProfile['preferences'][$qKey] ?? null);
+            $setDist = self::distributionForQuestion($setStats[$qKey] ?? null);
+            if ($userDist === [] || $setDist === []) {
+                continue;
+            }
+            $similarities[] = self::distributionSimilarity($userDist, $setDist);
+        }
+
+        if ($similarities === []) {
+            return null;
+        }
+
+        $avg = array_sum($similarities) / count($similarities);
+        return (int)round($avg * 100);
+    }
+
+    /**
+     * Sets recommended to a user via lightweight collaborative filtering.
+     *
+     * Finds reviewers who scored sets the user also reviewed, ranks them by
+     * average score-similarity, then returns highly-rated sets those peers
+     * reviewed that the user hasn't yet.
+     *
+     * @return array<int, array{set_id: int, score: float, peer_count: int}>
+     */
+    public static function getSimilarUsersRecommendations(int $userId, int $limit = 6): array
+    {
+        $userOverlap = (new Query())
+            ->select(['sr.set_id', 'sr.overall_score'])
+            ->from(['sr' => self::tableName()])
+            ->where(['sr.user_id' => $userId, 'sr.status' => self::STATUS_PUBLISHED])
+            ->indexBy('set_id')
+            ->column();
+
+        if (count($userOverlap) < 2) {
+            return [];
+        }
+
+        $userScoresBySet = [];
+        $rows = (new Query())
+            ->select(['set_id', 'overall_score'])
+            ->from(self::tableName())
+            ->where(['user_id' => $userId, 'status' => self::STATUS_PUBLISHED])
+            ->all();
+        foreach ($rows as $row) {
+            $userScoresBySet[(int)$row['set_id']] = (float)$row['overall_score'];
+        }
+
+        // Find peers who reviewed at least 2 of the same sets.
+        $peerRows = (new Query())
+            ->select([
+                'sr.user_id',
+                'sr.set_id',
+                'sr.overall_score',
+            ])
+            ->from(['sr' => self::tableName()])
+            ->where(['sr.status' => self::STATUS_PUBLISHED])
+            ->andWhere(['sr.set_id' => array_keys($userScoresBySet)])
+            ->andWhere(['<>', 'sr.user_id', $userId])
+            ->all();
+
+        $peerAgg = [];
+        foreach ($peerRows as $row) {
+            $peerId = (int)$row['user_id'];
+            $setIdRow = (int)$row['set_id'];
+            $peerAgg[$peerId][$setIdRow] = (float)$row['overall_score'];
+        }
+
+        $peerSimilarity = [];
+        foreach ($peerAgg as $peerId => $scoresBySet) {
+            if (count($scoresBySet) < 2) {
+                continue;
+            }
+            $diffSum = 0.0;
+            $overlap = 0;
+            foreach ($scoresBySet as $sId => $peerScore) {
+                $diffSum += abs($peerScore - $userScoresBySet[$sId]);
+                $overlap++;
+            }
+            $avgDiff = $diffSum / $overlap;
+            // Similarity scale: 0 diff → 1.0, 9-point diff → 0.0
+            $similarity = max(0.0, 1.0 - ($avgDiff / 9.0));
+            if ($similarity > 0.5) {
+                $peerSimilarity[$peerId] = ['sim' => $similarity, 'overlap' => $overlap];
+            }
+        }
+
+        if ($peerSimilarity === []) {
+            return [];
+        }
+
+        $peerIds = array_keys($peerSimilarity);
+
+        // Sets these peers rated highly that the current user has not reviewed.
+        $candidateRows = (new Query())
+            ->select(['sr.user_id', 'sr.set_id', 'sr.overall_score'])
+            ->from(['sr' => self::tableName()])
+            ->where(['sr.user_id' => $peerIds, 'sr.status' => self::STATUS_PUBLISHED])
+            ->andWhere(['>=', 'sr.overall_score', 7.0])
+            ->andWhere(['not in', 'sr.set_id', array_keys($userScoresBySet)])
+            ->all();
+
+        $setScores = [];
+        foreach ($candidateRows as $row) {
+            $setIdRow = (int)$row['set_id'];
+            $peerId = (int)$row['user_id'];
+            $weight = $peerSimilarity[$peerId]['sim'];
+            $score = ((float)$row['overall_score']) * $weight;
+
+            if (!isset($setScores[$setIdRow])) {
+                $setScores[$setIdRow] = ['score' => 0.0, 'peer_count' => 0];
+            }
+            $setScores[$setIdRow]['score'] += $score;
+            $setScores[$setIdRow]['peer_count']++;
+        }
+
+        if ($setScores === []) {
+            return [];
+        }
+
+        // Exclude sets the user owns — recommendations should be "what to buy next".
+        $ownedIds = (new Query())
+            ->select('set_id')
+            ->from(OwnedSet::tableName())
+            ->where(['user_id' => $userId])
+            ->column();
+        foreach ($ownedIds as $ownedId) {
+            unset($setScores[(int)$ownedId]);
+        }
+
+        uasort($setScores, static fn($a, $b) => $b['score'] <=> $a['score']);
+
+        $result = [];
+        foreach (array_slice($setScores, 0, $limit, true) as $setIdRow => $entry) {
+            $result[] = [
+                'set_id'     => (int)$setIdRow,
+                'score'      => round($entry['score'], 2),
+                'peer_count' => (int)$entry['peer_count'],
+            ];
+        }
+        return $result;
+    }
+
+    /**
+     * Normalises a question-aggregate ({total, counts}) into a {value => fraction} map.
+     *
+     * @param array{total: int, counts: array<string, int|array{count: int}>}|null $aggregate
+     * @return array<string, float>
+     */
+    private static function distributionForQuestion(?array $aggregate): array
+    {
+        if (!is_array($aggregate) || (int)($aggregate['total'] ?? 0) <= 0) {
+            return [];
+        }
+        $total = (int)$aggregate['total'];
+        $result = [];
+        foreach ($aggregate['counts'] as $value => $entry) {
+            $count = is_array($entry) ? (int)($entry['count'] ?? 0) : (int)$entry;
+            if ($count <= 0) {
+                continue;
+            }
+            $result[(string)$value] = $count / $total;
+        }
+        return $result;
+    }
+
+    /**
+     * Similarity of two probability distributions over the same value set,
+     * computed as 1 minus half the L1 distance (yields [0, 1]).
+     *
+     * @param array<string, float> $a
+     * @param array<string, float> $b
+     */
+    private static function distributionSimilarity(array $a, array $b): float
+    {
+        $keys = array_unique(array_merge(array_keys($a), array_keys($b)));
+        $l1 = 0.0;
+        foreach ($keys as $key) {
+            $l1 += abs(($a[$key] ?? 0.0) - ($b[$key] ?? 0.0));
+        }
+        return max(0.0, 1.0 - ($l1 / 2.0));
+    }
+
+    /**
      * Recomputes and persists Set.rating to reflect the average of published reviews.
      */
     public static function refreshSetRating(int $setId): void
@@ -499,6 +869,84 @@ class SetReview extends ActiveRecord
             'priority'           => T::tr('What matters most in THIS set? (up to 2)'),
             default              => $key,
         };
+    }
+
+    /**
+     * Translates a status code into a UI label.
+     */
+    public static function getStatusLabel(int $status): string
+    {
+        return match ($status) {
+            self::STATUS_PUBLISHED => T::tr('Published'),
+            self::STATUS_DRAFT     => T::tr('Draft'),
+            self::STATUS_HIDDEN    => T::tr('Hidden'),
+            default                => '',
+        };
+    }
+
+    /**
+     * Bootstrap badge CSS class for the given status code.
+     */
+    public static function getStatusBadgeClass(int $status): string
+    {
+        return match ($status) {
+            self::STATUS_PUBLISHED => 'text-bg-success',
+            self::STATUS_DRAFT     => 'text-bg-secondary',
+            self::STATUS_HIDDEN    => 'text-bg-warning text-dark',
+            default                => 'text-bg-light',
+        };
+    }
+
+    /**
+     * Builds the 5-icon Bootstrap-icons star sequence for a 0–10 score.
+     *
+     * @return string[] e.g. ['bi-star-fill', 'bi-star-fill', 'bi-star-half', 'bi-star', 'bi-star']
+     */
+    public static function buildStarClasses(?float $score): array
+    {
+        if ($score === null) {
+            return array_fill(0, 5, 'bi-star');
+        }
+        $value = max(0.0, min(10.0, $score)) / 2.0;
+        $classes = [];
+        for ($i = 1; $i <= 5; $i++) {
+            if ($value >= $i) {
+                $classes[] = 'bi-star-fill';
+            } elseif ($value >= $i - 0.5) {
+                $classes[] = 'bi-star-half';
+            } else {
+                $classes[] = 'bi-star';
+            }
+        }
+        return $classes;
+    }
+
+    /**
+     * Picks the single dimension where the user is the most strict, and the one where they're
+     * the most generous, given a {dimension_key => delta} map (positive delta = above community).
+     *
+     * @param array<string, float> $dimensionDiffs
+     * @return array{strictest: ?array{dimension: string, delta: float}, mostGenerous: ?array{dimension: string, delta: float}}
+     */
+    public static function summarizeDimensionDiffs(array $dimensionDiffs): array
+    {
+        if ($dimensionDiffs === []) {
+            return ['strictest' => null, 'mostGenerous' => null];
+        }
+        $sorted = $dimensionDiffs;
+        uasort($sorted, static fn($a, $b) => abs($b) <=> abs($a));
+
+        $strictest = null;
+        $mostGenerous = null;
+        foreach ($sorted as $dimKey => $delta) {
+            if ($delta < 0 && $strictest === null) {
+                $strictest = ['dimension' => $dimKey, 'delta' => (float)$delta];
+            }
+            if ($delta > 0 && $mostGenerous === null) {
+                $mostGenerous = ['dimension' => $dimKey, 'delta' => (float)$delta];
+            }
+        }
+        return ['strictest' => $strictest, 'mostGenerous' => $mostGenerous];
     }
 
     public static function getAnswerLabel(string $questionKey, string $answerValue): string

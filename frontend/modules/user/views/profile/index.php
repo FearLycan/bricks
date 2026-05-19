@@ -1,5 +1,7 @@
 <?php
 
+use common\models\Set;
+use common\models\SetReview;
 use common\models\User;
 use frontend\components\T;
 use yii\helpers\Html;
@@ -7,10 +9,19 @@ use yii\helpers\Url;
 use yii\web\View;
 
 /**
- * @var View $this
- * @var User $user
- * @var int  $ownedCount
- * @var int  $wishlistCount
+ * @var View                  $this
+ * @var User                  $user
+ * @var int                   $ownedCount
+ * @var int                   $wishlistCount
+ * @var int                   $reviewCount
+ * @var array                 $reviewProfile         SetReview::getUserReviewProfile()
+ * @var array                 $communityDimensions   dimension_key => avg
+ * @var array                 $recommendedSets       [['set' => Set, 'peer_count' => int], ...]
+ * @var array<string,string>  $dimensionShortLabels
+ * @var string                $radarChartJson        encoded chart payload
+ * @var bool                  $hasRadarData
+ * @var array{dimension:string,delta:float}|null $takeawayStrictest
+ * @var array{dimension:string,delta:float}|null $takeawayGenerous
  */
 
 $this->title = T::tr('Profile') . ' · ' . $user->username;
@@ -34,11 +45,20 @@ $joinedFormatted = Yii::$app->formatter->asDate($createdAt->format('Y-m-d'), 'lo
 ?>
 
 <div class="col-12 mt-4">
-    <h1 class="page-title mb-1">
-        <i class="bi bi-person-vcard-fill text-primary me-2"></i>
-        <?= Html::encode(T::tr('My profile')) ?>
-    </h1>
-    <p class="text-muted mb-4"><?= Html::encode(T::tr('A quick look at your account on BrickAtlas.')) ?></p>
+    <div class="user-page-header d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4">
+        <div class="user-page-header-text">
+            <h1 class="page-title mb-1">
+                <i class="bi bi-person-vcard-fill text-primary me-2"></i>
+                <?= Html::encode(T::tr('My profile')) ?>
+            </h1>
+            <p class="text-muted mb-0"><?= Html::encode(T::tr('A quick look at your account on BrickAtlas.')) ?></p>
+        </div>
+        <?= Html::a(
+            '<i class="bi bi-sliders me-2"></i>' . T::tr('Settings'),
+            ['/user/settings'],
+            ['class' => 'btn btn-primary', 'encode' => false]
+        ) ?>
+    </div>
 
     <div class="row g-3">
         <div class="col-lg-7">
@@ -101,7 +121,7 @@ $joinedFormatted = Yii::$app->formatter->asDate($createdAt->format('Y-m-d'), 'lo
             </section>
         </div>
 
-        <div class="col-lg-5">
+        <div class="col-lg-5 user-page-right-col">
             <section class="user-page-card mb-3">
                 <div class="d-flex justify-content-between align-items-baseline mb-3">
                     <h3 class="user-page-card-title">
@@ -130,32 +150,171 @@ $joinedFormatted = Yii::$app->formatter->asDate($createdAt->format('Y-m-d'), 'lo
                 </p>
             </section>
 
-            <a class="user-page-stat-tile mb-3" href="<?= Url::to(['/owned-set/index']) ?>">
-                <span class="user-page-stat-icon user-page-stat-icon--owned"><i class="bi bi-box-seam-fill"></i></span>
-                <div class="user-page-stat-body">
-                    <div class="user-page-stat-value"><?= (int)$ownedCount ?></div>
-                    <div class="user-page-stat-label"><?= Html::encode(T::tr('Owned sets')) ?></div>
-                </div>
-                <i class="bi bi-arrow-right user-page-stat-arrow"></i>
-            </a>
+            <div class="user-page-stats-row">
+                <a class="user-page-stat-tile user-page-stat-tile--compact" href="<?= Url::to(['/owned-set/index']) ?>">
+                    <span class="user-page-stat-icon user-page-stat-icon--owned"><i class="bi bi-box-seam-fill"></i></span>
+                    <div class="user-page-stat-body">
+                        <div class="user-page-stat-value"><?= (int)$ownedCount ?></div>
+                        <div class="user-page-stat-label"><?= Html::encode(T::tr('Owned sets')) ?></div>
+                    </div>
+                </a>
 
-            <a class="user-page-stat-tile" href="<?= Url::to(['/wishlist/index']) ?>">
-                <span class="user-page-stat-icon user-page-stat-icon--wishlist"><i class="bi bi-heart-fill"></i></span>
-                <div class="user-page-stat-body">
-                    <div class="user-page-stat-value"><?= (int)$wishlistCount ?></div>
-                    <div class="user-page-stat-label"><?= Html::encode(T::tr('On your wishlist')) ?></div>
-                </div>
-                <i class="bi bi-arrow-right user-page-stat-arrow"></i>
-            </a>
+                <a class="user-page-stat-tile user-page-stat-tile--compact" href="<?= Url::to(['/wishlist/index']) ?>">
+                    <span class="user-page-stat-icon user-page-stat-icon--wishlist"><i class="bi bi-heart-fill"></i></span>
+                    <div class="user-page-stat-body">
+                        <div class="user-page-stat-value"><?= (int)$wishlistCount ?></div>
+                        <div class="user-page-stat-label"><?= Html::encode(T::tr('On your wishlist')) ?></div>
+                    </div>
+                </a>
+
+                <a class="user-page-stat-tile user-page-stat-tile--compact" href="<?= Url::to(['/user/reviews']) ?>">
+                    <span class="user-page-stat-icon user-page-stat-icon--reviews"><i class="bi bi-journal-richtext"></i></span>
+                    <div class="user-page-stat-body">
+                        <div class="user-page-stat-value"><?= (int)$reviewCount ?></div>
+                        <div class="user-page-stat-label"><?= Html::encode(T::tr('Your reviews')) ?></div>
+                    </div>
+                </a>
+            </div>
         </div>
     </div>
 
-    <div class="d-flex flex-wrap gap-2 mt-4">
-        <?= Html::a(
-                '<i class="bi bi-sliders me-2"></i>' . T::tr('Settings'), ['/user/settings'], ['class' => 'btn btn-primary', 'encode' => false]
-        ) ?>
-        <?= Html::a(
-                '<i class="bi bi-box-arrow-right me-2"></i>' . T::tr('Logout'), ['/auth/logout'], ['class' => 'btn btn-outline-secondary', 'data-method' => 'post', 'encode' => false]
-        ) ?>
-    </div>
+    <?php
+    $detailedReviewCount = (int)($reviewProfile['detailed_count'] ?? 0);
+    $totalReviewCount = (int)($reviewProfile['total_count'] ?? 0);
+    $userPreferences = is_array($reviewProfile['preferences'] ?? null) ? $reviewProfile['preferences'] : [];
+
+    $hasReviewData = $detailedReviewCount > 0 || $totalReviewCount > 0;
+    $preferenceQuestionKeys = ['set_purpose', 'priority'];
+    $minReviewsForWidget = 3;
+    $hasEnoughForWidgets = $detailedReviewCount >= $minReviewsForWidget;
+    ?>
+
+    <?php if ($hasReviewData): ?>
+        <section class="user-page-card user-review-card mt-4">
+            <div class="d-flex justify-content-between align-items-baseline mb-3 flex-wrap gap-2">
+                <h3 class="user-page-card-title">
+                    <i class="bi bi-stars text-warning"></i><?= Html::encode(T::tr('Your review profile')) ?>
+                </h3>
+                <span class="user-page-eyebrow">
+                    <?= T::tr('{n, plural, =1{# review} other{# reviews}}', ['n' => $totalReviewCount]) ?>
+                    <?php if ($detailedReviewCount > 0 && $detailedReviewCount !== $totalReviewCount): ?>
+                        · <?= T::tr('{n} detailed', ['n' => $detailedReviewCount]) ?>
+                    <?php endif; ?>
+                </span>
+            </div>
+
+            <?php if (!$hasEnoughForWidgets): ?>
+                <div class="user-review-empty">
+                    <i class="bi bi-info-circle"></i>
+                    <div>
+                        <div class="fw-semibold mb-1"><?= Html::encode(T::tr('A few more detailed reviews unlocks your taste profile')) ?></div>
+                        <div class="small text-body-secondary">
+                            <?= Html::encode(T::tr('Once you have at least {n} detailed reviews, we will show your preferences and how strictly you rate compared to others.', ['n' => $minReviewsForWidget])) ?>
+                        </div>
+                    </div>
+                </div>
+            <?php else: ?>
+                <div class="row g-4">
+                    <?php if ($userPreferences !== []): ?>
+                        <div class="col-lg-6">
+                            <div class="user-review-section">
+                                <h6 class="user-review-section-title">
+                                    <i class="bi bi-bullseye"></i><?= Html::encode(T::tr('What you look for in sets')) ?>
+                                </h6>
+                                <?php foreach ($preferenceQuestionKeys as $qKey): ?>
+                                    <?php if (!isset($userPreferences[$qKey])) { continue; } ?>
+                                    <?php
+                                    $entry = $userPreferences[$qKey];
+                                    $total = (int)$entry['total'];
+                                    if ($total === 0) { continue; }
+                                    ?>
+                                    <div class="user-review-pref">
+                                        <div class="user-review-pref-label">
+                                            <?= Html::encode(SetReview::getQuestionLabel($qKey)) ?>
+                                        </div>
+                                        <div class="user-review-pref-bars">
+                                            <?php foreach ($entry['counts'] as $value => $bucket): ?>
+                                                <?php $pct = (int)$bucket['pct']; ?>
+                                                <div class="user-review-pref-row">
+                                                    <span class="user-review-pref-text">
+                                                        <?= Html::encode(SetReview::getAnswerLabel($qKey, (string)$value)) ?>
+                                                    </span>
+                                                    <div class="user-review-pref-bar">
+                                                        <div class="user-review-pref-bar-fill" style="--w: <?= (int)$pct ?>%"></div>
+                                                    </div>
+                                                    <span class="user-review-pref-pct"><?= (int)$pct ?>%</span>
+                                                </div>
+                                            <?php endforeach; ?>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+
+                    <?php if ($hasRadarData): ?>
+                        <div class="col-lg-6">
+                            <div class="user-review-section">
+                                <h6 class="user-review-section-title">
+                                    <i class="bi bi-radar"></i><?= Html::encode(T::tr('How you rate vs. the community')) ?>
+                                </h6>
+                                <div class="user-review-radar-wrap">
+                                    <canvas data-role="radar-chart" data-chart="<?= Html::encode($radarChartJson) ?>"></canvas>
+                                </div>
+                                <?php if ($takeawayStrictest !== null || $takeawayGenerous !== null): ?>
+                                    <div class="user-review-radar-takeaway small text-body-secondary mt-2">
+                                        <?php if ($takeawayStrictest !== null): ?>
+                                            <?= Html::encode(T::tr('You rate {dim} {n} points stricter than the average reviewer.', [
+                                                'dim' => SetReview::getDimensionLabel($takeawayStrictest['dimension']),
+                                                'n'   => number_format(abs($takeawayStrictest['delta']), 1, '.', ''),
+                                            ])) ?>
+                                        <?php endif; ?>
+                                        <?php if ($takeawayGenerous !== null): ?>
+                                            <?= Html::encode(T::tr('You rate {dim} {n} points more generously than average.', [
+                                                'dim' => SetReview::getDimensionLabel($takeawayGenerous['dimension']),
+                                                'n'   => number_format(abs($takeawayGenerous['delta']), 1, '.', ''),
+                                            ])) ?>
+                                        <?php endif; ?>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+                </div>
+
+                <?php if (!empty($recommendedSets)): ?>
+                    <div class="user-review-section mt-4">
+                        <h6 class="user-review-section-title">
+                            <i class="bi bi-people-fill"></i><?= Html::encode(T::tr('Reviewers like you also rated these highly')) ?>
+                        </h6>
+                        <div class="user-review-recs">
+                            <?php foreach ($recommendedSets as $rec): ?>
+                                <?php /** @var Set $set */ $set = $rec['set']; ?>
+                                <a class="user-review-rec" href="<?= Url::to(['/lego/lego/view', 'slug' => $set->slug]) ?>">
+                                    <div class="user-review-rec-img-wrap">
+                                        <img src="<?= Html::encode($set->getDisplayMainImageUrl()) ?>" alt="<?= Html::encode((string)$set->name) ?>" loading="lazy">
+                                    </div>
+                                    <div class="user-review-rec-body">
+                                        <div class="user-review-rec-number">#<?= Html::encode((string)$set->number) ?></div>
+                                        <div class="user-review-rec-name"><?= Html::encode((string)$set->name) ?></div>
+                                        <div class="user-review-rec-meta">
+                                            <?php if ($set->rating !== null): ?>
+                                                <span class="badge text-bg-warning text-dark">
+                                                    <i class="bi bi-star-fill"></i> <?= Html::encode(number_format((float)$set->rating, 2, '.', '')) ?>
+                                                </span>
+                                            <?php endif; ?>
+                                            <span class="small text-body-secondary">
+                                                <i class="bi bi-people"></i>
+                                                <?= T::tr('{n, plural, =1{# peer} other{# peers}}', ['n' => (int)$rec['peer_count']]) ?>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </a>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                <?php endif; ?>
+            <?php endif; ?>
+        </section>
+    <?php endif; ?>
 </div>

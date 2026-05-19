@@ -459,6 +459,12 @@
         const canvases = (scope || document).querySelectorAll('canvas[data-role="radar-chart"]');
         canvases.forEach(function (canvas) {
             if (canvas.dataset.chartBound === '1') return;
+            // Defer init for canvases inside currently-hidden containers (Bootstrap tab pane,
+            // modal, accordion, etc.). If we bind while invisible, the entry animation plays
+            // off-screen and the user sees the static final state when the container opens.
+            // bootScopeBindings is re-invoked on shown.bs.tab / shown.bs.modal and will pick
+            // this canvas up once it becomes rendered.
+            if (canvas.offsetParent === null) return;
             canvas.dataset.chartBound = '1';
             let data;
             try {
@@ -468,33 +474,53 @@
             }
             const labels = Array.isArray(data.labels) ? data.labels : [];
             const values = Array.isArray(data.values) ? data.values : [];
+            const community = Array.isArray(data.community) ? data.community : [];
             if (labels.length === 0) return;
+
+            const datasets = [{
+                label: data.label || 'You',
+                data: values,
+                fill: true,
+                backgroundColor: 'rgba(13, 110, 253, 0.18)',
+                borderColor: 'rgba(13, 110, 253, 0.9)',
+                pointBackgroundColor: 'rgba(13, 110, 253, 1)',
+                pointBorderColor: '#fff',
+                pointRadius: 4,
+                borderWidth: 2,
+            }];
+
+            const hasCommunity = community.length === labels.length && community.some(function (v) { return Number(v) > 0; });
+            if (hasCommunity) {
+                datasets.push({
+                    label: data.communityLabel || 'Community avg',
+                    data: community,
+                    fill: false,
+                    backgroundColor: 'rgba(108, 117, 125, 0.08)',
+                    borderColor: 'rgba(108, 117, 125, 0.7)',
+                    borderDash: [4, 4],
+                    pointBackgroundColor: 'rgba(108, 117, 125, 0.9)',
+                    pointBorderColor: '#fff',
+                    pointRadius: 3,
+                    borderWidth: 1.5,
+                });
+            }
 
             new Chart(canvas.getContext('2d'), {
                 type: 'radar',
                 data: {
                     labels: labels,
-                    datasets: [{
-                        label: 'Avg',
-                        data: values,
-                        fill: true,
-                        backgroundColor: 'rgba(13, 110, 253, 0.18)',
-                        borderColor: 'rgba(13, 110, 253, 0.9)',
-                        pointBackgroundColor: 'rgba(13, 110, 253, 1)',
-                        pointBorderColor: '#fff',
-                        pointRadius: 4,
-                        borderWidth: 2,
-                    }],
+                    datasets: datasets,
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
-                        legend: { display: false },
+                        legend: { display: hasCommunity, position: 'bottom' },
                         tooltip: {
                             callbacks: {
                                 label: function (ctx) {
-                                    return ctx.parsed.r.toFixed(1) + ' / 10';
+                                    const seriesLabel = ctx.dataset.label ? ctx.dataset.label + ': ' : '';
+                                    return seriesLabel + ctx.parsed.r.toFixed(1) + ' / 10';
                                 },
                             },
                         },
@@ -526,6 +552,18 @@
 
     function init() {
         bootScopeBindings(document);
+
+        // Re-run bindings when a Bootstrap tab pane becomes visible, so deferred
+        // radar charts in hidden panes get their entry animation when the user sees them.
+        // Bootstrap accepts both data-bs-target and href as the panel selector — check both.
+        document.addEventListener('shown.bs.tab', function (event) {
+            const trigger = event.target;
+            if (!trigger) return;
+            const targetSelector = trigger.getAttribute('data-bs-target') || trigger.getAttribute('href');
+            if (!targetSelector || targetSelector.charAt(0) !== '#') return;
+            const panel = document.querySelector(targetSelector);
+            if (panel) bootScopeBindings(panel);
+        });
 
         const mainModal = document.getElementById('mainModal');
         if (mainModal) {

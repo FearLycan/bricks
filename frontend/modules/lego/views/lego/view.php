@@ -465,10 +465,11 @@ $queueOfferImportModalUrl = Url::to(['/management/queue-offer-import-modal', 'se
                     </div>
                     <div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab" tabindex="0">
                         <?= $this->render('@frontend/modules/review/views/default/_stats', [
-                            'set'        => $model,
-                            'stats'      => $reviewStats,
-                            'reviews'    => $reviewList,
-                            'userReview' => $userReview,
+                            'set'            => $model,
+                            'stats'          => $reviewStats,
+                            'reviews'        => $reviewList,
+                            'userReview'     => $userReview,
+                            'userMatchScore' => $userMatchScore ?? null,
                         ]) ?>
                     </div>
                     <?php if ($model->setInstructions): ?>

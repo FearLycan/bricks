@@ -21,25 +21,37 @@ use yii\helpers\Url;
     </button>
 
     <ul class="dropdown-menu dropdown-menu-end">
-        <li><?= Html::a(T::tr('Catalog'), Url::home(), ['class' => 'dropdown-item']) ?></li>
-        <li><?= Html::a('<i class="bi bi-person-vcard me-2"></i>' . T::tr('Profile'), ['/user/profile'], [
-                'class'  => 'dropdown-item',
-                'encode' => false,
-        ]) ?></li>
-        <li><?= Html::a('<i class="bi bi-heart me-2"></i>' . T::tr('Wishlist'), ['/wishlist/index'], [
-                'class'  => 'dropdown-item',
-                'encode' => false,
-        ]) ?></li>
-        <li><?= Html::a('<i class="bi bi-box-seam me-2"></i>' . T::tr('Owned sets'), ['/owned-set/index'], [
-                'class'  => 'dropdown-item',
-                'encode' => false,
-        ]) ?></li>
-        <li><?= Html::a('<i class="bi bi-sliders me-2"></i>' . T::tr('Settings'), ['/user/settings'], [
-                'class'  => 'dropdown-item',
-                'encode' => false,
-        ]) ?></li>
+        <li>
+            <?= Html::a('<i class="bi bi-person-vcard me-2"></i>' . T::tr('Profile'), ['/user/profile'], [
+                    'class'  => 'dropdown-item',
+                    'encode' => false,
+            ]) ?>
+        </li>
+        <li>
+            <?= Html::a('<i class="bi bi-heart me-2"></i>' . T::tr('Wishlist'), ['/wishlist/index'], [
+                    'class'  => 'dropdown-item',
+                    'encode' => false,
+            ]) ?>
+        </li>
+        <li>
+            <?= Html::a('<i class="bi bi-box-seam me-2"></i>' . T::tr('Owned sets'), ['/owned-set/index'], [
+                    'class'  => 'dropdown-item',
+                    'encode' => false,
+            ]) ?>
+        </li>
+        <li>
+            <?= Html::a('<i class="bi bi-sliders me-2"></i>' . T::tr('Settings'), ['/user/settings'], [
+                    'class'  => 'dropdown-item',
+                    'encode' => false,
+            ]) ?>
+        </li>
+
         <?php if ($user->isAdmin()): ?>
-            <li><?= Html::a(T::tr('Admin panel'), Yii::$app->backendUrlManager->createAbsoluteUrl(['/']), ['class' => 'dropdown-item']) ?></li>
+            <li>
+                <?= Html::a('<i class="bi bi-person-square me-2"></i>' . T::tr('Admin panel'), Yii::$app->backendUrlManager->createAbsoluteUrl(['/']), [
+                        'class' => 'dropdown-item',
+                ]) ?>
+            </li>
         <?php endif; ?>
         <li>
             <hr class="dropdown-divider">

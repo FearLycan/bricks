@@ -115,16 +115,19 @@ class LegoController extends Controller
             ->all();
 
         $userReview = null;
+        $userMatchScore = null;
         if (!Yii::$app->user->isGuest) {
             $userReview = SetReview::findByUserAndSet((int)Yii::$app->user->id, (int)$model->id);
+            $userMatchScore = SetReview::getMatchScoreForSet((int)Yii::$app->user->id, (int)$model->id);
         }
 
         return $this->render('view', [
-            'model'       => $model,
-            'user'        => $identity instanceof User ? $identity : null,
-            'reviewStats' => $reviewStats,
-            'reviewList'  => $reviewList,
-            'userReview'  => $userReview,
+            'model'          => $model,
+            'user'           => $identity instanceof User ? $identity : null,
+            'reviewStats'    => $reviewStats,
+            'reviewList'     => $reviewList,
+            'userReview'     => $userReview,
+            'userMatchScore' => $userMatchScore,
         ]);
     }
 

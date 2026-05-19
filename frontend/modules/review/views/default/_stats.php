@@ -8,11 +8,14 @@ use yii\helpers\Json;
 use yii\helpers\Url;
 
 /**
- * @var Set                $set
- * @var array              $stats   from SetReview::getSetStats()
- * @var SetReview[]        $reviews most recent reviews
- * @var SetReview|null     $userReview
+ * @var Set            $set
+ * @var array          $stats          from SetReview::getSetStats()
+ * @var SetReview[]    $reviews        most recent reviews
+ * @var SetReview|null $userReview
+ * @var int|null       $userMatchScore 0–100 match between this set and the user's taste; null if not enough data
  */
+
+$userMatchScore = isset($userMatchScore) ? $userMatchScore : null;
 
 $reviewCount = (int)($stats['review_count'] ?? 0);
 $average = $stats['average'] ?? null;
@@ -21,12 +24,12 @@ $dimensions = is_array($stats['dimensions'] ?? null) ? $stats['dimensions'] : []
 
 $dimensionOrder = array_keys(SetReview::DIMENSIONS);
 $dimensionLabels = [
-    'design'           => T::tr('Look'),
-    'build_experience' => T::tr('Build'),
-    'playability'      => T::tr('Features'),
-    'quality'          => T::tr('Quality'),
-    'value'            => T::tr('Value'),
-    'recommendation'   => T::tr('Overall'),
+        'design'           => T::tr('Look'),
+        'build_experience' => T::tr('Build'),
+        'playability'      => T::tr('Features'),
+        'quality'          => T::tr('Quality'),
+        'value'            => T::tr('Value'),
+        'recommendation'   => T::tr('Overall'),
 ];
 
 $radarLabels = [];
@@ -55,13 +58,13 @@ $textAnswers = is_array($stats['text_answers'] ?? null) ? $stats['text_answers']
  * grouped by dimension to match the rest of the panel.
  */
 $displayQuestionOrder = [
-    'design_theme_fit', 'design_colors',
-    'build_instructions', 'build_complexity', 'build_techniques',
-    'play_functions', 'play_purpose', 'play_minifigs',
-    'quality_fit', 'quality_stickers', 'quality_unique',
-    'value_worth', 'value_pieces', 'value_feel',
-    'would_buy_again',
-    'set_purpose', 'priority',
+        'design_theme_fit', 'design_colors',
+        'build_instructions', 'build_complexity', 'build_techniques',
+        'play_functions', 'play_purpose', 'play_minifigs',
+        'quality_fit', 'quality_stickers', 'quality_unique',
+        'value_worth', 'value_pieces', 'value_feel',
+        'would_buy_again',
+        'set_purpose', 'priority',
 ];
 
 $buildStars = static function (?float $score): array {
@@ -73,7 +76,7 @@ $buildStars = static function (?float $score): array {
     for ($i = 1; $i <= 5; $i++) {
         if ($value >= $i) {
             $classes[] = 'bi-star-fill';
-        } elseif ($value >= $i - 0.5) {
+        } else if ($value >= $i - 0.5) {
             $classes[] = 'bi-star-half';
         } else {
             $classes[] = 'bi-star';
@@ -85,12 +88,12 @@ $buildStars = static function (?float $score): array {
 $starClasses = $buildStars($average !== null ? (float)$average : null);
 
 $radarData = Json::encode([
-    'labels' => $radarLabels,
-    'values' => $radarValues,
+        'labels' => $radarLabels,
+        'values' => $radarValues,
 ]);
 $histogramData = Json::encode([
-    'labels' => $histogramLabels,
-    'values' => $histogramValues,
+        'labels' => $histogramLabels,
+        'values' => $histogramValues,
 ]);
 
 $reviewListId = 'review-list-' . (int)$set->id;
@@ -104,8 +107,8 @@ $reviewListId = 'review-list-' . (int)$set->id;
                 <?= T::tr('Your opinion helps other builders pick the perfect set.') ?>
             </p>
             <?= Html::a('<i class="bi bi-stars me-1"></i>' . Html::encode($ctaLabel), $choiceUrl, [
-                'class'       => 'btn btn-primary js-load-modal',
-                'data-target' => '#mainModal',
+                    'class'       => 'btn btn-primary js-load-modal',
+                    'data-target' => '#mainModal',
             ]) ?>
         </div>
     <?php else: ?>
@@ -125,9 +128,25 @@ $reviewListId = 'review-list-' . (int)$set->id;
                         <?= T::tr('Based on {n, plural, =1{# review} other{# reviews}}', ['n' => $reviewCount]) ?>
                     </div>
                     <?= Html::a('<i class="bi bi-stars me-1"></i>' . Html::encode($ctaLabel), $choiceUrl, [
-                        'class'       => 'btn btn-primary w-100 js-load-modal',
-                        'data-target' => '#mainModal',
+                            'class'       => 'btn btn-primary w-100 js-load-modal',
+                            'data-target' => '#mainModal',
                     ]) ?>
+
+                    <?php if ($userMatchScore !== null): ?>
+                        <?php
+                        $matchClass = $userMatchScore >= 75 ? 'review-match--strong' : ($userMatchScore >= 50 ? 'review-match--ok' : 'review-match--weak');
+                        ?>
+                        <div class="d-none review-match <?= Html::encode($matchClass) ?> mt-3" title="<?= Html::encode(T::tr('Estimated from your previous reviews and what other reviewers said about this set.')) ?>">
+                            <div class="review-match-head">
+                                <i class="bi bi-bullseye"></i>
+                                <span class="fw-semibold small"><?= Html::encode(T::tr('Matches your taste')) ?></span>
+                            </div>
+                            <div class="review-match-meter" style="--pct: <?= (int)$userMatchScore ?>%">
+                                <div class="review-match-meter-fill"></div>
+                            </div>
+                            <div class="review-match-value"><?= (int)$userMatchScore ?>%</div>
+                        </div>
+                    <?php endif; ?>
 
                     <?php if ($userReview): ?>
                         <div class="review-your-summary mt-3">
@@ -220,8 +239,8 @@ $reviewListId = 'review-list-' . (int)$set->id;
 
         <?php
         $aggregatesToShow = array_values(array_filter(
-            $displayQuestionOrder,
-            static fn($k) => isset($answerAggregates[$k]) && ($answerAggregates[$k]['total'] ?? 0) > 0
+                $displayQuestionOrder,
+                static fn($k) => isset($answerAggregates[$k]) && ($answerAggregates[$k]['total'] ?? 0) > 0
         ));
         ?>
         <?php if ($aggregatesToShow !== []): ?>
@@ -399,7 +418,7 @@ $reviewListId = 'review-list-' . (int)$set->id;
                                     $val = $reviewAnswersMap[$qKey] ?? null;
                                     if (is_array($val) && $val !== []) {
                                         $radioAnswers[$qKey] = array_values($val);
-                                    } elseif (is_string($val) && $val !== '') {
+                                    } else if (is_string($val) && $val !== '') {
                                         $radioAnswers[$qKey] = $val;
                                     }
                                 }
@@ -423,8 +442,8 @@ $reviewListId = 'review-list-' . (int)$set->id;
                                                     <?php
                                                     if (is_array($value)) {
                                                         $valueLabel = implode(', ', array_map(
-                                                            static fn($v) => SetReview::getAnswerLabel($qKey, (string)$v),
-                                                            $value
+                                                                static fn($v) => SetReview::getAnswerLabel($qKey, (string)$v),
+                                                                $value
                                                         ));
                                                         $positive = false;
                                                     } else {
