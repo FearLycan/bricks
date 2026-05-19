@@ -61,6 +61,7 @@ $displayQuestionOrder = [
     'quality_fit', 'quality_stickers', 'quality_unique',
     'value_worth', 'value_pieces', 'value_feel',
     'would_buy_again',
+    'set_purpose', 'priority',
 ];
 
 $buildStars = static function (?float $score): array {
@@ -392,8 +393,13 @@ $reviewListId = 'review-list-' . (int)$set->id;
                                 <?php
                                 $radioAnswers = [];
                                 foreach ($displayQuestionOrder as $qKey) {
+                                    if (in_array($qKey, ['liked_most', 'disliked_most'], true)) {
+                                        continue;
+                                    }
                                     $val = $reviewAnswersMap[$qKey] ?? null;
-                                    if (is_string($val) && $val !== '' && !in_array($qKey, ['liked_most', 'disliked_most'], true)) {
+                                    if (is_array($val) && $val !== []) {
+                                        $radioAnswers[$qKey] = array_values($val);
+                                    } elseif (is_string($val) && $val !== '') {
                                         $radioAnswers[$qKey] = $val;
                                     }
                                 }
@@ -414,11 +420,22 @@ $reviewListId = 'review-list-' . (int)$set->id;
                                         <div class="collapse" id="<?= Html::encode($reviewAnswersCollapseId) ?>">
                                             <div class="review-item-answers pt-2">
                                                 <?php foreach ($radioAnswers as $qKey => $value): ?>
-                                                    <?php $positive = SetReview::isPositiveAnswer($qKey, (string)$value); ?>
+                                                    <?php
+                                                    if (is_array($value)) {
+                                                        $valueLabel = implode(', ', array_map(
+                                                            static fn($v) => SetReview::getAnswerLabel($qKey, (string)$v),
+                                                            $value
+                                                        ));
+                                                        $positive = false;
+                                                    } else {
+                                                        $valueLabel = SetReview::getAnswerLabel($qKey, (string)$value);
+                                                        $positive = SetReview::isPositiveAnswer($qKey, (string)$value);
+                                                    }
+                                                    ?>
                                                     <span class="review-item-answer<?= $positive ? ' review-item-answer--positive' : '' ?>"
                                                           title="<?= Html::encode(SetReview::getQuestionLabel($qKey)) ?>">
                                                         <span class="review-item-answer-label"><?= Html::encode(SetReview::getQuestionLabel($qKey)) ?>:</span>
-                                                        <span class="review-item-answer-value"><?= Html::encode(SetReview::getAnswerLabel($qKey, (string)$value)) ?></span>
+                                                        <span class="review-item-answer-value"><?= Html::encode($valueLabel) ?></span>
                                                     </span>
                                                 <?php endforeach; ?>
                                             </div>

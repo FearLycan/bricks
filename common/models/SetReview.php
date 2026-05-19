@@ -93,13 +93,28 @@ class SetReview extends ActiveRecord
     ];
 
     /**
-     * Bonus preference questions saved to user_preference (global per-user, not per-review).
-     * `multi`: true = multi-select stored as multiple rows.
+     * Bonus preference questions (multi-select) asked at the end of the detailed wizard.
+     * Stored per-review as multiple rows in set_review_answer — this lets a user have
+     * different preferences for different sets ("this one is for play, that one for display")
+     * and lets us derive an aggregated global taste profile later.
      */
     public const PREFERENCE_QUESTIONS = [
         ['key' => 'set_purpose', 'multi' => true, 'options' => ['display', 'play', 'collection', 'technical', 'minifigs']],
-        ['key' => 'priority', 'multi' => true, 'options' => ['pieces', 'playability', 'looks', 'price', 'license'], 'max_select' => 2],
+        ['key' => 'priority',    'multi' => true, 'options' => ['pieces', 'playability', 'looks', 'price', 'license'], 'max_select' => 2],
     ];
+
+    /**
+     * Question keys that accept multiple values per review (stored as N rows in set_review_answer).
+     */
+    public static function isMultiAnswerQuestion(string $questionKey): bool
+    {
+        foreach (self::PREFERENCE_QUESTIONS as $q) {
+            if ($q['key'] === $questionKey) {
+                return !empty($q['multi']);
+            }
+        }
+        return false;
+    }
 
     public static function tableName(): string
     {
@@ -298,6 +313,10 @@ class SetReview extends ActiveRecord
     /**
      * Rozkład odpowiedzi radio na każde pytanie wizardu w obrębie zestawu.
      *
+     * For multi-answer questions (set_purpose, priority) `total` reflects the number of
+     * distinct reviewers who answered, not the sum of counts — so percentages stay
+     * interpretable as "% of reviewers who picked X".
+     *
      * @return array<string, array{total: int, counts: array<string,int>}>
      */
     public static function getAnswerAggregates(int $setId): array
@@ -315,6 +334,23 @@ class SetReview extends ActiveRecord
             ->groupBy(['sra.question_key', 'sra.answer_value'])
             ->all();
 
+        $distinctRows = (new Query())
+            ->select([
+                'sra.question_key',
+                'reviewers' => new Expression('COUNT(DISTINCT sra.set_review_id)'),
+            ])
+            ->from(['sra' => SetReviewAnswer::tableName()])
+            ->innerJoin(['sr' => self::tableName()], 'sr.id = sra.set_review_id')
+            ->where(['sr.set_id' => $setId, 'sr.status' => self::STATUS_PUBLISHED])
+            ->andWhere(['not', ['sra.answer_value' => null]])
+            ->groupBy(['sra.question_key'])
+            ->all();
+
+        $distinctMap = [];
+        foreach ($distinctRows as $row) {
+            $distinctMap[(string)$row['question_key']] = (int)$row['reviewers'];
+        }
+
         $aggregates = [];
         foreach ($rows as $row) {
             $qKey = (string)$row['question_key'];
@@ -322,10 +358,17 @@ class SetReview extends ActiveRecord
             $count = (int)$row['cnt'];
 
             if (!isset($aggregates[$qKey])) {
-                $aggregates[$qKey] = ['total' => 0, 'counts' => []];
+                $aggregates[$qKey] = [
+                    'total'  => self::isMultiAnswerQuestion($qKey)
+                        ? ($distinctMap[$qKey] ?? 0)
+                        : 0,
+                    'counts' => [],
+                ];
             }
             $aggregates[$qKey]['counts'][$aValue] = $count;
-            $aggregates[$qKey]['total'] += $count;
+            if (!self::isMultiAnswerQuestion($qKey)) {
+                $aggregates[$qKey]['total'] += $count;
+            }
         }
 
         return $aggregates;
@@ -452,6 +495,8 @@ class SetReview extends ActiveRecord
             'would_buy_again'    => T::tr('Would you buy this set again?'),
             'liked_most'         => T::tr('What did you like most?'),
             'disliked_most'      => T::tr('What did you like least?'),
+            'set_purpose'        => T::tr('I bought this set mainly for...'),
+            'priority'           => T::tr('What matters most in THIS set? (up to 2)'),
             default              => $key,
         };
     }
@@ -474,6 +519,20 @@ class SetReview extends ActiveRecord
             'value_pieces'       => ['too_few' => T::tr('Too few'), 'just_right' => T::tr('Just right'), 'lots' => T::tr('Plenty')],
             'value_feel'         => ['budget' => T::tr('Budget'), 'standard' => T::tr('Standard'), 'premium' => T::tr('Premium')],
             'would_buy_again'    => ['no' => T::tr('No'), 'maybe' => T::tr('Maybe'), 'yes' => T::tr('Yes')],
+            'set_purpose'        => [
+                'display'    => T::tr('Display'),
+                'play'       => T::tr('Play'),
+                'collection' => T::tr('Collection'),
+                'technical'  => T::tr('Technical'),
+                'minifigs'   => T::tr('Minifigures'),
+            ],
+            'priority'           => [
+                'pieces'      => T::tr('Piece count'),
+                'playability' => T::tr('Playability'),
+                'looks'       => T::tr('Looks'),
+                'price'       => T::tr('Price'),
+                'license'     => T::tr('License / IP'),
+            ],
         ];
         return $map[$questionKey][$answerValue] ?? $answerValue;
     }

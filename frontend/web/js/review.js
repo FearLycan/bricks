@@ -78,11 +78,30 @@
     }
 
     function reloadPage(targetUrl) {
-        if (targetUrl) {
-            window.location.href = targetUrl;
+        if (!targetUrl) {
+            window.location.reload();
             return;
         }
-        window.location.reload();
+        try {
+            const newUrl = new URL(targetUrl, window.location.href);
+            const samePage =
+                newUrl.origin === window.location.origin &&
+                newUrl.pathname === window.location.pathname &&
+                newUrl.search === window.location.search;
+            if (samePage) {
+                // Setting location.href to the same path-with-different-hash only
+                // updates the anchor — it does not reload. After a save we always
+                // want fresh server-rendered stats, so force a reload.
+                if (newUrl.hash && newUrl.hash !== window.location.hash) {
+                    window.location.hash = newUrl.hash;
+                }
+                window.location.reload();
+                return;
+            }
+        } catch (_) {
+            // fall through to plain assignment
+        }
+        window.location.href = targetUrl;
     }
 
     // ─── Simple form ──────────────────────────────────────────────────────────
@@ -372,6 +391,14 @@
             backBtn.addEventListener('click', goBack);
         }
 
+        const originalSubmitLabel = submitBtn ? submitBtn.innerHTML : '';
+
+        function restoreSubmitBtn() {
+            if (!submitBtn) return;
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalSubmitLabel;
+        }
+
         function submit() {
             hideAlert(rootEl);
             const payload = {
@@ -410,16 +437,11 @@
                     }
                     const message = (result.data && result.data.message) || i18n.errorGeneric || 'An error occurred. Please try again.';
                     showAlert(rootEl, message);
-                    if (submitBtn) {
-                        submitBtn.disabled = false;
-                        submitBtn.innerHTML = '<i class="bi bi-check-lg me-1"></i>' + (rootEl.dataset.publishLabel || 'Publish review');
-                    }
+                    restoreSubmitBtn();
                 })
                 .catch(function () {
                     showAlert(rootEl, i18n.errorConnection || 'Connection error. Check your internet and try again.');
-                    if (submitBtn) {
-                        submitBtn.disabled = false;
-                    }
+                    restoreSubmitBtn();
                 });
         }
 

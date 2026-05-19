@@ -8,7 +8,6 @@ use common\models\Set;
 use common\models\SetReview;
 use common\models\SetReviewAnswer;
 use common\models\SetReviewScore;
-use common\models\UserPreference;
 use frontend\components\T;
 use Yii;
 use yii\db\Exception as DbException;
@@ -113,16 +112,10 @@ class DefaultController extends Controller
         $existing = SetReview::findByUserAndSet($userId, (int)$set->id);
         $ownsSet = OwnedSet::isOwnedByCurrentUser((int)$set->id);
 
-        $preferences = [
-            'set_purpose' => UserPreference::getUserPreference($userId, 'set_purpose'),
-            'priority'    => UserPreference::getUserPreference($userId, 'priority'),
-        ];
-
         return $this->renderAjax('_detailed-modal', [
-            'set'         => $set,
-            'existing'    => $existing,
-            'ownsSet'     => $ownsSet,
-            'preferences' => $preferences,
+            'set'      => $set,
+            'existing' => $existing,
+            'ownsSet'  => $ownsSet,
         ]);
     }
 
@@ -268,6 +261,10 @@ class DefaultController extends Controller
                 }
             }
 
+            // Preference questions (multi-select) are stored as multiple rows in
+            // set_review_answer for THIS review, so preferences can vary per set
+            // (e.g. one set is for display, another for play). An aggregated global
+            // taste profile can be derived from all of the user's reviews later.
             $rawPreferences = is_array($payload['preferences'] ?? null) ? $payload['preferences'] : [];
             foreach (SetReview::PREFERENCE_QUESTIONS as $prefQuestion) {
                 $key = $prefQuestion['key'];
@@ -279,14 +276,20 @@ class DefaultController extends Controller
                     $values = [$values];
                 }
                 $allowed = $prefQuestion['options'];
-                $filtered = array_values(array_filter(
+                $filtered = array_values(array_unique(array_filter(
                     array_map(static fn($v) => (string)$v, $values),
                     static fn($v) => in_array($v, $allowed, true)
-                ));
+                )));
                 if (isset($prefQuestion['max_select'])) {
                     $filtered = array_slice($filtered, 0, (int)$prefQuestion['max_select']);
                 }
-                UserPreference::setUserPreference($userId, $key, $filtered);
+                foreach ($filtered as $value) {
+                    $row = new SetReviewAnswer();
+                    $row->set_review_id = (int)$review->id;
+                    $row->question_key = $key;
+                    $row->answer_value = $value;
+                    $row->save(false);
+                }
             }
 
             SetReview::refreshSetRating((int)$set->id);

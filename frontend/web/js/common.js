@@ -328,6 +328,21 @@
 
             return false;
         });
+
+        // When loadModal swaps content while a modal is shown (e.g. choice → detailed
+        // review), Bootstrap can leave orphan .modal-backdrop nodes and keep
+        // body.modal-open + inline padding-right after the modal eventually closes,
+        // which freezes page scrolling. After any modal hides, force-clean body state
+        // unless another modal is still visible.
+        $(document).on('hidden.bs.modal', '.modal', function () {
+            if (document.querySelector('.modal.show')) {
+                return;
+            }
+            document.body.classList.remove('modal-open');
+            document.body.style.removeProperty('overflow');
+            document.body.style.removeProperty('padding-right');
+            document.querySelectorAll('.modal-backdrop').forEach(function (el) { el.remove(); });
+        });
     });
 
     initVenoBox();

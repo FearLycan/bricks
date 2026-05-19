@@ -11,7 +11,6 @@ use yii\helpers\Url;
  * @var Set            $set
  * @var SetReview|null $existing
  * @var bool           $ownsSet
- * @var array          $preferences  ['set_purpose' => [...], 'priority' => [...]]
  */
 
 $saveUrl = Url::to(['/review/save-detailed']);
@@ -84,8 +83,8 @@ $optionLabels = [
 ];
 
 $preferenceLabels = [
-    'set_purpose' => T::tr('I prefer sets that are mainly for...'),
-    'priority'    => T::tr('What matters most to you in a set? (up to 2)'),
+    'set_purpose' => T::tr('I bought this set mainly for...'),
+    'priority'    => T::tr('What matters most in THIS set? (up to 2)'),
 ];
 
 $preferenceOptionLabels = [
@@ -125,7 +124,7 @@ $stepTitles = [
     'quality'        => $dimensionLabels['quality'],
     'value'          => $dimensionLabels['value'],
     'recommendation' => $dimensionLabels['recommendation'],
-    'preferences'    => T::tr('A few words about your taste'),
+    'preferences'    => T::tr('Why this set?'),
     'summary'        => T::tr('Add a summary'),
 ];
 
@@ -270,13 +269,20 @@ $totalSteps = count($steps);
 
             <div class="review-step" data-step="preferences" hidden>
                 <p class="text-body-secondary mb-3">
-                    <?= T::tr('A few quick taste questions — they help us tailor recommendations across all your reviews. Totally optional.') ?>
+                    <?= T::tr('How you think about THIS specific set. Different sets can be for different reasons (display vs play) — these answers are saved per set.') ?>
                 </p>
                 <?php foreach (SetReview::PREFERENCE_QUESTIONS as $prefQ): ?>
                     <?php
                     $prefKey = $prefQ['key'];
                     $maxSelect = $prefQ['max_select'] ?? null;
-                    $selectedValues = is_array($preferences[$prefKey] ?? null) ? $preferences[$prefKey] : [];
+                    $existingPref = $existingAnswers[$prefKey] ?? null;
+                    if (is_array($existingPref)) {
+                        $selectedValues = array_values(array_filter(array_map('strval', $existingPref)));
+                    } elseif (is_string($existingPref) && $existingPref !== '') {
+                        $selectedValues = [$existingPref];
+                    } else {
+                        $selectedValues = [];
+                    }
                     ?>
                     <div class="review-pref-block" data-pref-key="<?= Html::encode($prefKey) ?>" data-max-select="<?= $maxSelect ? (int)$maxSelect : '0' ?>">
                         <div class="review-q-label mb-2"><?= Html::encode($preferenceLabels[$prefKey] ?? $prefKey) ?></div>
