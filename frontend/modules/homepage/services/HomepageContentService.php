@@ -71,11 +71,11 @@ class HomepageContentService
                 ->andWhere(['not', ['s.rating' => null]])
                 ->andWhere(['>=', 's.rating', 4.3])
                 ->andWhere(['or',
-                            ['s.release_date' => null],
-                            ['<=', 's.release_date', new Expression('CURDATE()')],
+                            ['s.launch_date' => null],
+                            ['<=', 's.launch_date', new Expression('CURDATE()')],
                 ])
                 ->with(['mainImageRelation', 'images', 'theme', 'subtheme', 'setOffers'])
-                ->orderBy(new Expression('s.release_date IS NULL ASC, s.release_date DESC, s.rating DESC, s.id DESC'))
+                ->orderBy(new Expression('s.launch_date IS NULL ASC, s.launch_date DESC, s.rating DESC, s.id DESC'))
                 ->limit($limit)
                 ->all();
         }, $this->cacheTtlBranding);
@@ -221,10 +221,10 @@ class HomepageContentService
             return Set::find()
                 ->alias('s')
                 ->andWhere(['s.status' => StatusEnum::ACTIVE->value])
-                ->andWhere(['not', ['s.release_date' => null]])
-                ->andWhere(['<=', 's.release_date', new Expression('CURDATE()')])
+                ->andWhere(['not', ['s.launch_date' => null]])
+                ->andWhere(['<=', 's.launch_date', new Expression('CURDATE()')])
                 ->with(['mainImageRelation', 'theme', 'subtheme', 'setOffers'])
-                ->orderBy(['s.release_date' => SORT_DESC, 's.id' => SORT_DESC])
+                ->orderBy(['s.launch_date' => SORT_DESC, 's.id' => SORT_DESC])
                 ->limit($limit)
                 ->all();
         }, $this->cacheTtlCatalog);
@@ -280,9 +280,9 @@ class HomepageContentService
             return Set::find()
                 ->alias('s')
                 ->andWhere(['s.status' => StatusEnum::ACTIVE->value])
-                ->andWhere(['>', 's.release_date', new Expression('CURDATE()')])
+                ->andWhere(['>', 's.launch_date', new Expression('CURDATE()')])
                 ->with(['mainImageRelation', 'theme', 'subtheme', 'setOffers'])
-                ->orderBy(['s.release_date' => SORT_ASC, 's.id' => SORT_ASC])
+                ->orderBy(['s.launch_date' => SORT_ASC, 's.id' => SORT_ASC])
                 ->limit($limit)
                 ->all();
         }, $this->cacheTtlCatalog);
@@ -342,8 +342,8 @@ class HomepageContentService
                 ->andWhere(['not', ['sm.image' => null]])
                 ->andWhere(['<>', 'sm.image', ''])
                 ->andWhere(['or',
-                            ['s.release_date' => null],
-                            ['<=', 's.release_date', new Expression('CURDATE()')],
+                            ['s.launch_date' => null],
+                            ['<=', 's.launch_date', new Expression('CURDATE()')],
                 ])
                 ->orderBy(['sm.created_at' => SORT_DESC, 'sm.id' => SORT_DESC])
                 ->limit($limit * 6)
@@ -440,7 +440,7 @@ class HomepageContentService
                 ->andWhere(['s.status' => StatusEnum::ACTIVE->value])
                 ->andWhere(['s.theme_id' => $themeIds])
                 ->with(['mainImageRelation', 'theme', 'subtheme', 'setOffers'])
-                ->orderBy(new Expression('s.rating IS NULL ASC, s.rating DESC, s.release_date DESC, s.id DESC'))
+                ->orderBy(new Expression('s.rating IS NULL ASC, s.rating DESC, s.launch_date DESC, s.id DESC'))
                 ->limit($limit);
 
             if (!empty($excludedSetIds)) {

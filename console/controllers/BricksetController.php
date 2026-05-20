@@ -134,13 +134,9 @@ class BricksetController extends Controller
                 $legoSet->price = (int)round(((float)$set['LEGOCom']['US']['retailPrice']) * 100);
             }
 
-            $legoSet->release_date = null;
-            if (isset($set['LEGOCom']['US']['dateFirstAvailable']) && $set['LEGOCom']['US']['dateFirstAvailable']) {
-                $date = date_create($set['LEGOCom']['US']['dateFirstAvailable']);
-                if ($date !== false) {
-                    $legoSet->release_date = $date->format('Y-m-d');
-                }
-            }
+            $legoSet->launch_date = $this->parseBricksetDate($set['launchDate'] ?? null)
+                ?? $this->parseBricksetDate($set['LEGOCom']['US']['dateFirstAvailable'] ?? null);
+            $legoSet->exit_date = $this->parseBricksetDate($set['exitDate'] ?? null);
 
             $legoSet->age = $set['ageRange']['min'] ?? 0;
             $legoSet->rating = $set['rating'] ?? 0;
@@ -242,6 +238,20 @@ class BricksetController extends Controller
             $legoTheme->year_from = (int)($theme['yearFrom'] ?? 0);
             $legoTheme->save();
         }
+    }
+
+    private function parseBricksetDate(mixed $value): ?string
+    {
+        if (!is_string($value) || $value === '') {
+            return null;
+        }
+
+        $date = date_create($value);
+        if ($date === false) {
+            return null;
+        }
+
+        return $date->format('Y-m-d');
     }
 
     private function sendRequest(string $url, array $data = [], string $method = 'GET'): array

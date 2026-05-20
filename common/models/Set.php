@@ -29,7 +29,8 @@ use yii\helpers\Url;
  * @property int|null         $year
  * @property int|null         $pieces
  * @property int|null         $released
- * @property string|null      $release_date
+ * @property string|null      $launch_date
+ * @property string|null      $exit_date
  * @property float|null       $rating
  * @property int|null         $price
  * @property string|null      $brickset_url
@@ -101,7 +102,7 @@ class Set extends ActiveRecord
             [['theme_id'], 'required'],
             [['theme_id', 'subtheme_id', 'status', 'number_variant', 'minifigures', 'year', 'pieces', 'released', 'age', 'price', 'brickset_id'], 'integer'],
             [['rating'], 'number'],
-            [['release_date'], 'date', 'format' => 'php:Y-m-d'],
+            [['launch_date', 'exit_date'], 'date', 'format' => 'php:Y-m-d'],
             [['created_at', 'updated_at', 'offer_discovery_checked_at'], 'safe'],
             [['description'], 'string'],
             [['number'], 'string', 'max' => 30],
@@ -129,7 +130,8 @@ class Set extends ActiveRecord
             'year'                       => 'Year',
             'pieces'                     => 'Pieces',
             'released'                   => 'Released',
-            'release_date'               => 'Release Date',
+            'launch_date'                => 'Launch Date',
+            'exit_date'                  => 'Exit Date',
             'brickset_url'               => 'Brickset Url',
             'dimensions'                 => 'Dimensions',
             'availability'               => 'Availability',
@@ -660,11 +662,11 @@ class Set extends ActiveRecord
 
     public function isReleased(): bool
     {
-        if ($this->release_date === null || $this->release_date === '') {
+        if ($this->launch_date === null || $this->launch_date === '') {
             return true;
         }
 
-        return strtotime($this->release_date) <= strtotime(date('Y-m-d'));
+        return strtotime($this->launch_date) <= strtotime(date('Y-m-d'));
     }
 
     private static function getCachedList(string $cacheKey, callable $resolver, int $duration = 3600): array

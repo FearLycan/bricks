@@ -561,4 +561,6 @@ return [
     'Find your perfect set'                                                                                                                                                => '',
     'Answer a few questions — budget, age, theme — and we will match the best LEGO sets for you.'                                                                          => '',
     'Start the wizard'                                                                                                                                                     => '',
+    'Launch date'                                                                                                                                                          => '',
+    'Exit date'                                                                                                                                                            => '',
 ];

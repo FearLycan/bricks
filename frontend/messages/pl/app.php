@@ -554,4 +554,6 @@ return [
     'Find your perfect set'                                                                                                                                                => 'Znajdź idealny zestaw',
     'Answer a few questions — budget, age, theme — and we will match the best LEGO sets for you.'                                                                          => 'Odpowiedz na kilka pytań — budżet, wiek, temat — a my dopasujemy najlepsze zestawy LEGO.',
     'Start the wizard'                                                                                                                                                     => 'Uruchom kreator',
+    'Launch date'                                                                                                                                                          => 'Data premiery',
+    'Exit date'                                                                                                                                                            => 'Data wycofania',
 ];

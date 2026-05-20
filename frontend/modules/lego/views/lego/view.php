@@ -190,33 +190,43 @@ $queueOfferImportModalUrl = Url::to(['/management/queue-offer-import-modal', 'se
                 <?php endif; ?>
 
                 <div class="lego-quick-facts">
-                    <div class="lego-quick-fact">
+                    <div class="lego-quick-fact lego-quick-fact--third">
                         <span class="label"><i class="bi bi-cake me-1"></i><?= T::tr('Age') ?></span>
                         <span class="value"><?= Html::encode($model->getAgeText()) ?></span>
                     </div>
-                    <div class="lego-quick-fact">
+                    <div class="lego-quick-fact lego-quick-fact--third">
                         <span class="label"><i class="bi bi-columns-gap me-1"></i><?= T::tr('Pieces') ?></span>
                         <span class="value"><?= Html::encode($model->getPiecesText()) ?></span>
                     </div>
-                    <div class="lego-quick-fact">
+                    <div class="lego-quick-fact lego-quick-fact--third">
                         <span class="label"><i class="bi bi-people me-1"></i><?= T::tr('Minifigures') ?></span>
                         <span class="value"><?= Html::encode($model->getMinifiguresText()) ?></span>
                     </div>
-                    <div class="lego-quick-fact">
-                        <span class="label"><i class="bi bi-calendar-check me-1"></i><?= T::tr('Release date') ?></span>
+                    <div class="lego-quick-fact lego-quick-fact--half">
+                        <span class="label"><i class="bi bi-calendar-check me-1"></i><?= T::tr('Launch date') ?></span>
                         <span class="value">
-                            <?php if ($model->release_date !== null): ?>
+                            <?php if ($model->launch_date !== null): ?>
                                 <?= Html::a(
-                                        Html::encode(date('d.m.Y', strtotime($model->release_date))),
+                                        Html::encode(date('d.m.Y', strtotime($model->launch_date))),
                                         Url::to([
                                                 '/lego/new',
-                                                'year'  => (int)date('Y', strtotime($model->release_date)),
-                                                'month' => (int)date('n', strtotime($model->release_date)),
+                                                'year'  => (int)date('Y', strtotime($model->launch_date)),
+                                                'month' => (int)date('n', strtotime($model->launch_date)),
                                         ]),
                                         ['class' => 'text-decoration-none text-body']
                                 ) ?>
                             <?php else: ?>
                                 <?= Html::encode($model->getYearText()) ?>
+                            <?php endif; ?>
+                        </span>
+                    </div>
+                    <div class="lego-quick-fact lego-quick-fact--half">
+                        <span class="label"><i class="bi bi-calendar-x me-1"></i><?= T::tr('Exit date') ?></span>
+                        <span class="value">
+                            <?php if ($model->exit_date !== null): ?>
+                                <?= Html::encode(date('d.m.Y', strtotime($model->exit_date))) ?>
+                            <?php else: ?>
+                                -
                             <?php endif; ?>
                         </span>
                     </div>
@@ -421,12 +431,14 @@ $queueOfferImportModalUrl = Url::to(['/management/queue-offer-import-modal', 'se
                                 <div class="lego-meta-item"><span><?= T::tr('Theme group') ?></span><strong><?= Html::encode($model->getThemeGroupNameOrDefault()) ?></strong></div>
                                 <div class="lego-meta-item"><span><?= T::tr('Subtheme') ?></span><strong><?= Html::encode($model->getSubthemeNameOrDefault()) ?></strong></div>
                                 <div class="lego-meta-item"><span><?= T::tr('Availability') ?></span><strong><?= Html::encode($model->getAvailabilityText(T::tr('No data'))) ?></strong></div>
+                                <div class="lego-meta-item"><span><?= T::tr('Launch date') ?></span><strong><?= Html::encode($model->launch_date !== null ? date('d.m.Y', strtotime($model->launch_date)) : T::tr('No data')) ?></strong></div>
                             </div>
                             <div class="col-md-6">
                                 <div class="lego-meta-item"><span><?= T::tr('Set number') ?></span><strong><?= Html::encode($model->getSetNumberText()) ?></strong></div>
                                 <div class="lego-meta-item"><span><?= T::tr('Pieces') ?></span><strong><?= Html::encode($model->getPiecesText()) ?></strong></div>
                                 <div class="lego-meta-item"><span><?= T::tr('Minifigures') ?></span><strong><?= Html::encode($model->getMinifiguresText()) ?></strong></div>
                                 <div class="lego-meta-item"><span><?= T::tr('Dimensions (H x W x D)') ?></span><strong><?= nl2br(Html::encode($model->getDimensionsDisplayText(T::tr('No dimensions available')))) ?></strong></div>
+                                <div class="lego-meta-item"><span><?= T::tr('Exit date') ?></span><strong><?= Html::encode($model->exit_date !== null ? date('d.m.Y', strtotime($model->exit_date)) : T::tr('No data')) ?></strong></div>
                             </div>
                         </div>
                         <div class="mt-4">

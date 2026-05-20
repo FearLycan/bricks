@@ -494,7 +494,7 @@ a, button {
 
 .lego-product-page .lego-quick-facts {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(6, minmax(0, 1fr));
     gap: 0.75rem;
     margin-bottom: 1.25rem;
 }
@@ -506,6 +506,15 @@ a, button {
     display: flex;
     flex-direction: column;
     gap: 0.2rem;
+    grid-column: span 3;
+}
+
+.lego-product-page .lego-quick-fact--third {
+    grid-column: span 2;
+}
+
+.lego-product-page .lego-quick-fact--half {
+    grid-column: span 3;
 }
 
 .lego-product-page .lego-quick-fact .label {

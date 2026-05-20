@@ -18,7 +18,7 @@ $models = $dataProvider->getModels();
 $groups = [];
 foreach ($models as $model) {
     /** @var Set $model */
-    $groups[date('Y-m', strtotime($model->release_date))][] = $model;
+    $groups[date('Y-m', strtotime($model->launch_date))][] = $model;
 }
 
 ?>

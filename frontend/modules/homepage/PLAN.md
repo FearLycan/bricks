@@ -24,10 +24,10 @@ Strona LEGO.com to ciąg pełnoszerokościowych sekcji z dużymi grafikami, slaj
 | LEGO.com | Sekcja u nas | Źródło danych |
 |---|---|---|
 | Top promo bar | (już mamy w `main.php`) | statyczny |
-| Hero karuzela 3–5 slajdów | `_hero-carousel.php` | top sety wg `rating` + recent `release_date`, z dużą okładką z `SetImage` |
+| Hero karuzela 3–5 slajdów | `_hero-carousel.php` | top sety wg `rating` + recent `launch_date`, z dużą okładką z `SetImage` |
 | Shop by theme — kafelki | `_theme-tiles.php` | `Theme` (top‑level, status=ACTIVE) z `themeGroup`, hero‑grafika tematu |
-| Nowości | `_new-arrivals.php` | `Set` ORDER BY `release_date DESC`, limit 12 |
-| Wkrótce / Coming Soon | `_coming-soon.php` | `Set` WHERE `release_date > NOW()` |
+| Nowości | `_new-arrivals.php` | `Set` ORDER BY `launch_date DESC`, limit 12 |
+| Wkrótce / Coming Soon | `_coming-soon.php` | `Set` WHERE `launch_date > NOW()` |
 | Wyprzedaż / Promocje | `_on-sale.php` | sety, dla których `getPromotionalPriceCents()` zwraca wartość (czyli istnieje tańsza oferta od `price`) |
 | Bestsellery / Top oceniane | `_top-rated.php` | `Set` ORDER BY `rating DESC` z progiem (np. min. 3 recenzje) |
 | LEGO® dla dorosłych | `_for-adults.php` | `Set` WHERE `age >= 18` |
@@ -93,7 +93,7 @@ Każde zapytanie:
 Rekomendacje (`getPersonalRecommendations`) — najprostsza heurystyka v1:
 - weź `theme_id` z `Wishlist` + `OwnedSet` użytkownika,
 - znajdź sety w tych tematach, których użytkownik nie posiada ani nie ma na liście życzeń,
-- sortuj po `rating DESC, release_date DESC`,
+- sortuj po `rating DESC, launch_date DESC`,
 - fallback: top oceniane globalnie, jeśli brak danych behavioralnych.
 
 ### 4.2. Controller

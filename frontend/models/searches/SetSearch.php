@@ -122,8 +122,8 @@ class SetSearch extends Set
         $query = Set::find()
             ->alias('s')
             ->andWhere(['s.status' => StatusEnum::ACTIVE->value])
-            ->andWhere(['not', ['s.release_date' => null]])
-            ->orderBy('s.release_date DESC, s.id DESC');
+            ->andWhere(['not', ['s.launch_date' => null]])
+            ->orderBy('s.launch_date DESC, s.id DESC');
 
         $this->joinActiveTheme($query, 's');
 
@@ -132,11 +132,11 @@ class SetSearch extends Set
         $this->applyNameFilter($query, 's');
 
         if ($this->year) {
-            $query->andWhere(new Expression('YEAR(s.release_date) = :year', [':year' => (int)$this->year]));
+            $query->andWhere(new Expression('YEAR(s.launch_date) = :year', [':year' => (int)$this->year]));
         }
 
         if ($this->month) {
-            $query->andWhere(new Expression('MONTH(s.release_date) = :month', [':month' => (int)$this->month]));
+            $query->andWhere(new Expression('MONTH(s.launch_date) = :month', [':month' => (int)$this->month]));
         }
 
         $this->applyHideOwnedFilter($query, 's');
@@ -299,10 +299,10 @@ class SetSearch extends Set
                 $query->orderBy(new Expression('pieces IS NULL ASC, pieces DESC, id ASC'));
                 break;
             case 'year_desc':
-                $query->orderBy(new Expression('year IS NULL ASC, year DESC, release_date IS NULL ASC, release_date DESC, id ASC'));
+                $query->orderBy(new Expression('year IS NULL ASC, year DESC, launch_date IS NULL ASC, launch_date DESC, id ASC'));
                 break;
             case 'year_asc':
-                $query->orderBy(new Expression('year IS NULL ASC, year ASC, release_date IS NULL ASC, release_date ASC, id ASC'));
+                $query->orderBy(new Expression('year IS NULL ASC, year ASC, launch_date IS NULL ASC, launch_date ASC, id ASC'));
                 break;
             case 'name_asc':
                 $query->orderBy(['name' => SORT_ASC, 'id' => SORT_ASC]);
@@ -324,7 +324,7 @@ class SetSearch extends Set
                 break;
             default:
                 $query->orderBy(new Expression(
-                    'EXISTS (SELECT 1 FROM {{%set_offer}} so WHERE so.[[set_id]] = {{%set}}.[[id]]) DESC, COALESCE({{%set}}.[[release_date]], MAKEDATE({{%set}}.[[year]], 365)) DESC, {{%set}}.[[id]] ASC'
+                    'EXISTS (SELECT 1 FROM {{%set_offer}} so WHERE so.[[set_id]] = {{%set}}.[[id]]) DESC, COALESCE({{%set}}.[[launch_date]], MAKEDATE({{%set}}.[[year]], 365)) DESC, {{%set}}.[[id]] ASC'
                 ));
                 break;
         }
