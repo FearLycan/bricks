@@ -26,7 +26,7 @@ use yii\httpclient\Client;
  */
 class BricksetController extends Controller
 {
-    public Client         $client;
+    public Client $client;
     public CacheInterface $cache;
 
     public function __construct($id, $module, $config = [])
@@ -76,6 +76,9 @@ class BricksetController extends Controller
                 $this->syncSets($sets);
             }
         } while (count($sets) > 0);
+
+        $controller = new ThemeController(Yii::$app->controller->id, Yii::$app);
+        $controller->actionRecountSets();
     }
 
     private function syncSets(array $sets): void
@@ -169,8 +172,8 @@ class BricksetController extends Controller
                 $controller = new RebrickableController(Yii::$app->controller->id, Yii::$app);
                 $controller->actionSyncMinifigs($set['number']);
 
-                $actualCount = (int) SetMinifig::find()->where(['set_id' => $legoSet->id])->count();
-                if ($actualCount !== (int) $legoSet->minifigures) {
+                $actualCount = (int)SetMinifig::find()->where(['set_id' => $legoSet->id])->count();
+                if ($actualCount !== (int)$legoSet->minifigures) {
                     $legoSet->updateAttributes(['minifigures' => $actualCount]);
                 }
 

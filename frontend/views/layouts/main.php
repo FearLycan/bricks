@@ -185,20 +185,26 @@ if ($socialImage !== '') {
         </nav>
     </header>
 
-    <main role="main" class="flex-shrink-0">
+    <?php $isFullWidth = !empty($this->params['fullWidth']); ?>
+    <main role="main" class="flex-shrink-0<?= $isFullWidth ? ' bricks-main--full-width' : '' ?>">
 
         <div id="presentation"></div>
 
-        <div class="container">
-            <?= Breadcrumbs::widget([
-                    'links'        => $breadcrumbLinks,
-                    'homeLink'     => $homeBreadcrumb,
-                    'encodeLabels' => false,
-                    'options'      => ['class' => 'breadcrumb bricks-breadcrumb'],
-            ]) ?>
+        <?php if ($isFullWidth): ?>
             <?= Alert::widget() ?>
             <?= $content ?>
-        </div>
+        <?php else: ?>
+            <div class="container">
+                <?= Breadcrumbs::widget([
+                        'links'        => $breadcrumbLinks,
+                        'homeLink'     => $homeBreadcrumb,
+                        'encodeLabels' => false,
+                        'options'      => ['class' => 'breadcrumb bricks-breadcrumb'],
+                ]) ?>
+                <?= Alert::widget() ?>
+                <?= $content ?>
+            </div>
+        <?php endif; ?>
     </main>
 
     <footer class="bricks-footer mt-auto">

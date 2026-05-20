@@ -22,6 +22,10 @@ class SetSearch extends Set
     public ?string $sort_option = null;
     public ?string $tag_slug = null;
     public $month = null;
+    public $age_min = null;
+    public $age_max = null;
+    public $pieces_min = null;
+    public $pieces_max = null;
 
     /**
      * {@inheritdoc}
@@ -30,6 +34,7 @@ class SetSearch extends Set
     {
         return [
             [['id', 'theme_id', 'status', 'number_variant', 'minifigures', 'year', 'month', 'pieces', 'released', 'price', 'age', 'subtheme_id'], 'integer'],
+            [['age_min', 'age_max', 'pieces_min', 'pieces_max'], 'integer'],
             [['number', 'name', 'slug', 'brickset_url', 'created_at', 'updated_at', 'sort_option', 'tag_slug'], 'safe'],
             [['rating'], 'number'],
         ];
@@ -84,12 +89,25 @@ class SetSearch extends Set
             'year' => $this->year,
         ]);
 
+        if ($this->age_min) {
+            $query->andWhere(['>=', '{{%set}}.age', (int)$this->age_min]);
+        }
+        if ($this->age_max) {
+            $query->andWhere(['<=', '{{%set}}.age', (int)$this->age_max]);
+        }
+        if ($this->pieces_min) {
+            $query->andWhere(['>=', '{{%set}}.pieces', (int)$this->pieces_min]);
+        }
+        if ($this->pieces_max) {
+            $query->andWhere(['<=', '{{%set}}.pieces', (int)$this->pieces_max]);
+        }
+
         $this->applyNameFilter($query);
 
         if ($this->tag_slug) {
             $query->innerJoin('{{%set_tag}} st_tag', 'st_tag.set_id = {{%set}}.id')
-                  ->innerJoin('{{%tag}} t_tag', 't_tag.id = st_tag.tag_id')
-                  ->andWhere(['t_tag.slug' => $this->tag_slug]);
+                ->innerJoin('{{%tag}} t_tag', 't_tag.id = st_tag.tag_id')
+                ->andWhere(['t_tag.slug' => $this->tag_slug]);
         }
 
         $this->applySortOption($query);
@@ -126,7 +144,7 @@ class SetSearch extends Set
         return new ActiveDataProvider([
             'query'      => $query,
             'pagination' => [
-                'pageSize' => 48,
+                'pageSize'  => 48,
                 'pageParam' => 'new_page',
             ],
         ]);

@@ -26,7 +26,7 @@ return [
     'basePath'            => dirname(__DIR__),
     'bootstrap'           => ['log'],
     'controllerNamespace' => 'frontend\controllers',
-    'defaultRoute'        => 'site/index',
+    'defaultRoute'        => 'homepage/home/index',
     'components'          => [
         'i18n'         => [
             'translations' => [
@@ -92,6 +92,7 @@ return [
             'enablePrettyUrl'             => true,
             'showScriptName'              => false,
             'rules'                       => [
+                ''                                              => 'homepage/home/index',
                 'wizard/save'                                   => 'wizard/default/save',
                 'wizard/load'                                   => 'wizard/default/load',
                 'review/save-simple'                            => 'review/default/save-simple',

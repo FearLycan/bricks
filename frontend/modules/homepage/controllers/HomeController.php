@@ -3,19 +3,18 @@
 namespace frontend\modules\homepage\controllers;
 
 use common\components\AccessControl;
-
 use common\components\Controller;
-use frontend\models\searches\SetSearch;
+use common\models\User;
+use frontend\modules\homepage\services\HomepageContentService;
 use Yii;
-use yii\caching\Cache;
 
 class HomeController extends Controller
 {
-    //private Cache $cache;
+    private HomepageContentService $content;
 
     public function __construct($id, $module, $config = [])
     {
-        //$this->cache = Yii::$app->cache;
+        $this->content = new HomepageContentService();
         parent::__construct($id, $module, $config);
     }
 
@@ -27,9 +26,7 @@ class HomeController extends Controller
                 'rules' => [
                     [
                         'allow'   => true,
-                        'actions' => [
-                            'index',
-                        ],
+                        'actions' => ['index'],
                         'roles'   => ['?', '@'],
                     ],
                 ],
@@ -39,12 +36,29 @@ class HomeController extends Controller
 
     public function actionIndex()
     {
-        $searchModel = new SetSearch();
-        $dataProvider = $searchModel->search($this->request->queryParams);
+        $viewData = [
+            'heroSlides'       => $this->content->getHeroSlides(),
+            'themeTiles'       => $this->content->getThemeTiles(),
+            'browseTabs'       => $this->content->getBrowseTabs(),
+            'newArrivals'      => $this->content->getNewArrivals(),
+            'onSale'           => $this->content->getOnSale(),
+            'topRated'         => $this->content->getTopRated(),
+            'comingSoon'       => $this->content->getComingSoon(),
+            'forAdults'        => $this->content->getForAdults(),
+            'themeSpotlight'   => $this->content->getThemeSpotlight(),
+            'featuredMinifigs' => $this->content->getFeaturedMinifigs(),
+            'wishlistPreview'  => [],
+            'recommendations'  => [],
+            'collectionStats'  => null,
+        ];
 
-        return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-        ]);
+        $user = Yii::$app->user->isGuest ? null : Yii::$app->user->identity;
+        if ($user instanceof User) {
+            $viewData['wishlistPreview'] = $this->content->getPersonalWishlistPreview($user);
+            $viewData['recommendations'] = $this->content->getPersonalRecommendations($user);
+            $viewData['collectionStats'] = $this->content->getPersonalCollectionStats($user);
+        }
+
+        return $this->render('index', $viewData);
     }
 }

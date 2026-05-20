@@ -1,0 +1,1305 @@
+/* Homepage scaffold — phase 1. Real components land in phase 2+. */
+
+.bricks-homepage {
+    --bricks-hp-gap: 1.25rem;
+    --bricks-hp-radius: 14px;
+    --bricks-hp-skeleton: linear-gradient(110deg, #ececec 30%, #f5f5f5 50%, #ececec 70%);
+}
+
+.bricks-section {
+    padding: 2.5rem 0;
+}
+
+.bricks-section + .bricks-section {
+    border-top: 1px solid #f0f0f0;
+}
+
+.bricks-section-title {
+    font-weight: 700;
+    font-size: 1.5rem;
+    letter-spacing: -0.01em;
+}
+
+.bricks-section-stub {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #888;
+    background: #f4f4f4;
+    padding: 0.25rem 0.6rem;
+    border-radius: 999px;
+}
+
+.bricks-section-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: var(--bricks-hp-gap);
+}
+
+.bricks-section-skeleton {
+    aspect-ratio: 4 / 5;
+    border-radius: var(--bricks-hp-radius);
+    background: var(--bricks-hp-skeleton);
+    background-size: 200% 100%;
+    animation: bricks-skeleton-shimmer 1.6s linear infinite;
+}
+
+@keyframes bricks-skeleton-shimmer {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+.bricks-section-see-all {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #1a1a1a;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: color 0.15s ease;
+}
+
+.bricks-section-see-all:hover {
+    color: #ff8a00;
+}
+
+.bricks-section--accent-sale .bricks-section-title {
+    color: #c92a2a;
+}
+
+/* Horizontal slider with scroll-snap. Cards keep a fixed min-width and snap
+   into place; the row scrolls horizontally with a styled scrollbar. */
+.bricks-slider {
+    position: relative;
+    margin: 0 -0.25rem;
+}
+
+.bricks-slider-track {
+    display: flex;
+    gap: var(--bricks-hp-gap);
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    scroll-padding-left: 0.25rem;
+    padding: 0.25rem 0.25rem 1rem;
+    scrollbar-width: thin;
+    scrollbar-color: #c8c8c8 transparent;
+}
+
+.bricks-slider-track::-webkit-scrollbar {
+    height: 8px;
+}
+
+.bricks-slider-track::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.bricks-slider-track::-webkit-scrollbar-thumb {
+    background: #c8c8c8;
+    border-radius: 999px;
+}
+
+.bricks-slider-track::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+.bricks-slider-item {
+    flex: 0 0 auto;
+    width: 240px;
+    scroll-snap-align: start;
+}
+
+@media (min-width: 768px) {
+    .bricks-slider-item {
+        width: 260px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .bricks-slider-item {
+        width: 280px;
+    }
+}
+
+.bricks-set-card {
+    display: block;
+    height: 100%;
+}
+
+.bricks-set-card .card {
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.bricks-set-card:hover .card {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+.bricks-hero {
+    background: linear-gradient(135deg, #ffd400 0%, #ff8a00 100%);
+    color: #1a1a1a;
+    padding: 4rem 0 5rem;
+    margin-bottom: 1rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.bricks-hero::after {
+    content: "";
+    position: absolute;
+    inset: auto -10% -40% auto;
+    width: 60%;
+    height: 120%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 60%);
+    pointer-events: none;
+}
+
+.bricks-hero-content {
+    max-width: 720px;
+    position: relative;
+    z-index: 1;
+}
+
+.bricks-hero-eyebrow {
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+}
+
+.bricks-hero-title {
+    font-size: clamp(2rem, 5vw, 3.25rem);
+    font-weight: 800;
+    line-height: 1.05;
+    margin-bottom: 1rem;
+}
+
+.bricks-hero-lead {
+    font-size: 1.05rem;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+    max-width: 56ch;
+}
+
+.bricks-hero-stub {
+    display: inline-block;
+    margin-top: 0.5rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.08);
+    font-size: 0.8rem;
+    letter-spacing: 0.04em;
+}
+
+@media (max-width: 575.98px) {
+    .bricks-hero {
+        padding: 3rem 0 3.5rem;
+    }
+
+    .bricks-section {
+        padding: 2rem 0;
+    }
+}
+
+/* ---------- Hero carousel (Swiper) ---------- */
+
+.bricks-hero-carousel {
+    margin-bottom: 1.5rem;
+}
+
+.bricks-hero-swiper {
+    --swiper-theme-color: #ff8a00;
+    --swiper-pagination-color: #ffffff;
+    --swiper-pagination-bullet-inactive-color: #ffffff;
+    --swiper-pagination-bullet-inactive-opacity: 0.5;
+    --swiper-navigation-color: #ffffff;
+    --swiper-navigation-size: 28px;
+    width: 100%;
+    overflow: hidden;
+}
+
+.bricks-hero-slide {
+    background: linear-gradient(135deg, #1a1f3a 0%, #0d2545 100%);
+    color: #fff;
+    overflow: hidden;
+}
+
+.bricks-hero-slide-link {
+    display: grid;
+    grid-template-columns: 1fr;
+    align-items: center;
+    color: inherit;
+    text-decoration: none;
+    min-height: 460px;
+    position: relative;
+}
+
+@media (min-width: 768px) {
+    .bricks-hero-slide-link {
+        grid-template-columns: 1.05fr 1fr;
+        min-height: 520px;
+    }
+}
+
+.bricks-hero-slide-media {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    background:
+        radial-gradient(circle at 30% 30%, rgba(255, 138, 0, 0.35) 0%, transparent 55%),
+        radial-gradient(circle at 70% 70%, rgba(255, 212, 0, 0.25) 0%, transparent 60%);
+    min-height: 280px;
+}
+
+.bricks-hero-slide-image {
+    max-width: 100%;
+    max-height: 420px;
+    object-fit: contain;
+    filter: drop-shadow(0 18px 40px rgba(0, 0, 0, 0.45));
+    transition: transform 0.5s ease;
+}
+
+.bricks-hero-slide-link:hover .bricks-hero-slide-image {
+    transform: translateY(-4px) scale(1.02);
+}
+
+.bricks-hero-slide-content {
+    padding: 2rem 2.5rem 3rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    max-width: 560px;
+}
+
+@media (min-width: 768px) {
+    .bricks-hero-slide-content {
+        padding: 3rem 3.5rem;
+    }
+}
+
+.bricks-hero-slide-eyebrow {
+    display: inline-block;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-weight: 700;
+    color: #ffd400;
+    margin-bottom: 0.25rem;
+}
+
+.bricks-hero-slide-title {
+    font-size: clamp(1.6rem, 3.4vw, 2.6rem);
+    line-height: 1.1;
+    font-weight: 800;
+    margin: 0;
+    color: #fff;
+}
+
+.bricks-hero-slide-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.78);
+    margin: 0;
+}
+
+.bricks-hero-slide-meta .dot-sep {
+    opacity: 0.5;
+}
+
+.bricks-hero-slide-rating {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    color: #ffd400;
+    font-weight: 600;
+}
+
+.bricks-hero-slide-price {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.65rem;
+    margin: 0.5rem 0 0;
+}
+
+.bricks-hero-slide-price-now {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: -0.01em;
+}
+
+.bricks-hero-slide-price-was {
+    color: rgba(255, 255, 255, 0.55);
+    text-decoration: line-through;
+    font-size: 1rem;
+}
+
+.bricks-hero-slide-price-badge {
+    background: #c92a2a;
+    color: #fff;
+    border-radius: 999px;
+    padding: 0.2rem 0.6rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+}
+
+.bricks-hero-slide-cta {
+    display: inline-flex;
+    align-items: center;
+    align-self: flex-start;
+    gap: 0.4rem;
+    background: #ff8a00;
+    color: #1a1a1a;
+    font-weight: 700;
+    padding: 0.7rem 1.25rem;
+    border-radius: 999px;
+    margin-top: 1rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.bricks-hero-slide-link:hover .bricks-hero-slide-cta {
+    background: #ffd400;
+    transform: translateX(3px);
+    box-shadow: 0 10px 24px rgba(255, 138, 0, 0.4);
+}
+
+.bricks-hero-swiper .swiper-button-prev,
+.bricks-hero-swiper .swiper-button-next {
+    width: 44px;
+    height: 44px;
+    background: rgba(0, 0, 0, 0.35);
+    border: 0;
+    border-radius: 50%;
+    backdrop-filter: blur(6px);
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.bricks-hero-swiper .swiper-button-prev:hover,
+.bricks-hero-swiper .swiper-button-next:hover {
+    background: rgba(0, 0, 0, 0.55);
+    transform: scale(1.05);
+}
+
+.bricks-hero-swiper .swiper-button-prev::after,
+.bricks-hero-swiper .swiper-button-next::after {
+    font-size: 18px;
+    font-weight: 800;
+}
+
+.bricks-hero-swiper .swiper-pagination {
+    bottom: 14px;
+}
+
+@media (max-width: 575.98px) {
+    .bricks-hero-swiper .swiper-button-prev,
+    .bricks-hero-swiper .swiper-button-next {
+        display: none;
+    }
+
+    .bricks-hero-slide-link {
+        min-height: 0;
+    }
+
+    .bricks-hero-slide-content {
+        padding: 1.5rem 1.25rem 2rem;
+    }
+
+    .bricks-hero-slide-price-now {
+        font-size: 1.5rem;
+    }
+}
+
+/* ---------- Shop by theme tiles ---------- */
+
+.bricks-theme-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.85rem;
+}
+
+@media (min-width: 576px) {
+    .bricks-theme-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (min-width: 768px) {
+    .bricks-theme-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (min-width: 1200px) {
+    .bricks-theme-grid {
+        grid-template-columns: repeat(6, 1fr);
+    }
+}
+
+.bricks-theme-tile {
+    position: relative;
+    display: block;
+    aspect-ratio: 1 / 1;
+    border-radius: 16px;
+    overflow: hidden;
+    color: #fff;
+    text-decoration: none;
+    isolation: isolate;
+    background: #1a1a1a;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.bricks-theme-tile:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.18);
+    color: #fff;
+}
+
+.bricks-theme-tile-media {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    transition: transform 0.6s ease;
+    z-index: 0;
+}
+
+.bricks-theme-tile:hover .bricks-theme-tile-media {
+    transform: scale(1.08);
+}
+
+.bricks-theme-tile-media--fallback {
+    background: linear-gradient(135deg, #ff8a00 0%, #ffd400 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.bricks-theme-tile-initial {
+    font-size: 4rem;
+    font-weight: 800;
+    color: rgba(0, 0, 0, 0.18);
+    line-height: 1;
+}
+
+.bricks-theme-tile-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0) 40%, rgba(0, 0, 0, 0.85) 100%);
+    z-index: 1;
+}
+
+.bricks-theme-tile-body {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 0.85rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    z-index: 2;
+}
+
+.bricks-theme-tile-name {
+    font-weight: 700;
+    font-size: 1rem;
+    line-height: 1.2;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+.bricks-theme-tile-meta {
+    font-size: 0.78rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* ---------- Theme spotlight banner ---------- */
+
+.bricks-spotlight {
+    padding: 4.5rem 0;
+    color: #fff;
+    background-color: #0f172a;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+    overflow: hidden;
+}
+
+.bricks-spotlight-inner {
+    max-width: 620px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+}
+
+.bricks-spotlight-eyebrow {
+    display: inline-block;
+    align-self: flex-start;
+    background: rgba(255, 212, 0, 0.18);
+    color: #ffd400;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 0.35rem 0.75rem;
+    border-radius: 999px;
+}
+
+.bricks-spotlight-title {
+    font-size: clamp(2rem, 4.5vw, 3rem);
+    font-weight: 800;
+    line-height: 1.05;
+    margin: 0;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);
+}
+
+.bricks-spotlight-description {
+    font-size: 1.05rem;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.86);
+    margin: 0;
+    max-width: 55ch;
+}
+
+.bricks-spotlight-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.8);
+    margin-top: 0.25rem;
+}
+
+.bricks-spotlight-cta {
+    display: inline-flex;
+    align-items: center;
+    align-self: flex-start;
+    background: #ff8a00;
+    color: #1a1a1a;
+    font-weight: 700;
+    padding: 0.75rem 1.5rem;
+    border-radius: 999px;
+    text-decoration: none;
+    margin-top: 0.75rem;
+    transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.bricks-spotlight-cta:hover {
+    background: #ffd400;
+    color: #1a1a1a;
+    transform: translateX(3px);
+    box-shadow: 0 12px 26px rgba(255, 138, 0, 0.4);
+}
+
+@media (max-width: 575.98px) {
+    .bricks-spotlight {
+        padding: 3rem 0;
+    }
+}
+
+/* ---------- Featured minifigures ---------- */
+
+.bricks-minifig-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.85rem;
+}
+
+@media (min-width: 576px) {
+    .bricks-minifig-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (min-width: 768px) {
+    .bricks-minifig-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (min-width: 1200px) {
+    .bricks-minifig-grid {
+        grid-template-columns: repeat(6, 1fr);
+    }
+}
+
+.bricks-minifig-card {
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    border: 1px solid #ececec;
+    border-radius: 14px;
+    overflow: hidden;
+    color: inherit;
+    text-decoration: none;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+.bricks-minifig-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    border-color: #d6d6d6;
+    color: inherit;
+}
+
+.bricks-minifig-card-media {
+    aspect-ratio: 1 / 1;
+    background: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem;
+}
+
+.bricks-minifig-card-image {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.bricks-minifig-card-body {
+    padding: 0.65rem 0.75rem 0.85rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+.bricks-minifig-card-name {
+    font-size: 0.88rem;
+    font-weight: 600;
+    line-height: 1.25;
+    color: #1a1a1a;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.bricks-minifig-card-number {
+    font-size: 0.75rem;
+    color: #888;
+}
+
+/* ---------- Personal wishlist bar ---------- */
+
+.bricks-section--wishlist-bar {
+    padding-top: 2rem;
+    padding-bottom: 1.5rem;
+}
+
+.bricks-wishlist-bar {
+    background: linear-gradient(135deg, #fff5f7 0%, #fff 70%);
+    border: 1px solid #ffe2ea;
+    border-radius: 18px;
+    padding: 1.25rem 1.25rem 1rem;
+}
+
+.bricks-wishlist-bar-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+}
+
+.bricks-wishlist-bar-title-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+}
+
+.bricks-wishlist-bar-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #ff4d6d;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    box-shadow: 0 8px 16px rgba(255, 77, 109, 0.25);
+}
+
+.bricks-wishlist-bar-sub {
+    font-size: 0.85rem;
+    color: #6b6b6b;
+}
+
+.bricks-wishlist-bar-items {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.65rem;
+}
+
+@media (min-width: 576px) {
+    .bricks-wishlist-bar-items {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 992px) {
+    .bricks-wishlist-bar-items {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+.bricks-wishlist-bar-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.6rem;
+    background: #fff;
+    border: 1px solid #f0eaec;
+    border-radius: 12px;
+    color: inherit;
+    text-decoration: none;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+.bricks-wishlist-bar-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 18px rgba(255, 77, 109, 0.12);
+    border-color: #ffd0db;
+    color: inherit;
+}
+
+.bricks-wishlist-bar-item-media {
+    flex: 0 0 64px;
+    width: 64px;
+    height: 64px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.bricks-wishlist-bar-item-media img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.bricks-wishlist-bar-item-body {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+}
+
+.bricks-wishlist-bar-item-number {
+    font-size: 0.72rem;
+    color: #999;
+    font-weight: 600;
+}
+
+.bricks-wishlist-bar-item-name {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #1a1a1a;
+    line-height: 1.25;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.bricks-wishlist-bar-item-price {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #c92a2a;
+    margin-top: 0.15rem;
+}
+
+/* ---------- Recommendations eyebrow ---------- */
+
+.bricks-section--recommendations {
+    background: linear-gradient(135deg, #fff8f0 0%, #fff 65%);
+}
+
+.bricks-section-eyebrow {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: #ff8a00;
+    margin-bottom: 0.25rem;
+}
+
+/* ---------- Collection stats ---------- */
+
+.bricks-section--collection-stats {
+    padding: 2.5rem 0 3rem;
+}
+
+.bricks-collection-stats-head {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.bricks-collection-stats-sub {
+    color: #6b6b6b;
+    font-size: 0.95rem;
+}
+
+.bricks-collection-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.85rem;
+}
+
+@media (min-width: 768px) {
+    .bricks-collection-stats-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+.bricks-collection-stats-tile {
+    background: #fff;
+    border: 1px solid #ececec;
+    border-radius: 16px;
+    padding: 1.5rem 1.25rem;
+    text-align: center;
+    color: inherit;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+a.bricks-collection-stats-tile:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+    border-color: #d6d6d6;
+    color: inherit;
+}
+
+.bricks-collection-stats-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #fff8e1 0%, #ffe7b0 100%);
+    color: #ff8a00;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    margin-bottom: 0.5rem;
+}
+
+.bricks-collection-stats-value {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: #1a1a1a;
+    letter-spacing: -0.01em;
+    line-height: 1.1;
+    word-break: break-word;
+}
+
+.bricks-collection-stats-tile--theme .bricks-collection-stats-value {
+    font-size: 1.15rem;
+    text-align: center;
+}
+
+.bricks-collection-stats-label {
+    font-size: 0.85rem;
+    color: #6b6b6b;
+    font-weight: 600;
+}
+
+.bricks-collection-stats-tile--empty {
+    opacity: 0.7;
+}
+
+/* ---------- Guest CTA ---------- */
+
+.bricks-section--guest-cta {
+    padding: 3rem 0 4rem;
+}
+
+.bricks-guest-cta {
+    position: relative;
+    background: linear-gradient(135deg, #1a1f3a 0%, #0d2545 100%);
+    color: #fff;
+    border-radius: 24px;
+    padding: 3rem 2rem;
+    overflow: hidden;
+}
+
+@media (min-width: 768px) {
+    .bricks-guest-cta {
+        padding: 3.5rem 3.5rem;
+        display: grid;
+        grid-template-columns: 1.4fr 1fr;
+        align-items: center;
+        gap: 2rem;
+    }
+}
+
+.bricks-guest-cta-content {
+    max-width: 560px;
+    position: relative;
+    z-index: 1;
+}
+
+.bricks-guest-cta-eyebrow {
+    display: inline-block;
+    color: #ffd400;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    font-size: 0.78rem;
+    background: rgba(255, 212, 0, 0.15);
+    padding: 0.35rem 0.8rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+}
+
+.bricks-guest-cta-title {
+    font-size: clamp(1.7rem, 3.6vw, 2.4rem);
+    font-weight: 800;
+    line-height: 1.1;
+    margin: 0 0 0.75rem;
+}
+
+.bricks-guest-cta-lead {
+    font-size: 1rem;
+    line-height: 1.55;
+    color: rgba(255, 255, 255, 0.82);
+    margin: 0 0 1.25rem;
+}
+
+.bricks-guest-cta-benefits {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+}
+
+.bricks-guest-cta-benefits li {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    color: rgba(255, 255, 255, 0.92);
+    font-size: 0.95rem;
+}
+
+.bricks-guest-cta-benefits i {
+    color: #ffd400;
+    font-size: 1rem;
+}
+
+.bricks-guest-cta-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+.bricks-guest-cta-primary {
+    display: inline-flex;
+    align-items: center;
+    background: #ff8a00;
+    color: #1a1a1a;
+    font-weight: 700;
+    padding: 0.85rem 1.6rem;
+    border-radius: 999px;
+    text-decoration: none;
+    transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.bricks-guest-cta-primary:hover {
+    background: #ffd400;
+    color: #1a1a1a;
+    transform: translateX(3px);
+    box-shadow: 0 12px 26px rgba(255, 138, 0, 0.45);
+}
+
+.bricks-guest-cta-secondary {
+    color: rgba(255, 255, 255, 0.88);
+    font-weight: 600;
+    text-decoration: none;
+    padding: 0.85rem 1rem;
+    border-radius: 999px;
+    transition: color 0.2s ease, background 0.2s ease;
+}
+
+.bricks-guest-cta-secondary:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.bricks-guest-cta-decoration {
+    display: none;
+    color: rgba(255, 212, 0, 0.18);
+    font-size: 16rem;
+    line-height: 1;
+    text-align: center;
+    pointer-events: none;
+}
+
+@media (min-width: 768px) {
+    .bricks-guest-cta-decoration {
+        display: block;
+    }
+}
+
+/* ---------- Wizard CTA ---------- */
+
+.bricks-section--wizard {
+    padding: 1.75rem 0 0.5rem;
+}
+
+.bricks-wizard-cta {
+    width: 100%;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 1.25rem;
+    background: linear-gradient(120deg, #4c1d95 0%, #7c3aed 55%, #f59e0b 130%);
+    border: 0;
+    color: #fff;
+    border-radius: 22px;
+    padding: 1.5rem 1.75rem;
+    text-align: left;
+    cursor: pointer;
+    box-shadow: 0 12px 30px rgba(124, 58, 237, 0.25);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.bricks-wizard-cta:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 18px 40px rgba(124, 58, 237, 0.35);
+}
+
+.bricks-wizard-cta:focus-visible {
+    outline: 3px solid #ffd400;
+    outline-offset: 4px;
+}
+
+.bricks-wizard-cta-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.85rem;
+    color: #ffd400;
+    backdrop-filter: blur(6px);
+    flex-shrink: 0;
+}
+
+.bricks-wizard-cta-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    min-width: 0;
+}
+
+.bricks-wizard-cta-eyebrow {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: #ffd400;
+}
+
+.bricks-wizard-cta-title {
+    font-size: clamp(1.25rem, 2.4vw, 1.7rem);
+    font-weight: 800;
+    line-height: 1.15;
+}
+
+.bricks-wizard-cta-lead {
+    font-size: 0.95rem;
+    line-height: 1.4;
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.bricks-wizard-cta-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(255, 255, 255, 0.12);
+    padding: 0.65rem 1.1rem;
+    border-radius: 999px;
+    font-weight: 700;
+    transition: background 0.2s ease, transform 0.2s ease;
+    flex-shrink: 0;
+}
+
+.bricks-wizard-cta:hover .bricks-wizard-cta-action {
+    background: #ffd400;
+    color: #1a1a1a;
+    transform: translateX(3px);
+}
+
+@media (max-width: 767.98px) {
+    .bricks-wizard-cta {
+        grid-template-columns: auto 1fr;
+        padding: 1.25rem 1.25rem;
+    }
+
+    .bricks-wizard-cta-action {
+        grid-column: 1 / -1;
+        justify-content: center;
+        margin-top: 0.5rem;
+    }
+}
+
+/* ---------- Browse tabs (Nowości / Tematyka / Dla kogo) ---------- */
+
+.bricks-section--browse-tabs {
+    padding: 2rem 0 2.5rem;
+}
+
+.bricks-browse-tabs {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.25rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1.5rem;
+    border-bottom: 1px solid #ececec;
+}
+
+.bricks-browse-tab {
+    background: transparent;
+    border: 0;
+    color: #6b6b6b;
+    font-weight: 700;
+    font-size: 1.05rem;
+    padding: 0.65rem 0;
+    cursor: pointer;
+    position: relative;
+    transition: color 0.2s ease;
+}
+
+.bricks-browse-tab:hover {
+    color: #1a1a1a;
+}
+
+.bricks-browse-tab.is-active {
+    color: #1a1a1a;
+}
+
+.bricks-browse-tab.is-active::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1px;
+    height: 3px;
+    background: #ff8a00;
+    border-radius: 3px 3px 0 0;
+}
+
+.bricks-browse-tab-panel {
+    display: none;
+}
+
+.bricks-browse-tab-panel.is-active {
+    display: block;
+}
+
+.bricks-browse-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.65rem;
+}
+
+@media (min-width: 576px) {
+    .bricks-browse-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (min-width: 768px) {
+    .bricks-browse-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (min-width: 1200px) {
+    .bricks-browse-grid {
+        grid-template-columns: repeat(8, 1fr);
+    }
+}
+
+.bricks-browse-tile {
+    position: relative;
+    display: block;
+    aspect-ratio: 3 / 4;
+    border-radius: 12px;
+    overflow: hidden;
+    color: #fff;
+    text-decoration: none;
+    isolation: isolate;
+    background: #1a1a1a;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.bricks-browse-tile:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 26px rgba(0, 0, 0, 0.2);
+    color: #fff;
+}
+
+.bricks-browse-tile-media {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    transition: transform 0.6s ease;
+    z-index: 0;
+}
+
+.bricks-browse-tile:hover .bricks-browse-tile-media {
+    transform: scale(1.08);
+}
+
+.bricks-browse-tile-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0) 35%, rgba(0, 0, 0, 0.85) 100%);
+    z-index: 1;
+}
+
+.bricks-browse-tile-label {
+    position: absolute;
+    left: 0.85rem;
+    right: 0.85rem;
+    bottom: 0.85rem;
+    font-weight: 700;
+    font-size: 1rem;
+    line-height: 1.2;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
+    z-index: 2;
+}
+
+.bricks-browse-tile--gradient-blue   .bricks-browse-tile-media { background-image: linear-gradient(135deg, #1e3a8a, #3b82f6); }
+.bricks-browse-tile--gradient-red    .bricks-browse-tile-media { background-image: linear-gradient(135deg, #991b1b, #ef4444); }
+.bricks-browse-tile--gradient-purple .bricks-browse-tile-media { background-image: linear-gradient(135deg, #581c87, #a855f7); }
+.bricks-browse-tile--gradient-amber  .bricks-browse-tile-media { background-image: linear-gradient(135deg, #b45309, #f59e0b); }
+.bricks-browse-tile--gradient-green  .bricks-browse-tile-media { background-image: linear-gradient(135deg, #14532d, #22c55e); }
+.bricks-browse-tile--gradient-pink   .bricks-browse-tile-media { background-image: linear-gradient(135deg, #9d174d, #ec4899); }
+.bricks-browse-tile--gradient-teal   .bricks-browse-tile-media { background-image: linear-gradient(135deg, #134e4a, #14b8a6); }
+.bricks-browse-tile--gradient-slate  .bricks-browse-tile-media { background-image: linear-gradient(135deg, #1f2937, #4b5563); }
