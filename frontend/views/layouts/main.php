@@ -156,15 +156,16 @@ if ($socialImage !== '') {
                 <div class="collapse navbar-collapse" id="bricksNavCollapse">
                     <ul class="navbar-nav ms-3 me-auto mb-2 mb-md-0">
                         <li class="nav-item">
-                            <a class="bricks-nav-link nav-link" href="<?= Url::to(['/lego']) ?>"><?= T::tr('LEGO{sup} Sets', ['sup' => '<sup>®</sup>']) ?></a>
+                            <a class="bricks-nav-link nav-link" href="<?= Url::to(['/lego']) ?>">
+                                <?= T::tr('LEGO{sup} Sets', ['sup' => '<sup>®</sup>']) ?>
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <a class="bricks-nav-link nav-link" href="<?= Url::to(['/lego/new']) ?>"><i class="bi bi-stars me-1"></i><?= Html::encode(T::tr('New Arrivals')) ?></a>
+                            <a class="bricks-nav-link nav-link" href="<?= Url::to(['/lego/on-sale']) ?>">
+                                <i class="bi bi-tags me-1"></i><?= Html::encode(T::tr('On Sale')) ?>
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <a class="bricks-nav-link nav-link" href="<?= Url::to(['/lego/on-sale']) ?>"><i class="bi bi-tags me-1"></i><?= Html::encode(T::tr('On Sale')) ?></a>
-                        </li>
-                        <li class="nav-item ms-md-2">
                             <a class="bricks-nav-link nav-link bricks-wizard-nav-btn" href="#" data-bs-toggle="modal" data-bs-target="#wizardModal">
                                 <i class="bi bi-magic me-1"></i><?= Html::encode(T::tr('Find a Set')) ?>
                             </a>

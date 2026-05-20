@@ -59,6 +59,7 @@ class LegoController extends Controller
             'searchModel'  => $searchModel,
             'dataProvider' => $dataProvider,
             'wizardData'   => $wizardData,
+            'grouped'      => $searchModel->isMonthGroupedMode(),
         ]);
     }
 
@@ -87,18 +88,19 @@ class LegoController extends Controller
             'tag'          => $tag,
             'searchModel'  => $searchModel,
             'dataProvider' => $dataProvider,
+            'grouped'      => $searchModel->isMonthGroupedMode(),
         ]);
     }
 
-    public function actionNew(): string
+    public function actionNew(): \yii\web\Response
     {
-        $searchModel = new SetSearch();
-        $dataProvider = $searchModel->searchNew($this->request->queryParams);
+        $params = $this->request->queryParams;
+        if (isset($params['new_page'])) {
+            $params['page'] = $params['new_page'];
+            unset($params['new_page']);
+        }
 
-        return $this->render('new', [
-            'searchModel'  => $searchModel,
-            'dataProvider' => $dataProvider,
-        ]);
+        return $this->redirect(array_merge(['/lego'], $params), 301);
     }
 
     public function actionView(string $slug): string

@@ -4,6 +4,7 @@ use common\components\Html;
 use common\models\Tag;
 use common\schema\factory\ItemListSchemaFactory;
 use common\schema\JsonLdRenderer;
+use frontend\components\Helper;
 use frontend\components\SeoHelper;
 use frontend\components\T;
 use frontend\models\searches\SetSearch;
@@ -15,6 +16,7 @@ use yii\web\View;
  * @var $tag          Tag
  * @var $searchModel  SetSearch
  * @var $dataProvider ActiveDataProvider
+ * @var $grouped      bool
  */
 
 $page = SeoHelper::resolvePageNumber();
@@ -26,7 +28,7 @@ $this->params['robots'] = 'index,follow';
 
 SeoHelper::registerPaginationLinks($this, $dataProvider, $page, ['/lego/lego/tag', 'slug' => $tag->slug]);
 
-$this->params['breadcrumbs'][] = ['label' => T::tr('LEGO Sets'), 'url' => ['/lego']];
+$this->params['breadcrumbs'][] = ['label' => Helper::getLegoName(), 'url' => ['/lego']];
 $this->params['breadcrumbs'][] = Html::encode($tag->name);
 
 ?>
@@ -43,4 +45,4 @@ $this->params['breadcrumbs'][] = Html::encode($tag->name);
     <?= $this->render('_search', ['model' => $searchModel]) ?>
 </div>
 
-<?= $this->render('_list', ['dataProvider' => $dataProvider]) ?>
+<?= $this->render('_list', ['dataProvider' => $dataProvider, 'grouped' => $grouped]) ?>

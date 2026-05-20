@@ -168,18 +168,6 @@ final class SeoHelper
         return self::appendPageSuffix(T::tr('LEGO Sets Catalog and Price Comparison'), $page);
     }
 
-    public static function buildNewArrivalsTitle(int $page = 1): string
-    {
-        return self::appendPageSuffix(T::tr('New LEGO Sets'), $page);
-    }
-
-    public static function buildNewArrivalsDescription(int $page = 1): string
-    {
-        $description = T::tr('Browse the newest LEGO sets added to the catalog, sorted by date. Discover recent releases and find the latest sets with prices and details.');
-
-        return self::truncate(self::appendPageDescriptionSuffix($description, $page));
-    }
-
     public static function buildPromoTitle(int $page = 1): string
     {
         return self::appendPageSuffix(T::tr('LEGO Sets On Sale'), $page);

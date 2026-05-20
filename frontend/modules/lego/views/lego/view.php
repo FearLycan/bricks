@@ -22,7 +22,7 @@ use yii\web\View;
  * @var $reviewList  SetReview[]
  * @var $userReview  SetReview|null
  */
-
+dump($model);
 $reviewChoiceUrl = Url::to(['/review/default/choice-modal', 'setId' => (int)$model->id]);
 $reviewAverage = $reviewStats['average'] ?? null;
 $reviewCount = (int)($reviewStats['review_count'] ?? 0);
@@ -209,7 +209,7 @@ $queueOfferImportModalUrl = Url::to(['/management/queue-offer-import-modal', 'se
                                 <?= Html::a(
                                         Html::encode(date('d.m.Y', strtotime($model->launch_date))),
                                         Url::to([
-                                                '/lego/new',
+                                                '/lego',
                                                 'year'  => (int)date('Y', strtotime($model->launch_date)),
                                                 'month' => (int)date('n', strtotime($model->launch_date)),
                                         ]),

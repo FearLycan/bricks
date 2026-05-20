@@ -58,7 +58,9 @@ class SetSearch extends Set
     public function search(array $params): ActiveDataProvider
     {
         $query = Set::find()
-            ->andFilterCompare('{{%set}}.status', StatusEnum::ACTIVE->value);
+            ->andFilterCompare('{{%set}}.status', StatusEnum::ACTIVE->value)
+            //->andWhere(['not', ['{{%set}}.launch_date' => null]])
+        ;
 
         $this->joinActiveTheme($query);
 
@@ -89,6 +91,10 @@ class SetSearch extends Set
             'year' => $this->year,
         ]);
 
+        if ($this->month) {
+            $query->andWhere(new Expression('MONTH({{%set}}.launch_date) = :month', [':month' => (int)$this->month]));
+        }
+
         if ($this->age_min) {
             $query->andWhere(['>=', '{{%set}}.age', (int)$this->age_min]);
         }
@@ -115,39 +121,6 @@ class SetSearch extends Set
         $this->applyHideOwnedFilter($query);
 
         return $this->buildQuery($query);
-    }
-
-    public function searchNew(array $params = []): ActiveDataProvider
-    {
-        $query = Set::find()
-            ->alias('s')
-            ->andWhere(['s.status' => StatusEnum::ACTIVE->value])
-            ->andWhere(['not', ['s.launch_date' => null]])
-            ->orderBy('s.launch_date DESC, s.id DESC');
-
-        $this->joinActiveTheme($query, 's');
-
-        $this->load($params);
-
-        $this->applyNameFilter($query, 's');
-
-        if ($this->year) {
-            $query->andWhere(new Expression('YEAR(s.launch_date) = :year', [':year' => (int)$this->year]));
-        }
-
-        if ($this->month) {
-            $query->andWhere(new Expression('MONTH(s.launch_date) = :month', [':month' => (int)$this->month]));
-        }
-
-        $this->applyHideOwnedFilter($query, 's');
-
-        return new ActiveDataProvider([
-            'query'      => $query,
-            'pagination' => [
-                'pageSize'  => 48,
-                'pageParam' => 'new_page',
-            ],
-        ]);
     }
 
     public static function getMonthOptions(): array
@@ -229,7 +202,7 @@ class SetSearch extends Set
             'query'      => $query,
             //'sort'  => ['defaultOrder' => ['year' => SORT_DESC, 'id' => SORT_ASC]], //moved to getSortOptions()
             'pagination' => [
-                'pageSize' => 20,
+                'pageSize' => 48,
             ],
         ]);
     }
@@ -324,9 +297,14 @@ class SetSearch extends Set
                 break;
             default:
                 $query->orderBy(new Expression(
-                    'EXISTS (SELECT 1 FROM {{%set_offer}} so WHERE so.[[set_id]] = {{%set}}.[[id]]) DESC, COALESCE({{%set}}.[[launch_date]], MAKEDATE({{%set}}.[[year]], 365)) DESC, {{%set}}.[[id]] ASC'
+                    '{{%set}}.[[launch_date]] DESC, {{%set}}.[[id]] DESC'
                 ));
                 break;
         }
+    }
+
+    public function isMonthGroupedMode(): bool
+    {
+        return $this->sort_option === null || $this->sort_option === '';
     }
 }

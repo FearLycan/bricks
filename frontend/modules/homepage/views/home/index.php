@@ -66,7 +66,7 @@ $isGuest = Yii::$app->user->isGuest;
     <?= $this->render('_section-slider', [
             'title'       => T::tr('New arrivals'),
             'items'       => $newArrivals,
-            'seeAllUrl'   => ['/lego/new'],
+            'seeAllUrl'   => ['/lego'],
             'seeAllLabel' => T::tr('See all'),
     ]) ?>
 

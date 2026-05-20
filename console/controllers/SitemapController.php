@@ -70,7 +70,6 @@ class SitemapController extends Controller
 
         $staticEntries = [];
         $this->addEntry($staticEntries, $this->buildAbsoluteUrl($baseUrl, '/lego'), null, 'daily', '1.0');
-        $this->addEntry($staticEntries, $this->buildAbsoluteUrl($baseUrl, '/lego/new'), null, 'daily', '0.7');
         $this->addEntry($staticEntries, $this->buildAbsoluteUrl($baseUrl, '/lego/on-sale'), null, 'daily', '0.7');
         $this->appendCustomEntries($staticEntries, $baseUrl);
 

@@ -35,10 +35,11 @@ class HomepageContentService
     public function __construct()
     {
         $params = Yii::$app->params;
-        $this->cacheTtlCatalog = (int)($params['homepage.cache.catalog'] ?? 600);   // 10 min — new/top/coming/adults
-        $this->cacheTtlOnSale = (int)($params['homepage.cache.onSale'] ?? 300);   // 5  min — prices move faster
-        $this->cacheTtlBranding = (int)($params['homepage.cache.branding'] ?? 1800);  // 30 min — hero, themes, minifigs
-        $this->cacheTtlPersonal = (int)($params['homepage.cache.personal'] ?? 60);    // 60 s   — per-user personalization
+
+        $this->cacheTtlCatalog = (int)($params['homepage.cache.catalog'] ?? 600);
+        $this->cacheTtlOnSale = (int)($params['homepage.cache.onSale'] ?? 300);
+        $this->cacheTtlBranding = (int)($params['homepage.cache.branding'] ?? 1800);
+        $this->cacheTtlPersonal = (int)($params['homepage.cache.personal'] ?? 60);
     }
 
     /**
@@ -54,9 +55,7 @@ class HomepageContentService
             return $producer();
         }
 
-        $cache = Yii::$app->cache;
-
-        return $cache->getOrSet($key, $producer, $ttl);
+        return Yii::$app->cache->getOrSet($key, $producer, $ttl);
     }
 
     /**
@@ -115,7 +114,7 @@ class HomepageContentService
     private function buildNewTabTiles(array $themes): array
     {
         $tiles = [
-            $this->makeTile(T::tr('All new arrivals'), ['/lego/new'], 'gradient-blue'),
+            $this->makeTile(T::tr('All new arrivals'), ['/lego'], 'gradient-blue'),
             $this->makeTile(T::tr('On sale'), ['/lego/on-sale'], 'gradient-red'),
             $this->makeTile(T::tr('LEGO® for adults'), ['/lego', 'age_min' => 18], 'gradient-purple'),
             $this->makeTile(T::tr('Browse all sets'), ['/lego'], 'gradient-amber'),

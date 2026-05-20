@@ -16,6 +16,7 @@ use yii\web\View;
  * @var $dataProvider ActiveDataProvider
  * @var $searchModel  SetSearch
  * @var $wizardData   array|null
+ * @var $grouped      bool
  */
 
 $page = SeoHelper::resolvePageNumber();
@@ -75,4 +76,4 @@ if (!$hasActiveFilters) {
     <?= $this->render('_search', ['model' => $searchModel]) ?>
 </div>
 
-<?= $this->render('_list', ['dataProvider' => $dataProvider]) ?>
+<?= $this->render('_list', ['dataProvider' => $dataProvider, 'grouped' => $grouped]) ?>

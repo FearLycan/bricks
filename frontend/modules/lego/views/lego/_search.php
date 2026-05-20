@@ -25,7 +25,7 @@ use yii\widgets\ActiveForm;
         ]); ?>
 
         <div class="row">
-            <div class="col-12 col-md-4 mb-3 mb-lg-0">
+            <div class="col-12 col-md-3 mb-3 mb-lg-0">
                 <div class="row g-2">
                     <div class="col-10 col-lg-12">
                         <?= $form->field($model, 'name')->label(false) ?>
@@ -46,7 +46,7 @@ use yii\widgets\ActiveForm;
                         ->label(false) ?>
             </div>
 
-            <div class="col-md-3 mb-3 mb-lg-0">
+            <div class="col-md-2 mb-3 mb-lg-0">
                 <?= $form->field($model, 'sort_option')
                         ->dropDownList(SetSearch::getSortOptions(), [
                                 'prompt'           => T::tr('Sort by'),
@@ -55,12 +55,21 @@ use yii\widgets\ActiveForm;
                         ->label(false) ?>
             </div>
 
-            <div class="col-md-2 mb-3 mb-lg-0">
+            <div class="col-6 col-md-2 mb-3 mb-lg-0">
                 <?= $form->field($model, 'year')
                         ->dropDownList($model->year ? [(int)$model->year => $model->year] : [], [
                                 'prompt'           => T::tr('Any year'),
                                 'data-placeholder' => T::tr('Any year'),
                                 'data-ajax-url'    => Url::to(['/autocomplete/year']),
+                        ])
+                        ->label(false) ?>
+            </div>
+
+            <div class="col-6 col-md-2 mb-3 mb-lg-0">
+                <?= $form->field($model, 'month')
+                        ->dropDownList(SetSearch::getMonthOptions(), [
+                                'prompt'           => T::tr('Any month'),
+                                'data-placeholder' => T::tr('Any month'),
                         ])
                         ->label(false) ?>
             </div>
