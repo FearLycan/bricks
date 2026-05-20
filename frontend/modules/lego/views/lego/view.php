@@ -22,7 +22,7 @@ use yii\web\View;
  * @var $reviewList  SetReview[]
  * @var $userReview  SetReview|null
  */
-dump($model);
+
 $reviewChoiceUrl = Url::to(['/review/default/choice-modal', 'setId' => (int)$model->id]);
 $reviewAverage = $reviewStats['average'] ?? null;
 $reviewCount = (int)($reviewStats['review_count'] ?? 0);
