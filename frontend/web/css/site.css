@@ -572,22 +572,23 @@ a, button {
     margin-bottom: 0.9rem;
 }
 
-.lego-product-page .lego-tags-list.is-collapsed {
-    max-height: 6rem;
+/* Collapse height is set inline by JS (row-aware); CSS only clips + animates.
+   Without JS the list keeps its natural height and shows every tag. */
+.lego-product-page .lego-tags-list {
     overflow: hidden;
-    transition: max-height 0.48s ease;
+    transition: max-height 0.35s ease;
 }
 
-.lego-product-page .lego-tags-toggle-input:checked + .lego-tags-list {
-    max-height: 40rem;
-}
-
-.lego-product-page .lego-tags-toggle-input:checked ~ .lego-tags-toggle-label .label-more {
+.lego-product-page .lego-tags-toggle .label-less {
     display: none;
 }
 
-.lego-product-page .lego-tags-toggle-input:not(:checked) ~ .lego-tags-toggle-label .label-less {
+.lego-product-page .lego-tags.is-expanded .lego-tags-toggle .label-more {
     display: none;
+}
+
+.lego-product-page .lego-tags.is-expanded .lego-tags-toggle .label-less {
+    display: inline;
 }
 
 .lego-product-page .lego-details-card {

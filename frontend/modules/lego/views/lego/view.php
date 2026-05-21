@@ -233,11 +233,9 @@ $queueOfferImportModalUrl = Url::to(['/management/queue-offer-import-modal', 'se
                 </div>
 
                 <?php if ($model->tagModels): ?>
-                    <?php $tagToggleId = 'tags-toggle-' . $model->id; ?>
-                    <div class="mb-3">
+                    <div class="mb-3 lego-tags" data-lego-tags data-max-rows="2">
                         <h6 class="mb-2"><?= T::tr('Tags') ?></h6>
-                        <input type="checkbox" class="lego-tags-toggle-input d-none" id="<?= Html::encode($tagToggleId) ?>">
-                        <div class="d-flex flex-wrap gap-2 lego-tags-list is-collapsed">
+                        <div class="d-flex flex-wrap gap-2 lego-tags-list">
                             <?php foreach ($model->tagModels as $tagModel): ?>
                                 <a href="<?= Url::to(['/lego/lego/tag', 'slug' => $tagModel->slug]) ?>" class="badge rounded-pill text-bg-secondary border text-decoration-none">
                                     <?= Html::encode($tagModel->name) ?>
@@ -247,12 +245,10 @@ $queueOfferImportModalUrl = Url::to(['/management/queue-offer-import-modal', 'se
                                 </a>
                             <?php endforeach; ?>
                         </div>
-                        <?php if (count($model->tagModels) > 16): ?>
-                            <label for="<?= Html::encode($tagToggleId) ?>" class="btn btn-link btn-sm p-0 mt-2 text-decoration-none lego-tags-toggle-label">
-                                <span class="label-more"><?= T::tr('Show more') ?></span>
-                                <span class="label-less"><?= T::tr('Show less') ?></span>
-                            </label>
-                        <?php endif; ?>
+                        <button type="button" class="btn btn-link btn-sm p-0 mt-2 text-decoration-none lego-tags-toggle" hidden>
+                            <span class="label-more"><?= T::tr('Show more') ?></span>
+                            <span class="label-less"><?= T::tr('Show less') ?></span>
+                        </button>
                     </div>
                 <?php endif; ?>
 
@@ -832,6 +828,87 @@ $queueOfferImportModalUrl = Url::to(['/management/queue-offer-import-modal', 'se
             window.addEventListener('resize', refreshGalleryToggle);
             refreshGalleryToggle();
         }
+    })();
+
+    /* Tags list — collapse to N rows, reveal the toggle only on real overflow. */
+    (function () {
+        const DEFAULT_MAX_ROWS = 2;
+
+        function apply(root, animate) {
+            const list = root.querySelector('.lego-tags-list');
+            const toggle = root.querySelector('.lego-tags-toggle');
+            if (!list || !toggle) {
+                return;
+            }
+
+            const tags = Array.prototype.slice.call(list.children);
+            if (!tags.length) {
+                return;
+            }
+
+            const maxRows = parseInt(root.getAttribute('data-max-rows'), 10) || DEFAULT_MAX_ROWS;
+
+            // Measure with the height constraint lifted.
+            list.style.maxHeight = '';
+            const fullHeight = list.scrollHeight;
+            const listTop = list.getBoundingClientRect().top;
+
+            // A change in a tag's top edge marks the start of a new row.
+            let lastRowTop = null;
+            let rowCount = 0;
+            let collapsedHeight = 0;
+            tags.forEach((tag) => {
+                const rect = tag.getBoundingClientRect();
+                if (lastRowTop === null || rect.top - lastRowTop > 1) {
+                    rowCount += 1;
+                    lastRowTop = rect.top;
+                }
+                if (rowCount <= maxRows) {
+                    collapsedHeight = Math.max(collapsedHeight, rect.bottom - listTop);
+                }
+            });
+
+            const overflowing = rowCount > maxRows;
+            toggle.hidden = !overflowing;
+            if (!overflowing) {
+                root.classList.remove('is-expanded');
+                list.style.maxHeight = '';
+                return;
+            }
+
+            const target = root.classList.contains('is-expanded') ? fullHeight : collapsedHeight;
+            if (!animate) {
+                list.style.transition = 'none';
+            }
+            list.style.maxHeight = target + 'px';
+            if (!animate) {
+                void list.offsetHeight; // flush reflow so the next change animates
+                list.style.transition = '';
+            }
+        }
+
+        document.querySelectorAll('[data-lego-tags]').forEach((root) => {
+            const toggle = root.querySelector('.lego-tags-toggle');
+            if (toggle) {
+                toggle.addEventListener('click', () => {
+                    root.classList.toggle('is-expanded');
+                    apply(root, true);
+                });
+            }
+
+            apply(root, false);
+
+            let resizeTimer = null;
+            window.addEventListener('resize', () => {
+                window.clearTimeout(resizeTimer);
+                resizeTimer = window.setTimeout(() => apply(root, false), 150);
+            });
+
+            // Web font swaps change tag widths, so the row count must be rechecked.
+            if (document.fonts && document.fonts.ready) {
+                document.fonts.ready.then(() => apply(root, false));
+            }
+        });
     })();
 </script>
 <?php InlineScript::end(); ?>
