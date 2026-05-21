@@ -35,7 +35,7 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return $this->redirect(['/lego'], 301);
+        return $this->goHome();
     }
 
     /**
