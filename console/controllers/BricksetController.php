@@ -79,6 +79,9 @@ class BricksetController extends Controller
 
         $controller = new ThemeController(Yii::$app->controller->id, Yii::$app);
         $controller->actionRecountSets();
+
+        $controller = new TagController(Yii::$app->controller->id, Yii::$app);
+        $controller->actionRecountSets();
     }
 
     private function syncSets(array $sets): void

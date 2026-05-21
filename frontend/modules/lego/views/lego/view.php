@@ -36,7 +36,7 @@ $buildRatingStars = static function (?float $score): array {
     for ($i = 1; $i <= 5; $i++) {
         if ($value >= $i) {
             $classes[] = 'bi-star-fill';
-        } elseif ($value >= $i - 0.5) {
+        } else if ($value >= $i - 0.5) {
             $classes[] = 'bi-star-half';
         } else {
             $classes[] = 'bi-star';
@@ -148,12 +148,12 @@ $queueOfferImportModalUrl = Url::to(['/management/queue-offer-import-modal', 'se
                     </a>
                 <?php else: ?>
                     <?= Html::a(
-                        '<i class="bi bi-stars me-1 text-warning"></i>' . T::tr('Be the first to rate this set'),
-                        $reviewChoiceUrl,
-                        [
-                            'class'       => 'lego-rating-badge lego-rating-badge-empty js-load-modal',
-                            'data-target' => '#mainModal',
-                        ]
+                            '<i class="bi bi-stars me-1 text-warning"></i>' . T::tr('Be the first to rate this set'),
+                            $reviewChoiceUrl,
+                            [
+                                    'class'       => 'lego-rating-badge lego-rating-badge-empty js-load-modal',
+                                    'data-target' => '#mainModal',
+                            ]
                     ) ?>
                 <?php endif; ?>
 
@@ -239,7 +239,12 @@ $queueOfferImportModalUrl = Url::to(['/management/queue-offer-import-modal', 'se
                         <input type="checkbox" class="lego-tags-toggle-input d-none" id="<?= Html::encode($tagToggleId) ?>">
                         <div class="d-flex flex-wrap gap-2 lego-tags-list is-collapsed">
                             <?php foreach ($model->tagModels as $tagModel): ?>
-                                <a href="<?= Url::to(['/lego/lego/tag', 'slug' => $tagModel->slug]) ?>" class="badge rounded-pill text-bg-secondary border text-decoration-none"><?= Html::encode($tagModel->name) ?></a>
+                                <a href="<?= Url::to(['/lego/lego/tag', 'slug' => $tagModel->slug]) ?>" class="badge rounded-pill text-bg-secondary border text-decoration-none">
+                                    <?= Html::encode($tagModel->name) ?>
+                                    <?php if ($tagModel->sets_count): ?>
+                                        <span class="badge rounded-pill bg-light text-dark ms-1"><?= $tagModel->sets_count ?></span>
+                                    <?php endif; ?>
+                                </a>
                             <?php endforeach; ?>
                         </div>
                         <?php if (count($model->tagModels) > 16): ?>
@@ -477,11 +482,11 @@ $queueOfferImportModalUrl = Url::to(['/management/queue-offer-import-modal', 'se
                     </div>
                     <div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab" tabindex="0">
                         <?= $this->render('@frontend/modules/review/views/default/_stats', [
-                            'set'            => $model,
-                            'stats'          => $reviewStats,
-                            'reviews'        => $reviewList,
-                            'userReview'     => $userReview,
-                            'userMatchScore' => $userMatchScore ?? null,
+                                'set'            => $model,
+                                'stats'          => $reviewStats,
+                                'reviews'        => $reviewList,
+                                'userReview'     => $userReview,
+                                'userMatchScore' => $userMatchScore ?? null,
                         ]) ?>
                     </div>
                     <?php if ($model->setInstructions): ?>
@@ -623,7 +628,7 @@ $queueOfferImportModalUrl = Url::to(['/management/queue-offer-import-modal', 'se
                 const scrollToPane = () => {
                     const menuHeight = (document.getElementById('menu-navbar')?.offsetHeight || 0) + 8;
                     const top = targetPane.getBoundingClientRect().top + window.pageYOffset - menuHeight;
-                    window.scrollTo({ top: top, behavior: 'smooth' });
+                    window.scrollTo({top: top, behavior: 'smooth'});
                     if (history.replaceState) {
                         history.replaceState(null, '', targetSelector);
                     }
@@ -634,7 +639,7 @@ $queueOfferImportModalUrl = Url::to(['/management/queue-offer-import-modal', 'se
                     return;
                 }
 
-                trigger.addEventListener('shown.bs.tab', scrollToPane, { once: true });
+                trigger.addEventListener('shown.bs.tab', scrollToPane, {once: true});
                 bootstrap.Tab.getOrCreateInstance(trigger).show();
             });
         });

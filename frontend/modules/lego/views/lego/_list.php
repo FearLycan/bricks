@@ -37,6 +37,9 @@ $grouped = $grouped ?? false;
     $groups = [];
     foreach ($models as $model) {
         /** @var Set $model */
+        if (empty($model->launch_date)) {
+            continue;
+        }
         $groups[date('Y-m', strtotime($model->launch_date))][] = $model;
     }
     ?>

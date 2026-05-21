@@ -16,6 +16,7 @@ use yii\db\BaseActiveRecord;
  * @property string $name
  * @property string|null $slug
  * @property int $status
+ * @property int $sets_count
  * @property string $created_at
  * @property string|null $updated_at
  *
@@ -62,7 +63,7 @@ class Tag extends ActiveRecord
     {
         return [
             [['name'], 'required'],
-            [['status'], 'integer'],
+            [['status', 'sets_count'], 'integer'],
             [['created_at', 'updated_at'], 'safe'],
             [['name', 'slug'], 'string', 'max' => 255],
             [['name'], 'unique'],
@@ -79,6 +80,7 @@ class Tag extends ActiveRecord
             'name' => 'Name',
             'slug' => 'Slug',
             'status' => 'Status',
+            'sets_count' => 'Sets Count',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];

@@ -566,7 +566,7 @@ a, button {
 }
 
 .lego-product-page .lego-tags-list.is-collapsed {
-    max-height: 5.5rem;
+    max-height: 6rem;
     overflow: hidden;
     transition: max-height 0.48s ease;
 }
