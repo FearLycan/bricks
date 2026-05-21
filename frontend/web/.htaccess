@@ -1,8 +1,31 @@
 RewriteEngine on
 
+# Chrome Private Prefetch Proxy advice file — needs a specific Content-Type
+<Files "traffic-advice">
+    ForceType application/trafficadvice+json
+</Files>
+
 # if a directory or a file exists, use it directly
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 
 # otherwise forward it to index.php
 RewriteRule . index.php
+
+# Disable directory listing
+Options -Indexes
+
+# Block WordPress probing
+RedirectMatch 403 ^/wordpress(/.*)?$
+RedirectMatch 403 ^/wp-.*$
+RedirectMatch 403 ^/xmlrpc\.php$
+
+# Block sensitive files: VCS, IDE, config
+RedirectMatch 403 (?i)(^|/)\.(env|git|svn|hg|idea|vscode|ht)
+
+# Block backups, dumps, sources, logs
+RedirectMatch 403 (?i)\.(bak|backup|old|orig|save|swp|sql|tar|tgz|zip|log|ini|sh)$
+RedirectMatch 403 (?i)(composer|package)\.(json|lock)$
+
+# Block DB/admin tool probing
+RedirectMatch 403 (?i)^/(phpmyadmin|pma|myadmin|dbadmin|adminer|mysql|sqladmin)
