@@ -8,6 +8,7 @@ use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 use yii\db\BaseActiveRecord;
+use yii\helpers\Url;
 
 /**
  * This is the model class for table "{{%theme}}".
@@ -22,7 +23,8 @@ use yii\db\BaseActiveRecord;
  * @property int|null    $year_to
  * @property int         $status
  * @property string|null $description
- * @property string|null $img
+ * @property string|null $image
+ * @property string|null $hero_image
  * @property string|null $custom_css
  * @property string      $created_at
  * @property string|null $updated_at
@@ -74,7 +76,7 @@ class Theme extends ActiveRecord
             [['parent_id', 'group_id', 'sets_count', 'year_from', 'year_to', 'status'], 'integer'],
             [['created_at', 'updated_at'], 'safe'],
             [['description', 'custom_css'], 'string'],
-            [['name', 'img'], 'string', 'max' => 255],
+            [['name', 'image', 'hero_image'], 'string', 'max' => 255],
             [['group_id'], 'exist', 'skipOnError' => true, 'targetClass' => ThemeGroup::class, 'targetAttribute' => ['group_id' => 'id']],
             [['parent_id'], 'exist', 'skipOnError' => true, 'targetClass' => __CLASS__, 'targetAttribute' => ['parent_id' => 'id']],
         ];
@@ -96,7 +98,8 @@ class Theme extends ActiveRecord
             'year_to'    => 'Year To',
             'status' => 'Status',
             'description' => 'Description',
-            'img' => 'Img',
+            'image' => 'Image',
+            'hero_image' => 'Hero Image',
             'custom_css' => 'Custom Css',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
@@ -174,6 +177,30 @@ class Theme extends ActiveRecord
     public function getStatusLabel(string $defaultText = '-'): string
     {
         return StatusEnum::tryFrom((int)$this->status)?->label() ?? $defaultText;
+    }
+
+    /**
+     * URL of the square tile/card image, or null when not set.
+     */
+    public function getTileImageUrl(): ?string
+    {
+        $img = trim((string)$this->image);
+
+        return $img !== '' ? Url::to($img) : null;
+    }
+
+    /**
+     * URL of the wide hero/background image. Falls back to the tile image
+     * when no dedicated hero image is set, or null when neither exists.
+     */
+    public function getHeroImageUrl(): ?string
+    {
+        $hero = trim((string)$this->hero_image);
+        if ($hero !== '') {
+            return Url::to($hero);
+        }
+
+        return $this->getTileImageUrl();
     }
 
     public static function getAvailableGroupsList(): array

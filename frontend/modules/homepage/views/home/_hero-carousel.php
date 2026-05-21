@@ -38,10 +38,12 @@ $heroId = 'bricks-hero-' . uniqid();
                 <div class="swiper-slide bricks-hero-slide">
                     <a href="<?= Url::to("/lego/{$slide->slug}") ?>" class="bricks-hero-slide-link">
                         <div class="bricks-hero-slide-media">
-                            <img src="<?= Html::encode($imageUrl) ?>"
-                                 alt="<?= Html::encode((string)$slide->name) ?>"
-                                 loading="eager"
-                                 class="bricks-hero-slide-image">
+                            <div class="bricks-hero-slide-frame">
+                                <img src="<?= Html::encode($imageUrl) ?>"
+                                     alt="<?= Html::encode((string)$slide->name) ?>"
+                                     loading="eager"
+                                     class="bricks-hero-slide-image">
+                            </div>
                         </div>
                         <div class="bricks-hero-slide-content">
                             <?php if ($themeName !== ''): ?>

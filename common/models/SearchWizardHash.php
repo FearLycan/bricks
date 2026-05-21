@@ -45,6 +45,13 @@ class SearchWizardHash extends ActiveRecord
         'collector'   => ['min' => 18, 'max' => null],
     ];
 
+    /**
+     * set.age is a minimum recommended age ("X+"), not a target band. For
+     * non-adult profiles we only exclude the junior line below this floor
+     * instead of applying the profile's nominal minimum age.
+     */
+    private const SOFT_AGE_FLOOR = 6;
+
     private const YEAR_MAP = [
         'newest' => ['from' => 2024, 'to' => null],
         'recent' => ['from' => 2022, 'to' => null],
@@ -353,16 +360,34 @@ class SearchWizardHash extends ActiveRecord
             ]);
         }
 
-        if (!empty($filters['age_min'])) {
-            $profile = $answers['profile'] ?? null;
-            if (in_array($profile, ['adult', 'collector'], true)) {
+        $profile = $answers['profile'] ?? null;
+
+        if (in_array($profile, ['adult', 'collector'], true)) {
+            if (!empty($filters['age_min'])) {
                 $query->andWhere(['>=', '{{%set}}.age', (int)$filters['age_min']]);
-            } else {
-                $query->andWhere(['or', ['{{%set}}.age' => null], ['>=', '{{%set}}.age', (int)$filters['age_min']]]);
             }
-        }
-        if (!empty($filters['age_max'])) {
-            $query->andWhere(['or', ['{{%set}}.age' => null], ['<=', '{{%set}}.age', (int)$filters['age_max']]]);
+        } else {
+            // set.age is a minimum recommended age ("X+"), not a target band:
+            // a teenager can build an 8+ set. So we apply only a soft lower
+            // bound to exclude the junior line, plus the profile's upper
+            // bound. An age of 0 means "unknown" and is treated like NULL.
+            if (!empty($filters['age_min'])) {
+                $floor = min(self::SOFT_AGE_FLOOR, (int)$filters['age_min']);
+                $query->andWhere([
+                    'or',
+                    ['{{%set}}.age' => null],
+                    ['{{%set}}.age' => 0],
+                    ['>=', '{{%set}}.age', $floor],
+                ]);
+            }
+            if (!empty($filters['age_max'])) {
+                $query->andWhere([
+                    'or',
+                    ['{{%set}}.age' => null],
+                    ['{{%set}}.age' => 0],
+                    ['<=', '{{%set}}.age', (int)$filters['age_max']],
+                ]);
+            }
         }
 
         if (!empty($filters['year_from'])) {

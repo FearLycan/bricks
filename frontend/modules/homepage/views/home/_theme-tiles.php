@@ -30,14 +30,14 @@ $title = $title ?? T::tr('Shop by theme');
         </div>
         <div class="bricks-theme-grid">
             <?php foreach ($themes as $theme):
-                $img      = trim((string)$theme->img);
+                $img      = $theme->getTileImageUrl();
                 $name     = (string)$theme->name;
                 $setsText = $theme->sets_count !== null
                     ? T::tr('{n} sets', ['n' => (int)$theme->sets_count])
                     : null;
             ?>
                 <a href="<?= Url::to("/lego/theme/{$theme->slug}") ?>" class="bricks-theme-tile">
-                    <?php if ($img !== ''): ?>
+                    <?php if ($img !== null): ?>
                         <span class="bricks-theme-tile-media" style="background-image: url('<?= Html::encode($img) ?>');"></span>
                     <?php else: ?>
                         <span class="bricks-theme-tile-media bricks-theme-tile-media--fallback">

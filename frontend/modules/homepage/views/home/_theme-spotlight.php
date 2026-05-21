@@ -15,14 +15,14 @@ if (!$theme instanceof Theme) {
     return;
 }
 
-$img         = trim((string)$theme->img);
+$img         = $theme->getHeroImageUrl();
 $description = trim((string)$theme->description);
 $setsCount   = $theme->sets_count !== null ? (int)$theme->sets_count : null;
 $themeUrl    = Url::to("/lego/theme/{$theme->slug}");
 ?>
 
 <section class="bricks-spotlight"
-         <?php if ($img !== ''): ?>style="background-image: linear-gradient(120deg, rgba(15, 23, 42, 0.78) 0%, rgba(15, 23, 42, 0.35) 55%, rgba(15, 23, 42, 0.05) 100%), url('<?= Html::encode($img) ?>');"<?php endif; ?>>
+         <?php if ($img !== null): ?>style="background-image: linear-gradient(120deg, rgba(15, 23, 42, 0.78) 0%, rgba(15, 23, 42, 0.35) 55%, rgba(15, 23, 42, 0.05) 100%), url('<?= Html::encode($img) ?>');"<?php endif; ?>>
     <div class="container">
         <div class="bricks-spotlight-inner">
             <span class="bricks-spotlight-eyebrow"><?= Html::encode(T::tr('Theme spotlight')) ?></span>

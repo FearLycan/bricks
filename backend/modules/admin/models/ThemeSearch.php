@@ -12,7 +12,7 @@ class ThemeSearch extends Theme
     {
         return [
             [['id', 'parent_id', 'group_id', 'sets_count', 'year_from', 'year_to', 'status'], 'integer'],
-            [['name', 'slug', 'description', 'img', 'custom_css', 'created_at', 'updated_at'], 'safe'],
+            [['name', 'slug', 'description', 'image', 'hero_image', 'custom_css', 'created_at', 'updated_at'], 'safe'],
         ];
     }
 
@@ -45,7 +45,8 @@ class ThemeSearch extends Theme
         $query->andFilterWhere(['like', 'name', $this->name])
             ->andFilterWhere(['like', 'slug', $this->slug])
             ->andFilterWhere(['like', 'description', $this->description])
-            ->andFilterWhere(['like', 'img', $this->img])
+            ->andFilterWhere(['like', 'image', $this->image])
+            ->andFilterWhere(['like', 'hero_image', $this->hero_image])
             ->andFilterWhere(['like', 'custom_css', $this->custom_css]);
 
         return $this->buildQuery($query);

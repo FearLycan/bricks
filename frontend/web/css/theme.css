@@ -1,0 +1,113 @@
+/* ==========================================================================
+   Theme page hero banner
+   Full-width branding banner shown at the top of /lego/theme/<slug>.
+   Loaded only on theme pages (registered from views/theme/index.php).
+   ========================================================================== */
+
+.bricks-theme-hero {
+    position: relative;
+    margin-bottom: 1.5rem;
+    background: #0d2545 linear-gradient(135deg, #0d2545 0%, #1b3b6f 100%);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: #fff;
+    overflow: hidden;
+}
+
+/* Legibility overlay — stronger on the left where the text sits. */
+.bricks-theme-hero--image::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        90deg,
+        rgba(8, 18, 38, 0.94) 0%,
+        rgba(8, 18, 38, 0.78) 40%,
+        rgba(8, 18, 38, 0.35) 100%
+    );
+    pointer-events: none;
+}
+
+.bricks-theme-hero .container {
+    position: relative;
+    z-index: 1;
+}
+
+.bricks-theme-hero-inner {
+    max-width: 680px;
+    padding: 2.75rem 0 3rem;
+}
+
+/* Breadcrumb sits over the banner — recolour for the dark background. */
+.bricks-theme-hero-breadcrumb {
+    background: transparent;
+    padding: 0;
+    margin-bottom: 1rem;
+    font-size: 0.85rem;
+}
+
+.bricks-theme-hero-breadcrumb a {
+    color: rgba(255, 255, 255, 0.78);
+    text-decoration: none;
+}
+
+.bricks-theme-hero-breadcrumb a:hover {
+    color: #fff;
+}
+
+.bricks-theme-hero-breadcrumb .breadcrumb-item.active,
+.bricks-theme-hero-breadcrumb .breadcrumb-item + .breadcrumb-item::before {
+    color: rgba(255, 255, 255, 0.55);
+}
+
+.bricks-theme-hero-eyebrow {
+    display: inline-block;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 0.78rem;
+    color: #ffd400;
+    margin-bottom: 0.5rem;
+}
+
+.bricks-theme-hero-title {
+    font-size: clamp(1.9rem, 4.5vw, 3rem);
+    font-weight: 800;
+    line-height: 1.07;
+    margin-bottom: 0.85rem;
+}
+
+.bricks-theme-hero-lead {
+    font-size: 1.02rem;
+    line-height: 1.55;
+    color: rgba(255, 255, 255, 0.82);
+    margin-bottom: 1rem;
+    max-width: 60ch;
+}
+
+.bricks-theme-hero-meta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.35rem 0.85rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.14);
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+@media (max-width: 575.98px) {
+    .bricks-theme-hero-inner {
+        padding: 1.75rem 0 2rem;
+    }
+
+    /* On narrow screens the text stacks over the image — darken evenly. */
+    .bricks-theme-hero--image::after {
+        background: linear-gradient(
+            180deg,
+            rgba(8, 18, 38, 0.68) 0%,
+            rgba(8, 18, 38, 0.93) 100%
+        );
+    }
+}

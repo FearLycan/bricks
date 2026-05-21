@@ -1,6 +1,5 @@
 <?php
 
-use common\components\Html;
 use common\models\Theme;
 use common\schema\factory\ItemListSchemaFactory;
 use common\schema\JsonLdRenderer;
@@ -42,33 +41,35 @@ $this->params['breadcrumbs'][] = ['label' => Helper::getLegoName(), 'url' => ['/
 if ($subTheme) {
     $this->params['breadcrumbs'][] = ['label' => $theme->name, 'url' => ["/lego/theme/{$theme->slug}"]];
     $this->params['breadcrumbs'][] = SeoHelper::normalizeText($subTheme->name);
-    if ($subTheme->img) {
-        $this->params['socialImage'] = SeoHelper::buildAbsoluteUrl($subTheme->img);
+    if ($subTheme->image) {
+        $this->params['socialImage'] = SeoHelper::buildAbsoluteUrl($subTheme->image);
     }
 } else {
     $this->params['breadcrumbs'][] = SeoHelper::normalizeText($theme->name);
-    if ($theme->img) {
-        $this->params['socialImage'] = SeoHelper::buildAbsoluteUrl($theme->img);
+    if ($theme->image) {
+        $this->params['socialImage'] = SeoHelper::buildAbsoluteUrl($theme->image);
     }
 }
+
+// Full-width layout so the hero banner can span edge to edge; the catalog
+// below is wrapped in its own .container. See [[feedback-fullwidth-layout]].
+$this->params['fullWidth'] = true;
+$this->registerCssFile('@web/css/theme.css', ['depends' => [\frontend\assets\AppAsset::class]]);
 
 ?>
 
 <?= JsonLdRenderer::render([ItemListSchemaFactory::fromDataProvider($dataProvider)]) ?>
 
-<div class="col-lg-12 mt-4">
-    <h1 class="page-title">
-        <?= Html::encode($this->title) ?>
-    </h1>
-    <p class="text-body-secondary mb-3">
-        <?= Html::encode(SeoHelper::buildThemeIntro($theme, $subTheme)) ?>
-    </p>
+<?= $this->render('_hero-banner', [
+        'theme'    => $theme,
+        'subTheme' => $subTheme,
+        'intro'    => SeoHelper::buildThemeIntro($theme, $subTheme),
+]) ?>
+
+<div class="container">
+    <div class="mb-3">
+        <?= $this->render('/lego/_search', ['model' => $searchModel]) ?>
+    </div>
+
+    <?= $this->render('/lego/_list', ['dataProvider' => $dataProvider]) ?>
 </div>
-
-<div class="mb-3">
-    <?= $this->render('/lego/_search', ['model' => $searchModel]) ?>
-</div>
-
-<?= $this->render('/lego/_list', ['dataProvider' => $dataProvider]) ?>
-
-<?= $this->render('_presentation', ['model' => $subTheme ?? $theme]) ?>

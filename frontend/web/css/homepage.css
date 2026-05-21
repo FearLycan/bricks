@@ -209,17 +209,19 @@
 
 .bricks-hero-swiper {
     --swiper-theme-color: #ff8a00;
-    --swiper-pagination-color: #ffffff;
+    --swiper-pagination-color: #ffd400;
     --swiper-pagination-bullet-inactive-color: #ffffff;
-    --swiper-pagination-bullet-inactive-opacity: 0.5;
-    --swiper-navigation-color: #ffffff;
+    --swiper-pagination-bullet-inactive-opacity: 0.45;
+    --swiper-navigation-color: #fff7ed;
     --swiper-navigation-size: 28px;
     width: 100%;
     overflow: hidden;
 }
 
 .bricks-hero-slide {
-    background: linear-gradient(135deg, #1a1f3a 0%, #0d2545 100%);
+    background:
+        radial-gradient(120% 90% at 88% 6%, rgba(255, 138, 0, 0.18) 0%, transparent 55%),
+        linear-gradient(150deg, #2c2017 0%, #1d150d 48%, #14100a 100%);
     color: #fff;
     overflow: hidden;
 }
@@ -246,23 +248,38 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 2rem;
+    padding: 2.5rem 2rem;
     background:
-        radial-gradient(circle at 30% 30%, rgba(255, 138, 0, 0.35) 0%, transparent 55%),
-        radial-gradient(circle at 70% 70%, rgba(255, 212, 0, 0.25) 0%, transparent 60%);
+        radial-gradient(circle at 50% 44%, rgba(255, 150, 30, 0.34) 0%, transparent 60%);
     min-height: 280px;
+}
+
+.bricks-hero-slide-frame {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 460px;
+    padding: 1.75rem;
+    background: #ffffff;
+    border-radius: 20px;
+    box-shadow:
+        0 26px 50px rgba(0, 0, 0, 0.42),
+        0 2px 6px rgba(0, 0, 0, 0.25);
+    transition: transform 0.45s ease, box-shadow 0.45s ease;
 }
 
 .bricks-hero-slide-image {
     max-width: 100%;
-    max-height: 420px;
+    max-height: 340px;
     object-fit: contain;
-    filter: drop-shadow(0 18px 40px rgba(0, 0, 0, 0.45));
-    transition: transform 0.5s ease;
 }
 
-.bricks-hero-slide-link:hover .bricks-hero-slide-image {
-    transform: translateY(-4px) scale(1.02);
+.bricks-hero-slide-link:hover .bricks-hero-slide-frame {
+    transform: translateY(-6px);
+    box-shadow:
+        0 34px 60px rgba(0, 0, 0, 0.5),
+        0 2px 6px rgba(0, 0, 0, 0.25);
 }
 
 .bricks-hero-slide-content {
@@ -303,7 +320,7 @@
     align-items: center;
     gap: 0.4rem;
     font-size: 0.9rem;
-    color: rgba(255, 255, 255, 0.78);
+    color: rgba(255, 244, 230, 0.74);
     margin: 0;
 }
 
@@ -335,7 +352,7 @@
 }
 
 .bricks-hero-slide-price-was {
-    color: rgba(255, 255, 255, 0.55);
+    color: rgba(255, 244, 230, 0.55);
     text-decoration: line-through;
     font-size: 1rem;
 }
@@ -374,16 +391,17 @@
 .bricks-hero-swiper .swiper-button-next {
     width: 44px;
     height: 44px;
-    background: rgba(0, 0, 0, 0.35);
-    border: 0;
+    background: rgba(20, 14, 8, 0.5);
+    border: 1px solid rgba(255, 226, 183, 0.14);
     border-radius: 50%;
     backdrop-filter: blur(6px);
-    transition: background 0.2s ease, transform 0.2s ease;
+    transition: background 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
 }
 
 .bricks-hero-swiper .swiper-button-prev:hover,
 .bricks-hero-swiper .swiper-button-next:hover {
-    background: rgba(0, 0, 0, 0.55);
+    background: rgba(20, 14, 8, 0.72);
+    border-color: rgba(255, 212, 0, 0.55);
     transform: scale(1.05);
 }
 

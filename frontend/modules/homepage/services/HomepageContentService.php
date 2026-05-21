@@ -114,10 +114,10 @@ class HomepageContentService
     private function buildNewTabTiles(array $themes): array
     {
         $tiles = [
-            $this->makeTile(T::tr('All new arrivals'), ['/lego'], 'gradient-blue'),
-            $this->makeTile(T::tr('On sale'), ['/lego/on-sale'], 'gradient-red'),
-            $this->makeTile(T::tr('LEGO® for adults'), ['/lego', 'age_min' => 18], 'gradient-purple'),
-            $this->makeTile(T::tr('Browse all sets'), ['/lego'], 'gradient-amber'),
+            $this->makeTile(T::tr('All new arrivals'), ['/lego'], 'gradient-blue', 'images/browse/new-arrivals.jpg'),
+            $this->makeTile(T::tr('On sale'), ['/lego/on-sale'], 'gradient-red', 'images/browse/on-sale.jpg'),
+            $this->makeTile(T::tr('LEGO® for adults'), ['/lego', 'age_min' => 18], 'gradient-purple', 'images/browse/adults.jpg'),
+            $this->makeTile(T::tr('Browse all sets'), ['/lego'], 'gradient-amber', 'images/browse/all-sets.jpg'),
         ];
 
         foreach (array_slice($themes, 0, 4) as $theme) {
@@ -133,14 +133,14 @@ class HomepageContentService
     private function buildAudienceTabTiles(): array
     {
         return [
-            $this->makeTile(T::tr('For toddlers (1+)'), ['/lego', 'age_max' => 4], 'gradient-pink'),
-            $this->makeTile(T::tr('For kids (5–8)'), ['/lego', 'age_min' => 5, 'age_max' => 8], 'gradient-amber'),
-            $this->makeTile(T::tr('For tweens (9–12)'), ['/lego', 'age_min' => 9, 'age_max' => 12], 'gradient-green'),
-            $this->makeTile(T::tr('For teens (13+)'), ['/lego', 'age_min' => 13], 'gradient-blue'),
-            $this->makeTile(T::tr('For adults (18+)'), ['/lego', 'age_min' => 18], 'gradient-purple'),
-            $this->makeTile(T::tr('Small builds (≤200 pcs)'), ['/lego', 'pieces_max' => 200], 'gradient-teal'),
-            $this->makeTile(T::tr('Big builds (2000+ pcs)'), ['/lego', 'pieces_min' => 2000], 'gradient-red'),
-            $this->makeTile(T::tr('Browse all sets'), ['/lego'], 'gradient-slate'),
+            $this->makeTile(T::tr('For toddlers (1+)'), ['/lego', 'age_max' => 4], 'gradient-pink', 'images/browse/toddlers.jpg'),
+            $this->makeTile(T::tr('For kids (5–8)'), ['/lego', 'age_min' => 5, 'age_max' => 8], 'gradient-amber', 'images/browse/kids.jpg'),
+            $this->makeTile(T::tr('For tweens (9–12)'), ['/lego', 'age_min' => 9, 'age_max' => 12], 'gradient-green', 'images/browse/tweens.jpg'),
+            $this->makeTile(T::tr('For teens (13+)'), ['/lego', 'age_min' => 13], 'gradient-blue', 'images/browse/teens.jpg'),
+            $this->makeTile(T::tr('For adults (18+)'), ['/lego', 'age_min' => 18], 'gradient-purple', 'images/browse/adults.jpg'),
+            $this->makeTile(T::tr('Small builds (≤200 pcs)'), ['/lego', 'pieces_max' => 200], 'gradient-teal', 'images/browse/small-builds.jpg'),
+            $this->makeTile(T::tr('Big builds (2000+ pcs)'), ['/lego', 'pieces_min' => 2000], 'gradient-red', 'images/browse/big-builds.jpg'),
+            $this->makeTile(T::tr('Browse all sets'), ['/lego'], 'gradient-slate', 'images/browse/all-sets.jpg'),
         ];
     }
 
@@ -159,7 +159,7 @@ class HomepageContentService
     private function themeToTile(Theme $theme): array
     {
         $name = (string)$theme->name;
-        $image = trim((string)$theme->img);
+        $image = trim((string)$theme->image);
 
         return [
             'label'  => $name,
@@ -171,22 +171,50 @@ class HomepageContentService
 
     /**
      * @param array|string $route
+     * @param string|null  $image Tile image: an absolute URL or a path relative
+     *                            to the web root (e.g. 'images/browse/teens.jpg').
+     *                            Falls back to a generated placeholder when null
+     *                            or when a local file is missing.
      * @return array{label: string, url: string, image: string, accent: ?string}
      */
-    private function makeTile(string $label, $route, ?string $accent = null): array
+    private function makeTile(string $label, $route, ?string $accent = null, ?string $image = null): array
     {
         return [
             'label'  => $label,
             'url'    => Url::to($route),
-            'image'  => $this->placeholderImage($label),
+            'image'  => $this->resolveImage($image, $label),
             'accent' => $accent,
         ];
+    }
+
+    /**
+     * Resolves a tile image link. A null value, or a relative path pointing to a
+     * file that does not exist on disk, falls back to a generated placeholder so
+     * the homepage never renders a broken image.
+     */
+    private function resolveImage(?string $image, string $label): string
+    {
+        $image = $image !== null ? trim($image) : '';
+        if ($image === '') {
+            return $this->placeholderImage($label);
+        }
+
+        if (preg_match('#^(https?:)?//#', $image)) {
+            return $image;
+        }
+
+        $relative = ltrim($image, '/');
+        if (!is_file(Yii::getAlias('@webroot') . '/' . $relative)) {
+            return $this->placeholderImage($label);
+        }
+
+        return Yii::getAlias('@web') . '/' . $relative;
     }
 
     private function placeholderImage(string $label): string
     {
         $clean = preg_replace('/[^\p{L}\p{N}\s+]/u', ' ', $label);
-        $clean = trim((string)preg_replace('/\s+/', '+', (string)$clean));
+        $clean = trim((string)preg_replace('/\s+/', ' ', (string)$clean));
         if ($clean === '') {
             $clean = 'LEGO';
         }

@@ -40,7 +40,12 @@ use yii\widgets\ActiveForm;
             <?= $form->field($model, 'status')->dropDownList(StatusEnum::options(), ['prompt' => 'Select status']) ?>
         </div>
         <div class="col-md-6">
-            <?= $form->field($model, 'img')->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'image')->textInput(['maxlength' => true])
+                ->hint('URL of the square tile/card image shown in theme grids') ?>
+        </div>
+        <div class="col-md-6">
+            <?= $form->field($model, 'hero_image')->textInput(['maxlength' => true])
+                ->hint('URL of the wide hero/background image (spotlight & theme page)') ?>
         </div>
         <div class="col-12">
             <?= $form->field($model, 'description')->textarea(['rows' => 4]) ?>

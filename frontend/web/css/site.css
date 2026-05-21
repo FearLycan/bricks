@@ -18,6 +18,13 @@ main > .container, main > .container-fluid {
     padding-top: 110px;
 }
 
+/* On full-width pages <main> already offsets the fixed header (rule above),
+   so a direct-child .container must not add the 110px offset a second time. */
+.bricks-main--full-width > .container,
+.bricks-main--full-width > .container-fluid {
+    padding-top: 0;
+}
+
 .footer {
     background-color: #f5f5f5;
     font-size: .9em;

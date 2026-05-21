@@ -189,8 +189,6 @@ if ($socialImage !== '') {
     <?php $isFullWidth = !empty($this->params['fullWidth']); ?>
     <main role="main" class="flex-shrink-0<?= $isFullWidth ? ' bricks-main--full-width' : '' ?>">
 
-        <div id="presentation"></div>
-
         <?php if ($isFullWidth): ?>
             <?= Alert::widget() ?>
             <?= $content ?>
