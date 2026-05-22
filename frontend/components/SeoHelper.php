@@ -60,9 +60,22 @@ final class SeoHelper
     public static function buildHreflangUrls(array|string|null $urlParts = null): array
     {
         $result = [];
+
+        // When building from the current request, drop pagination params that
+        // equal 1 so the hreflang URLs stay consistent with the canonical URL
+        // (page 1 is always the bare URL, never `?page=1`).
+        $currentParams = [];
+        if ($urlParts === null) {
+            foreach (['page', 'promo_page'] as $pageParam) {
+                if ((int)Yii::$app->request->get($pageParam) === 1) {
+                    $currentParams[$pageParam] = null;
+                }
+            }
+        }
+
         foreach (self::SUPPORTED_LANGUAGES as $lang) {
             if ($urlParts === null) {
-                $result[$lang] = Url::current(['language' => $lang], true);
+                $result[$lang] = Url::current(['language' => $lang] + $currentParams, true);
             } else {
                 $parts = is_array($urlParts) ? $urlParts : [$urlParts];
                 $parts['language'] = $lang;
