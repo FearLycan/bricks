@@ -203,14 +203,6 @@ $this->registerCss('
                     <p class="contact-info-label"><?= Html::encode(T::tr('Contact info')) ?></p>
 
                     <div class="contact-info-item">
-                        <div class="contact-info-icon"><i class="bi bi-envelope"></i></div>
-                        <div class="contact-info-text">
-                            <strong><?= Html::encode(T::tr('Email')) ?></strong>
-                            <span><?= Html::encode(Yii::$app->params['supportEmail']) ?></span>
-                        </div>
-                    </div>
-
-                    <div class="contact-info-item">
                         <div class="contact-info-icon"><i class="bi bi-clock"></i></div>
                         <div class="contact-info-text">
                             <strong><?= Html::encode(T::tr('Response time')) ?></strong>
