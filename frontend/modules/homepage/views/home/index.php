@@ -33,6 +33,10 @@ $isGuest = Yii::$app->user->isGuest;
 
 <div class="bricks-homepage">
 
+    <h1 class="visually-hidden">
+        <?= T::tr('Track LEGO{sup} prices and never miss a deal', ['sup' => '<sup>®</sup>']) ?>
+    </h1>
+
     <?php if (!empty($heroSlides)): ?>
         <?= $this->render('_hero-carousel', ['slides' => $heroSlides]) ?>
     <?php else: ?>

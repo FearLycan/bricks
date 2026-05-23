@@ -15,7 +15,7 @@ final class OrganizationSchemaFactory
         $schema = [
             '@type' => 'Organization',
             '@id'   => '#organization',
-            'name'  => $name !== '' ? $name : 'LEGO Catalog',
+            'name'  => $name !== '' ? $name : 'BrickAtlas',
         ];
 
         if ($url !== '') {

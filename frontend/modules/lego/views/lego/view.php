@@ -55,7 +55,7 @@ $ratingStarClasses = $buildRatingStars($reviewAverage !== null ? (float)$reviewA
 
 $this->title = SeoHelper::buildSetTitle($model);
 $this->params['metaDescription'] = SeoHelper::buildSetDescription($model);
-$this->params['canonicalUrl'] = SeoHelper::buildAbsoluteUrl(['/lego/lego/view', 'slug' => $model->slug]);
+$this->params['canonicalUrl'] = SeoHelper::buildAbsoluteUrl("/lego/{$model->slug}");
 $this->params['robots'] = 'index,follow';
 $this->params['ogType'] = 'product';
 $this->params['socialImage'] = SeoHelper::buildAbsoluteUrl($model->getDisplayMainImageUrl());

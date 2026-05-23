@@ -10,7 +10,9 @@ use common\models\Tag;
 use common\models\Theme;
 use DateTimeImmutable;
 use DateTimeInterface;
+use Generator;
 use RuntimeException;
+use XMLWriter;
 use yii\console\Controller;
 use yii\console\ExitCode;
 
@@ -26,16 +28,18 @@ class SitemapController extends Controller
     private const LANGUAGES = ['en', 'pl', 'de', 'fr', 'es', 'it', 'ja', 'zh'];
     private const DEFAULT_LANGUAGE = 'en';
 
+    /**
+     * Google rejects sitemaps over 50,000 URLs or 50 MB uncompressed. Set
+     * slugs are long (~1.2 KB per URL with 9 hreflang alternates) so 40k
+     * lands at ~46 MB uncompressed — under both limits with margin to spare.
+     */
+    private const MAX_URLS_PER_CHUNK = 40000;
+
     private const CUSTOM_LINKS = [
         /*[
             'path' => '/contact',
             'changefreq' => 'monthly',
             'priority' => '0.5',
-        ],
-        [
-            'path' => '/terms',
-            'changefreq' => 'yearly',
-            'priority' => '0.3',
         ],*/
     ];
 
@@ -68,125 +72,119 @@ class SitemapController extends Controller
             return ExitCode::USAGE;
         }
 
-        $staticEntries = [];
-        $this->addEntry($staticEntries, $this->buildAbsoluteUrl($baseUrl, '/lego'), null, 'daily', '1.0');
-        $this->addEntry($staticEntries, $this->buildAbsoluteUrl($baseUrl, '/lego/on-sale'), null, 'daily', '0.7');
-        $this->addEntry($staticEntries, $this->buildAbsoluteUrl($baseUrl, '/lego/magazines'), null, 'weekly', '0.6');
-        $this->addEntry($staticEntries, $this->buildAbsoluteUrl($baseUrl, '/lego/exclusive'), null, 'weekly', '0.7');
-        $this->addEntry($staticEntries, $this->buildAbsoluteUrl($baseUrl, '/lego/retiring-soon'), null, 'daily', '0.7');
-        $this->addEntry($staticEntries, $this->buildAbsoluteUrl($baseUrl, '/glossary'), null, 'monthly', '0.5');
-        $this->addEntry($staticEntries, $this->buildAbsoluteUrl($baseUrl, '/interests'), null, 'weekly', '0.7');
-        $this->addEntry($staticEntries, $this->buildAbsoluteUrl($baseUrl, '/faq'), null, 'monthly', '0.5');
-        $this->appendCustomEntries($staticEntries, $baseUrl);
-
-        $themeEntries = [];
-        $this->appendThemeEntries($themeEntries, $baseUrl);
-
-        $setEntries = [];
-        $this->appendSetEntries($setEntries, $baseUrl);
-
-        $minifigEntries = [];
-        $this->appendMinifigEntries($minifigEntries, $baseUrl);
-
-        $tagEntries = [];
-        $this->appendTagEntries($tagEntries, $baseUrl);
-
-        $sitemapFiles = [
-            'sitemap-static.xml'   => $staticEntries,
-            'sitemap-themes.xml'   => $themeEntries,
-            'sitemap-sets.xml'     => $setEntries,
-            'sitemap-minifigs.xml' => $minifigEntries,
-            'sitemap-tags.xml'     => $tagEntries,
-        ];
+        $this->cleanupOldSitemaps();
 
         $indexEntries = [];
         $totalUrls = 0;
-        foreach ($sitemapFiles as $fileName => $entries) {
-            if ($entries === []) {
-                continue;
-            }
 
-            usort($entries, static fn(array $a, array $b): int => strcmp($a['loc'], $b['loc']));
-            $xml = $this->buildUrlSetXml($entries);
-            $absolutePath = $this->buildOutputFilePath($fileName);
-            $this->writeFile($xml, $absolutePath);
-            $indexEntries[] = [
-                'loc'     => $this->buildSitemapFileUrl($absolutePath, $baseUrl),
-                'lastmod' => (new DateTimeImmutable())->format(DateTimeInterface::ATOM),
-            ];
-            $totalUrls += count($entries);
-        }
+        $totalUrls += $this->writeChunkedSitemap('sitemap-static', $this->iterateStaticEntries($baseUrl), $indexEntries, $baseUrl);
+        $totalUrls += $this->writeChunkedSitemap('sitemap-themes', $this->iterateThemeEntries($baseUrl), $indexEntries, $baseUrl);
+        $totalUrls += $this->writeChunkedSitemap('sitemap-sets', $this->iterateSetEntries($baseUrl), $indexEntries, $baseUrl);
+        $totalUrls += $this->writeChunkedSitemap('sitemap-minifigs', $this->iterateMinifigEntries($baseUrl), $indexEntries, $baseUrl);
+        $totalUrls += $this->writeChunkedSitemap('sitemap-tags', $this->iterateTagEntries($baseUrl), $indexEntries, $baseUrl);
 
-        $indexXml = $this->buildSitemapIndexXml($indexEntries);
-        $this->writeFile($indexXml, \Yii::getAlias($this->outputPath));
+        $this->writeIndexSitemap($indexEntries);
 
         $this->stdout('Generated sitemap index with ' . count($indexEntries) . " files and {$totalUrls} URLs in {$this->outputPath}\n");
 
         return ExitCode::OK;
     }
 
-    private function appendThemeEntries(array &$entries, string $baseUrl): void
+    // ─── Entry source generators ────────────────────────────────────────────────
+    //
+    // Each generator yields one logical URL at a time. The chunked writer
+    // expands a logical URL into 8 per-language `<url>` elements, so a
+    // generator yielding N items produces N * 8 URLs in the sitemap.
+
+    /**
+     * @return Generator<int, array{loc:string,lastmod:?string,changefreq:string,priority:string}>
+     */
+    private function iterateStaticEntries(string $baseUrl): Generator
     {
-        $activeMainThemes = Theme::find()
+        $static = [
+            ['/lego',                 'daily',   '1.0'],
+            ['/lego/on-sale',         'daily',   '0.7'],
+            ['/lego/magazines',       'weekly',  '0.6'],
+            ['/lego/exclusive',       'weekly',  '0.7'],
+            ['/lego/retiring-soon',   'daily',   '0.7'],
+            ['/glossary',             'monthly', '0.5'],
+            ['/interests',            'weekly',  '0.7'],
+            ['/faq',                  'monthly', '0.5'],
+        ];
+
+        foreach ($static as [$path, $changefreq, $priority]) {
+            yield [
+                'loc'        => $this->buildAbsoluteUrl($baseUrl, $path),
+                'lastmod'    => null,
+                'changefreq' => $changefreq,
+                'priority'   => $priority,
+            ];
+        }
+
+        foreach (self::CUSTOM_LINKS as $link) {
+            $path = (string)($link['path'] ?? '');
+            if ($path === '') {
+                continue;
+            }
+
+            yield [
+                'loc'        => $this->buildAbsoluteUrl($baseUrl, $path),
+                'lastmod'    => null,
+                'changefreq' => (string)($link['changefreq'] ?? 'monthly'),
+                'priority'   => (string)($link['priority'] ?? '0.5'),
+            ];
+        }
+    }
+
+    private function iterateThemeEntries(string $baseUrl): Generator
+    {
+        $mainThemesQuery = Theme::find()
             ->select(['id', 'slug', 'updated_at', 'created_at'])
-            ->where([
-                'status'    => StatusEnum::ACTIVE->value,
-                'parent_id' => null,
-            ])
+            ->where(['status' => StatusEnum::ACTIVE->value, 'parent_id' => null])
             ->andWhere(['not', ['slug' => null]])
             ->andWhere(['<>', 'slug', ''])
-            ->asArray()
-            ->all();
+            ->asArray();
 
         $mainThemeById = [];
-        foreach ($activeMainThemes as $theme) {
-            $themeId = (int)$theme['id'];
-            $slug = (string)$theme['slug'];
-            $mainThemeById[$themeId] = $slug;
+        foreach ($mainThemesQuery->each() as $theme) {
+            $mainThemeById[(int)$theme['id']] = (string)$theme['slug'];
 
-            $this->addEntry(
-                $entries,
-                $this->buildAbsoluteUrl($baseUrl, '/lego/theme/' . rawurlencode($slug)),
-                $this->resolveLastModified($theme['updated_at'] ?? null, $theme['created_at'] ?? null),
-                'weekly',
-                '0.8'
-            );
+            yield [
+                'loc'        => $this->buildAbsoluteUrl($baseUrl, '/lego/theme/' . rawurlencode((string)$theme['slug'])),
+                'lastmod'    => $this->resolveLastModified($theme['updated_at'] ?? null, $theme['created_at'] ?? null),
+                'changefreq' => 'weekly',
+                'priority'   => '0.8',
+            ];
         }
 
         if ($mainThemeById === []) {
             return;
         }
 
-        $activeSubThemes = Theme::find()
+        $subThemesQuery = Theme::find()
             ->select(['id', 'slug', 'parent_id', 'updated_at', 'created_at'])
-            ->where([
-                'status' => StatusEnum::ACTIVE->value,
-            ])
+            ->where(['status' => StatusEnum::ACTIVE->value])
             ->andWhere(['in', 'parent_id', array_keys($mainThemeById)])
             ->andWhere(['not', ['slug' => null]])
             ->andWhere(['<>', 'slug', ''])
-            ->asArray()
-            ->all();
+            ->asArray();
 
-        foreach ($activeSubThemes as $subTheme) {
-            $parentId = (int)$subTheme['parent_id'];
-            $parentSlug = $mainThemeById[$parentId] ?? null;
+        foreach ($subThemesQuery->each() as $subTheme) {
+            $parentSlug = $mainThemeById[(int)$subTheme['parent_id']] ?? null;
             if ($parentSlug === null) {
                 continue;
             }
 
-            $slug = (string)$subTheme['slug'];
-            $this->addEntry(
-                $entries,
-                $this->buildAbsoluteUrl($baseUrl, '/lego/theme/' . rawurlencode($parentSlug) . '/' . rawurlencode($slug)),
-                $this->resolveLastModified($subTheme['updated_at'] ?? null, $subTheme['created_at'] ?? null),
-                'weekly',
-                '0.7'
-            );
+            yield [
+                'loc'        => $this->buildAbsoluteUrl($baseUrl, '/lego/theme/' . rawurlencode($parentSlug) . '/' . rawurlencode((string)$subTheme['slug'])),
+                'lastmod'    => $this->resolveLastModified($subTheme['updated_at'] ?? null, $subTheme['created_at'] ?? null),
+                'changefreq' => 'weekly',
+                'priority'   => '0.7',
+            ];
         }
     }
 
-    private function appendSetEntries(array &$entries, string $baseUrl): void
+    private function iterateSetEntries(string $baseUrl): Generator
     {
         $query = Set::find()
             ->select(['slug', 'updated_at', 'created_at'])
@@ -197,21 +195,19 @@ class SitemapController extends Controller
 
         foreach ($query->batch(1000) as $rows) {
             foreach ($rows as $row) {
-                $slug = (string)$row['slug'];
-                $this->addEntry(
-                    $entries,
-                    $this->buildAbsoluteUrl($baseUrl, '/lego/' . rawurlencode($slug)),
-                    $this->resolveLastModified($row['updated_at'] ?? null, $row['created_at'] ?? null),
-                    'weekly',
-                    '0.9'
-                );
+                yield [
+                    'loc'        => $this->buildAbsoluteUrl($baseUrl, '/lego/' . rawurlencode((string)$row['slug'])),
+                    'lastmod'    => $this->resolveLastModified($row['updated_at'] ?? null, $row['created_at'] ?? null),
+                    'changefreq' => 'weekly',
+                    'priority'   => '0.9',
+                ];
             }
         }
     }
 
-    private function appendMinifigEntries(array &$entries, string $baseUrl): void
+    private function iterateMinifigEntries(string $baseUrl): Generator
     {
-        $rows = SetMinifig::find()
+        $query = SetMinifig::find()
             ->alias('sm')
             ->select(['sm.number', 'max(sm.updated_at) AS updated_at', 'max(sm.created_at) AS created_at'])
             ->innerJoin(Set::tableName() . ' s', 's.id = sm.set_id')
@@ -219,24 +215,21 @@ class SitemapController extends Controller
             ->andWhere(['not', ['sm.number' => null]])
             ->andWhere(['<>', 'sm.number', ''])
             ->groupBy(['sm.number'])
-            ->asArray()
-            ->all();
+            ->asArray();
 
-        foreach ($rows as $row) {
-            $number = (string)$row['number'];
-            $this->addEntry(
-                $entries,
-                $this->buildAbsoluteUrl($baseUrl, '/lego/minifig/' . rawurlencode($number)),
-                $this->resolveLastModified($row['updated_at'] ?? null, $row['created_at'] ?? null),
-                'weekly',
-                '0.6'
-            );
+        foreach ($query->each() as $row) {
+            yield [
+                'loc'        => $this->buildAbsoluteUrl($baseUrl, '/lego/minifig/' . rawurlencode((string)$row['number'])),
+                'lastmod'    => $this->resolveLastModified($row['updated_at'] ?? null, $row['created_at'] ?? null),
+                'changefreq' => 'weekly',
+                'priority'   => '0.6',
+            ];
         }
     }
 
-    private function appendTagEntries(array &$entries, string $baseUrl): void
+    private function iterateTagEntries(string $baseUrl): Generator
     {
-        $tags = Tag::find()
+        $query = Tag::find()
             ->alias('t')
             ->select(['t.slug', 'MAX(t.updated_at) AS updated_at', 'MAX(t.created_at) AS created_at'])
             ->innerJoin(SetTag::tableName() . ' st', 'st.tag_id = t.id')
@@ -245,59 +238,200 @@ class SitemapController extends Controller
             ->andWhere(['not', ['t.slug' => null]])
             ->andWhere(['<>', 't.slug', ''])
             ->groupBy(['t.id', 't.slug'])
-            ->asArray()
-            ->all();
+            ->asArray();
 
-        foreach ($tags as $tag) {
-            $slug = (string)$tag['slug'];
-            $this->addEntry(
-                $entries,
-                $this->buildAbsoluteUrl($baseUrl, '/lego/tag/' . rawurlencode($slug)),
-                $this->resolveLastModified($tag['updated_at'] ?? null, $tag['created_at'] ?? null),
-                'weekly',
-                '0.5'
-            );
+        foreach ($query->each() as $tag) {
+            yield [
+                'loc'        => $this->buildAbsoluteUrl($baseUrl, '/lego/tag/' . rawurlencode((string)$tag['slug'])),
+                'lastmod'    => $this->resolveLastModified($tag['updated_at'] ?? null, $tag['created_at'] ?? null),
+                'changefreq' => 'weekly',
+                'priority'   => '0.5',
+            ];
         }
     }
 
-    private function appendCustomEntries(array &$entries, string $baseUrl): void
+    // ─── Streaming writer ──────────────────────────────────────────────────────
+
+    /**
+     * Stream each yielded entry into one or more gzipped sitemap files,
+     * rotating to a new chunk before the URL count crosses Google's limit.
+     *
+     * @param iterable<int, array{loc:string,lastmod:?string,changefreq:string,priority:string}> $entries
+     */
+    private function writeChunkedSitemap(string $baseName, iterable $entries, array &$indexEntries, string $baseUrl): int
     {
-        foreach (self::CUSTOM_LINKS as $link) {
-            $path = (string)($link['path'] ?? '');
-            if ($path === '') {
-                continue;
+        $totalUrls = 0;
+        $urlsInChunk = 0;
+        $chunkIndex = 1;
+        $writer = null;
+        $currentFilePath = null;
+
+        foreach ($entries as $entry) {
+            if ($writer === null) {
+                $currentFilePath = $this->resolveChunkPath($baseName, $chunkIndex);
+                $writer = $this->openSitemapWriter($currentFilePath);
             }
 
-            $changefreq = (string)($link['changefreq'] ?? 'monthly');
-            $priority = (string)($link['priority'] ?? '0.5');
-            $this->addEntry($entries, $this->buildAbsoluteUrl($baseUrl, $path), null, $changefreq, $priority);
+            $written = $this->writeUrlElement($writer, $entry['loc'], $entry['lastmod'] ?? null, $entry['changefreq'], $entry['priority']);
+            $urlsInChunk += $written;
+            $totalUrls += $written;
+
+            if ($urlsInChunk >= self::MAX_URLS_PER_CHUNK) {
+                $this->closeSitemapWriter($writer, $currentFilePath, $indexEntries, $baseUrl);
+                $writer = null;
+                $urlsInChunk = 0;
+                $chunkIndex++;
+            }
         }
+
+        if ($writer !== null) {
+            $this->closeSitemapWriter($writer, $currentFilePath, $indexEntries, $baseUrl);
+        }
+
+        return $totalUrls;
     }
 
-    private function addEntry(array &$entries, string $loc, ?string $lastmod, string $changefreq, string $priority): void
+    /**
+     * If a base name produced a single chunk, write it as the base file name
+     * (e.g. `sitemap-static.xml.gz`). Otherwise number chunks from 1.
+     */
+    private function resolveChunkPath(string $baseName, int $chunkIndex): string
+    {
+        // Always use numbered chunks for predictability — even single-chunk
+        // sub-sitemaps get `-1` to keep the index format consistent and avoid
+        // collisions if a category later grows past one chunk.
+        $fileName = $baseName . '-' . $chunkIndex . '.xml.gz';
+
+        return $this->buildOutputFilePath($fileName);
+    }
+
+    private function openSitemapWriter(string $filePath): XMLWriter
+    {
+        $directory = dirname($filePath);
+        if (!is_dir($directory) && !mkdir($directory, 0775, true) && !is_dir($directory)) {
+            throw new RuntimeException("Failed to create sitemap directory: {$directory}");
+        }
+
+        $writer = new XMLWriter();
+        // The compress.zlib:// stream wrapper makes XMLWriter pipe directly
+        // into a gzip-compressed file — no in-memory buffer needed.
+        if (!$writer->openUri('compress.zlib://' . $filePath)) {
+            throw new RuntimeException("Failed to open sitemap writer for {$filePath}");
+        }
+
+        $writer->setIndent(true);
+        $writer->setIndentString(' ');
+        $writer->startDocument('1.0', 'UTF-8');
+        $writer->startElement('urlset');
+        $writer->writeAttribute('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9');
+        $writer->writeAttribute('xmlns:xhtml', 'http://www.w3.org/1999/xhtml');
+
+        return $writer;
+    }
+
+    private function closeSitemapWriter(XMLWriter $writer, string $filePath, array &$indexEntries, string $baseUrl): void
+    {
+        $writer->endElement(); // urlset
+        $writer->endDocument();
+        $writer->flush();
+
+        $indexEntries[] = [
+            'loc'     => $this->buildSitemapFileUrl($filePath, $baseUrl),
+            'lastmod' => (new DateTimeImmutable())->format(DateTimeInterface::ATOM),
+        ];
+    }
+
+    /**
+     * Write one logical URL as 8 per-language `<url>` elements, each carrying
+     * the full set of `xhtml:link rel="alternate"` for SEO. Returns the count
+     * of `<url>` elements actually written.
+     */
+    private function writeUrlElement(XMLWriter $writer, string $loc, ?string $lastmod, string $changefreq, string $priority): int
     {
         $path = $this->extractPath($loc);
         $alternates = $this->buildLanguageAlternates($loc, $path);
 
+        $written = 0;
         foreach (self::LANGUAGES as $language) {
-            $entry = [
-                'loc'        => $alternates[$language],
-                'changefreq' => $changefreq,
-                'priority'   => $priority,
-                'alternates' => $alternates,
-            ];
-
+            $writer->startElement('url');
+            $writer->writeElement('loc', $alternates[$language]);
             if ($lastmod !== null) {
-                $entry['lastmod'] = $lastmod;
+                $writer->writeElement('lastmod', $lastmod);
+            }
+            $writer->writeElement('changefreq', $changefreq);
+            $writer->writeElement('priority', $priority);
+
+            foreach ($alternates as $hreflang => $href) {
+                $writer->startElement('xhtml:link');
+                $writer->writeAttribute('rel', 'alternate');
+                $writer->writeAttribute('hreflang', (string)$hreflang);
+                $writer->writeAttribute('href', (string)$href);
+                $writer->endElement();
             }
 
-            $entries[] = $entry;
+            $writer->endElement(); // url
+            $written++;
         }
+
+        return $written;
+    }
+
+    private function writeIndexSitemap(array $entries): void
+    {
+        $path = \Yii::getAlias($this->outputPath);
+        $directory = dirname($path);
+        if (!is_dir($directory) && !mkdir($directory, 0775, true) && !is_dir($directory)) {
+            throw new RuntimeException("Failed to create sitemap directory: {$directory}");
+        }
+
+        $writer = new XMLWriter();
+        if (!$writer->openUri($path)) {
+            throw new RuntimeException("Failed to open sitemap index writer for {$path}");
+        }
+
+        $writer->setIndent(true);
+        $writer->setIndentString(' ');
+        $writer->startDocument('1.0', 'UTF-8');
+        $writer->startElement('sitemapindex');
+        $writer->writeAttribute('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9');
+
+        foreach ($entries as $entry) {
+            $writer->startElement('sitemap');
+            $writer->writeElement('loc', $entry['loc']);
+            $writer->writeElement('lastmod', $entry['lastmod']);
+            $writer->endElement();
+        }
+
+        $writer->endElement();
+        $writer->endDocument();
+        $writer->flush();
     }
 
     /**
-     * Strip the absolute base URL prefix from a fully-qualified URL, returning the path part.
+     * Remove old chunked sitemap files before generating fresh ones so that
+     * shrinking categories don't leave stale chunks pointing at gone content.
      */
+    private function cleanupOldSitemaps(): void
+    {
+        $directory = \Yii::getAlias(self::SITEMAP_DIRECTORY_ALIAS);
+        if (!is_dir($directory)) {
+            return;
+        }
+
+        $patterns = [
+            $directory . DIRECTORY_SEPARATOR . 'sitemap-*.xml',
+            $directory . DIRECTORY_SEPARATOR . 'sitemap-*.xml.gz',
+        ];
+
+        foreach ($patterns as $pattern) {
+            foreach (glob($pattern) ?: [] as $file) {
+                @unlink($file);
+            }
+        }
+    }
+
+    // ─── URL / path helpers ────────────────────────────────────────────────────
+
     private function extractPath(string $loc): string
     {
         $parts = parse_url($loc);
@@ -318,10 +452,6 @@ class SitemapController extends Controller
     }
 
     /**
-     * Build per-language URLs for the same logical path. The default language keeps the
-     * unprefixed path; other languages get `/<lang>` prefix. The map also contains an
-     * `x-default` entry pointing at the default language URL.
-     *
      * @return array<string,string>
      */
     private function buildLanguageAlternates(string $absoluteUrl, string $path): array
@@ -372,70 +502,6 @@ class SitemapController extends Controller
         return '/' . $language . $path;
     }
 
-    private function buildUrlSetXml(array $entries): string
-    {
-        $writer = new \XMLWriter();
-        $writer->openMemory();
-        $writer->startDocument('1.0', 'UTF-8');
-        $writer->setIndent(true);
-
-        $writer->startElement('urlset');
-        $writer->writeAttribute('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9');
-        $writer->writeAttribute('xmlns:xhtml', 'http://www.w3.org/1999/xhtml');
-
-        foreach ($entries as $entry) {
-            $writer->startElement('url');
-            $writer->writeElement('loc', $entry['loc']);
-
-            if (isset($entry['lastmod'])) {
-                $writer->writeElement('lastmod', $entry['lastmod']);
-            }
-
-            $writer->writeElement('changefreq', $entry['changefreq']);
-            $writer->writeElement('priority', $entry['priority']);
-
-            if (isset($entry['alternates']) && is_array($entry['alternates'])) {
-                foreach ($entry['alternates'] as $hreflang => $href) {
-                    $writer->startElement('xhtml:link');
-                    $writer->writeAttribute('rel', 'alternate');
-                    $writer->writeAttribute('hreflang', (string)$hreflang);
-                    $writer->writeAttribute('href', (string)$href);
-                    $writer->endElement();
-                }
-            }
-
-            $writer->endElement();
-        }
-
-        $writer->endElement();
-        $writer->endDocument();
-
-        return $writer->outputMemory();
-    }
-
-    private function buildSitemapIndexXml(array $entries): string
-    {
-        $writer = new \XMLWriter();
-        $writer->openMemory();
-        $writer->startDocument('1.0', 'UTF-8');
-        $writer->setIndent(true);
-
-        $writer->startElement('sitemapindex');
-        $writer->writeAttribute('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9');
-
-        foreach ($entries as $entry) {
-            $writer->startElement('sitemap');
-            $writer->writeElement('loc', $entry['loc']);
-            $writer->writeElement('lastmod', $entry['lastmod']);
-            $writer->endElement();
-        }
-
-        $writer->endElement();
-        $writer->endDocument();
-
-        return $writer->outputMemory();
-    }
-
     private function buildOutputFilePath(string $fileName): string
     {
         $sitemapDirectory = \Yii::getAlias(self::SITEMAP_DIRECTORY_ALIAS);
@@ -456,21 +522,6 @@ class SitemapController extends Controller
         $relativePath = ltrim(substr($normalizedFilePath, strlen($normalizedWebPath)), '/');
 
         return $this->buildAbsoluteUrl($baseUrl, '/' . $relativePath);
-    }
-
-    private function writeFile(string $xml, string $path): void
-    {
-        $directory = dirname($path);
-        if (!is_dir($directory)) {
-            if (!mkdir($directory, 0775, true) && !is_dir($directory)) {
-                throw new RuntimeException("Failed to create output directory: {$directory}");
-            }
-        }
-
-        $written = file_put_contents($path, $xml, LOCK_EX);
-        if ($written === false) {
-            throw new RuntimeException("Failed to write sitemap to {$path}");
-        }
     }
 
     private function buildAbsoluteUrl(string $baseUrl, string $path): string

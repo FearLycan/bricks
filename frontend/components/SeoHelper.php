@@ -73,19 +73,58 @@ final class SeoHelper
             }
         }
 
+        // localeurls is configured with enableDefaultLanguageUrlCode=false, so
+        // the default language URL has NO `/en` prefix — but Url::current /
+        // Url::to still injects one when we pass `language` explicitly. Build
+        // the default-language URL once and rewrite per language to keep
+        // hreflang in sync with what the router actually serves.
+        if ($urlParts === null) {
+            $baseUrl = Url::current(['language' => null] + $currentParams, true);
+        } else {
+            $parts = is_array($urlParts) ? $urlParts : [$urlParts];
+            $parts['language'] = null;
+            $baseUrl = Url::to($parts, true);
+        }
+
         foreach (self::SUPPORTED_LANGUAGES as $lang) {
-            if ($urlParts === null) {
-                $result[$lang] = Url::current(['language' => $lang] + $currentParams, true);
-            } else {
-                $parts = is_array($urlParts) ? $urlParts : [$urlParts];
-                $parts['language'] = $lang;
-                $result[$lang] = Url::to($parts, true);
-            }
+            $result[$lang] = self::rewriteAbsoluteUrlLanguage($baseUrl, $lang);
         }
 
         $result['x-default'] = $result[self::DEFAULT_HREFLANG_LANGUAGE];
 
         return $result;
+    }
+
+    /**
+     * Rewrite the language prefix in an absolute URL. Default language gets no
+     * prefix; other languages get `/<lang>` inserted right after the host.
+     */
+    private static function rewriteAbsoluteUrlLanguage(string $absoluteUrl, string $language): string
+    {
+        $parsed = parse_url($absoluteUrl);
+        if (!is_array($parsed) || !isset($parsed['scheme'], $parsed['host'])) {
+            return $absoluteUrl;
+        }
+
+        $base = $parsed['scheme'] . '://' . $parsed['host'];
+        if (isset($parsed['port'])) {
+            $base .= ':' . $parsed['port'];
+        }
+
+        $path = $parsed['path'] ?? '/';
+        $query = isset($parsed['query']) ? '?' . $parsed['query'] : '';
+
+        $pattern = '#^/(?:' . implode('|', self::SUPPORTED_LANGUAGES) . ')(?=/|$)#';
+        $path = preg_replace($pattern, '', $path, 1) ?? $path;
+        if ($path === '') {
+            $path = '/';
+        }
+
+        if ($language !== self::DEFAULT_HREFLANG_LANGUAGE) {
+            $path = '/' . $language . ($path === '/' ? '' : $path);
+        }
+
+        return $base . $path . $query;
     }
 
     /**
