@@ -7,6 +7,8 @@ use common\models\SetOffer;
 use common\models\SetOfferReview;
 use common\models\Store;
 use RuntimeException;
+use Throwable;
+use Yii;
 use yii\console\Controller;
 use yii\console\ExitCode;
 use yii\helpers\Json;
@@ -79,7 +81,12 @@ final class AliExpressReviewController extends Controller
         foreach ($setOffers->each(50) as $setOffer) {
             $setOffer->updateAttributes(['last_review_synced_at' => date('Y-m-d H:i:s')]);
             $this->stdout("Processing set_offer_id={$setOffer->id}...\n");
-            $this->actionFetch($setOffer->id);
+            try {
+                $this->actionFetch($setOffer->id);
+            } catch (Throwable $e) {
+                $this->stderr("set_offer_id={$setOffer->id} failed: {$e->getMessage()}\n");
+                Yii::error("AliExpressReviewController::actionSync failed for offer {$setOffer->id}: {$e->getMessage()}", __METHOD__);
+            }
             sleep(random_int(2, 8));
         }
     }

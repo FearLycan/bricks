@@ -90,6 +90,12 @@ AppAsset::register($this);
                                             'url'         => ['/admin/user/index'],
                                             'active'      => Yii::$app->controller->id === 'user',
                                     ],
+                                    [
+                                            'label'       => '<i class="bi bi-journal-text"></i> Logs',
+                                            'linkOptions' => ['class' => 'nav-link text-white'],
+                                            'url'         => ['/admin/log/index'],
+                                            'active'      => Yii::$app->controller->id === 'log',
+                                    ],
                             ],
                     ]) ?>
 

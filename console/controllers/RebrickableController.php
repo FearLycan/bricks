@@ -5,6 +5,7 @@ namespace console\controllers;
 use common\models\Set;
 use common\models\SetMinifig;
 use Random\RandomException;
+use Throwable;
 use Yii;
 use yii\caching\CacheInterface;
 use yii\console\Controller;
@@ -38,15 +39,20 @@ class RebrickableController extends Controller
         /** @var Set $set */
         foreach ($sets->each() as $set) {
             echo $set->name . " sync minifigs \n";
-            $response = $this->sendRequest("lego/sets/{$set->getRebrickableSetNumber()}/minifigs/", [
-                'page_size' => 100,
-            ]);
+            try {
+                $response = $this->sendRequest("lego/sets/{$set->getRebrickableSetNumber()}/minifigs/", [
+                    'page_size' => 100,
+                ]);
 
-            if (isset($response['results']) && is_array($response['results']) && count($response['results']) > 0) {
-                SetMinifig::syncBySet($set, $response['results']);
+                if (isset($response['results']) && is_array($response['results']) && count($response['results']) > 0) {
+                    SetMinifig::syncBySet($set, $response['results']);
+                }
+            } catch (Throwable $e) {
+                echo "  warn: minifigs for {$set->number} failed: {$e->getMessage()}\n";
+                Yii::error("actionSyncMinifigs failed for {$set->number}: {$e->getMessage()}", __METHOD__);
             }
 
-            sleep(random_int(1, 5));
+            sleep(random_int(2, 6));
         }
     }
 

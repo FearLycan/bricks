@@ -62,6 +62,11 @@ return [
                     'class'  => FileTarget::class,
                     'levels' => ['error', 'warning'],
                 ],
+                [
+                    'class'  => \common\components\log\DbLogTarget::class,
+                    'levels' => ['error', 'warning'],
+                    'except' => ['yii\db\*', 'yii\web\HttpException:4*'],
+                ],
             ],
         ],
         'errorHandler' => [

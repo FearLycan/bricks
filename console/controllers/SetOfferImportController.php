@@ -46,6 +46,7 @@ class SetOfferImportController extends Controller
 
             $task->refresh();
 
+            $offer = null;
             try {
                 $set = Set::findOne($task->set_id);
                 if (!$set) {
@@ -61,10 +62,6 @@ class SetOfferImportController extends Controller
                 $task->save(false);
                 $processedCount++;
                 $this->stdout("Processed import #{$task->id}\n");
-
-                $controller = new AliExpressReviewController(Yii::$app->controller->id, Yii::$app);
-                $controller->actionFetch($offer->id);
-
             } catch (Throwable $exception) {
                 $task->status = SetOfferImportStatusEnum::FAILED->value;
                 $task->attempts = (int)$task->attempts + 1;
@@ -72,6 +69,17 @@ class SetOfferImportController extends Controller
                 $task->save(false);
                 $this->stderr("Failed import #{$task->id}: {$task->error_message}\n");
             }
+
+            if ($offer !== null) {
+                try {
+                    $controller = new AliExpressReviewController(Yii::$app->controller->id, Yii::$app);
+                    $controller->actionFetch($offer->id);
+                } catch (Throwable $exception) {
+                    $this->stderr("Review fetch for offer #{$offer->id} failed: {$exception->getMessage()}\n");
+                    Yii::error("actionFetch failed for offer {$offer->id}: {$exception->getMessage()}", __METHOD__);
+                }
+            }
+
             sleep(random_int(2, 5));
         }
 

@@ -13,6 +13,7 @@ use common\models\SetPrice;
 use common\models\SetTag;
 use common\models\Theme;
 use common\models\ThemeGroup;
+use Throwable;
 use Yii;
 use yii\caching\CacheInterface;
 use yii\console\Controller;
@@ -87,87 +88,113 @@ class BricksetController extends Controller
     private function syncSets(array $sets): void
     {
         foreach ($sets as $set) {
-            $themeGroup = null;
-            $subTheme = null;
-
-            echo $set['name'] . "\n";
-
-            $legoSet = Set::find()->where([
-                'number' => $set['number'],
-            ])->one();
-
-            if (!$legoSet) {
-                $legoSet = new Set();
+            try {
+                $this->syncSingleSet($set);
+            } catch (Throwable $e) {
+                $setLabel = ($set['number'] ?? '?') . ' ' . ($set['name'] ?? '');
+                echo "ERROR syncing set {$setLabel}: {$e->getMessage()}\n";
+                Yii::error("BricksetController::syncSets failed for {$setLabel}: {$e->getMessage()}\n{$e->getTraceAsString()}", __METHOD__);
             }
 
-            if (isset($set['themeGroup'])) {
-                $themeGroup = ThemeGroup::getOrCreate($set['themeGroup']);
-            }
+            sleep(1);
+        }
+    }
 
-            $theme = Theme::getOrCreate($set['theme'], $themeGroup ?? null);
+    private function syncSingleSet(array $set): void
+    {
+        $themeGroup = null;
+        $subTheme = null;
 
-            if (isset($set['subtheme'])) {
-                $subTheme = Theme::getOrCreateSub($set['subtheme'], $theme);
-            }
+        echo $set['name'] . "\n";
 
-            $legoSet->name = $set['name'];
-            $legoSet->theme_id = $theme->id;
-            $legoSet->subtheme_id = $subTheme->id ?? null;
-            $legoSet->number = $set['number'];
-            $legoSet->number_variant = $set['numberVariant'] ?? 0;
-            $legoSet->year = $set['year'];
-            $legoSet->released = isset($set['released']) ? (int)$set['released'] : 0;
-            $legoSet->pieces = $set['pieces'] ?? 0;
-            $legoSet->minifigures = $set['minifigs'] ?? 0;
-            $legoSet->brickset_url = $set['bricksetURL'];
-            $legoSet->brickset_id = isset($set['setID']) && is_numeric($set['setID']) ? (int)$set['setID'] : $legoSet->brickset_id;
-            $legoSet->availability = $set['availability'] ?? null;
-            $legoSet->description = null;
-            if (isset($set['extendedData']['description']) && is_string($set['extendedData']['description'])) {
-                $legoSet->description = $set['extendedData']['description'];
-            }
+        $legoSet = Set::find()->where([
+            'number' => $set['number'],
+        ])->one();
 
-            $legoSet->dimensions = null;
-            if (isset($set['modelDimensions']) && is_array($set['modelDimensions'])) {
-                $legoSet->dimensions = Json::encode($set['modelDimensions']);
-            }
+        if (!$legoSet) {
+            $legoSet = new Set();
+        }
 
-            $legoSet->price = null;
-            if (isset($set['LEGOCom']['US']['retailPrice']) && is_numeric($set['LEGOCom']['US']['retailPrice'])) {
-                $legoSet->price = (int)round(((float)$set['LEGOCom']['US']['retailPrice']) * 100);
-            }
+        if (isset($set['themeGroup'])) {
+            $themeGroup = ThemeGroup::getOrCreate($set['themeGroup']);
+        }
 
-            $legoSet->launch_date = $this->parseBricksetDate($set['launchDate'] ?? null)
-                ?? $this->parseBricksetDate($set['LEGOCom']['US']['dateFirstAvailable'] ?? null);
-            $legoSet->exit_date = $this->parseBricksetDate($set['exitDate'] ?? null);
+        $theme = Theme::getOrCreate($set['theme'], $themeGroup ?? null);
 
-            $legoSet->age = $set['ageRange']['min'] ?? 0;
-            $legoSet->rating = $set['rating'] ?? 0;
-            $legoSet->save();
-            $legoSet->refresh();
+        if (isset($set['subtheme'])) {
+            $subTheme = Theme::getOrCreateSub($set['subtheme'], $theme);
+        }
 
+        $legoSet->name = $set['name'];
+        $legoSet->theme_id = $theme->id;
+        $legoSet->subtheme_id = $subTheme->id ?? null;
+        $legoSet->number = $set['number'];
+        $legoSet->number_variant = $set['numberVariant'] ?? 0;
+        $legoSet->year = $set['year'];
+        $legoSet->released = isset($set['released']) ? (int)$set['released'] : 0;
+        $legoSet->pieces = $set['pieces'] ?? 0;
+        $legoSet->minifigures = $set['minifigs'] ?? 0;
+        $legoSet->brickset_url = $set['bricksetURL'];
+        $legoSet->brickset_id = isset($set['setID']) && is_numeric($set['setID']) ? (int)$set['setID'] : $legoSet->brickset_id;
+        $legoSet->availability = $set['availability'] ?? null;
+        $legoSet->description = null;
+        if (isset($set['extendedData']['description']) && is_string($set['extendedData']['description'])) {
+            $legoSet->description = $set['extendedData']['description'];
+        }
+
+        $legoSet->dimensions = null;
+        if (isset($set['modelDimensions']) && is_array($set['modelDimensions'])) {
+            $legoSet->dimensions = Json::encode($set['modelDimensions']);
+        }
+
+        $legoSet->price = null;
+        if (isset($set['LEGOCom']['US']['retailPrice']) && is_numeric($set['LEGOCom']['US']['retailPrice'])) {
+            $legoSet->price = (int)round(((float)$set['LEGOCom']['US']['retailPrice']) * 100);
+        }
+
+        $legoSet->launch_date = $this->parseBricksetDate($set['launchDate'] ?? null)
+            ?? $this->parseBricksetDate($set['LEGOCom']['US']['dateFirstAvailable'] ?? null);
+        $legoSet->exit_date = $this->parseBricksetDate($set['exitDate'] ?? null);
+
+        $legoSet->age = $set['ageRange']['min'] ?? 0;
+        $legoSet->rating = $set['rating'] ?? 0;
+        if (!$legoSet->save()) {
+            echo "  warn: save failed: " . Json::encode($legoSet->getErrors()) . "\n";
+            return;
+        }
+        $legoSet->refresh();
+
+        $this->safeStep("LEGOCom prices for {$legoSet->number}", function () use ($legoSet, $set) {
             if (isset($set['LEGOCom']) && is_array($set['LEGOCom'])) {
                 SetPrice::syncLegoComPrices($legoSet, $set['LEGOCom']);
             }
+        });
 
+        $this->safeStep("tags for {$legoSet->number}", function () use ($legoSet, $set) {
             SetTag::syncBySetAndNames($legoSet, isset($set['extendedData']['tags']) && is_array($set['extendedData']['tags']) ? $set['extendedData']['tags'] : []);
+        });
 
+        $this->safeStep("main image for {$legoSet->number}", function () use ($legoSet, $set) {
             if (isset($set['image']['imageURL']) && $set['image']['imageURL']) {
                 SetImage::getOrCreate($legoSet, TypeEnum::IMAGE, KindEnum::MAIN, $set['image']['imageURL']);
             }
+        });
 
+        $this->safeStep("additional images for {$legoSet->number}", function () use ($legoSet, $set) {
             $this->syncImages((int)$set['setID'], $legoSet);
+        });
 
-            if ($legoSet->getMainImage() === null) {
-                $legoSet->updateAttributes(['status' => StatusEnum::INACTIVE->value]);
-            } else {
-                if ((int)$legoSet->status !== StatusEnum::ACTIVE->value) {
-                    $legoSet->rebuildSlug();
-                }
-                $legoSet->updateAttributes(['status' => StatusEnum::ACTIVE->value]);
+        if ($legoSet->getMainImage() === null) {
+            $legoSet->updateAttributes(['status' => StatusEnum::INACTIVE->value]);
+        } else {
+            if ((int)$legoSet->status !== StatusEnum::ACTIVE->value) {
+                $legoSet->rebuildSlug();
             }
+            $legoSet->updateAttributes(['status' => StatusEnum::ACTIVE->value]);
+        }
 
-            if ($legoSet->isActive()) {
+        if ($legoSet->isActive()) {
+            $this->safeStep("minifigs for {$legoSet->number}", function () use ($legoSet, $set) {
                 $controller = new RebrickableController(Yii::$app->controller->id, Yii::$app);
                 $controller->actionSyncMinifigs($set['number']);
 
@@ -175,11 +202,21 @@ class BricksetController extends Controller
                 if ($actualCount !== (int)$legoSet->minifigures) {
                     $legoSet->updateAttributes(['minifigures' => $actualCount]);
                 }
+            });
 
+            $this->safeStep("instructions for {$legoSet->number}", function () use ($legoSet) {
                 $this->syncInstructionsFor($legoSet);
-            }
+            });
+        }
+    }
 
-            sleep(1);
+    private function safeStep(string $label, callable $callback): void
+    {
+        try {
+            $callback();
+        } catch (Throwable $e) {
+            echo "  warn: {$label} failed: {$e->getMessage()}\n";
+            Yii::error("BricksetController step '{$label}' failed: {$e->getMessage()}\n{$e->getTraceAsString()}", __METHOD__);
         }
     }
 
@@ -206,7 +243,12 @@ class BricksetController extends Controller
         /** @var Set $set */
         foreach ($query->each() as $set) {
             echo $set->name . " sync instructions \n";
-            $this->syncInstructionsFor($set);
+            try {
+                $this->syncInstructionsFor($set);
+            } catch (Throwable $e) {
+                echo "  warn: instructions for {$set->number} failed: {$e->getMessage()}\n";
+                Yii::error("actionSyncInstructions failed for {$set->number}: {$e->getMessage()}", __METHOD__);
+            }
             sleep(1);
         }
     }
