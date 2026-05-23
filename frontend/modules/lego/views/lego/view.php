@@ -21,7 +21,14 @@ use yii\web\View;
  * @var $reviewStats array
  * @var $reviewList  SetReview[]
  * @var $userReview  SetReview|null
+ * @var $relatedSets Set[]
  */
+
+$relatedSets = $relatedSets ?? [];
+
+if ($relatedSets) {
+    $this->registerCssFile('@web/css/homepage.css', ['depends' => [\frontend\assets\AppAsset::class]]);
+}
 
 $reviewChoiceUrl = Url::to(['/review/default/choice-modal', 'setId' => (int)$model->id]);
 $reviewAverage = $reviewStats['average'] ?? null;
@@ -548,6 +555,13 @@ $queueOfferImportModalUrl = Url::to(['/management/queue-offer-import-modal', 'se
         </div>
     </div>
 </div>
+
+<?php if (!empty($relatedSets)): ?>
+    <?= $this->render('@frontend/modules/homepage/views/home/_section-slider', [
+            'title' => T::tr('You may also like'),
+            'items' => $relatedSets,
+    ]) ?>
+<?php endif; ?>
 
 <div class="modal fade" id="imageZoomModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-xl">

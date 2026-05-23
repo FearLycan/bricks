@@ -13,6 +13,7 @@ use common\models\SetReview;
 use common\models\Tag;
 use common\models\User;
 use frontend\models\searches\SetSearch;
+use frontend\modules\lego\services\RelatedSetsService;
 use Yii;
 use yii\data\ActiveDataProvider;
 
@@ -157,6 +158,8 @@ class LegoController extends Controller
             $userMatchScore = SetReview::getMatchScoreForSet((int)Yii::$app->user->id, (int)$model->id);
         }
 
+        $relatedSets = (new RelatedSetsService())->getRelatedSets($model, 12);
+
         return $this->render('view', [
             'model'          => $model,
             'user'           => $identity instanceof User ? $identity : null,
@@ -164,6 +167,7 @@ class LegoController extends Controller
             'reviewList'     => $reviewList,
             'userReview'     => $userReview,
             'userMatchScore' => $userMatchScore,
+            'relatedSets'    => $relatedSets,
         ]);
     }
 

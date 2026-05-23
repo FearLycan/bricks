@@ -588,4 +588,5 @@ return [
     'Bunnies, eggs and pastel builds to brighten the spring season.'                                                                                                       => 'Króliczki, jajka i pastelowe konstrukcje, które rozjaśnią wiosnę.',
     'Hearts, roses and giftable mini-builds for someone you love.'                                                                                                          => 'Serca, róże i mini-zestawy na prezent dla bliskiej osoby.',
     'Limited-time seasonal builds you can collect right now.'                                                                                                               => 'Sezonowe zestawy dostępne tylko przez chwilę — możesz je zebrać już teraz.',
+    'You may also like'                                                                                                                                                    => 'Może Cię też zainteresować',
 ];

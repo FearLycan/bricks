@@ -1550,6 +1550,7 @@ a, button {
 }
 
 .lego-set .card:hover .set-card-wishlist-btn,
+.bricks-set-card:hover .set-card-wishlist-btn,
 .set-card-wishlist-btn:focus-visible,
 .set-card-wishlist-btn.is-active {
     opacity: 1;
@@ -1721,6 +1722,7 @@ a, button {
 }
 
 .lego-set .card:hover .set-card-owned-btn,
+.bricks-set-card:hover .set-card-owned-btn,
 .set-card-owned-btn:focus-visible,
 .set-card-owned-btn.is-active {
     opacity: 1;

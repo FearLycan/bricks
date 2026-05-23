@@ -595,4 +595,5 @@ return [
     'Bunnies, eggs and pastel builds to brighten the spring season.'                                                                                                       => '',
     'Hearts, roses and giftable mini-builds for someone you love.'                                                                                                          => '',
     'Limited-time seasonal builds you can collect right now.'                                                                                                               => '',
+    'You may also like'                                                                                                                                                    => '',
 ];
