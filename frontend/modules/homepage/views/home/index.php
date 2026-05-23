@@ -15,6 +15,7 @@ use yii\web\View;
  * @var array      $comingSoon
  * @var array      $forAdults
  * @var Theme|null $themeSpotlight
+ * @var array|null $seasonalSpotlight
  * @var array      $featuredMinifigs
  * @var array      $wishlistPreview
  * @var array      $recommendations
@@ -49,6 +50,8 @@ $isGuest = Yii::$app->user->isGuest;
             </div>
         </section>
     <?php endif; ?>
+
+    <?= $this->render('_seasonal-spotlight', ['event' => $seasonalSpotlight]) ?>
 
     <?= $this->render('_wizard-cta') ?>
 

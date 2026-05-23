@@ -28,6 +28,7 @@ class LegoController extends Controller
                         'allow'   => true,
                         'actions' => [
                             'index', 'view', 'minifig', 'offer-reviews-modal', 'promo', 'new', 'tag',
+                            'magazines', 'exclusive', 'retiring-soon',
                         ],
                         'roles'   => ['?', '@'],
                     ],
@@ -73,6 +74,40 @@ class LegoController extends Controller
         ]);
     }
 
+    public function actionMagazines(): string
+    {
+        $searchModel = new SetSearch();
+        $params = array_merge($this->request->queryParams, ['availability' => 'Magazine gift']);
+        $dataProvider = $searchModel->search($params);
+
+        return $this->render('magazines', [
+            'searchModel'  => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+
+    public function actionExclusive(): string
+    {
+        $searchModel = new SetSearch();
+        $params = array_merge($this->request->queryParams, ['availability' => 'LEGO exclusive']);
+        $dataProvider = $searchModel->search($params);
+
+        return $this->render('exclusive', [
+            'searchModel'  => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+
+    public function actionRetiringSoon(): string
+    {
+        $searchModel = new SetSearch();
+        $dataProvider = $searchModel->searchRetiringSoon();
+
+        return $this->render('retiring-soon', [
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+
     public function actionTag(string $slug): string
     {
         $tag = Tag::findOne(['slug' => $slug, 'status' => StatusEnum::ACTIVE->value]);
@@ -88,7 +123,6 @@ class LegoController extends Controller
             'tag'          => $tag,
             'searchModel'  => $searchModel,
             'dataProvider' => $dataProvider,
-            'grouped'      => $searchModel->isMonthGroupedMode(),
         ]);
     }
 

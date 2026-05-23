@@ -1,0 +1,199 @@
+/* ==========================================================================
+   Page hero banner
+   Generic full-width branding banner used by category filter pages
+   (magazines, exclusive, retiring-soon) and the homepage seasonal spotlight.
+   Loaded site-wide via AppAsset.
+   ========================================================================== */
+
+.bricks-page-hero {
+    position: relative;
+    margin-bottom: 1.5rem;
+    background: #0d2545 linear-gradient(135deg, #0d2545 0%, #1b3b6f 100%);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: #fff;
+    overflow: hidden;
+}
+
+/* Legibility overlay when a background image is present. */
+.bricks-page-hero--image::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        90deg,
+        rgba(8, 18, 38, 0.94) 0%,
+        rgba(8, 18, 38, 0.78) 40%,
+        rgba(8, 18, 38, 0.35) 100%
+    );
+    pointer-events: none;
+}
+
+.bricks-page-hero .container {
+    position: relative;
+    z-index: 1;
+}
+
+.bricks-page-hero-inner {
+    max-width: 680px;
+    padding: 2.75rem 0 3rem;
+}
+
+.bricks-page-hero-breadcrumb {
+    background: transparent;
+    padding: 0;
+    margin-bottom: 1rem;
+    font-size: 0.85rem;
+}
+
+.bricks-page-hero-breadcrumb a {
+    color: rgba(255, 255, 255, 0.78);
+    text-decoration: none;
+}
+
+.bricks-page-hero-breadcrumb a:hover {
+    color: #fff;
+}
+
+.bricks-page-hero-breadcrumb .breadcrumb-item.active,
+.bricks-page-hero-breadcrumb .breadcrumb-item + .breadcrumb-item::before {
+    color: rgba(255, 255, 255, 0.55);
+}
+
+.bricks-page-hero-eyebrow {
+    display: inline-block;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 0.78rem;
+    color: #ffd400;
+    margin-bottom: 0.5rem;
+}
+
+.bricks-page-hero-title {
+    font-size: clamp(1.9rem, 4.5vw, 3rem);
+    font-weight: 800;
+    line-height: 1.07;
+    margin-bottom: 0.85rem;
+}
+
+.bricks-page-hero-lead {
+    font-size: 1.02rem;
+    line-height: 1.55;
+    color: rgba(255, 255, 255, 0.82);
+    margin-bottom: 1rem;
+    max-width: 60ch;
+}
+
+.bricks-page-hero-cta {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.65rem 1.5rem;
+    border-radius: 999px;
+    background: #fff;
+    color: #0d2545;
+    font-weight: 700;
+    text-decoration: none;
+    transition: transform 0.18s ease, background 0.18s ease;
+}
+
+.bricks-page-hero-cta:hover {
+    background: #ffd400;
+    color: #0d2545;
+    transform: translateY(-1px);
+}
+
+@media (max-width: 575.98px) {
+    .bricks-page-hero-inner {
+        padding: 1.75rem 0 2rem;
+    }
+
+    .bricks-page-hero--image::after {
+        background: linear-gradient(
+            180deg,
+            rgba(8, 18, 38, 0.68) 0%,
+            rgba(8, 18, 38, 0.93) 100%
+        );
+    }
+}
+
+/* ---- Category modifiers --------------------------------------------------- */
+
+.bricks-page-hero--magazines {
+    background: #1f2a44 linear-gradient(135deg, #1f2a44 0%, #2f4170 100%);
+}
+
+.bricks-page-hero--exclusive {
+    background: #2a1d00 linear-gradient(135deg, #2a1d00 0%, #4d3100 100%);
+}
+.bricks-page-hero--exclusive .bricks-page-hero-eyebrow {
+    color: #ffc738;
+}
+
+.bricks-page-hero--retiring-soon {
+    background: #2a0808 linear-gradient(135deg, #2a0808 0%, #6b1818 100%);
+}
+.bricks-page-hero--retiring-soon .bricks-page-hero-eyebrow {
+    color: #ff8585;
+}
+
+/* ---- Seasonal modifiers --------------------------------------------------- */
+
+.bricks-page-hero--halloween {
+    background: #110600 linear-gradient(135deg, #110600 0%, #ff7a00 100%);
+}
+.bricks-page-hero--halloween .bricks-page-hero-eyebrow {
+    color: #ffb766;
+}
+
+.bricks-page-hero--christmas {
+    background: #0a3320 linear-gradient(135deg, #0a3320 0%, #7a1818 100%);
+}
+.bricks-page-hero--christmas .bricks-page-hero-eyebrow {
+    color: #ffd9d9;
+}
+
+.bricks-page-hero--easter {
+    background: #f7c5d8 linear-gradient(135deg, #f7c5d8 0%, #fff3a8 100%);
+    color: #3a2a44;
+}
+.bricks-page-hero--easter .bricks-page-hero-eyebrow {
+    color: #8a3a6a;
+}
+.bricks-page-hero--easter .bricks-page-hero-lead {
+    color: rgba(58, 42, 68, 0.88);
+}
+.bricks-page-hero--easter .bricks-page-hero-breadcrumb a {
+    color: rgba(58, 42, 68, 0.85);
+}
+.bricks-page-hero--easter .bricks-page-hero-breadcrumb a:hover {
+    color: #3a2a44;
+}
+.bricks-page-hero--easter .bricks-page-hero-breadcrumb .breadcrumb-item.active,
+.bricks-page-hero--easter .bricks-page-hero-breadcrumb .breadcrumb-item + .breadcrumb-item::before {
+    color: rgba(58, 42, 68, 0.6);
+}
+.bricks-page-hero--easter.bricks-page-hero--image::after {
+    background: linear-gradient(
+        90deg,
+        rgba(247, 197, 216, 0.92) 0%,
+        rgba(247, 197, 216, 0.6) 40%,
+        rgba(247, 197, 216, 0.2) 100%
+    );
+}
+.bricks-page-hero--easter .bricks-page-hero-cta {
+    background: #8a3a6a;
+    color: #fff;
+}
+.bricks-page-hero--easter .bricks-page-hero-cta:hover {
+    background: #6f2a55;
+    color: #fff;
+}
+
+.bricks-page-hero--valentine {
+    background: #5a0a2a linear-gradient(135deg, #5a0a2a 0%, #ff4e6e 100%);
+}
+.bricks-page-hero--valentine .bricks-page-hero-eyebrow {
+    color: #ffd0db;
+}

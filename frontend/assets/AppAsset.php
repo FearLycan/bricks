@@ -20,6 +20,7 @@ class AppAsset extends AssetBundle
         'libs/select2/select2-bootstrap-5-theme.min.css',
         'libs/venobox/venobox.min.css',
         'css/site.css',
+        'css/page-hero.css',
     ];
     public $js       = [
         'libs/select2/select2.full.min.js',

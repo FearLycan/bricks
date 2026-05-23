@@ -37,19 +37,20 @@ class HomeController extends Controller
     public function actionIndex()
     {
         $viewData = [
-            'heroSlides'       => $this->content->getHeroSlides(),
-            'themeTiles'       => $this->content->getThemeTiles(),
-            'browseTabs'       => $this->content->getBrowseTabs(),
-            'newArrivals'      => $this->content->getNewArrivals(),
-            'onSale'           => $this->content->getOnSale(),
-            'topRated'         => $this->content->getTopRated(),
-            'comingSoon'       => $this->content->getComingSoon(),
-            'forAdults'        => $this->content->getForAdults(),
-            'themeSpotlight'   => $this->content->getThemeSpotlight(),
-            'featuredMinifigs' => $this->content->getFeaturedMinifigs(),
-            'wishlistPreview'  => [],
-            'recommendations'  => [],
-            'collectionStats'  => null,
+            'heroSlides'        => $this->content->getHeroSlides(),
+            'themeTiles'        => $this->content->getThemeTiles(),
+            'browseTabs'        => $this->content->getBrowseTabs(),
+            'newArrivals'       => $this->content->getNewArrivals(),
+            'onSale'            => $this->content->getOnSale(),
+            'topRated'          => $this->content->getTopRated(),
+            'comingSoon'        => $this->content->getComingSoon(),
+            'forAdults'         => $this->content->getForAdults(),
+            'themeSpotlight'    => $this->content->getThemeSpotlight(),
+            'seasonalSpotlight' => $this->content->getSeasonalSpotlight(),
+            'featuredMinifigs'  => $this->content->getFeaturedMinifigs(),
+            'wishlistPreview'   => [],
+            'recommendations'   => [],
+            'collectionStats'   => null,
         ];
 
         $user = Yii::$app->user->isGuest ? null : Yii::$app->user->identity;

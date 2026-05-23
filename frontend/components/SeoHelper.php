@@ -193,6 +193,57 @@ final class SeoHelper
         return self::truncate(self::appendPageDescriptionSuffix($description, $page));
     }
 
+    public static function buildMagazinesTitle(int $page = 1): string
+    {
+        return self::appendPageSuffix(T::tr('LEGO Magazine Sets'), $page);
+    }
+
+    public static function buildMagazinesDescription(int $page = 1): string
+    {
+        $description = T::tr('Browse LEGO mini-build sets distributed with collectible magazines. Compare prices and discover the full magazine-gift catalog.');
+
+        return self::truncate(self::appendPageDescriptionSuffix($description, $page));
+    }
+
+    public static function buildMagazinesIntro(): string
+    {
+        return T::tr('Small bonus builds bundled with collectible LEGO magazines — handy minifigure packs, vehicles and seasonal scenes from kiosk releases.');
+    }
+
+    public static function buildExclusiveTitle(int $page = 1): string
+    {
+        return self::appendPageSuffix(T::tr('LEGO Exclusive Sets'), $page);
+    }
+
+    public static function buildExclusiveDescription(int $page = 1): string
+    {
+        $description = T::tr('Browse LEGO sets sold exclusively through LEGO.com and brand stores. Compare prices and track availability for collector-grade releases.');
+
+        return self::truncate(self::appendPageDescriptionSuffix($description, $page));
+    }
+
+    public static function buildExclusiveIntro(): string
+    {
+        return T::tr('Sets sold only through official LEGO channels — usually larger, collector-focused releases that disappear from shelves fast.');
+    }
+
+    public static function buildRetiringSoonTitle(int $page = 1): string
+    {
+        return self::appendPageSuffix(T::tr('LEGO Sets Retiring Soon'), $page);
+    }
+
+    public static function buildRetiringSoonDescription(int $page = 1): string
+    {
+        $description = T::tr('Browse LEGO sets approaching their official retirement date. Catch them before they leave shelves and prices climb.');
+
+        return self::truncate(self::appendPageDescriptionSuffix($description, $page));
+    }
+
+    public static function buildRetiringSoonIntro(): string
+    {
+        return T::tr('Sets with a known retirement date on the horizon — these are likely to disappear from retailers and jump in price once gone.');
+    }
+
     public static function buildCatalogDescription(int $page = 1): string
     {
         $description = T::tr('Browse LEGO sets, compare prices, and filter the catalog by theme, release year, and sorting options.');

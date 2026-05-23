@@ -2,6 +2,7 @@
 
 namespace frontend\modules\homepage\services;
 
+use common\components\SeasonalEventResolver;
 use common\enums\StatusEnum;
 use common\models\OwnedSet;
 use common\models\Set;
@@ -330,6 +331,63 @@ class HomepageContentService
                 ->limit($limit)
                 ->all();
         }, $this->cacheTtlCatalog);
+    }
+
+    /**
+     * Seasonal hero block shown right after the homepage hero during a holiday
+     * window. Returns null outside any window so the section disappears
+     * entirely. Not cached: window flips at midnight and the payload depends on
+     * the active language for label/intro/CTA copy.
+     *
+     * @return array{key:string,label:string,intro:string,image:string,icon:string,url:string,ctaLabel:string}|null
+     */
+    public function getSeasonalSpotlight(): ?array
+    {
+        $event = SeasonalEventResolver::getActiveEvent();
+        if ($event === null) {
+            return null;
+        }
+
+        [$label, $intro] = $this->seasonalCopy($event['key']);
+
+        return [
+            'key'      => $event['key'],
+            'label'    => $label,
+            'intro'    => $intro,
+            'image'    => $event['image'],
+            'icon'     => $event['icon'],
+            'url'      => Url::to(['/lego/tag/seasonal', 'name' => $event['name_filter']]),
+            'ctaLabel' => T::tr('Shop the collection'),
+        ];
+    }
+
+    /**
+     * @return array{0:string,1:string} [label, intro]
+     */
+    private function seasonalCopy(string $eventKey): array
+    {
+        return match ($eventKey) {
+            SeasonalEventResolver::KEY_CHRISTMAS => [
+                T::tr('Christmas LEGO® sets'),
+                T::tr('Frosty builds, festive scenes and gift-ready sets — perfect under the tree.'),
+            ],
+            SeasonalEventResolver::KEY_HALLOWEEN => [
+                T::tr('Halloween LEGO® sets'),
+                T::tr('Spooky minifigures, haunted builds and seasonal scenes for the trick-or-treat season.'),
+            ],
+            SeasonalEventResolver::KEY_EASTER => [
+                T::tr('Easter LEGO® sets'),
+                T::tr('Bunnies, eggs and pastel builds to brighten the spring season.'),
+            ],
+            SeasonalEventResolver::KEY_VALENTINE => [
+                T::tr("Valentine's Day LEGO® sets"),
+                T::tr('Hearts, roses and giftable mini-builds for someone you love.'),
+            ],
+            default => [
+                T::tr('Seasonal LEGO® sets'),
+                T::tr('Limited-time seasonal builds you can collect right now.'),
+            ],
+        };
     }
 
     public function getThemeSpotlight(): ?Theme

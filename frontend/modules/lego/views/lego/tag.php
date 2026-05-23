@@ -16,7 +16,6 @@ use yii\web\View;
  * @var $tag          Tag
  * @var $searchModel  SetSearch
  * @var $dataProvider ActiveDataProvider
- * @var $grouped      bool
  */
 
 $page = SeoHelper::resolvePageNumber();
@@ -45,4 +44,4 @@ $this->params['breadcrumbs'][] = Html::encode($tag->name);
     <?= $this->render('_search', ['model' => $searchModel]) ?>
 </div>
 
-<?= $this->render('_list', ['dataProvider' => $dataProvider, 'grouped' => $grouped]) ?>
+<?= $this->render('_list', ['dataProvider' => $dataProvider]) ?>

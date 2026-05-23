@@ -21,6 +21,7 @@ class SetSearch extends Set
 {
     public ?string $sort_option = null;
     public ?string $tag_slug = null;
+    public ?string $availability = null;
     public $month = null;
     public $age_min = null;
     public $age_max = null;
@@ -35,7 +36,7 @@ class SetSearch extends Set
         return [
             [['id', 'theme_id', 'status', 'number_variant', 'minifigures', 'year', 'month', 'pieces', 'released', 'price', 'age', 'subtheme_id'], 'integer'],
             [['age_min', 'age_max', 'pieces_min', 'pieces_max'], 'integer'],
-            [['number', 'name', 'slug', 'brickset_url', 'created_at', 'updated_at', 'sort_option', 'tag_slug'], 'safe'],
+            [['number', 'name', 'slug', 'brickset_url', 'created_at', 'updated_at', 'sort_option', 'tag_slug', 'availability'], 'safe'],
             [['rating'], 'number'],
         ];
     }
@@ -116,6 +117,10 @@ class SetSearch extends Set
                 ->andWhere(['t_tag.slug' => $this->tag_slug]);
         }
 
+        if ($this->availability) {
+            $query->andWhere(['{{%set}}.availability' => $this->availability]);
+        }
+
         $this->applySortOption($query);
 
         $this->applyHideOwnedFilter($query);
@@ -139,6 +144,32 @@ class SetSearch extends Set
             11 => T::tr('November'),
             12 => T::tr('December'),
         ];
+    }
+
+    /**
+     * Sets with a known retirement date inside a configurable window from today.
+     * Window is wide by default so the list never collapses to zero while
+     * exit_date coverage grows in the catalog.
+     */
+    public function searchRetiringSoon(int $windowDays = 365): ActiveDataProvider
+    {
+        $query = Set::find()
+            ->alias('s')
+            ->andWhere(['s.status' => StatusEnum::ACTIVE->value])
+            ->andWhere(['not', ['s.exit_date' => null]])
+            ->andWhere(['>=', 's.exit_date', new Expression('CURDATE()')])
+            ->andWhere(['<=', 's.exit_date', new Expression('DATE_ADD(CURDATE(), INTERVAL :days DAY)', [':days' => $windowDays])])
+            ->orderBy(['s.exit_date' => SORT_ASC, 's.id' => SORT_ASC]);
+
+        $this->joinActiveTheme($query, 's');
+        $this->applyHideOwnedFilter($query, 's');
+
+        return new ActiveDataProvider([
+            'query'      => $query,
+            'pagination' => [
+                'pageSize' => 48,
+            ],
+        ]);
     }
 
     public function searchPromo(): ActiveDataProvider

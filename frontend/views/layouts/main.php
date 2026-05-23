@@ -165,6 +165,7 @@ if ($socialImage !== '') {
                                 <i class="bi bi-tags me-1"></i><?= Html::encode(T::tr('On Sale')) ?>
                             </a>
                         </li>
+                        <?= $this->render('_categories-dropdown') ?>
                         <li class="nav-item">
                             <a class="bricks-nav-link nav-link bricks-wizard-nav-btn" href="#" data-bs-toggle="modal" data-bs-target="#wizardModal">
                                 <i class="bi bi-magic me-1"></i><?= Html::encode(T::tr('Find a Set')) ?>
