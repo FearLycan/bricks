@@ -44,7 +44,7 @@ $this->params['breadcrumbs'][] = T::tr('My reviews');
             <div class="display-5 mb-2">🌟</div>
             <h5 class="mb-2"><?= Html::encode(T::tr('You have not reviewed any sets yet.')) ?></h5>
             <p class="text-body-secondary mb-3">
-                <?= Html::encode(T::tr('Find a set you own or are interested in and share what you think.')) ?>
+                <?= Html::encode(T::tr('Find a set you own (or want) and share what you think.')) ?>
             </p>
             <?= Html::a(
                 '<i class="bi bi-search me-1"></i>' . Html::encode(T::tr('Browse sets')),

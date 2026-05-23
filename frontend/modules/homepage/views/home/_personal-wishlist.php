@@ -25,7 +25,7 @@ if (empty($items)) {
                     <div>
                         <h2 class="bricks-section-title mb-0"><?= Html::encode(T::tr('Your wishlist')) ?></h2>
                         <p class="bricks-wishlist-bar-sub mb-0">
-                            <?= Html::encode(T::tr('Latest items you saved for later.')) ?>
+                            <?= Html::encode(T::tr('Latest items you saved.')) ?>
                         </p>
                     </div>
                 </div>

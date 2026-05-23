@@ -16,6 +16,6 @@ class HomeCest
         $I->click('About');
         $I->wait(2); // wait for page to be opened
 
-        $I->see('This is the About page.');
+        $I->see('BrickAtlas is a price tracker and discovery tool for LEGO® fans.');
     }
 }

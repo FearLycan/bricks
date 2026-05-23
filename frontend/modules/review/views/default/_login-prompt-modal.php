@@ -22,7 +22,7 @@ $registerUrl = Url::to(['/auth/signup']);
             <div class="display-6 mb-2"><i class="bi bi-emoji-smile text-primary"></i></div>
             <h6 class="mb-2"><?= Html::encode($set->name) ?></h6>
             <p class="text-body-secondary mb-4">
-                <?= T::tr('Sign in to share your opinion and help other builders make great choices.') ?>
+                <?= T::tr('Sign in to share your take and help others pick the right set.') ?>
             </p>
             <div class="d-grid gap-2 col-12 col-sm-8 mx-auto">
                 <?= Html::a('<i class="bi bi-box-arrow-in-right me-1"></i>' . T::tr('Sign in to rate'), $loginUrl, ['class' => 'btn btn-primary']) ?>

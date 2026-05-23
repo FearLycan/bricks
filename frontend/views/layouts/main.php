@@ -120,7 +120,7 @@ if ($socialImage !== '') {
         <div class="bricks-topbar">
             <div class="text-center py-2">
                 <span class="small bricks-topbar-text">
-                    <i class="bi bi-lightning-charge-fill me-1"></i><?= T::tr('Track LEGO{sup} prices and find the best deals in one place', ['sup' => '<sup>®</sup>']) ?>
+                    <i class="bi bi-lightning-charge-fill me-1"></i><?= T::tr('Track LEGO{sup} prices and never miss a deal', ['sup' => '<sup>®</sup>']) ?>
                 </span>
             </div>
         </div>
@@ -229,6 +229,7 @@ if ($socialImage !== '') {
                 <div class="col-md-2">
                     <p class="bricks-footer-nav-label"><?= Html::encode(T::tr('Resources')) ?></p>
                     <ul class="bricks-footer-nav">
+                        <li><?= Html::a(T::tr('Shop by interest'), ['/interests'], ['class' => 'bricks-footer-nav-link']) ?></li>
                         <li><?= Html::a(T::tr('LEGO Glossary'), ['/glossary'], ['class' => 'bricks-footer-nav-link']) ?></li>
                     </ul>
                 </div>
@@ -237,7 +238,7 @@ if ($socialImage !== '') {
             <div class="row pt-3">
                 <div class="col-12">
                     <p class="bricks-footer-text small mb-1">
-                        <?= T::tr('Some product links are affiliate links, which means we may earn a commission if you make a purchase through our website.') ?>
+                        <?= T::tr('Some product links are affiliate links — we may earn a commission on purchases through them.') ?>
                     </p>
                     <p class="bricks-footer-text small mb-0">
                         <?= T::tr('LEGO® is a trademark of the LEGO Group. This website is not sponsored, authorized, or endorsed by the LEGO Group.') ?>

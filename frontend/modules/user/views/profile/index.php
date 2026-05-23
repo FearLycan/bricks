@@ -207,7 +207,7 @@ $joinedFormatted = Yii::$app->formatter->asDate($createdAt->format('Y-m-d'), 'lo
                 <div class="user-review-empty">
                     <i class="bi bi-info-circle"></i>
                     <div>
-                        <div class="fw-semibold mb-1"><?= Html::encode(T::tr('A few more detailed reviews unlocks your taste profile')) ?></div>
+                        <div class="fw-semibold mb-1"><?= Html::encode(T::tr('A few more detailed reviews unlock your taste profile')) ?></div>
                         <div class="small text-body-secondary">
                             <?= Html::encode(T::tr('Once you have at least {n} detailed reviews, we will show your preferences and how strictly you rate compared to others.', ['n' => $minReviewsForWidget])) ?>
                         </div>
@@ -264,13 +264,13 @@ $joinedFormatted = Yii::$app->formatter->asDate($createdAt->format('Y-m-d'), 'lo
                                 <?php if ($takeawayStrictest !== null || $takeawayGenerous !== null): ?>
                                     <div class="user-review-radar-takeaway small text-body-secondary mt-2">
                                         <?php if ($takeawayStrictest !== null): ?>
-                                            <?= Html::encode(T::tr('You rate {dim} {n} points stricter than the average reviewer.', [
+                                            <?= Html::encode(T::tr('You rate {dim} {n} points lower than the community average.', [
                                                 'dim' => SetReview::getDimensionLabel($takeawayStrictest['dimension']),
                                                 'n'   => number_format(abs($takeawayStrictest['delta']), 1, '.', ''),
                                             ])) ?>
                                         <?php endif; ?>
                                         <?php if ($takeawayGenerous !== null): ?>
-                                            <?= Html::encode(T::tr('You rate {dim} {n} points more generously than average.', [
+                                            <?= Html::encode(T::tr('You rate {dim} {n} points higher than the community average.', [
                                                 'dim' => SetReview::getDimensionLabel($takeawayGenerous['dimension']),
                                                 'n'   => number_format(abs($takeawayGenerous['delta']), 1, '.', ''),
                                             ])) ?>

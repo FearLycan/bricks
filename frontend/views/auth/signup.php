@@ -181,7 +181,7 @@ $this->registerCss('
                     'alt'     => Yii::$app->name,
             ]) ?>
             <h1 class="auth-title"><?= Html::encode(T::tr('Create account')) ?></h1>
-            <p class="auth-subtitle"><?= Html::encode(T::tr('Fill in the details below to get started')) ?></p>
+            <p class="auth-subtitle"><?= Html::encode(T::tr('Fill in your account details.')) ?></p>
         </div>
 
         <?php $form = ActiveForm::begin(['id' => 'form-signup']); ?>

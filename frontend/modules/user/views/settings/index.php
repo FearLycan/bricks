@@ -43,7 +43,7 @@ $this->params['breadcrumbs'][] = T::tr('Settings');
         <i class="bi bi-sliders text-primary me-2"></i>
         <?= Html::encode(T::tr('Settings')) ?>
     </h1>
-    <p class="text-muted mb-4"><?= Html::encode(T::tr('Tweak how the catalogue behaves for your account.')) ?></p>
+    <p class="text-muted mb-4"><?= Html::encode(T::tr('Tweak how the catalog behaves for your account.')) ?></p>
 
     <div class="row g-3">
         <div class="col-lg-8">
@@ -56,7 +56,7 @@ $this->params['breadcrumbs'][] = T::tr('Settings');
             <section class="user-page-card">
                 <div class="d-flex justify-content-between align-items-baseline mb-2">
                     <h3 class="user-page-card-title">
-                        <i class="bi bi-funnel-fill"></i><?= Html::encode(T::tr('Catalogue display')) ?>
+                        <i class="bi bi-funnel-fill"></i><?= Html::encode(T::tr('Catalog display')) ?>
                     </h3>
                     <span class="user-page-eyebrow"><?= Html::encode(T::tr('Preferences')) ?></span>
                 </div>
@@ -68,7 +68,7 @@ $this->params['breadcrumbs'][] = T::tr('Settings');
                             <?= Html::encode(T::tr('Hide sets I already own')) ?>
                         </p>
                         <p class="user-page-setting-hint">
-                            <?= Html::encode(T::tr('When enabled, any set you marked as owned will be removed from the main catalogue, search and new-arrival listings.')) ?>
+                            <?= Html::encode(T::tr('When enabled, sets you mark as owned are hidden from the main catalog, search and new arrivals.')) ?>
                         </p>
                     </div>
                     <div class="user-page-setting-switch form-check form-switch">
@@ -99,7 +99,7 @@ $this->params['breadcrumbs'][] = T::tr('Settings');
                             <?= Html::encode(T::tr('Preferred language')) ?>
                         </p>
                         <p class="user-page-setting-hint">
-                            <?= Html::encode(T::tr('Choose the language used for the interface. Your preference is remembered between sessions and applied after signing in on any device.')) ?>
+                            <?= Html::encode(T::tr('Pick a language for the interface. We remember your choice across sessions and devices.')) ?>
                         </p>
                     </div>
                     <div class="user-page-setting-switch">
@@ -127,10 +127,10 @@ $this->params['breadcrumbs'][] = T::tr('Settings');
                     <i class="bi bi-info-circle-fill"></i><?= Html::encode(T::tr('Tips')) ?>
                 </h3>
                 <p class="text-muted small mb-2">
-                    <?= Html::encode(T::tr('Mark sets as owned with the box icon on each set card or on the set page.')) ?>
+                    <?= Html::encode(T::tr('Tap the box icon on any set to mark it as owned.')) ?>
                 </p>
                 <p class="text-muted small mb-0">
-                    <?= Html::encode(T::tr('Your preferences apply only to you and are saved instantly after pressing Save.')) ?>
+                    <?= Html::encode(T::tr('Your settings are private and save instantly.')) ?>
                 </p>
             </section>
         </div>

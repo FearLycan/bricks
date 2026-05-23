@@ -31,7 +31,7 @@ final class LegoGlossary
                     [
                         'term'       => 'AFOL',
                         'full'       => 'Adult Fan of LEGO',
-                        'definition' => T::tr('An adult LEGO enthusiast — typically 18+ — who actively builds, collects, or follows the hobby.'),
+                        'definition' => T::tr('An adult LEGO enthusiast, usually 18+, who actively follows the hobby.'),
                     ],
                     [
                         'term'       => 'TFOL',
@@ -51,7 +51,7 @@ final class LegoGlossary
                     [
                         'term'       => 'LUG',
                         'full'       => 'LEGO User Group',
-                        'definition' => T::tr('A community of AFOLs that meets locally or online to build, exhibit, and share the hobby.'),
+                        'definition' => T::tr('A community of AFOLs that meets locally or online to build and share the hobby.'),
                     ],
                     [
                         'term'       => 'RLUG',
@@ -79,7 +79,7 @@ final class LegoGlossary
                     [
                         'term'       => 'Brick',
                         'full'       => null,
-                        'definition' => T::tr('The classic rectangular element with studs on top — the building block of every LEGO set (e.g. 2x4, 1x2).'),
+                        'definition' => T::tr('The classic rectangular element with studs on top. The building block of every LEGO set (e.g. 2x4, 1x2).'),
                     ],
                     [
                         'term'       => 'Plate',
@@ -99,7 +99,7 @@ final class LegoGlossary
                     [
                         'term'       => 'Slope',
                         'full'       => null,
-                        'definition' => T::tr('An angled element used for roofs, ramps, and curved surfaces.'),
+                        'definition' => T::tr('An angled element used for roofs, ramps and other non-flat surfaces.'),
                     ],
                     [
                         'term'       => 'Cheese slope',
@@ -132,7 +132,7 @@ final class LegoGlossary
                 'slug'  => 'sets',
                 'name'  => T::tr('Sets & Themes'),
                 'icon'  => 'bi-box-seam-fill',
-                'intro' => T::tr('Labels for set lines, exclusives, and lifecycle stages.'),
+                'intro' => T::tr('Names for set lines, exclusives, and what happens when a set retires.'),
                 'terms' => [
                     [
                         'term'       => 'UCS',
@@ -225,7 +225,7 @@ final class LegoGlossary
                     [
                         'term'       => 'Greebling',
                         'full'       => null,
-                        'definition' => T::tr('Adding small decorative parts (pipes, antennas, gears) to a surface for a busy, technical look — popular on spaceships.'),
+                        'definition' => T::tr('Adding small decorative parts (pipes, antennas, gears) to make a surface look busy and technical. Popular on spaceships.'),
                     ],
                     [
                         'term'       => 'Microscale',
@@ -253,7 +253,7 @@ final class LegoGlossary
                 'slug'  => 'marketplace',
                 'name'  => T::tr('Marketplace'),
                 'icon'  => 'bi-shop',
-                'intro' => T::tr('Terms you’ll see on resale sites, auction listings, and trade forums.'),
+                'intro' => T::tr('Vocabulary that pops up on resale sites and trade forums.'),
                 'terms' => [
                     [
                         'term'       => 'BL',
@@ -283,7 +283,7 @@ final class LegoGlossary
                     [
                         'term'       => 'LBR',
                         'full'       => 'LEGO Brand Retail',
-                        'definition' => T::tr('Official LEGO stores (LEGO.com and physical brand stores) — the primary source for exclusives and GWPs.'),
+                        'definition' => T::tr('Official LEGO stores (LEGO.com and physical brand stores). The primary source for exclusives and GWPs.'),
                     ],
                     [
                         'term'       => 'Resale value',
@@ -301,17 +301,17 @@ final class LegoGlossary
                 'slug'  => 'tools',
                 'name'  => T::tr('Tools & Ecosystem'),
                 'icon'  => 'bi-puzzle-fill',
-                'intro' => T::tr('Apps, databases, and acronyms from the wider LEGO ecosystem.'),
+                'intro' => T::tr('Apps, databases and acronyms from around the LEGO ecosystem.'),
                 'terms' => [
                     [
                         'term'       => 'LDraw',
                         'full'       => null,
-                        'definition' => T::tr('An open standard and library of part files for digital LEGO models. The backbone of most third-party CAD tools.'),
+                        'definition' => T::tr('An open standard and library of part files for digital LEGO models. The foundation of most third-party CAD tools.'),
                     ],
                     [
                         'term'       => 'Stud.io',
                         'full'       => null,
-                        'definition' => T::tr('A free LEGO CAD program from BrickLink, with rendering, instructions, and an integrated parts ordering flow.'),
+                        'definition' => T::tr('A free LEGO CAD program from BrickLink with rendering, building instructions and a parts-ordering flow.'),
                     ],
                     [
                         'term'       => 'LDD',

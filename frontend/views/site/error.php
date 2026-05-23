@@ -181,7 +181,7 @@ $this->registerCss('
                 <?= T::tr('The above error occurred while the Web server was processing your request.') ?>
             </p>
             <p class="mb-0">
-                <?= T::tr('Please contact us if you think this is a server error. Thank you.') ?>
+                <?= T::tr('Please contact us if you think this is a server error.') ?>
             </p>
             
             <div class="site-error-categories">

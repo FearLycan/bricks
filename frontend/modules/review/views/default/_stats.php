@@ -104,7 +104,7 @@ $reviewListId = 'review-list-' . (int)$set->id;
             <div class="review-empty-emoji">🌟</div>
             <h6 class="mb-2"><?= T::tr('No reviews yet — be the first!') ?></h6>
             <p class="text-body-secondary small mb-3">
-                <?= T::tr('Your opinion helps other builders pick the perfect set.') ?>
+                <?= T::tr('Your opinion helps others find the right set.') ?>
             </p>
             <?= Html::a('<i class="bi bi-stars me-1"></i>' . Html::encode($ctaLabel), $choiceUrl, [
                     'class'       => 'btn btn-primary js-load-modal',

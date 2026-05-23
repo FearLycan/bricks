@@ -3,6 +3,7 @@
 namespace frontend\controllers;
 
 use frontend\components\LegoGlossary;
+use frontend\components\LegoInterests;
 use frontend\components\T;
 use frontend\models\ContactForm;
 use Yii;
@@ -49,7 +50,7 @@ class SiteController extends Controller
         $model = new ContactForm();
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             if ($model->sendEmail(Yii::$app->params['adminEmail'])) {
-                Yii::$app->session->setFlash('success', T::tr('Thank you for contacting us. We will respond to you as soon as possible.'));
+                Yii::$app->session->setFlash('success', T::tr('Thanks for reaching out — we’ll get back to you soon.'));
             } else {
                 Yii::$app->session->setFlash('error', T::tr('There was an error sending your message.'));
             }
@@ -79,6 +80,16 @@ class SiteController extends Controller
     {
         return $this->render('glossary', [
             'categories' => LegoGlossary::getCategories(),
+        ]);
+    }
+
+    /**
+     * Displays the curated "Interests" landing page at /interests.
+     */
+    public function actionInterests(): string
+    {
+        return $this->render('interests', [
+            'tiles' => LegoInterests::getTiles(),
         ]);
     }
 }

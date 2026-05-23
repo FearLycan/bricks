@@ -157,7 +157,7 @@ $this->registerCss('
                 'alt'     => Yii::$app->name,
             ]) ?>
             <h1 class="auth-title"><?= Html::encode(T::tr('Welcome back')) ?></h1>
-            <p class="auth-subtitle"><?= Html::encode(T::tr('Sign in to your account to continue')) ?></p>
+            <p class="auth-subtitle"><?= Html::encode(T::tr('Sign in to continue')) ?></p>
         </div>
 
         <?php $form = ActiveForm::begin(['id' => 'login-form']); ?>

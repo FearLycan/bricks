@@ -43,7 +43,7 @@ final class SeoHelper
 
     public static function defaultMetaDescription(): string
     {
-        return T::tr('Browse LEGO sets, compare prices, explore themes, and find minifigure appearances in the Brick Store catalog.');
+        return T::tr('Browse LEGO sets, compare prices, explore themes and find minifigure appearances on BrickAtlas.');
     }
 
     /**
@@ -241,12 +241,12 @@ final class SeoHelper
 
     public static function buildRetiringSoonIntro(): string
     {
-        return T::tr('Sets with a known retirement date on the horizon — these are likely to disappear from retailers and jump in price once gone.');
+        return T::tr('Sets with a confirmed retirement date — likely to disappear from retailers and climb in price once gone.');
     }
 
     public static function buildCatalogDescription(int $page = 1): string
     {
-        $description = T::tr('Browse LEGO sets, compare prices, and filter the catalog by theme, release year, and sorting options.');
+        $description = T::tr('Browse LEGO sets and filter the catalog by theme, release year, or sort by price.');
 
         return self::appendPageDescriptionSuffix(self::truncate($description), $page);
     }
@@ -258,12 +258,12 @@ final class SeoHelper
 
     public static function buildFilteredCatalogDescription(): string
     {
-        return self::truncate(T::tr('Filtered LEGO set results for the current catalog view. Refine the listing by keyword, theme, release year, and sorting options.'));
+        return self::truncate(T::tr('Your filtered catalog view. Refine by keyword, theme, year or sort order.'));
     }
 
     public static function buildCatalogIntro(): string
     {
-        return T::tr('Explore the latest LEGO sets, compare prices, and quickly narrow the catalog by theme, release year, or sorting preferences.');
+        return T::tr('Browse the catalog and filter by theme, year or sort by price.');
     }
 
     public static function buildThemeTitle(Theme $theme, ?Theme $subTheme = null, int $page = 1): string
@@ -358,7 +358,7 @@ final class SeoHelper
 
     public static function buildMinifigDescription(string $displayName, string $number, int $page = 1): string
     {
-        $description = self::truncate(T::tr('Browse LEGO sets that include minifigure {name} and compare current offers for minifigure number {number}.', [
+        $description = self::truncate(T::tr('Browse LEGO sets with minifigure {name} ({number}) and compare current offers.', [
             'name'   => self::normalizeText($displayName),
             'number' => self::normalizeText($number),
         ]));

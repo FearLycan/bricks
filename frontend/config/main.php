@@ -99,6 +99,7 @@ return [
             'rules'                       => [
                 ''                                              => 'homepage/home/index',
                 'glossary'                                      => 'site/glossary',
+                'interests'                                     => 'site/interests',
                 'wizard/save'                                   => 'wizard/default/save',
                 'wizard/load'                                   => 'wizard/default/load',
                 'review/save-simple'                            => 'review/default/save-simple',

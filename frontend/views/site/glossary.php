@@ -11,8 +11,8 @@ use yii\web\View;
  * @var array $categories Output of LegoGlossary::getCategories()
  */
 
-$this->title = T::tr('LEGO Glossary — AFOL Terms, Acronyms and Slang');
-$this->params['metaDescription'] = T::tr('A searchable glossary of LEGO acronyms, slang, and community terms — from AFOL and MOC to SNOT, UCS, and MISB.');
+$this->title = T::tr('LEGO Glossary: AFOL acronyms and slang explained');
+$this->params['metaDescription'] = T::tr('Plain-language definitions of LEGO acronyms and slang. AFOL, MOC, SNOT, UCS, MISB and the rest explained.');
 $this->params['canonicalUrl'] = SeoHelper::buildAbsoluteUrl(['/glossary']);
 $this->params['robots'] = 'index,follow';
 
@@ -23,9 +23,9 @@ $this->registerCssFile('@web/css/glossary.css', ['depends' => [\frontend\assets\
 ?>
 
 <?= $this->render('@frontend/views/_partials/_page-hero', [
-        'eyebrow'         => T::tr('Reference'),
+        'eyebrow'         => T::tr('For AFOLs'),
         'title'           => T::tr('LEGO Glossary'),
-        'intro'           => T::tr('A quick guide to the acronyms, slang, and community lingo you’ll encounter as a LEGO fan — from your first polybag to your first MOC.'),
+        'intro'           => T::tr('What every acronym and bit of slang on this site actually means.'),
         'icon'            => 'bi-journal-text',
         'modifier'        => 'glossary',
         'showBreadcrumbs' => true,
@@ -38,7 +38,7 @@ $this->registerCssFile('@web/css/glossary.css', ['depends' => [\frontend\assets\
             <input type="search"
                    class="glossary-search-input"
                    id="glossarySearch"
-                   placeholder="<?= Html::encode(T::tr('Search terms — try “AFOL” or “sealed box”')) ?>"
+                   placeholder="<?= Html::encode(T::tr('Search — try “AFOL” or “sealed box”')) ?>"
                    autocomplete="off"
                    spellcheck="false"
                    aria-label="<?= Html::encode(T::tr('Search glossary')) ?>">
@@ -116,7 +116,7 @@ $this->registerCssFile('@web/css/glossary.css', ['depends' => [\frontend\assets\
 
             <p class="glossary-empty" id="glossaryEmpty" hidden>
                 <i class="bi bi-emoji-frown me-2"></i>
-                <?= Html::encode(T::tr('No glossary entries match your search. Try a different keyword.')) ?>
+                <?= Html::encode(T::tr('Nothing matches that search. Try a different keyword.')) ?>
             </p>
         </div>
     </div>
@@ -124,7 +124,7 @@ $this->registerCssFile('@web/css/glossary.css', ['depends' => [\frontend\assets\
 
 <?php
 $jsTexts = [
-    'noResults' => T::tr('No glossary entries match your search. Try a different keyword.'),
+    'noResults' => T::tr('Nothing matches that search. Try a different keyword.'),
 ];
 $jsConfig = json_encode($jsTexts, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 $this->registerJs(<<<JS
