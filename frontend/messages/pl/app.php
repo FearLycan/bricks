@@ -321,8 +321,6 @@ return [
     'When should it be released?'                                                                                                                                          => 'Kiedy ma być wydany?',
     'Who are you shopping for?'                                                                                                                                            => 'Dla kogo kupujesz?',
     'Who is the gift for?'                                                                                                                                                 => 'Dla kogo jest prezent?',
-
-    // ─── System ocen ─────────────────────────────────────────────────────────
     'Rate this set'                                                                                                                                                        => 'Oceń ten zestaw',
     'Update your review'                                                                                                                                                   => 'Zaktualizuj swoją recenzję',
     'Update review'                                                                                                                                                        => 'Zaktualizuj recenzję',
@@ -361,7 +359,6 @@ return [
     'Title'                                                                                                                                                                => 'Tytuł',
     'optional'                                                                                                                                                             => 'opcjonalne',
     'Saving...'                                                                                                                                                            => 'Zapisywanie...',
-
     'Look & design'                                                                                                                                                        => 'Wygląd i design',
     'Building experience'                                                                                                                                                  => 'Doświadczenie budowania',
     'Features & play'                                                                                                                                                      => 'Funkcje i bawialność',
@@ -374,7 +371,6 @@ return [
     'How is the quality of the elements?'                                                                                                                                  => 'Jaka jest jakość elementów?',
     'Is the set worth its price?'                                                                                                                                          => 'Czy zestaw jest wart swojej ceny?',
     'How strongly would you recommend this set?'                                                                                                                           => 'Jak mocno poleciłbyś ten zestaw?',
-
     'Does the set capture the theme / license well?'                                                                                                                       => 'Czy zestaw dobrze oddaje temat / licencję?',
     'Are the colors and proportions visually appealing?'                                                                                                                   => 'Czy kolory i proporcje są atrakcyjne wizualnie?',
     'Were the instructions clear and logical?'                                                                                                                             => 'Czy instrukcja była jasna i logiczna?',
@@ -392,7 +388,6 @@ return [
     'Would you buy this set again?'                                                                                                                                        => 'Czy kupiłbyś ten zestaw ponownie?',
     'What did you like most?'                                                                                                                                              => 'Co najbardziej Ci się podobało?',
     'What did you like least?'                                                                                                                                             => 'Co najmniej Ci się podobało?',
-
     'Poorly'                                                                                                                                                               => 'Słabo',
     'Well'                                                                                                                                                                 => 'Dobrze',
     'Excellently'                                                                                                                                                          => 'Wyśmienicie',
@@ -431,13 +426,10 @@ return [
     'How you think about THIS specific set. Different sets can be for different reasons (display vs play) — these answers are saved per set.'                              => 'Jak myślisz o TYM konkretnym zestawie. Różne zestawy mogą służyć różnym celom (ekspozycja vs zabawa) — odpowiedzi zapisują się per zestaw.',
     'Collection'                                                                                                                                                           => 'Kolekcji',
     'Technical'                                                                                                                                                            => 'Technicznych',
-    'Minifigures'                                                                                                                                                          => 'Minifigurek',
     'Piece count'                                                                                                                                                          => 'Liczba elementów',
     'Playability'                                                                                                                                                          => 'Bawialność',
     'Looks'                                                                                                                                                                => 'Wygląd',
-    'Price'                                                                                                                                                                => 'Cena',
     'License / IP'                                                                                                                                                         => 'Licencja / IP',
-
     'Look'                                                                                                                                                                 => 'Wygląd',
     'Build'                                                                                                                                                                => 'Budowa',
     'Features'                                                                                                                                                             => 'Funkcje',
@@ -467,7 +459,6 @@ return [
     'No reviews available.'                                                                                                                                                => 'Brak recenzji.',
     'Reviews <small>({n})</small>'                                                                                                                                         => 'Recenzje <small>({n})</small>',
     'Average'                                                                                                                                                              => 'Średnio',
-
     'Please provide a rating between 1 and 10.'                                                                                                                            => 'Podaj ocenę z zakresu 1–10.',
     'Please rate every dimension before submitting.'                                                                                                                       => 'Oceń każdy z wymiarów przed wysłaniem.',
     'Thanks for your review!'                                                                                                                                              => 'Dzięki za recenzję!',
@@ -477,7 +468,6 @@ return [
     'Could not save your rating. Please try again.'                                                                                                                        => 'Nie udało się zapisać oceny. Spróbuj ponownie.',
     'Could not save your review. Please try again.'                                                                                                                        => 'Nie udało się zapisać recenzji. Spróbuj ponownie.',
     'Your review has been removed.'                                                                                                                                        => 'Twoja recenzja została usunięta.',
-    'Set not found.'                                                                                                                                                       => 'Nie znaleziono zestawu.',
     'A few more detailed reviews unlocks your taste profile'                                                                                                               => 'Jeszcze kilka szczegółowych recenzji odblokuje Twój profil preferencji',
     'Community avg'                                                                                                                                                        => 'Średnia społeczności',
     'Estimated from your previous reviews and what other reviewers said about this set.'                                                                                  => 'Oszacowane na podstawie Twoich wcześniejszych recenzji oraz tego, co inni recenzenci powiedzieli o tym zestawie.',
@@ -502,7 +492,6 @@ return [
     'My reviews'                                                                                                                                                           => 'Moje recenzje',
     'Open set'                                                                                                                                                             => 'Otwórz zestaw',
     'Published'                                                                                                                                                            => 'Opublikowana',
-    'Quick rating'                                                                                                                                                         => 'Szybka ocena',
     'You have not reviewed any sets yet.'                                                                                                                                  => 'Nie zrecenzowałeś jeszcze żadnego zestawu.',
     'Your reviews'                                                                                                                                                         => 'Twoje recenzje',
     'A homepage built around your collection — themes, new arrivals, price drops and recommendations, refreshed automatically as the catalogue updates.' => 'Strona główna zbudowana wokół Twojej kolekcji — tematy, nowości, obniżki cen i rekomendacje, odświeżane automatycznie wraz z aktualizacją katalogu.',
