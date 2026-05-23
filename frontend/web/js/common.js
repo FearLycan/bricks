@@ -364,3 +364,66 @@ function initVenoBox(customOptions = {}) {
 
     return new VenoBox(options);
 }
+/* ==========================================================================
+   Horizontal slider navigation.
+   Binds prev/next chevron buttons rendered by _section-slider.php (and any
+   other element marked [data-bricks-slider]) to scroll their track by roughly
+   one card width per click. Buttons stay hidden until the track actually
+   overflows so static lists never get useless controls.
+   ========================================================================== */
+(function () {
+    function initBricksSlider(slider) {
+        const track = slider.querySelector('[data-bricks-slider-track]');
+        const prev  = slider.querySelector('[data-bricks-slider-prev]');
+        const next  = slider.querySelector('[data-bricks-slider-next]');
+        if (!track) {
+            return;
+        }
+
+        function stepSize() {
+            const card = track.querySelector('.bricks-slider-item');
+            if (!card) {
+                return track.clientWidth * 0.8;
+            }
+            const styles = window.getComputedStyle(track);
+            const gap = parseFloat(styles.columnGap || styles.gap || '0') || 0;
+            return Math.max(120, card.getBoundingClientRect().width + gap);
+        }
+
+        function refreshButtons() {
+            const hasOverflow = track.scrollWidth - track.clientWidth > 1;
+            if (prev) {
+                prev.hidden = !hasOverflow;
+                prev.disabled = track.scrollLeft <= 1;
+            }
+            if (next) {
+                next.hidden = !hasOverflow;
+                next.disabled = track.scrollLeft + track.clientWidth >= track.scrollWidth - 1;
+            }
+        }
+
+        if (prev) {
+            prev.addEventListener('click', function () {
+                track.scrollBy({left: -stepSize(), behavior: 'smooth'});
+            });
+        }
+        if (next) {
+            next.addEventListener('click', function () {
+                track.scrollBy({left: stepSize(), behavior: 'smooth'});
+            });
+        }
+
+        track.addEventListener('scroll', refreshButtons, {passive: true});
+        window.addEventListener('resize', refreshButtons);
+        refreshButtons();
+
+        // Card images load lazily — sizes change after first paint.
+        if (typeof ResizeObserver !== 'undefined') {
+            new ResizeObserver(refreshButtons).observe(track);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('[data-bricks-slider]').forEach(initBricksSlider);
+    });
+})();

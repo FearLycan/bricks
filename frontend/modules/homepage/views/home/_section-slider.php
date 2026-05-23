@@ -37,14 +37,28 @@ $modifierClass = $modifierClass ?? '';
                 </a>
             <?php endif; ?>
         </div>
-        <div class="bricks-slider">
-            <div class="bricks-slider-track">
+        <div class="bricks-slider" data-bricks-slider>
+            <button type="button"
+                    class="bricks-slider-nav bricks-slider-nav-prev"
+                    data-bricks-slider-prev
+                    aria-label="<?= Html::encode(T::tr('Scroll left')) ?>"
+                    hidden>
+                <i class="bi bi-chevron-left"></i>
+            </button>
+            <div class="bricks-slider-track" data-bricks-slider-track>
                 <?php foreach ($items as $item): ?>
                     <div class="bricks-slider-item">
                         <?= $this->render('_set-card', ['model' => $item]) ?>
                     </div>
                 <?php endforeach; ?>
             </div>
+            <button type="button"
+                    class="bricks-slider-nav bricks-slider-nav-next"
+                    data-bricks-slider-next
+                    aria-label="<?= Html::encode(T::tr('Scroll right')) ?>"
+                    hidden>
+                <i class="bi bi-chevron-right"></i>
+            </button>
         </div>
     </div>
 </section>

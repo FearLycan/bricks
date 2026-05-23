@@ -19,7 +19,7 @@ use yii\widgets\ActiveForm;
     <div class="set-search">
 
         <?php $form = ActiveForm::begin([
-                'action'  => ['/lego'],
+                'action'  => Url::current([]),
                 'method'  => 'get',
                 'options' => ['id' => 'set-search-form'],
         ]); ?>

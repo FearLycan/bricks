@@ -33,7 +33,7 @@
 .bricks-section-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: var(--bricks-hp-gap);
+    gap: var(--bricks-hp-gap, 1.25rem);
 }
 
 .bricks-section-skeleton {
@@ -75,7 +75,7 @@
 
 .bricks-slider-track {
     display: flex;
-    gap: var(--bricks-hp-gap);
+    gap: var(--bricks-hp-gap, 1.25rem);
     overflow-x: auto;
     overflow-y: hidden;
     scroll-snap-type: x mandatory;
@@ -1321,3 +1321,66 @@ a.bricks-collection-stats-tile:hover {
 .bricks-browse-tile--gradient-pink   .bricks-browse-tile-media { background-image: linear-gradient(135deg, #9d174d, #ec4899); }
 .bricks-browse-tile--gradient-teal   .bricks-browse-tile-media { background-image: linear-gradient(135deg, #134e4a, #14b8a6); }
 .bricks-browse-tile--gradient-slate  .bricks-browse-tile-media { background-image: linear-gradient(135deg, #1f2937, #4b5563); }
+
+/* ==========================================================================
+   Slider navigation buttons (chevron left/right)
+   Overlay arrows for horizontal scroll on .bricks-slider. Hidden on touch
+   devices (native swipe is enough) and when the track has nothing to scroll.
+   ========================================================================== */
+
+.bricks-slider-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 4;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid #e5e7eb;
+    background: #ffffff;
+    color: #1f2937;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.18);
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s ease, background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+    padding: 0;
+}
+
+.bricks-slider:hover .bricks-slider-nav,
+.bricks-slider-nav:focus-visible {
+    opacity: 1;
+}
+
+.bricks-slider-nav:hover {
+    background: #ffd400;
+    color: #0d2545;
+}
+
+.bricks-slider-nav:disabled {
+    opacity: 0 !important;
+    pointer-events: none;
+}
+
+.bricks-slider-nav-prev {
+    left: -8px;
+}
+
+.bricks-slider-nav-next {
+    right: -8px;
+}
+
+@media (min-width: 768px) {
+    .bricks-slider-nav-prev { left: -18px; }
+    .bricks-slider-nav-next { right: -18px; }
+}
+
+/* On touch devices native swipe is the primary affordance. */
+@media (hover: none) {
+    .bricks-slider-nav {
+        display: none;
+    }
+}
