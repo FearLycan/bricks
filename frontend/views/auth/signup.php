@@ -9,7 +9,7 @@ use frontend\components\T;
 use yii\bootstrap5\ActiveForm;
 use yii\bootstrap5\Html;
 
-$this->title = T::tr('Create account');
+$this->title = T::tr('Create BrickAtlas Account — Track LEGO® Sets');
 
 $this->registerCssFile('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&display=swap');
 

@@ -222,7 +222,7 @@ final class SeoHelper
 
     public static function buildPromoTitle(int $page = 1): string
     {
-        return self::appendPageSuffix(T::tr('LEGO Sets On Sale'), $page);
+        return self::appendPageSuffix(T::tr('LEGO Sets On Sale — Best Deals on BrickAtlas'), $page);
     }
 
     public static function buildPromoDescription(int $page = 1): string
@@ -234,7 +234,7 @@ final class SeoHelper
 
     public static function buildMagazinesTitle(int $page = 1): string
     {
-        return self::appendPageSuffix(T::tr('LEGO Magazine Sets'), $page);
+        return self::appendPageSuffix(T::tr('LEGO Magazine Sets — Mini-Builds from Kiosks'), $page);
     }
 
     public static function buildMagazinesDescription(int $page = 1): string
@@ -251,7 +251,7 @@ final class SeoHelper
 
     public static function buildExclusiveTitle(int $page = 1): string
     {
-        return self::appendPageSuffix(T::tr('LEGO Exclusive Sets'), $page);
+        return self::appendPageSuffix(T::tr('LEGO Exclusive Sets — LEGO.com Premiums on BrickAtlas'), $page);
     }
 
     public static function buildExclusiveDescription(int $page = 1): string
@@ -268,7 +268,7 @@ final class SeoHelper
 
     public static function buildRetiringSoonTitle(int $page = 1): string
     {
-        return self::appendPageSuffix(T::tr('LEGO Sets Retiring Soon'), $page);
+        return self::appendPageSuffix(T::tr('LEGO Sets Retiring Soon — Catch Before They Go'), $page);
     }
 
     public static function buildRetiringSoonDescription(int $page = 1): string
@@ -348,7 +348,15 @@ final class SeoHelper
         $setName = self::normalizeText($set->name);
         $setNumber = self::normalizeText($set->getSetNumberText());
 
-        return T::tr('{name} LEGO Set {number} - Price Comparison and Details', [
+        // Long set names need truncation so the title fits in Google's ~60-char
+        // SERP cutoff. The " (#####) — LEGO Set | BrickAtlas" suffix takes
+        // ~30 chars, leaving ~30 chars for the name.
+        $maxNameLen = 28;
+        if (mb_strlen($setName) > $maxNameLen) {
+            $setName = rtrim(mb_substr($setName, 0, $maxNameLen - 1)) . '…';
+        }
+
+        return T::tr('{name} ({number}) — LEGO Set | BrickAtlas', [
             'name'   => $setName,
             'number' => $setNumber,
         ]);
@@ -392,7 +400,12 @@ final class SeoHelper
 
     public static function buildMinifigTitle(string $displayName, int $page = 1): string
     {
-        return self::appendPageSuffix(T::tr('LEGO Sets with Minifigure: {name}', ['name' => self::normalizeText($displayName)]), $page);
+        $name = self::normalizeText($displayName);
+        if (mb_strlen($name) > 30) {
+            $name = rtrim(mb_substr($name, 0, 29)) . '…';
+        }
+
+        return self::appendPageSuffix(T::tr('LEGO Sets with Minifigure {name} | BrickAtlas', ['name' => $name]), $page);
     }
 
     public static function buildMinifigDescription(string $displayName, string $number, int $page = 1): string

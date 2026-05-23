@@ -6,7 +6,7 @@ use frontend\components\T;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
-$this->title = T::tr('About BrickAtlas');
+$this->title = T::tr('About BrickAtlas — LEGO® Price Tracker for AFOLs');
 $this->params['breadcrumbs'][] = T::tr('About');
 ?>
 <div class="site-about">

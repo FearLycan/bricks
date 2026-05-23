@@ -1,0 +1,43 @@
+# BrickAtlas
+
+> Independent price tracker and discovery tool for LEGO® sets. Compare prices across stores, track sets you own, find deals, and explore the catalog by theme, interest or release window.
+
+BrickAtlas is not affiliated with The LEGO Group. LEGO® is a trademark of the LEGO Group.
+
+The site is available in eight languages (English, Polish, German, French, Spanish, Italian, Japanese, Chinese). The default URL (no prefix) serves English; other languages live at `/pl/`, `/de/`, `/fr/`, `/es/`, `/it/`, `/ja/`, `/zh/`.
+
+## Browse the catalog
+
+- [LEGO catalog](https://brickatlas.shop/lego): full set catalog with filters for theme, year, age, piece count and price
+- [Sets on sale](https://brickatlas.shop/lego/on-sale): sets where the lowest store offer beats the official LEGO price
+- [Shop by interest](https://brickatlas.shop/interests): curated entry points — Star Wars, Harry Potter, Adults Welcome, Polybags, Seasonal, and more
+
+## Curated categories
+
+- [Magazine sets](https://brickatlas.shop/lego/magazines): mini-builds bundled with collectible LEGO magazines
+- [LEGO Exclusive](https://brickatlas.shop/lego/exclusive): sets sold only through LEGO.com and brand stores
+- [Retiring soon](https://brickatlas.shop/lego/retiring-soon): sets approaching their official retirement date
+
+## Reference
+
+- [FAQ](https://brickatlas.shop/faq): how prices work, account, wishlist, reviews, privacy
+- [LEGO glossary](https://brickatlas.shop/glossary): AFOL acronyms and community slang (AFOL, MOC, SNOT, UCS, MISB, etc.)
+- [About BrickAtlas](https://brickatlas.shop/about): what we do and how
+- [Contact](https://brickatlas.shop/contact): get in touch
+
+## Data sources
+
+- Set catalog, parts, minifigure and theme data come from the LEGO catalog and from community databases (notably Rebrickable)
+- Offer data is collected from supported stores and refreshed regularly
+- Reviews are written by signed-in BrickAtlas users (Quick rating or Detailed 6-dimension review)
+
+## Sitemap
+
+- [XML sitemap index](https://brickatlas.shop/sitemap.xml): full index of all pages with hreflang alternates for 8 languages
+
+## Optional
+
+- [Set pages](https://brickatlas.shop/lego/{slug}): individual set details with images, specs, store offers and user reviews — slug format is `<name>-<set-number>`
+- [Theme pages](https://brickatlas.shop/lego/theme/{slug}): set listings filtered by theme
+- [Tag pages](https://brickatlas.shop/lego/tag/{slug}): set listings filtered by community tag
+- [Minifigure pages](https://brickatlas.shop/lego/minifig/{number}): list of sets containing a given minifigure

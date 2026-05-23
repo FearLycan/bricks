@@ -8,8 +8,8 @@ use frontend\components\T;
 use yii\bootstrap5\Html;
 use yii\bootstrap5\ActiveForm;
 
-$this->title = T::tr('Contact');
-$this->params['breadcrumbs'][] = $this->title;
+$this->title = T::tr('Contact BrickAtlas — Questions and Feedback');
+$this->params['breadcrumbs'][] = T::tr('Contact');
 
 $this->registerCssFile('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&display=swap');
 $this->registerCss('

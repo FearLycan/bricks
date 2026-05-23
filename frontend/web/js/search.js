@@ -85,7 +85,7 @@
             html += '<div class="bricks-search-group-label">Sets</div>';
             sets.forEach(function (item) {
                 html += '<a class="bricks-search-item" href="' + esc(item.url) + '">'
-                    + '<img class="bricks-search-item-img" src="' + esc(item.img) + '" alt="" loading="lazy">'
+                    + '<img class="bricks-search-item-img" src="' + esc(item.img) + '" alt="' + esc(item.name) + '" loading="lazy">'
                     + '<div class="bricks-search-item-info">'
                     + '<span class="bricks-search-item-name">' + esc(item.name) + '</span>'
                     + '<span class="bricks-search-item-number">' + esc(item.number) + '</span>'

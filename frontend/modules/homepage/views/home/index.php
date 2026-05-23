@@ -22,7 +22,7 @@ use yii\web\View;
  * @var array|null $collectionStats
  */
 
-$this->title = Yii::$app->name;
+$this->title = T::tr('BrickAtlas — track LEGO® prices and find best deals');
 $this->params['breadcrumbs'] = [];
 $this->params['fullWidth'] = true;
 

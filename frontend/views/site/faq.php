@@ -10,7 +10,7 @@ use yii\web\View;
  * @var array $categories Output of LegoFaq::getCategories()
  */
 
-$this->title = T::tr('Help and FAQ — BrickAtlas');
+$this->title = T::tr('Help and FAQ — BrickAtlas LEGO® Price Tracker');
 $this->params['metaDescription'] = T::tr('Answers to common questions about BrickAtlas — prices, wishlist, reviews, account and privacy.');
 $this->params['canonicalUrl'] = SeoHelper::buildAbsoluteUrl(['/faq']);
 $this->params['robots'] = 'index,follow';

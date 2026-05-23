@@ -11,7 +11,7 @@ use yii\web\View;
  * @var array $tiles Output of LegoInterests::getTiles()
  */
 
-$this->title = T::tr('Browse LEGO® Sets by Interest');
+$this->title = T::tr('LEGO® Sets by Interest — Star Wars, Marvel and More');
 $this->params['metaDescription'] = T::tr('Discover LEGO sets curated by interest — Adults Welcome, Star Wars, Magazines, Polybags, Exclusive, Harry Potter, and more.');
 $this->params['canonicalUrl'] = SeoHelper::buildAbsoluteUrl(['/interests']);
 $this->params['robots'] = 'index,follow';

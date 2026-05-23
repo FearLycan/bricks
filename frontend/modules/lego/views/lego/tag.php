@@ -20,7 +20,7 @@ use yii\web\View;
 
 $page = SeoHelper::resolvePageNumber();
 
-$this->title = T::tr('Sets tagged: {tag}', ['tag' => $tag->name]) . ($page > 1 ? ' — ' . T::tr('Page {page}', ['page' => $page]) : '');
+$this->title = T::tr('{tag} LEGO Sets — Tagged on BrickAtlas', ['tag' => $tag->name]) . ($page > 1 ? ' — ' . T::tr('Page {page}', ['page' => $page]) : '');
 $this->params['metaDescription'] = T::tr('Browse LEGO sets tagged "{tag}". Compare prices and explore the full catalog.', ['tag' => $tag->name]);
 $this->params['canonicalUrl'] = SeoHelper::buildAbsoluteUrl($page > 1 ? ['/lego/lego/tag', 'slug' => $tag->slug, 'page' => $page] : ['/lego/lego/tag', 'slug' => $tag->slug]);
 $this->params['robots'] = 'index,follow';
