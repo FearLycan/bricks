@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 
+use frontend\components\LegoGlossary;
 use frontend\components\T;
 use frontend\models\ContactForm;
 use Yii;
@@ -69,5 +70,15 @@ class SiteController extends Controller
     public function actionAbout()
     {
         return $this->render('about');
+    }
+
+    /**
+     * Displays the public LEGO glossary at /glossary.
+     */
+    public function actionGlossary(): string
+    {
+        return $this->render('glossary', [
+            'categories' => LegoGlossary::getCategories(),
+        ]);
     }
 }

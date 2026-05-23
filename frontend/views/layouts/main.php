@@ -226,6 +226,12 @@ if ($socialImage !== '') {
                         <li><?= Html::a(T::tr('Contact'), ['/site/contact'], ['class' => 'bricks-footer-nav-link']) ?></li>
                     </ul>
                 </div>
+                <div class="col-md-2">
+                    <p class="bricks-footer-nav-label"><?= Html::encode(T::tr('Resources')) ?></p>
+                    <ul class="bricks-footer-nav">
+                        <li><?= Html::a(T::tr('LEGO Glossary'), ['/glossary'], ['class' => 'bricks-footer-nav-link']) ?></li>
+                    </ul>
+                </div>
             </div>
             <div class="bricks-footer-divider"></div>
             <div class="row pt-3">
@@ -242,6 +248,14 @@ if ($socialImage !== '') {
     </footer>
 
     <div class="modal fade" id="mainModal" tabindex="-1" aria-hidden="true"></div>
+
+    <button type="button"
+            id="scrollToTopBtn"
+            class="bricks-scroll-top"
+            aria-label="<?= Html::encode(T::tr('Back to top')) ?>"
+            title="<?= Html::encode(T::tr('Back to top')) ?>">
+        <i class="bi bi-arrow-up"></i>
+    </button>
 
     <?= $this->renderFile(Yii::$app->getModule('wizard')->getViewPath() . '/_modal.php') ?>
 

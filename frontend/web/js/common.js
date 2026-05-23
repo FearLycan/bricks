@@ -427,3 +427,71 @@ function initVenoBox(customOptions = {}) {
         document.querySelectorAll('[data-bricks-slider]').forEach(initBricksSlider);
     });
 })();
+
+/* ==========================================================================
+   Floating "back to top" button.
+   Shows after the user scrolls past one viewport; click triggers a custom
+   ease-out-quart smooth-scroll for a snappier feel than the browser default.
+   Respects prefers-reduced-motion by jumping instantly.
+   ========================================================================== */
+(function () {
+    document.addEventListener('DOMContentLoaded', function () {
+        var btn = document.getElementById('scrollToTopBtn');
+        if (!btn) {
+            return;
+        }
+
+        var prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        var revealThreshold = Math.max(320, Math.round(window.innerHeight * 0.6));
+
+        function updateVisibility() {
+            var scrollY = window.pageYOffset || document.documentElement.scrollTop || 0;
+            btn.classList.toggle('is-visible', scrollY > revealThreshold);
+        }
+
+        // ease-out-quart: starts fast, decelerates smoothly to a stop.
+        function easeOutQuart(t) {
+            return 1 - Math.pow(1 - t, 4);
+        }
+
+        function animateScrollToTop() {
+            if (prefersReducedMotion) {
+                window.scrollTo(0, 0);
+                return;
+            }
+
+            var startY = window.pageYOffset || document.documentElement.scrollTop || 0;
+            if (startY <= 0) {
+                return;
+            }
+
+            // Longer scrolls get a slightly longer animation, capped so it never drags.
+            var duration = Math.min(900, Math.max(450, startY * 0.45));
+            var startTime = null;
+
+            btn.classList.add('is-scrolling');
+            setTimeout(function () { btn.classList.remove('is-scrolling'); }, 750);
+
+            function step(timestamp) {
+                if (startTime === null) { startTime = timestamp; }
+                var elapsed = timestamp - startTime;
+                var progress = Math.min(1, elapsed / duration);
+                var eased = easeOutQuart(progress);
+                window.scrollTo(0, Math.round(startY * (1 - eased)));
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                }
+            }
+            window.requestAnimationFrame(step);
+        }
+
+        window.addEventListener('scroll', updateVisibility, {passive: true});
+        window.addEventListener('resize', function () {
+            revealThreshold = Math.max(320, Math.round(window.innerHeight * 0.6));
+            updateVisibility();
+        });
+        btn.addEventListener('click', animateScrollToTop);
+
+        updateVisibility();
+    });
+})();

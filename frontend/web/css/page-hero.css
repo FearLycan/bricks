@@ -138,6 +138,13 @@
     color: #ff8585;
 }
 
+.bricks-page-hero--glossary {
+    background: #0f172a linear-gradient(135deg, #0f172a 0%, #334155 100%);
+}
+.bricks-page-hero--glossary .bricks-page-hero-eyebrow {
+    color: #93c5fd;
+}
+
 /* ---- Seasonal modifiers --------------------------------------------------- */
 
 .bricks-page-hero--halloween {

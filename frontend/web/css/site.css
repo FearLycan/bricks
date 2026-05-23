@@ -3691,3 +3691,70 @@ a, button {
     flex-wrap: wrap;
     margin-top: 0.25rem;
 }
+
+/* ==========================================================================
+   Floating "back to top" button
+   Hidden until the user scrolls past the first viewport, then fades in at
+   the bottom-right. Click triggers a custom-easing scroll handled in common.js.
+   ========================================================================== */
+.bricks-scroll-top {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    z-index: 1040;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: none;
+    background: #0d2545;
+    color: #ffd400;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    line-height: 1;
+    box-shadow: 0 8px 22px rgba(13, 37, 69, 0.28);
+    cursor: pointer;
+    opacity: 0;
+    transform: translateY(20px) scale(0.85);
+    pointer-events: none;
+    transition: opacity 0.28s ease, transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.18s ease, color 0.18s ease;
+    padding: 0;
+}
+
+.bricks-scroll-top.is-visible {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+}
+
+.bricks-scroll-top:hover {
+    background: #ffd400;
+    color: #0d2545;
+    transform: translateY(-2px) scale(1.05);
+}
+
+.bricks-scroll-top:active {
+    transform: translateY(0) scale(0.96);
+}
+
+.bricks-scroll-top.is-scrolling .bi {
+    animation: bricks-scroll-top-bounce 0.7s ease-out;
+}
+
+@keyframes bricks-scroll-top-bounce {
+    0%   { transform: translateY(0); }
+    35%  { transform: translateY(-6px); }
+    70%  { transform: translateY(-2px); }
+    100% { transform: translateY(0); }
+}
+
+@media (max-width: 575.98px) {
+    .bricks-scroll-top {
+        bottom: 1rem;
+        right: 1rem;
+        width: 42px;
+        height: 42px;
+        font-size: 1.2rem;
+    }
+}
