@@ -152,6 +152,13 @@
     color: #c4b5fd;
 }
 
+.bricks-page-hero--faq {
+    background: #134e4a linear-gradient(135deg, #134e4a 0%, #0d9488 100%);
+}
+.bricks-page-hero--faq .bricks-page-hero-eyebrow {
+    color: #99f6e4;
+}
+
 /* ---- Seasonal modifiers --------------------------------------------------- */
 
 .bricks-page-hero--halloween {

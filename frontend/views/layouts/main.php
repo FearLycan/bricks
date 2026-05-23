@@ -223,7 +223,7 @@ if ($socialImage !== '') {
                 <div class="col-md-2">
                     <p class="bricks-footer-nav-label"><?= Html::encode(T::tr('Company')) ?></p>
                     <ul class="bricks-footer-nav">
-                        <li><?= Html::a(T::tr('Contact'), ['/site/contact'], ['class' => 'bricks-footer-nav-link']) ?></li>
+                        <li><?= Html::a(T::tr('Contact'), ['/contact'], ['class' => 'bricks-footer-nav-link']) ?></li>
                     </ul>
                 </div>
                 <div class="col-md-2">
@@ -231,6 +231,7 @@ if ($socialImage !== '') {
                     <ul class="bricks-footer-nav">
                         <li><?= Html::a(T::tr('Shop by interest'), ['/interests'], ['class' => 'bricks-footer-nav-link']) ?></li>
                         <li><?= Html::a(T::tr('LEGO Glossary'), ['/glossary'], ['class' => 'bricks-footer-nav-link']) ?></li>
+                        <li><?= Html::a(T::tr('Help and FAQ'), ['/faq'], ['class' => 'bricks-footer-nav-link']) ?></li>
                     </ul>
                 </div>
             </div>

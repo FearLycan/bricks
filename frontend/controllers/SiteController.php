@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 
+use frontend\components\LegoFaq;
 use frontend\components\LegoGlossary;
 use frontend\components\LegoInterests;
 use frontend\components\T;
@@ -90,6 +91,16 @@ class SiteController extends Controller
     {
         return $this->render('interests', [
             'tiles' => LegoInterests::getTiles(),
+        ]);
+    }
+
+    /**
+     * Displays the public FAQ at /faq.
+     */
+    public function actionFaq(): string
+    {
+        return $this->render('faq', [
+            'categories' => LegoFaq::getCategories(),
         ]);
     }
 }
