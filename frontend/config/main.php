@@ -98,6 +98,7 @@ return [
             'showScriptName'              => false,
             'rules'                       => [
                 ''                                              => 'homepage/home/index',
+                'feed'                                          => 'feed/index',
                 'glossary'                                      => 'site/glossary',
                 'interests'                                     => 'site/interests',
                 'faq'                                           => 'site/faq',
