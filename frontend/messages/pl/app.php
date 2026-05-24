@@ -862,4 +862,5 @@ return [
     'Retirement date: {date}'                                                                                                                                               => 'Data wycofania: {date}',
     'catalog updates (Atom)'                                                                                                                                                => 'aktualizacje katalogu (Atom)',
     'catalog updates (JSON Feed)'                                                                                                                                           => 'aktualizacje katalogu (JSON Feed)',
+    'catalog updates (RSS)'                                                                                                                                                 => 'aktualizacje katalogu (RSS)',
 ];

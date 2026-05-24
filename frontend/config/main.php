@@ -100,6 +100,7 @@ return [
                 ''                                              => 'homepage/home/index',
                 'feed'                                          => 'feed/index',
                 'feed.xml'                                      => 'feed/xml',
+                'feed.rss'                                      => 'feed/rss',
                 'glossary'                                      => 'site/glossary',
                 'interests'                                     => 'site/interests',
                 'faq'                                           => 'site/faq',

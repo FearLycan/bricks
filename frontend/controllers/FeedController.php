@@ -6,6 +6,7 @@ use common\components\AccessControl;
 use common\components\Controller;
 use frontend\components\AtomFeedRenderer;
 use frontend\components\FeedService;
+use frontend\components\Rss2FeedRenderer;
 use Yii;
 use yii\helpers\Url;
 use yii\web\Response;
@@ -19,7 +20,7 @@ class FeedController extends Controller
                 'class' => AccessControl::class,
                 'rules' => [
                     [
-                        'actions' => ['index', 'xml'],
+                        'actions' => ['index', 'xml', 'rss'],
                         'allow'   => true,
                         'roles'   => ['?', '@'],
                     ],
@@ -50,6 +51,18 @@ class FeedController extends Controller
         return $this->emitRaw(
             'application/atom+xml; charset=UTF-8',
             (new AtomFeedRenderer())->render($payload),
+        );
+    }
+
+    public function actionRss(): Response
+    {
+        $payload = $this->buildPublicPayload();
+        // RSS self-link must point at the RSS endpoint, not the Atom/JSON ones.
+        $payload['feed_url'] = Url::to(['/feed.rss'], true);
+
+        return $this->emitRaw(
+            'application/rss+xml; charset=UTF-8',
+            (new Rss2FeedRenderer())->render($payload),
         );
     }
 

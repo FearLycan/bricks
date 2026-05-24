@@ -881,4 +881,5 @@ return [
     'Retirement date: {date}'                                                                                                                                               => '',
     'catalog updates (Atom)'                                                                                                                                                => '',
     'catalog updates (JSON Feed)'                                                                                                                                           => '',
+    'catalog updates (RSS)'                                                                                                                                                 => '',
 ];

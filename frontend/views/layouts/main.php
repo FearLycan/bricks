@@ -55,6 +55,7 @@ $this->registerMetaTag(['name' => 'description', 'content' => $metaDescription],
 $this->registerMetaTag(['name' => 'robots', 'content' => $robots], 'robots');
 $this->registerLinkTag(['rel' => 'canonical', 'href' => $canonicalUrl], 'canonical');
 $this->registerLinkTag(['rel' => 'alternate', 'type' => 'application/atom+xml',  'title' => Yii::$app->name . ' — ' . T::tr('catalog updates (Atom)'), 'href' => Url::to(['/feed.xml'], true)], 'feed-atom');
+$this->registerLinkTag(['rel' => 'alternate', 'type' => 'application/rss+xml',   'title' => Yii::$app->name . ' — ' . T::tr('catalog updates (RSS)'), 'href' => Url::to(['/feed.rss'], true)], 'feed-rss');
 $this->registerLinkTag(['rel' => 'alternate', 'type' => 'application/feed+json', 'title' => Yii::$app->name . ' — ' . T::tr('catalog updates (JSON Feed)'), 'href' => Url::to(['/feed'], true)], 'feed-json');
 
 if (!str_contains((string)$robots, 'noindex')) {
