@@ -38,6 +38,7 @@ final class Rss2FeedRenderer
         $writer->writeAttribute('xmlns:atom', 'http://www.w3.org/2005/Atom');
         $writer->writeAttribute('xmlns:content', 'http://purl.org/rss/1.0/modules/content/');
         $writer->writeAttribute('xmlns:dc', 'http://purl.org/dc/elements/1.1/');
+        $writer->writeAttribute('xmlns:media', 'http://search.yahoo.com/mrss/');
 
         $writer->startElement('channel');
 
@@ -130,13 +131,23 @@ final class Rss2FeedRenderer
         }
 
         if (!empty($item['image'])) {
-            // RSS spec requires the `length` attribute (bytes). We don't know the
-            // file size without a HEAD request per render; 0 keeps the enclosure
-            // structurally valid and modern readers tolerate the missing value.
-            $writer->startElement('enclosure');
-            $writer->writeAttribute('url', (string)$item['image']);
-            $writer->writeAttribute('length', '0');
-            $writer->writeAttribute('type', $this->guessImageMimeType((string)$item['image']));
+            // Media RSS (yahoo mrss) instead of <enclosure>: enclosure is reserved by
+            // the RSS spec for audio/video and triggers podcast-specific validators
+            // (Apple Podcasts categories, episode length, etc.). <media:content> with
+            // medium="image" is the standard way to advertise image attachments to
+            // RSS readers (YouTube, Flickr and Tumblr feeds use the same pattern).
+            $imageUrl = (string)$item['image'];
+            $imageType = $this->guessImageMimeType($imageUrl);
+
+            $writer->startElement('media:content');
+            $writer->writeAttribute('url', $imageUrl);
+            $writer->writeAttribute('medium', 'image');
+            $writer->writeAttribute('type', $imageType);
+            $writer->endElement();
+
+            // Most readers display <media:thumbnail> in the article preview card.
+            $writer->startElement('media:thumbnail');
+            $writer->writeAttribute('url', $imageUrl);
             $writer->endElement();
         }
 
