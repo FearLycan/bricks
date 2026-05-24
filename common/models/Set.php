@@ -289,7 +289,17 @@ class Set extends ActiveRecord
 
     public static function formatAmountFromCents(int $amountInCents, string $currency = 'PLN'): string
     {
-        return number_format($amountInCents / 100, 2, ',', ' ') . ' ' . $currency;
+        $amount = number_format($amountInCents / 100, 2, ',', ' ');
+        $upper = strtoupper(trim($currency));
+
+        return match ($upper) {
+            'USD', 'AUD', 'CAD', 'NZD', 'SGD', 'HKD' => '$' . $amount,
+            'EUR'         => '€' . $amount,
+            'GBP'         => '£' . $amount,
+            'JPY', 'CNY'  => '¥' . $amount,
+            'PLN'         => $amount . ' zł',
+            default       => $amount . ' ' . $upper,
+        };
     }
 
     public function getFormattedPrice(string $currency = 'PLN'): ?string

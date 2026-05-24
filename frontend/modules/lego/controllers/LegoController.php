@@ -10,12 +10,15 @@ use common\models\Set;
 use common\models\SetOffer;
 use common\models\SetMinifig;
 use common\models\SetReview;
+use common\models\SetTag;
 use common\models\Tag;
 use common\models\User;
+use frontend\components\SeoHelper;
 use frontend\models\searches\SetSearch;
 use frontend\modules\lego\services\RelatedSetsService;
 use Yii;
 use yii\data\ActiveDataProvider;
+use yii\db\Query;
 
 class LegoController extends Controller
 {
@@ -29,7 +32,7 @@ class LegoController extends Controller
                         'allow'   => true,
                         'actions' => [
                             'index', 'view', 'minifig', 'offer-reviews-modal', 'promo', 'new', 'tag',
-                            'magazines', 'exclusive', 'retiring-soon',
+                            'magazines', 'exclusive', 'retiring-soon', 'audience',
                         ],
                         'roles'   => ['?', '@'],
                     ],
@@ -97,6 +100,77 @@ class LegoController extends Controller
             'searchModel'  => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
+    }
+
+    public function actionAudience(string $slug): string
+    {
+        $config = SeoHelper::audiencePages()[$slug] ?? null;
+        if ($config === null) {
+            $this->notFound();
+        }
+
+        $searchModel = new SetSearch();
+        $orTagSlug = $config['orTagSlug'] ?? null;
+
+        if ($orTagSlug === null) {
+            $params = array_merge($this->request->queryParams, $config['filters']);
+            $dataProvider = $searchModel->search($params);
+        } else {
+            // Strip the audience-controlled filter keys from user query params so the
+            // pretty URL stays authoritative, then re-apply them as an OR with a
+            // tag-membership subquery. This captures sets that belong to the audience
+            // by curation tag even when their `age` / `pieces` column is missing.
+            $params = $this->request->queryParams;
+            foreach (array_keys($config['filters']) as $key) {
+                unset($params[$key]);
+            }
+            $dataProvider = $searchModel->search($params);
+
+            $tagSetIds = (new Query())
+                ->select('st.set_id')
+                ->from(SetTag::tableName() . ' st')
+                ->innerJoin(Tag::tableName() . ' t', 't.id = st.tag_id')
+                ->where(['t.slug' => $orTagSlug, 't.status' => StatusEnum::ACTIVE->value]);
+
+            $dataProvider->query->andWhere(['or',
+                $this->buildAudienceFilterWhere($config['filters']),
+                ['in', '{{%set}}.id', $tagSetIds],
+            ]);
+        }
+
+        return $this->render('audience', [
+            'slug'         => $slug,
+            'config'       => $config,
+            'searchModel'  => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+
+    /**
+     * Compose an AND clause that mirrors what `SetSearch::search()` would apply for
+     * the given audience filter set, so we can use it as one branch of an OR.
+     *
+     * @param array<string,int> $filters
+     */
+    private function buildAudienceFilterWhere(array $filters): array
+    {
+        $opMap = [
+            'age_min'    => ['>=', 'age'],
+            'age_max'    => ['<=', 'age'],
+            'pieces_min' => ['>=', 'pieces'],
+            'pieces_max' => ['<=', 'pieces'],
+        ];
+
+        $clauses = ['and'];
+        foreach ($filters as $key => $value) {
+            if (!isset($opMap[$key])) {
+                continue;
+            }
+            [$op, $column] = $opMap[$key];
+            $clauses[] = [$op, '{{%set}}.' . $column, (int)$value];
+        }
+
+        return $clauses;
     }
 
     public function actionRetiringSoon(): string

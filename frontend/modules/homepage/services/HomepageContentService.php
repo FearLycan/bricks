@@ -117,7 +117,7 @@ class HomepageContentService
         $tiles = [
             $this->makeTile(T::tr('All new arrivals'), ['/lego'], 'gradient-blue', 'images/browse/new-arrivals.jpg'),
             $this->makeTile(T::tr('On sale'), ['/lego/on-sale'], 'gradient-red', 'images/browse/on-sale.jpg'),
-            $this->makeTile(T::tr('LEGO® for adults'), ['/lego', 'age_min' => 18], 'gradient-purple', 'images/browse/adults.jpg'),
+            $this->makeTile(T::tr('LEGO® for adults'), ['/lego/for-adults'], 'gradient-purple', 'images/browse/adults.jpg'),
             $this->makeTile(T::tr('Browse all sets'), ['/lego'], 'gradient-amber', 'images/browse/all-sets.jpg'),
         ];
 
@@ -134,13 +134,13 @@ class HomepageContentService
     private function buildAudienceTabTiles(): array
     {
         return [
-            $this->makeTile(T::tr('For toddlers (1+)'), ['/lego', 'age_max' => 4], 'gradient-pink', 'images/browse/toddlers.jpg'),
-            $this->makeTile(T::tr('For kids (5–8)'), ['/lego', 'age_min' => 5, 'age_max' => 8], 'gradient-amber', 'images/browse/kids.jpg'),
-            $this->makeTile(T::tr('For tweens (9–12)'), ['/lego', 'age_min' => 9, 'age_max' => 12], 'gradient-green', 'images/browse/tweens.jpg'),
-            $this->makeTile(T::tr('For teens (13+)'), ['/lego', 'age_min' => 13], 'gradient-blue', 'images/browse/teens.jpg'),
-            $this->makeTile(T::tr('For adults (18+)'), ['/lego', 'age_min' => 18], 'gradient-purple', 'images/browse/adults.jpg'),
-            $this->makeTile(T::tr('Small builds (≤200 pcs)'), ['/lego', 'pieces_max' => 200], 'gradient-teal', 'images/browse/small-builds.jpg'),
-            $this->makeTile(T::tr('Big builds (2000+ pcs)'), ['/lego', 'pieces_min' => 2000], 'gradient-red', 'images/browse/big-builds.jpg'),
+            $this->makeTile(T::tr('For toddlers (1+)'), ['/lego/for-toddlers'], 'gradient-pink', 'images/browse/toddlers.jpg'),
+            $this->makeTile(T::tr('For kids (5–8)'), ['/lego/for-kids'], 'gradient-amber', 'images/browse/kids.jpg'),
+            $this->makeTile(T::tr('For tweens (9–12)'), ['/lego/for-tweens'], 'gradient-green', 'images/browse/tweens.jpg'),
+            $this->makeTile(T::tr('For teens (13+)'), ['/lego/for-teens'], 'gradient-blue', 'images/browse/teens.jpg'),
+            $this->makeTile(T::tr('For adults (18+)'), ['/lego/for-adults'], 'gradient-purple', 'images/browse/adults.jpg'),
+            $this->makeTile(T::tr('Small builds (≤200 pcs)'), ['/lego/small-builds'], 'gradient-teal', 'images/browse/small-builds.jpg'),
+            $this->makeTile(T::tr('Big builds (2000+ pcs)'), ['/lego/big-builds'], 'gradient-red', 'images/browse/big-builds.jpg'),
             $this->makeTile(T::tr('Browse all sets'), ['/lego'], 'gradient-slate', 'images/browse/all-sets.jpg'),
         ];
     }

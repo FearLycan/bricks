@@ -2,11 +2,14 @@
 
 /** @var yii\web\View $this */
 
+use frontend\components\SeoHelper;
 use frontend\components\T;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
 $this->title = T::tr('About BrickAtlas — LEGO® Price Tracker for AFOLs');
+$this->params['metaDescription'] = T::tr('BrickAtlas is a free LEGO price tracker. We pull catalog data and match it against current retailer offers so you can spot real deals on sets.');
+$this->params['canonicalUrl'] = SeoHelper::buildAbsoluteUrl(['/site/about']);
 $this->params['breadcrumbs'][] = T::tr('About');
 ?>
 <div class="site-about">

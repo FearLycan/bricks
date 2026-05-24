@@ -11,7 +11,7 @@ use yii\web\View;
  */
 
 $this->title = T::tr('Help and FAQ — BrickAtlas LEGO® Price Tracker');
-$this->params['metaDescription'] = T::tr('Answers to common questions about BrickAtlas — prices, wishlist, reviews, account and privacy.');
+$this->params['metaDescription'] = T::tr('Answers to common questions about BrickAtlas — how price tracking works, managing your wishlist, writing reviews, accounts, privacy and more.');
 $this->params['canonicalUrl'] = SeoHelper::buildAbsoluteUrl(['/faq']);
 $this->params['robots'] = 'index,follow';
 

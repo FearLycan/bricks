@@ -275,8 +275,9 @@ $queueOfferImportModalUrl = Url::to(['/management/queue-offer-import-modal', 'se
 
         <div class="col-12 alternative-offers" id="alternative-offers">
             <div class="lego-details-card">
+                <h2 class="h5 mb-3"><?= Html::encode(T::tr('Compare prices for {name}', ['name' => $model->name])) ?></h2>
                 <div class="d-flex align-items-center justify-content-between gap-2 mb-3">
-                    <h5 class="mb-0"><?= T::tr('Offers from other stores') ?></h5>
+                    <h3 class="h6 mb-0 text-body-secondary"><?= T::tr('Offers from other stores') ?></h3>
                     <?php if ($user?->isAdmin()): ?>
                         <div class="d-flex gap-2">
                             <?= Html::a(T::tr('Add import link'), $queueOfferImportModalUrl, [

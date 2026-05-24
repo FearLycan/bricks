@@ -43,7 +43,7 @@ final class SeoHelper
 
     public static function defaultMetaDescription(): string
     {
-        return T::tr('Browse LEGO sets, compare prices, explore themes and find minifigure appearances on BrickAtlas.');
+        return T::tr('Browse LEGO sets, compare prices across retailers, explore themes and find minifigure appearances on BrickAtlas — your free LEGO price tracker.');
     }
 
     /**
@@ -195,12 +195,14 @@ final class SeoHelper
             return $value;
         }
 
-        $cut = mb_substr($value, 0, $limit + 1);
+        // Reserve 3 chars for the ellipsis so the final string never exceeds $limit.
+        $budget = $limit - 3;
+        $cut = mb_substr($value, 0, $budget + 1);
         $lastSpace = mb_strrpos($cut, ' ');
-        if ($lastSpace !== false && $lastSpace >= (int)floor($limit * 0.6)) {
+        if ($lastSpace !== false && $lastSpace >= (int)floor($budget * 0.6)) {
             $cut = mb_substr($cut, 0, $lastSpace);
         } else {
-            $cut = mb_substr($cut, 0, $limit);
+            $cut = mb_substr($cut, 0, $budget);
         }
 
         return rtrim($cut, " \t\n\r\0\x0B.,;:-") . '...';
@@ -227,7 +229,7 @@ final class SeoHelper
 
     public static function buildPromoDescription(int $page = 1): string
     {
-        $description = T::tr('Browse LEGO sets currently on sale. Find the best discounts and compare prices from top retailers.');
+        $description = T::tr('Browse LEGO sets currently on sale across major retailers. Track price drops, exclusive promotions and the deepest discounts on BrickAtlas.');
 
         return self::truncate(self::appendPageDescriptionSuffix($description, $page));
     }
@@ -273,7 +275,7 @@ final class SeoHelper
 
     public static function buildRetiringSoonDescription(int $page = 1): string
     {
-        $description = T::tr('Browse LEGO sets approaching their official retirement date. Catch them before they leave shelves and prices climb.');
+        $description = T::tr('Browse LEGO sets approaching their official retirement date. Catch sets before they leave shelves and resale prices climb on the aftermarket.');
 
         return self::truncate(self::appendPageDescriptionSuffix($description, $page));
     }
@@ -285,7 +287,7 @@ final class SeoHelper
 
     public static function buildCatalogDescription(int $page = 1): string
     {
-        $description = T::tr('Browse LEGO sets and filter the catalog by theme, release year, or sort by price.');
+        $description = T::tr('Browse the LEGO sets catalog and filter by theme, subtheme, release year or piece count. Compare prices across major retailers on BrickAtlas.');
 
         return self::appendPageDescriptionSuffix(self::truncate($description), $page);
     }
@@ -349,14 +351,14 @@ final class SeoHelper
         $setNumber = self::normalizeText($set->getSetNumberText());
 
         // Long set names need truncation so the title fits in Google's ~60-char
-        // SERP cutoff. The " (#####) — LEGO Set | BrickAtlas" suffix takes
-        // ~30 chars, leaving ~30 chars for the name.
-        $maxNameLen = 28;
+        // SERP cutoff. The " (#####) — LEGO Set Prices | BrickAtlas" suffix
+        // takes ~37 chars, leaving ~24 chars for the name.
+        $maxNameLen = 24;
         if (mb_strlen($setName) > $maxNameLen) {
             $setName = rtrim(mb_substr($setName, 0, $maxNameLen - 1)) . '…';
         }
 
-        return T::tr('{name} ({number}) — LEGO Set | BrickAtlas', [
+        return T::tr('{name} ({number}) — LEGO Set Prices | BrickAtlas', [
             'name'   => $setName,
             'number' => $setNumber,
         ]);
@@ -364,9 +366,11 @@ final class SeoHelper
 
     public static function buildSetDescription(Set $set): string
     {
+        $brandTail = T::tr(' Track price drops on BrickAtlas.');
+
         $description = self::normalizeText($set->description);
         if ($description !== '') {
-            return self::truncate($description);
+            return self::truncate($description . $brandTail);
         }
 
         $details = [];
@@ -395,7 +399,129 @@ final class SeoHelper
             $summary .= ' ' . T::tr('Includes {details}.', ['details' => implode(', ', $details)]);
         }
 
-        return self::truncate($summary);
+        return self::truncate($summary . $brandTail);
+    }
+
+    /**
+     * Slug whitelist for the audience/piece-count landing pages. The
+     * controller uses this to look up the filter set; views use it for
+     * titles, descriptions and hero copy. Centralised here so SEO copy and
+     * route validation stay in lock-step.
+     *
+     * @return array<string, array{
+     *     filters: array<string,int>,
+     *     title: string,
+     *     description: string,
+     *     heroTitle: string,
+     *     intro: string,
+     *     icon: string,
+     *     modifier: string,
+     *     image: string,
+     *     breadcrumb: string,
+     * }>
+     */
+    public static function audiencePages(): array
+    {
+        return [
+            'for-toddlers' => [
+                'filters'     => ['age_max' => 4],
+                'title'       => T::tr('LEGO Sets for Toddlers — Ages 1 to 4 on BrickAtlas'),
+                'description' => T::tr('Browse LEGO Duplo sets and toddler-safe builds for ages 1 to 4. Compare prices, find big-piece sets and sensory toys on BrickAtlas.'),
+                'heroTitle'   => T::tr('LEGO sets for toddlers'),
+                'intro'       => T::tr('Duplo and toddler-safe builds for the smallest hands — large pieces, simple shapes, lots of color.'),
+                'icon'        => 'bi-emoji-smile',
+                'modifier'    => 'toddlers',
+                'image'       => 'images/browse/toddlers.jpg',
+                'breadcrumb'  => T::tr('For toddlers'),
+            ],
+            'for-kids' => [
+                'filters'     => ['age_min' => 5, 'age_max' => 8],
+                'title'       => T::tr('LEGO Sets for Kids — Ages 5 to 8 on BrickAtlas'),
+                'description' => T::tr('Browse LEGO sets for kids aged 5 to 8. Compare prices and find approachable builds, fan-favourite themes and great gift ideas on BrickAtlas.'),
+                'heroTitle'   => T::tr('LEGO sets for kids'),
+                'intro'       => T::tr('Builds aimed at primary-school kids — confident enough for real bricks, simple enough to finish in one sitting.'),
+                'icon'        => 'bi-emoji-laughing',
+                'modifier'    => 'kids',
+                'image'       => 'images/browse/kids.jpg',
+                'breadcrumb'  => T::tr('For kids'),
+            ],
+            'for-tweens' => [
+                'filters'     => ['age_min' => 9, 'age_max' => 12],
+                'title'       => T::tr('LEGO Sets for Tweens — Ages 9 to 12 on BrickAtlas'),
+                'description' => T::tr('Browse LEGO sets for tweens aged 9 to 12. Compare prices and discover more advanced builds, popular themes and gift-ready sets on BrickAtlas.'),
+                'heroTitle'   => T::tr('LEGO sets for tweens'),
+                'intro'       => T::tr('Bigger, more detailed builds for ages 9 to 12 — Star Wars vehicles, Friends towns, Ninjago dragons and more.'),
+                'icon'        => 'bi-emoji-sunglasses',
+                'modifier'    => 'tweens',
+                'image'       => 'images/browse/tweens.jpg',
+                'breadcrumb'  => T::tr('For tweens'),
+            ],
+            'for-teens' => [
+                'filters'     => ['age_min' => 13],
+                'title'       => T::tr('LEGO Sets for Teens — Ages 13 and Up on BrickAtlas'),
+                'description' => T::tr('Browse LEGO sets for teens aged 13 and up. Compare prices and find advanced builds, display models and complex sets on BrickAtlas.'),
+                'heroTitle'   => T::tr('LEGO sets for teens'),
+                'intro'       => T::tr('Detail-heavy builds, longer build times and serious display models — sets that work for teens and adult builders alike.'),
+                'icon'        => 'bi-headset',
+                'modifier'    => 'teens',
+                'image'       => 'images/browse/teens.jpg',
+                'breadcrumb'  => T::tr('For teens'),
+            ],
+            'for-adults' => [
+                'filters'     => ['age_min' => 18],
+                'orTagSlug'   => '18-plus',
+                'title'       => T::tr('LEGO Sets for Adults — 18+ Builder Collection on BrickAtlas'),
+                'description' => T::tr('Browse the LEGO 18+ adult collection on BrickAtlas. Compare prices on Icons, Architecture, Botanical Collection and other display-grade sets.'),
+                'heroTitle'   => T::tr('LEGO sets for adults'),
+                'intro'       => T::tr('LEGO sets aimed at the 18+ builder — Icons, Architecture, Botanical Collection, Technic supercars and other display-grade builds.'),
+                'icon'        => 'bi-person',
+                'modifier'    => 'adults',
+                'image'       => 'images/browse/adults.jpg',
+                'breadcrumb'  => T::tr('For adults'),
+            ],
+            'small-builds' => [
+                'filters'     => ['pieces_max' => 200],
+                'title'       => T::tr('Small LEGO Builds — Sets Under 200 Pieces on BrickAtlas'),
+                'description' => T::tr('Browse LEGO sets with fewer than 200 pieces. Compare prices on polybags, mini-builds and quick gift ideas across major retailers on BrickAtlas.'),
+                'heroTitle'   => T::tr('Small LEGO builds'),
+                'intro'       => T::tr('Quick builds and pocket-money sets under 200 pieces — perfect as gifts, party favours or impulse pickups.'),
+                'icon'        => 'bi-bricks',
+                'modifier'    => 'small-builds',
+                'image'       => 'images/browse/small-builds.jpg',
+                'breadcrumb'  => T::tr('Small builds'),
+            ],
+            'big-builds' => [
+                'filters'     => ['pieces_min' => 2000],
+                'title'       => T::tr('Big LEGO Builds — Sets with 2000+ Pieces on BrickAtlas'),
+                'description' => T::tr('Browse LEGO sets with 2000+ pieces. Compare prices on UCS Star Wars, Modular Buildings, Technic flagships and other massive builds on BrickAtlas.'),
+                'heroTitle'   => T::tr('Big LEGO builds'),
+                'intro'       => T::tr('Multi-day, multi-thousand-piece projects — UCS Star Wars, Modular Buildings, Technic flagships and other showcase sets.'),
+                'icon'        => 'bi-building',
+                'modifier'    => 'big-builds',
+                'image'       => 'images/browse/big-builds.jpg',
+                'breadcrumb'  => T::tr('Big builds'),
+            ],
+        ];
+    }
+
+    public static function buildAudienceTitle(string $slug, int $page = 1): string
+    {
+        $config = self::audiencePages()[$slug] ?? null;
+        if ($config === null) {
+            return self::buildCatalogTitle($page);
+        }
+
+        return self::appendPageSuffix($config['title'], $page);
+    }
+
+    public static function buildAudienceDescription(string $slug, int $page = 1): string
+    {
+        $config = self::audiencePages()[$slug] ?? null;
+        if ($config === null) {
+            return self::buildCatalogDescription($page);
+        }
+
+        return self::appendPageDescriptionSuffix(self::truncate($config['description']), $page);
     }
 
     public static function buildMinifigTitle(string $displayName, int $page = 1): string
@@ -410,8 +536,13 @@ final class SeoHelper
 
     public static function buildMinifigDescription(string $displayName, string $number, int $page = 1): string
     {
-        $description = self::truncate(T::tr('Browse LEGO sets with minifigure {name} ({number}) and compare current offers.', [
-            'name'   => self::normalizeText($displayName),
+        $name = self::normalizeText($displayName);
+        if (mb_strlen($name) > 30) {
+            $name = rtrim(mb_substr($name, 0, 29)) . '…';
+        }
+
+        $description = self::truncate(T::tr('Browse LEGO sets featuring minifigure {name} ({number}). Compare offers and track every appearance of this character on BrickAtlas.', [
+            'name'   => $name,
             'number' => self::normalizeText($number),
         ]));
 

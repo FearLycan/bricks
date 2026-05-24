@@ -34,7 +34,7 @@ final class MenuService
 
         $items[] = $this->item(T::tr('Exclusive'), ['/lego/exclusive'], 'bi-gem');
         $items[] = $this->item(T::tr('Retiring Soon'), ['/lego/retiring-soon'], 'bi-hourglass-split');
-        $items[] = $this->item(T::tr('For Adults (18+)'), ['/lego/tag/18-plus'], 'bi-person');
+        $items[] = $this->item(T::tr('For Adults (18+)'), ['/lego/for-adults'], 'bi-person');
 
         return $items;
     }

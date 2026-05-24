@@ -192,7 +192,7 @@ class SetSearch extends Set
         return new ActiveDataProvider([
             'query'      => $query,
             'pagination' => [
-                'pageSize'  => 20,
+                'pageSize'  => 48,
                 'pageParam' => 'promo_page',
             ],
         ]);

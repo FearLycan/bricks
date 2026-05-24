@@ -4,11 +4,14 @@
 /** @var yii\bootstrap5\ActiveForm $form */
 /** @var \frontend\models\ContactForm $model */
 
+use frontend\components\SeoHelper;
 use frontend\components\T;
 use yii\bootstrap5\Html;
 use yii\bootstrap5\ActiveForm;
 
 $this->title = T::tr('Contact BrickAtlas — Questions and Feedback');
+$this->params['metaDescription'] = T::tr('Get in touch with the BrickAtlas team. Send questions, business inquiries or bug reports — we usually reply within 24 hours.');
+$this->params['canonicalUrl'] = SeoHelper::buildAbsoluteUrl(['/site/contact']);
 $this->params['breadcrumbs'][] = T::tr('Contact');
 
 $this->registerCssFile('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&display=swap');

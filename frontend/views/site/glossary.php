@@ -12,7 +12,7 @@ use yii\web\View;
  */
 
 $this->title = T::tr('LEGO Glossary: AFOL acronyms and slang explained');
-$this->params['metaDescription'] = T::tr('Plain-language definitions of LEGO acronyms and slang. AFOL, MOC, SNOT, UCS, MISB and the rest explained.');
+$this->params['metaDescription'] = T::tr('Plain-language definitions of LEGO acronyms and AFOL slang. AFOL, MOC, SNOT, UCS, MISB and dozens more explained — a reference guide for collectors.');
 $this->params['canonicalUrl'] = SeoHelper::buildAbsoluteUrl(['/glossary']);
 $this->params['robots'] = 'index,follow';
 
