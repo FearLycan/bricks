@@ -99,6 +99,7 @@ return [
             'rules'                       => [
                 ''                                              => 'homepage/home/index',
                 'feed'                                          => 'feed/index',
+                'feed.xml'                                      => 'feed/xml',
                 'glossary'                                      => 'site/glossary',
                 'interests'                                     => 'site/interests',
                 'faq'                                           => 'site/faq',

@@ -872,4 +872,13 @@ return [
     'Theme: {theme}'                                                                                                                                                        => '',
     'Released {year}'                                                                                                                                                       => '',
     'New LEGO set added to the catalog: {name} ({number}).'                                                                                                                 => '',
+    'New PDF instructions ({n}): {number} {name}'                                                                                                                           => '',
+    '{n} building instruction PDFs available for {name} ({number}).'                                                                                                        => '',
+    'Instruction {n}'                                                                                                                                                       => '',
+    'View on BrickAtlas'                                                                                                                                                    => '',
+    'View set on BrickAtlas'                                                                                                                                                => '',
+    'Go to offer'                                                                                                                                                           => '',
+    'Retirement date: {date}'                                                                                                                                               => '',
+    'catalog updates (Atom)'                                                                                                                                                => '',
+    'catalog updates (JSON Feed)'                                                                                                                                           => '',
 ];

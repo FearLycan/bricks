@@ -853,4 +853,13 @@ return [
     'Theme: {theme}'                                                                                                                                                        => 'Temat: {theme}',
     'Released {year}'                                                                                                                                                       => 'Premiera {year}',
     'New LEGO set added to the catalog: {name} ({number}).'                                                                                                                 => 'Dodano nowy zestaw LEGO do katalogu: {name} ({number}).',
+    'New PDF instructions ({n}): {number} {name}'                                                                                                                           => 'Nowe instrukcje PDF ({n}): {number} {name}',
+    '{n} building instruction PDFs available for {name} ({number}).'                                                                                                        => '{n} instrukcji PDF dostępnych dla zestawu {name} ({number}).',
+    'Instruction {n}'                                                                                                                                                       => 'Instrukcja {n}',
+    'View on BrickAtlas'                                                                                                                                                    => 'Zobacz na BrickAtlas',
+    'View set on BrickAtlas'                                                                                                                                                => 'Zobacz zestaw na BrickAtlas',
+    'Go to offer'                                                                                                                                                           => 'Przejdź do oferty',
+    'Retirement date: {date}'                                                                                                                                               => 'Data wycofania: {date}',
+    'catalog updates (Atom)'                                                                                                                                                => 'aktualizacje katalogu (Atom)',
+    'catalog updates (JSON Feed)'                                                                                                                                           => 'aktualizacje katalogu (JSON Feed)',
 ];
