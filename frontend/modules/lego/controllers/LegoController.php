@@ -183,10 +183,24 @@ class LegoController extends Controller
         ]);
     }
 
-    public function actionTag(string $slug): string
+    public function actionTag(string $slug): \yii\web\Response|string
     {
         $tag = Tag::findOne(['slug' => $slug, 'status' => StatusEnum::ACTIVE->value]);
-        if (!$tag) {
+
+        if ($tag === null && str_ends_with($slug, 'n') && strlen($slug) > 1) {
+            // Legacy URL: the Brickset importer used to append a literal `|n` to
+            // many tag names, which produced slugs like `rhinon`/`spider-mann`.
+            // After the data cleanup those slugs are now canonical (`rhino`,
+            // `spider-man`); 301 the old `+n` URL so existing inbound links and
+            // Google's cached ranking transfer cleanly to the new slug.
+            $cleanSlug = substr($slug, 0, -1);
+            $cleanTag = Tag::findOne(['slug' => $cleanSlug, 'status' => StatusEnum::ACTIVE->value]);
+            if ($cleanTag !== null) {
+                return $this->redirect(['/lego/tag/' . $cleanSlug], 301);
+            }
+        }
+
+        if ($tag === null) {
             $this->notFound();
         }
 

@@ -90,6 +90,12 @@ class SetTag extends ActiveRecord
             }
 
             $tagName = trim($tagName);
+            // Brickset extendedData.tags occasionally arrives with a literal `|n`
+            // suffix (importer quirk on certain character/IP tag exports). Strip it
+            // so we don't keep growing the broken-tag set we just cleaned up.
+            if (str_ends_with($tagName, '|n')) {
+                $tagName = rtrim(substr($tagName, 0, -2));
+            }
             if ($tagName === '') {
                 continue;
             }

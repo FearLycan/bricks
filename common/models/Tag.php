@@ -8,6 +8,7 @@ use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 use yii\db\BaseActiveRecord;
+use yii\helpers\Inflector;
 
 /**
  * This is the model class for table "{{%tag}}".
@@ -103,14 +104,26 @@ class Tag extends ActiveRecord
             throw new \InvalidArgumentException('Tag name cannot be empty.');
         }
 
-        $tag = self::findOne(['name' => $normalizedName]);
+        // Match by slug — name variants like "Star Wars", "Star-Wars", "star wars"
+        // all collapse to `star-wars` and resolve to the same tag instead of
+        // creating near-duplicate rows. SluggableBehavior on save() will produce
+        // the same slug value using Inflector::slug internally.
+        $slug = Inflector::slug($normalizedName, '-');
+        if ($slug === '') {
+            throw new \InvalidArgumentException('Tag name "' . $name . '" produces an empty slug.');
+        }
+
+        $tag = self::findOne(['slug' => $slug]);
         if ($tag) {
             return $tag;
         }
 
         $tag = new self();
         $tag->name = $normalizedName;
-        $tag->save();
+        if (!$tag->save()) {
+            throw new \RuntimeException('Failed to create tag "' . $name . '": '
+                . implode(', ', $tag->getFirstErrors()));
+        }
 
         return $tag;
     }
