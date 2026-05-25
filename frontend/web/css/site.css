@@ -616,6 +616,48 @@ a, button {
     color: #6c757d;
 }
 
+.lego-product-page .lego-badge-limited {
+    background: #f5f3ff;
+    color: #6d28d9;
+    border: 1px solid #ddd6fe;
+    font-weight: 600;
+}
+
+.lego-product-page .lego-production-span {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    flex-wrap: wrap;
+    margin: -0.4rem 0 1rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.6rem;
+    background: linear-gradient(135deg, #f5f3ff 0%, #ffffff 70%);
+    border: 1px solid #ddd6fe;
+    color: #5b21b6;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.lego-product-page .lego-production-span i {
+    color: #7c3aed;
+}
+
+.lego-product-page .lego-production-span .date {
+    color: #4c1d95;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+
+.lego-product-page .lego-production-span .arrow {
+    color: #a78bfa;
+    font-weight: 700;
+}
+
+.lego-product-page .lego-production-span .duration {
+    color: #6d28d9;
+    font-weight: 600;
+}
+
 .lego-product-page .lego-status-banner {
     --lego-status-accent: #4f46e5;
     --lego-status-accent-strong: #3730a3;

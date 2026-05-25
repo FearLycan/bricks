@@ -869,4 +869,6 @@ return [
     'Retiring soon'                                                                                                                                                        => 'Wkrótce wycofany',
     'Retires on {date}'                                                                                                                                                    => 'Wycofanie {date}',
     '{n, plural, =0{retires today} =1{day until retirement} other{days until retirement}}'                                                                                 => '{n, plural, =0{wycofanie dzisiaj} =1{dzień do wycofania} few{dni do wycofania} many{dni do wycofania} other{dni do wycofania}}',
+    'Short run · {n, plural, =1{# month} other{# months}}'                                                                                                                => 'Krótka produkcja · {n, plural, =1{# miesiąc} few{# miesiące} many{# miesięcy} other{# miesięcy}}',
+    '{n, plural, =1{# month of production} other{# months of production}}'                                                                                                => '{n, plural, =1{# miesiąc produkcji} few{# miesiące produkcji} many{# miesięcy produkcji} other{# miesięcy produkcji}}',
 ];

@@ -126,45 +126,9 @@ $queueOfferImportModalUrl = Url::to(['/management/queue-offer-import-modal', 'se
         <div class="col-lg-5 lego-set-information">
             <div class="lego-info-card">
                 <?php if ($model->isUpcoming()): ?>
-                    <?php $daysToLaunch = (int)$model->getDaysUntilLaunch(); ?>
-                    <div class="lego-status-banner lego-status-banner--upcoming" role="status" aria-live="polite">
-                        <div class="lego-status-banner__head">
-                            <span class="lego-status-banner__dot" aria-hidden="true"></span>
-                            <span class="lego-status-banner__label"><?= T::tr('Not out yet') ?></span>
-                        </div>
-                        <div class="lego-status-banner__body">
-                            <div class="lego-status-banner__count">
-                                <span class="lego-status-banner__count-number"><?= Html::encode((string)$daysToLaunch) ?></span>
-                                <span class="lego-status-banner__count-label">
-                                    <?= T::tr('{n, plural, =0{out today} =1{day until launch} other{days until launch}}', ['n' => $daysToLaunch]) ?>
-                                </span>
-                            </div>
-                            <div class="lego-status-banner__meta">
-                                <i class="bi bi-calendar-event" aria-hidden="true"></i>
-                                <?= T::tr('Launches on {date}', ['date' => date('d.m.Y', strtotime($model->launch_date))]) ?>
-                            </div>
-                        </div>
-                    </div>
+                    <?= $this->render('_banner-upcoming', ['model' => $model]) ?>
                 <?php elseif ($model->isRetiringSoon()): ?>
-                    <?php $daysToExit = (int)$model->getDaysUntilExit(); ?>
-                    <div class="lego-status-banner lego-status-banner--retiring" role="status" aria-live="polite">
-                        <div class="lego-status-banner__head">
-                            <span class="lego-status-banner__dot" aria-hidden="true"></span>
-                            <span class="lego-status-banner__label"><?= T::tr('Retiring soon') ?></span>
-                        </div>
-                        <div class="lego-status-banner__body">
-                            <div class="lego-status-banner__count">
-                                <span class="lego-status-banner__count-number"><?= Html::encode((string)$daysToExit) ?></span>
-                                <span class="lego-status-banner__count-label">
-                                    <?= T::tr('{n, plural, =0{retires today} =1{day until retirement} other{days until retirement}}', ['n' => $daysToExit]) ?>
-                                </span>
-                            </div>
-                            <div class="lego-status-banner__meta">
-                                <i class="bi bi-calendar-x" aria-hidden="true"></i>
-                                <?= T::tr('Retires on {date}', ['date' => date('d.m.Y', strtotime($model->exit_date))]) ?>
-                            </div>
-                        </div>
-                    </div>
+                    <?= $this->render('_banner-retiring', ['model' => $model]) ?>
                 <?php endif; ?>
                 <div class="d-flex flex-wrap gap-2 mb-3">
                     <?= Html::a(Html::encode($model->theme->name), ["/lego/theme/{$model->theme->slug}"], [
@@ -279,6 +243,18 @@ $queueOfferImportModalUrl = Url::to(['/management/queue-offer-import-modal', 'se
                         </span>
                     </div>
                 </div>
+
+                <?php if ($model->isLimitedRun()): ?>
+                    <div class="lego-production-span">
+                        <i class="bi bi-hourglass-split" aria-hidden="true"></i>
+                        <span class="date"><?= Html::encode(date('d.m.Y', strtotime($model->launch_date))) ?></span>
+                        <span class="arrow" aria-hidden="true">→</span>
+                        <span class="date"><?= Html::encode(date('d.m.Y', strtotime($model->exit_date))) ?></span>
+                        <span class="duration">
+                            · <?= T::tr('{n, plural, =1{# month of production} other{# months of production}}', ['n' => (int)$model->getProductionSpanMonths()]) ?>
+                        </span>
+                    </div>
+                <?php endif; ?>
 
                 <?php if ($model->tagModels): ?>
                     <div class="mb-3 lego-tags" data-lego-tags data-max-rows="2">

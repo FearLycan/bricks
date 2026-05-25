@@ -888,4 +888,6 @@ return [
     'Retiring soon'                                                                                                                                                        => '',
     'Retires on {date}'                                                                                                                                                    => '',
     '{n, plural, =0{retires today} =1{day until retirement} other{days until retirement}}'                                                                                 => '',
+    'Short run · {n, plural, =1{# month} other{# months}}'                                                                                                                => '',
+    '{n, plural, =1{# month of production} other{# months of production}}'                                                                                                => '',
 ];

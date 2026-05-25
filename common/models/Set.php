@@ -735,6 +735,39 @@ class Set extends ActiveRecord
         return $days !== null && $days <= $thresholdDays;
     }
 
+    public function getProductionSpanDays(): ?int
+    {
+        if ($this->launch_date === null || $this->launch_date === ''
+            || $this->exit_date === null || $this->exit_date === '') {
+            return null;
+        }
+
+        $launch = strtotime($this->launch_date);
+        $exit = strtotime($this->exit_date);
+        if ($launch === false || $exit === false || $exit <= $launch) {
+            return null;
+        }
+
+        return (int)round(($exit - $launch) / 86400);
+    }
+
+    public function getProductionSpanMonths(): ?int
+    {
+        $days = $this->getProductionSpanDays();
+        if ($days === null) {
+            return null;
+        }
+
+        return max(1, (int)round($days / 30.44));
+    }
+
+    public function isLimitedRun(int $thresholdDays = 365): bool
+    {
+        $days = $this->getProductionSpanDays();
+
+        return $days !== null && $days <= $thresholdDays;
+    }
+
 
     private static function getCachedList(string $cacheKey, callable $resolver, int $duration = 3600): array
     {
