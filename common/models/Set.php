@@ -58,6 +58,8 @@ class Set extends ActiveRecord
 {
     public const RELATIONS_CACHE_DURATION = 600;
 
+    public const RETIRING_SOON_DAYS = 180;
+
     private ?SetImage $_mainImage = null;
     private bool $_mainImageResolved = false;
 
@@ -703,6 +705,34 @@ class Set extends ActiveRecord
         $diff = (int)round(($launch - $today) / 86400);
 
         return $diff < 0 ? 0 : $diff;
+    }
+
+    public function getDaysUntilExit(): ?int
+    {
+        if ($this->exit_date === null || $this->exit_date === '') {
+            return null;
+        }
+
+        $exit = strtotime($this->exit_date);
+        $today = strtotime(date('Y-m-d'));
+        if ($exit === false || $today === false) {
+            return null;
+        }
+
+        $diff = (int)round(($exit - $today) / 86400);
+
+        return $diff < 0 ? null : $diff;
+    }
+
+    public function isRetiringSoon(int $thresholdDays = self::RETIRING_SOON_DAYS): bool
+    {
+        if ($this->isUpcoming()) {
+            return false;
+        }
+
+        $days = $this->getDaysUntilExit();
+
+        return $days !== null && $days <= $thresholdDays;
     }
 
 

@@ -866,4 +866,7 @@ return [
     'Not out yet'                                                                                                                                                          => 'Przed premierą',
     'Launches on {date}'                                                                                                                                                   => 'Premiera {date}',
     '{n, plural, =0{out today} =1{day until launch} other{days until launch}}'                                                                                             => '{n, plural, =0{premiera dzisiaj} =1{dzień do premiery} few{dni do premiery} many{dni do premiery} other{dni do premiery}}',
+    'Retiring soon'                                                                                                                                                        => 'Wkrótce wycofany',
+    'Retires on {date}'                                                                                                                                                    => 'Wycofanie {date}',
+    '{n, plural, =0{retires today} =1{day until retirement} other{days until retirement}}'                                                                                 => '{n, plural, =0{wycofanie dzisiaj} =1{dzień do wycofania} few{dni do wycofania} many{dni do wycofania} other{dni do wycofania}}',
 ];

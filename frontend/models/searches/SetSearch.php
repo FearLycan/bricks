@@ -148,10 +148,10 @@ class SetSearch extends Set
 
     /**
      * Sets with a known retirement date inside a configurable window from today.
-     * Window is wide by default so the list never collapses to zero while
-     * exit_date coverage grows in the catalog.
+     * Default matches Set::RETIRING_SOON_DAYS so the listing and the per-set banner
+     * report the same "retiring soon" cohort.
      */
-    public function searchRetiringSoon(int $windowDays = 365): ActiveDataProvider
+    public function searchRetiringSoon(int $windowDays = Set::RETIRING_SOON_DAYS): ActiveDataProvider
     {
         $query = Set::find()
             ->alias('s')

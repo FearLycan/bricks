@@ -885,4 +885,7 @@ return [
     'Not out yet'                                                                                                                                                          => '',
     'Launches on {date}'                                                                                                                                                   => '',
     '{n, plural, =0{out today} =1{day until launch} other{days until launch}}'                                                                                             => '',
+    'Retiring soon'                                                                                                                                                        => '',
+    'Retires on {date}'                                                                                                                                                    => '',
+    '{n, plural, =0{retires today} =1{day until retirement} other{days until retirement}}'                                                                                 => '',
 ];
