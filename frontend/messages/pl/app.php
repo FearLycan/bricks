@@ -863,4 +863,7 @@ return [
     'catalog updates (Atom)'                                                                                                                                                => 'aktualizacje katalogu (Atom)',
     'catalog updates (JSON Feed)'                                                                                                                                           => 'aktualizacje katalogu (JSON Feed)',
     'catalog updates (RSS)'                                                                                                                                                 => 'aktualizacje katalogu (RSS)',
+    'Not out yet'                                                                                                                                                          => 'Przed premierą',
+    'Launches on {date}'                                                                                                                                                   => 'Premiera {date}',
+    '{n, plural, =0{out today} =1{day until launch} other{days until launch}}'                                                                                             => '{n, plural, =0{premiera dzisiaj} =1{dzień do premiery} few{dni do premiery} many{dni do premiery} other{dni do premiery}}',
 ];

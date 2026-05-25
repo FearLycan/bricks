@@ -125,6 +125,27 @@ $queueOfferImportModalUrl = Url::to(['/management/queue-offer-import-modal', 'se
 
         <div class="col-lg-5 lego-set-information">
             <div class="lego-info-card">
+                <?php if ($model->isUpcoming()): ?>
+                    <?php $daysToLaunch = (int)$model->getDaysUntilLaunch(); ?>
+                    <div class="lego-prerelease" role="status" aria-live="polite">
+                        <div class="lego-prerelease-tag">
+                            <span class="lego-prerelease-dot" aria-hidden="true"></span>
+                            <?= T::tr('Not out yet') ?>
+                        </div>
+                        <div class="lego-prerelease-body">
+                            <div class="lego-prerelease-count">
+                                <span class="lego-prerelease-count-number"><?= Html::encode((string)$daysToLaunch) ?></span>
+                                <span class="lego-prerelease-count-label">
+                                    <?= T::tr('{n, plural, =0{out today} =1{day until launch} other{days until launch}}', ['n' => $daysToLaunch]) ?>
+                                </span>
+                            </div>
+                            <div class="lego-prerelease-meta">
+                                <i class="bi bi-calendar-event" aria-hidden="true"></i>
+                                <?= T::tr('Launches on {date}', ['date' => date('d.m.Y', strtotime($model->launch_date))]) ?>
+                            </div>
+                        </div>
+                    </div>
+                <?php endif; ?>
                 <div class="d-flex flex-wrap gap-2 mb-3">
                     <?= Html::a(Html::encode($model->theme->name), ["/lego/theme/{$model->theme->slug}"], [
                             'class' => 'badge rounded-pill text-bg-warning text-dark text-decoration-none',

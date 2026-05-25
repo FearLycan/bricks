@@ -882,4 +882,7 @@ return [
     'catalog updates (Atom)'                                                                                                                                                => '',
     'catalog updates (JSON Feed)'                                                                                                                                           => '',
     'catalog updates (RSS)'                                                                                                                                                 => '',
+    'Not out yet'                                                                                                                                                          => '',
+    'Launches on {date}'                                                                                                                                                   => '',
+    '{n, plural, =0{out today} =1{day until launch} other{days until launch}}'                                                                                             => '',
 ];

@@ -616,6 +616,106 @@ a, button {
     color: #6c757d;
 }
 
+.lego-product-page .lego-prerelease {
+    position: relative;
+    overflow: hidden;
+    border-radius: 0.9rem;
+    padding: 1rem 1.1rem;
+    margin-bottom: 1.1rem;
+    background:
+        radial-gradient(circle at 100% 0%, rgba(255, 213, 2, 0.22), transparent 55%),
+        linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    color: #f8fafc;
+    box-shadow: 0 0.6rem 1.4rem rgba(15, 23, 42, 0.18);
+}
+
+.lego-product-page .lego-prerelease::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+        radial-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+    background-size: 14px 14px;
+    background-position: -2px -2px;
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.lego-product-page .lego-prerelease-tag {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #fde68a;
+    margin-bottom: 0.65rem;
+}
+
+.lego-product-page .lego-prerelease-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgb(255, 213, 2);
+    box-shadow: 0 0 0 0 rgba(255, 213, 2, 0.75);
+    animation: legoPrereleasePulse 1.8s ease-out infinite;
+}
+
+@keyframes legoPrereleasePulse {
+    0% { box-shadow: 0 0 0 0 rgba(255, 213, 2, 0.75); }
+    70% { box-shadow: 0 0 0 10px rgba(255, 213, 2, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(255, 213, 2, 0); }
+}
+
+.lego-product-page .lego-prerelease-body {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 0.9rem;
+    flex-wrap: wrap;
+}
+
+.lego-product-page .lego-prerelease-count {
+    display: flex;
+    align-items: baseline;
+    gap: 0.55rem;
+    line-height: 1;
+}
+
+.lego-product-page .lego-prerelease-count-number {
+    font-size: 2.85rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: rgb(255, 213, 2);
+    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.18);
+}
+
+.lego-product-page .lego-prerelease-count-label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #e2e8f0;
+    max-width: 9rem;
+}
+
+.lego-product-page .lego-prerelease-meta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.85rem;
+    color: #cbd5f5;
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 999px;
+    padding: 0.3rem 0.7rem;
+}
+
+.lego-product-page .lego-prerelease-meta i {
+    color: rgb(255, 213, 2);
+}
+
 @media (max-width: 991.98px) {
     .lego-product-page .lego-info-card {
         position: static;
@@ -623,6 +723,16 @@ a, button {
 
     .lego-product-page .lego-gallery-main {
         min-height: 360px;
+    }
+}
+
+@media (max-width: 480px) {
+    .lego-product-page .lego-prerelease-count-number {
+        font-size: 2.3rem;
+    }
+
+    .lego-product-page .lego-prerelease-body {
+        align-items: flex-start;
     }
 }
 

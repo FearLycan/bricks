@@ -679,6 +679,33 @@ class Set extends ActiveRecord
         return strtotime($this->launch_date) <= strtotime(date('Y-m-d'));
     }
 
+    public function isUpcoming(): bool
+    {
+        if ($this->launch_date === null || $this->launch_date === '') {
+            return false;
+        }
+
+        return strtotime($this->launch_date) > strtotime(date('Y-m-d'));
+    }
+
+    public function getDaysUntilLaunch(): ?int
+    {
+        if ($this->launch_date === null || $this->launch_date === '') {
+            return null;
+        }
+
+        $launch = strtotime($this->launch_date);
+        $today = strtotime(date('Y-m-d'));
+        if ($launch === false || $today === false) {
+            return null;
+        }
+
+        $diff = (int)round(($launch - $today) / 86400);
+
+        return $diff < 0 ? 0 : $diff;
+    }
+
+
     private static function getCachedList(string $cacheKey, callable $resolver, int $duration = 3600): array
     {
         $result = Yii::$app->cache->getOrSet($cacheKey, $resolver, $duration);
