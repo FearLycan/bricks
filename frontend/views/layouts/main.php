@@ -112,6 +112,11 @@ if ($socialImage !== '') {
             <meta name="mylead-verification" content="<?= Yii::$app->params['leadTag'] ?>">
         <?php endif; ?>
 
+        <?php if (isset(Yii::$app->params['pagead2']) && Yii::$app->params['pagead2']): ?>
+            <meta name="google-adsense-account" content="<?= Yii::$app->params['pagead2'] ?>">
+            <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=<?= Yii::$app->params['pagead2'] ?>" crossorigin="anonymous"></script>
+        <?php endif; ?>
+
     </head>
     <body class="d-flex flex-column h-100"
           data-i18n-loading="<?= Html::encode(T::tr('Loading data')) ?>"
