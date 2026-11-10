@@ -55,6 +55,22 @@ return [
         'session'      => [
             'name' => 'brick-session',
         ],
+        'response'     => [
+            // Server-Timing: PHP time from request start to send. Compared with
+            // the browser's TTFB it shows how long a request waited in the
+            // php-fpm queue (TTFB - app) vs. how long the app itself took.
+            'on beforeSend' => static function (\yii\base\Event $event): void {
+                $start = (float)($_SERVER['REQUEST_TIME_FLOAT'] ?? 0);
+                if ($start > 0 && $event->sender instanceof \yii\web\Response) {
+                    $ms = (microtime(true) - $start) * 1000;
+                    $db = \Yii::getLogger()->getDbProfiling();
+                    $event->sender->headers->set(
+                        'Server-Timing',
+                        sprintf('app;dur=%.1f, db;dur=%.1f;desc="%d queries"', $ms, $db[1] * 1000, $db[0])
+                    );
+                }
+            },
+        ],
         'log'          => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
             'targets'    => [
