@@ -90,6 +90,27 @@ class SetPrice extends ActiveRecord
         return $this->hasOne(Set::class, ['id' => 'set_id']);
     }
 
+    /**
+     * ISO currency for a LEGO.com market (Brickset `LEGOCom` country keys).
+     */
+    public static function currencyForCountry(string $countryCode): ?string
+    {
+        return match (strtoupper(trim($countryCode))) {
+            'US'                                              => 'USD',
+            'CA'                                              => 'CAD',
+            'UK', 'GB'                                        => 'GBP',
+            'PL'                                              => 'PLN',
+            'AU'                                              => 'AUD',
+            'DE', 'AT', 'FR', 'ES', 'IT', 'NL', 'BE', 'FI', 'IE' => 'EUR',
+            default                                           => null,
+        };
+    }
+
+    public function getCurrencyCode(): ?string
+    {
+        return self::currencyForCountry((string)$this->country_code);
+    }
+
     public static function syncLegoComPrices(Set $set, array $pricesByCountry): void
     {
         foreach ($pricesByCountry as $countryCode => $countryPriceData) {

@@ -32,7 +32,7 @@ $heroId = 'bricks-hero-' . uniqid();
                 $imageUrl  = $slide->getDisplayMainImageUrl();
                 $themeName = $slide->theme ? $slide->theme->name : '';
                 $promoPrice = $slide->getFormattedPromotionalPrice('USD');
-                $basePrice  = $slide->getFormattedPrice('USD');
+                $basePrice  = $promoPrice !== null ? $slide->getFormattedPrice('USD') : $slide->getFormattedLocalRetailPrice();
                 $savings    = $slide->getPromotionalSavingsPercent('USD');
             ?>
                 <div class="swiper-slide bricks-hero-slide">

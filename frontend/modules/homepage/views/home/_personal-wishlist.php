@@ -48,7 +48,7 @@ if (empty($items)) {
                         <span class="bricks-wishlist-bar-item-body">
                             <span class="bricks-wishlist-bar-item-number"><?= Html::encode((string)$set->number) ?></span>
                             <span class="bricks-wishlist-bar-item-name"><?= Html::encode((string)$set->name) ?></span>
-                            <?php $price = $set->getFormattedPromotionalPrice('USD') ?? $set->getFormattedPrice('USD'); ?>
+                            <?php $price = $set->getFormattedPromotionalPrice('USD') ?? $set->getFormattedLocalRetailPrice(); ?>
                             <?php if ($price !== null): ?>
                                 <span class="bricks-wishlist-bar-item-price"><?= Html::encode($price) ?></span>
                             <?php endif; ?>

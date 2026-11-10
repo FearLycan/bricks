@@ -363,6 +363,52 @@ class Set extends ActiveRecord
         return self::formatAmountFromCents($this->price, $currency);
     }
 
+    /**
+     * Site language → LEGO.com market whose official price is shown on that
+     * language version. Languages without an entry (or sets without data for
+     * that market) fall back to the US price stored in `set.price`.
+     */
+    private const LANGUAGE_RETAIL_COUNTRY = [
+        'pl' => 'PL',
+        'de' => 'DE',
+    ];
+
+    /**
+     * Official LEGO retail price for the visitor's language version.
+     *
+     * @return array{cents:int, currency:string}|null
+     */
+    public function getLocalRetailPrice(): ?array
+    {
+        $language = strtolower(substr((string)(Yii::$app->language ?? 'en'), 0, 2));
+        $country = self::LANGUAGE_RETAIL_COUNTRY[$language] ?? null;
+
+        if ($country !== null) {
+            foreach ($this->setPrices as $setPrice) {
+                if (strtoupper((string)$setPrice->country_code) !== $country || (int)$setPrice->retail_price_cents <= 0) {
+                    continue;
+                }
+                $currency = $setPrice->getCurrencyCode();
+                if ($currency !== null) {
+                    return ['cents' => (int)$setPrice->retail_price_cents, 'currency' => $currency];
+                }
+            }
+        }
+
+        if ($this->price !== null && $this->price > 0) {
+            return ['cents' => (int)$this->price, 'currency' => 'USD'];
+        }
+
+        return null;
+    }
+
+    public function getFormattedLocalRetailPrice(): ?string
+    {
+        $price = $this->getLocalRetailPrice();
+
+        return $price === null ? null : self::formatAmountFromCents($price['cents'], $price['currency']);
+    }
+
     public function getFormattedPriceOrDefault(string $defaultText, string $currency = 'PLN'): string
     {
         $price = $this->getFormattedPrice($currency);

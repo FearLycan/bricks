@@ -20,7 +20,9 @@ $this->params['metaDescription'] = SeoHelper::buildPromoDescription($page);
 $this->params['canonicalUrl'] = SeoHelper::buildAbsoluteUrl(
     $page > 1 ? ['/lego/on-sale', 'promo_page' => $page] : ['/lego/on-sale']
 );
-$this->params['robots'] = 'index,follow';
+// An empty "best deals" page is thin content: keep it out of the index
+// until there is at least one genuine offer, but let crawlers follow links.
+$this->params['robots'] = $dataProvider->getTotalCount() > 0 ? 'index,follow' : 'noindex,follow';
 
 SeoHelper::registerPaginationLinks($this, $dataProvider, $page, ['/lego/on-sale'], 'promo_page');
 

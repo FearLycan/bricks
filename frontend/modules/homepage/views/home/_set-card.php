@@ -21,7 +21,9 @@ $mainImage = $model->getMainImage();
 $imageUrl = $mainImage !== null ? $mainImage->url : "https://placehold.co/300x220?text={$model->number}";
 
 $promoPrice = $model->getFormattedPromotionalPrice('USD');
-$basePrice = $model->getFormattedPrice('USD');
+// Struck-through price must be in the same currency as the promo (USD);
+// without a promo show the official price for the visitor's language.
+$basePrice = $promoPrice !== null ? $model->getFormattedPrice('USD') : $model->getFormattedLocalRetailPrice();
 $savingsPercent = $model->getPromotionalSavingsPercent('USD');
 
 $availability = (string)$model->availability;
