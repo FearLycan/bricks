@@ -183,10 +183,10 @@ $queueOfferImportModalUrl = Url::to(['/management/queue-offer-import-modal', 'se
                                 ['class' => 'text-decoration-none js-smooth-scroll', 'data-scroll-target' => '#alternative-offers']
                         ) ?>
                     <?php else: ?>
-                        <?= Html::encode($model->getFormattedPriceOrDefault(T::tr('Check price in store'), 'USD')) ?>
+                        <?= Html::encode($model->getFormattedLocalRetailPrice() ?? T::tr('Check price in store')) ?>
                     <?php endif; ?>
                 </div>
-                <?php if ($basePriceUsd !== null): ?>
+                <?php if ($basePriceUsd !== null && $promoPriceUsd !== null): ?>
                     <div class="small text-body-secondary mb-2">
                         <?= T::tr('Compared with the official LEGO retail price.') ?>
                     </div>
@@ -481,12 +481,13 @@ $queueOfferImportModalUrl = Url::to(['/management/queue-offer-import-modal', 'se
                                         </thead>
                                         <tbody>
                                         <?php foreach ($model->setPrices as $setPrice): ?>
+                                            <?php $setPriceCurrency = $setPrice->getCurrencyCode() ?? (string)$setPrice->country_code; ?>
                                             <tr>
                                                 <td><?= Html::encode($setPrice->country_code) ?></td>
-                                                <td><?= Html::encode(Set::formatAmountFromCents($setPrice->retail_price_cents, $setPrice->country_code)) ?></td>
+                                                <td><?= Html::encode(Set::formatAmountFromCents($setPrice->retail_price_cents, $setPriceCurrency)) ?></td>
                                                 <td>
                                                     <?php if ($model->pieces && $model->pieces > 0): ?>
-                                                        <?= Html::encode(Set::formatAmountFromCents((int)round($setPrice->retail_price_cents / $model->pieces), $setPrice->country_code)) ?>
+                                                        <?= Html::encode(Set::formatAmountFromCents((int)round($setPrice->retail_price_cents / $model->pieces), $setPriceCurrency)) ?>
                                                     <?php else: ?>
                                                         -
                                                     <?php endif; ?>

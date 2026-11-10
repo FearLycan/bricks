@@ -99,18 +99,22 @@ $isOwned = !$isGuest && OwnedSet::isOwnedByCurrentUser((int)$model->id);
                     <span class="fw-bold text-success font-size-large"><?= Html::encode($promoPrice) ?></span>
                     <span class="text-muted text-decoration-line-through ms-2 small"><?= Html::encode($model->getFormattedPrice('USD') ?? '') ?></span>
                 </div>
-            <?php elseif ($model->getFormattedPrice('USD') !== null): ?>
+            <?php elseif (($localPrice = $model->getFormattedLocalRetailPrice()) !== null): ?>
                 <div class="mt-2">
-                    <span class="fw-bold"><?= Html::encode($model->getFormattedPrice('USD')) ?></span>
+                    <span class="fw-bold"><?= Html::encode($localPrice) ?></span>
                 </div>
             <?php endif; ?>
             <?php
-            $effectivePriceCents = $promoPriceCents ?? $model->price;
-            if ($effectivePriceCents !== null && $effectivePriceCents > 0 && $model->pieces > 0):
-                $ppp = $effectivePriceCents / 100 / $model->pieces;
+            if ($promoPriceCents !== null) {
+                $pppSource = ['cents' => $promoPriceCents, 'currency' => 'USD'];
+            } else {
+                $pppSource = $model->getLocalRetailPrice();
+            }
+            if ($pppSource !== null && $pppSource['cents'] > 0 && $model->pieces > 0):
+                $ppp = $pppSource['cents'] / 100 / $model->pieces;
             ?>
                 <div class="set-card-ppp text-muted">
-                    <?= number_format($ppp, 3) ?> USD/pcs
+                    <?= number_format($ppp, 3) ?> <?= Html::encode($pppSource['currency']) ?>/pcs
                 </div>
             <?php endif; ?>
         </div>
