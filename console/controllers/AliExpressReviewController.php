@@ -63,6 +63,13 @@ final class AliExpressReviewController extends Controller
         $store = Store::findOne(['code' => 'ALIEXPRESS']);
         if (!$store) {
             $this->stderr("Store ALIEXPRESS not found.\n");
+
+            return;
+        }
+        if (!$store->isActive()) {
+            $this->stdout("Store ALIEXPRESS is inactive - review sync skipped.\n");
+
+            return;
         }
 
         $date = new \DateTime('now');

@@ -8,6 +8,7 @@ use common\enums\StatusEnum;
 use common\models\SearchWizardHash;
 use common\models\Set;
 use common\models\SetOffer;
+use common\models\Store;
 use common\models\SetMinifig;
 use common\models\SetReview;
 use common\models\SetTag;
@@ -293,8 +294,10 @@ class LegoController extends Controller
     public function actionOfferReviewsModal(int $setOfferId): string
     {
         $offer = SetOffer::find()
+            ->alias('o')
+            ->innerJoin(['st' => Store::tableName()], 'st.id = o.store_id AND st.status = ' . StatusEnum::ACTIVE->value)
             ->with(['setOfferReviews.setOfferReviewImages', 'store'])
-            ->where(['id' => $setOfferId])
+            ->where(['o.id' => $setOfferId])
             ->one();
 
         if (!$offer) {

@@ -264,8 +264,9 @@ class HomepageContentService
     public function getOnSale(int $limit = 12): array
     {
         return $this->cached("homepage.onSale.{$limit}", function () use ($limit) {
-            $offerSubquery = '(SELECT set_id, MIN(price) AS min_price FROM {{%set_offer}}'
-                . ' WHERE currency_code = \'USD\' AND price > 0 GROUP BY set_id)';
+            $offerSubquery = '(SELECT o.set_id, MIN(o.price) AS min_price FROM {{%set_offer}} o'
+                . ' INNER JOIN {{%store}} st ON st.id = o.store_id AND st.status = ' . StatusEnum::ACTIVE->value
+                . ' WHERE o.currency_code = \'USD\' AND o.price > 0 GROUP BY o.set_id)';
 
             return Set::find()
                 ->alias('s')

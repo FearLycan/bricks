@@ -174,7 +174,9 @@ class SetSearch extends Set
 
     public function searchPromo(): ActiveDataProvider
     {
-        $subquery = '(SELECT set_id, MIN(price) as min_price FROM {{%set_offer}} WHERE currency_code = \'USD\' AND price > 0 GROUP BY set_id)';
+        $subquery = '(SELECT o.set_id, MIN(o.price) as min_price FROM {{%set_offer}} o'
+            . ' INNER JOIN {{%store}} st ON st.id = o.store_id AND st.status = ' . StatusEnum::ACTIVE->value
+            . ' WHERE o.currency_code = \'USD\' AND o.price > 0 GROUP BY o.set_id)';
 
         $query = Set::find()
             ->alias('s')
