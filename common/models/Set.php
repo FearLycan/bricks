@@ -187,9 +187,26 @@ class Set extends ActiveRecord
      *
      * @return ActiveQuery
      */
+    /**
+     * Public-facing offers: only from stores with status ACTIVE.
+     * Deactivating a store (e.g. AliExpress, which lists non-genuine bricks)
+     * hides its offers from set pages, promotions, feeds and structured data.
+     */
     public function getSetOffers(): ActiveQuery
     {
-        return $this->hasMany(SetOffer::class, ['set_id' => 'id'])->orderBy(['price' => SORT_ASC, 'id' => SORT_ASC])->cache(self::RELATIONS_CACHE_DURATION);
+        return $this->hasMany(SetOffer::class, ['set_id' => 'id'])
+            ->innerJoin(['offer_store' => Store::tableName()], 'offer_store.id = {{%set_offer}}.store_id')
+            ->andWhere(['offer_store.status' => StatusEnum::ACTIVE->value])
+            ->orderBy(['{{%set_offer}}.price' => SORT_ASC, '{{%set_offer}}.id' => SORT_ASC])
+            ->cache(self::RELATIONS_CACHE_DURATION);
+    }
+
+    /**
+     * Every offer regardless of store status. Admin/back-office use only.
+     */
+    public function getAllSetOffers(): ActiveQuery
+    {
+        return $this->hasMany(SetOffer::class, ['set_id' => 'id'])->orderBy(['price' => SORT_ASC, 'id' => SORT_ASC]);
     }
 
     public function getSetOfferImports(): ActiveQuery

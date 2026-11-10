@@ -6,6 +6,7 @@ use common\enums\StatusEnum;
 use common\models\Set;
 use common\models\SetInstruction;
 use common\models\SetOffer;
+use common\models\Store;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Yii;
@@ -133,6 +134,7 @@ final class FeedService
         $offers = SetOffer::find()
             ->alias('o')
             ->innerJoin(['s' => Set::tableName()], 's.id = o.set_id AND s.status = ' . StatusEnum::ACTIVE->value)
+            ->innerJoin(['st' => Store::tableName()], 'st.id = o.store_id AND st.status = ' . StatusEnum::ACTIVE->value)
             ->andWhere(['not', ['s.slug' => null]])
             ->andWhere(['<>', 's.slug', ''])
             ->andWhere(['not', ['o.price' => null]])

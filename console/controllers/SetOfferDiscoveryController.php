@@ -67,6 +67,11 @@ final class SetOfferDiscoveryController extends Controller
         $matcher = new AliExpressOfferMatcher();
         $linkResolver = new AliExpressLinkResolver();
         $store = Store::getOrCreate('ALIEXPRESS', 'AliExpress');
+        if (!$store->isActive()) {
+            $this->stdout("Store ALIEXPRESS is inactive - discovery skipped.\n");
+
+            return ExitCode::OK;
+        }
 
         $queuedTotal = 0;
         foreach ($sets->each(50) as $set) {
