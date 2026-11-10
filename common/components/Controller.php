@@ -8,6 +8,22 @@ use yii\web\NotFoundHttpException;
 
 class Controller extends \yii\web\Controller
 {
+    /**
+     * Modal fragments (`*-modal`) and JSON endpoints are not pages. Tell
+     * crawlers not to index them so they stop spending crawl budget (and our
+     * shared PHP worker pool) on them.
+     */
+    public function beforeAction($action): bool
+    {
+        $isFragment = str_ends_with($action->id, '-modal')
+            || \Yii::$app->response->format === \yii\web\Response::FORMAT_JSON;
+        if ($isFragment && \Yii::$app->has('response') && \Yii::$app->response instanceof \yii\web\Response) {
+            \Yii::$app->response->headers->set('X-Robots-Tag', 'noindex, nofollow');
+        }
+
+        return parent::beforeAction($action);
+    }
+
     public function behaviors(): array
     {
         return [

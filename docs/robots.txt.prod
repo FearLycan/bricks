@@ -1,0 +1,47 @@
+# Production robots.txt for brickatlas.shop.
+# frontend/web/robots.txt is gitignored (created per environment) -
+# copy this file there on deploy: cp docs/robots.txt.prod frontend/web/robots.txt
+
+User-agent: SemrushBot
+User-agent: AhrefsBot
+User-agent: SERankingBacklinksBot
+User-agent: PetalBot
+User-agent: Reflectionbot
+User-agent: TokenFoundryBot
+User-agent: Bytespider
+User-agent: MJ12bot
+User-agent: DotBot
+User-agent: BLEXBot
+User-agent: DataForSeoBot
+User-agent: Amazonbot
+User-agent: ImagesiftBot
+Disallow: /
+
+User-agent: *
+# HTML fragments and JSON endpoints (not pages)
+Disallow: /*-modal
+Disallow: /*/lego/lego/
+Disallow: /lego/lego/
+Disallow: /review/
+Disallow: /*/review/
+Disallow: /autocomplete/
+Disallow: /wizard/
+Disallow: /*/wizard/
+Disallow: /management/
+Disallow: /*/management/
+Disallow: /wishlist/
+Disallow: /*/wishlist/
+Disallow: /owned-set/
+Disallow: /*/owned-set/
+Disallow: /auth/
+Disallow: /*/auth/
+Disallow: /user/
+Disallow: /*/user/
+# Filtered / sorted / paged-size listing variants (canonical points to the clean URL)
+Disallow: /*per-page=
+Disallow: /*setId=
+Disallow: /*sort_option=
+Disallow: /*/view?slug=
+Crawl-delay: 2
+
+Sitemap: https://brickatlas.shop/sitemap.xml

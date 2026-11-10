@@ -59,13 +59,19 @@ return [
             'traceLevel' => YII_DEBUG ? 3 : 0,
             'targets'    => [
                 [
-                    'class'  => FileTarget::class,
-                    'levels' => ['error', 'warning'],
+                    'class'   => FileTarget::class,
+                    'levels'  => ['error', 'warning'],
+                    // 404/400 from bots probing random URLs were ~100% of the
+                    // log, each with a full $_SERVER dump (~60 MB in 3 weeks).
+                    'except'  => ['yii\web\HttpException:4*'],
+                    'logVars' => ['_GET', '_POST'],
+                    'maskVars' => ['_POST.password', '_POST.LoginForm.password', '_POST.SignupForm.password'],
                 ],
                 [
-                    'class'  => \common\components\log\DbLogTarget::class,
-                    'levels' => ['error', 'warning'],
-                    'except' => ['yii\db\*', 'yii\web\HttpException:4*'],
+                    'class'   => \common\components\log\DbLogTarget::class,
+                    'levels'  => ['error', 'warning'],
+                    'except'  => ['yii\db\*', 'yii\web\HttpException:4*'],
+                    'logVars' => [],
                 ],
             ],
         ],
