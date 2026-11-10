@@ -306,10 +306,43 @@ class Set extends ActiveRecord
         return 'https://placehold.co/1000x800?text=' . rawurlencode((string)$this->number);
     }
 
+    /**
+     * App language → ICU locale used for price formatting.
+     */
+    private const PRICE_LOCALES = [
+        'en' => 'en_US',
+        'pl' => 'pl_PL',
+        'de' => 'de_DE',
+        'fr' => 'fr_FR',
+        'es' => 'es_ES',
+        'it' => 'it_IT',
+        'ja' => 'ja_JP',
+        'zh' => 'zh_CN',
+    ];
+
     public static function formatAmountFromCents(int $amountInCents, string $currency = 'PLN'): string
     {
-        $amount = number_format($amountInCents / 100, 2, ',', ' ');
         $upper = strtoupper(trim($currency));
+        if ($upper === '') {
+            $upper = 'PLN';
+        }
+
+        // Prefer ICU so separators follow the visitor's language
+        // ("$449.99" on /en, "449,99 $" on /fr, "449,99 zł" on /pl).
+        if (class_exists(\NumberFormatter::class)) {
+            $language = strtolower(substr((string)(Yii::$app->language ?? 'en'), 0, 2));
+            $locale = self::PRICE_LOCALES[$language] ?? 'en_US';
+            $formatter = new \NumberFormatter($locale, \NumberFormatter::CURRENCY);
+            $formatted = $formatter->formatCurrency($amountInCents / 100, $upper);
+            if ($formatted !== false) {
+                return $formatted;
+            }
+        }
+
+        // Fallback without ext-intl: dot decimals for $/£ markets, comma elsewhere.
+        $amount = in_array($upper, ['USD', 'AUD', 'CAD', 'NZD', 'SGD', 'HKD', 'GBP', 'JPY', 'CNY'], true)
+            ? number_format($amountInCents / 100, 2, '.', ',')
+            : number_format($amountInCents / 100, 2, ',', ' ');
 
         return match ($upper) {
             'USD', 'AUD', 'CAD', 'NZD', 'SGD', 'HKD' => '$' . $amount,

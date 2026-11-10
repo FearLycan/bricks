@@ -4,13 +4,23 @@ namespace common\schema\factory;
 
 use common\models\Set;
 use common\models\SetOffer;
-use common\models\SetPrice;
 
+/**
+ * Builds the `offers` node for a set page.
+ *
+ * BrickAtlas is a price-comparison site, not a seller, so Google expects a
+ * single `AggregateOffer` (lowPrice / highPrice / offerCount) rather than a
+ * list of `Offer` nodes that look like we sell the product ourselves.
+ *
+ * Only real retailer offers with a price are used. The LEGO retail price
+ * (MSRP from `set_price` / `set.price`) is NOT an offer — nobody sells at
+ * that price on this page — so it is never emitted as one.
+ */
 final class OfferSchemaFactory
 {
-    public static function fromSet(Set $set, string $productUrl): array
+    public static function fromSet(Set $set, string $productUrl): ?array
     {
-        $offers = [];
+        $pricesByCurrency = [];
         foreach ($set->setOffers as $setOffer) {
             if (!$setOffer instanceof SetOffer) {
                 continue;
@@ -20,120 +30,70 @@ final class OfferSchemaFactory
                 continue;
             }
 
-            $currency = strtoupper((string)$setOffer->currency_code);
+            $currency = strtoupper(trim((string)$setOffer->currency_code));
             if ($currency === '') {
                 $currency = 'USD';
             }
 
-            $offerSchema = [
-                '@type' => 'Offer',
-                'price' => number_format(($setOffer->price ?? 0) / 100, 2, '.', ''),
-                'priceCurrency' => $currency,
-                'availability' => self::resolveAvailability($setOffer->availability),
-                'url' => $setOffer->url ?: $productUrl,
-                'seller' => [
-                    '@type' => 'Organization',
-                    'name' => $setOffer->store->name ?? 'Store',
-                ],
-            ];
-
-            if ($set->price !== null && $set->price > 0 && $currency === 'USD' && $setOffer->price !== null && $setOffer->price > 0 && $setOffer->price < $set->price) {
-                $offerSchema['priceSpecification'] = self::buildPromotionPriceSpecification($set->price, $setOffer->price, $currency);
-            }
-
-            $offers[] = $offerSchema;
-        }
-
-        if ($offers !== []) {
-            return $offers;
-        }
-
-        foreach ($set->setPrices as $setPrice) {
-            if (!$setPrice instanceof SetPrice) {
-                continue;
-            }
-
-            if ($setPrice->retail_price_cents <= 0) {
-                continue;
-            }
-
-            $currency = self::resolveCurrencyCode($setPrice->country_code);
-            if ($currency === null) {
-                continue;
-            }
-
-            $offers[] = [
-                '@type'           => 'Offer',
-                'price'           => number_format($setPrice->retail_price_cents / 100, 2, '.', ''),
-                'priceCurrency'   => $currency,
-                'availability'    => self::resolveAvailability($set->availability),
-                'url'             => $productUrl,
+            $pricesByCurrency[$currency][] = [
+                'price'     => (int)$setOffer->price,
+                'available' => self::isAvailable($setOffer->availability),
             ];
         }
 
-        if ($offers !== []) {
-            return $offers;
+        if ($pricesByCurrency === []) {
+            return null;
         }
 
-        $fallbackPriceCents = $set->price ?? 0;
-        if ($fallbackPriceCents <= 0) {
-            return [];
-        }
+        // AggregateOffer must use a single currency. Pick the one with the
+        // most offers; on a tie prefer USD, then alphabetical for stability.
+        uksort($pricesByCurrency, static function (string $a, string $b) use ($pricesByCurrency): int {
+            $countDiff = count($pricesByCurrency[$b]) <=> count($pricesByCurrency[$a]);
+            if ($countDiff !== 0) {
+                return $countDiff;
+            }
+            if ($a === 'USD' || $b === 'USD') {
+                return $a === 'USD' ? -1 : 1;
+            }
 
-        return [[
-                    '@type'           => 'Offer',
-                    'price'           => number_format($fallbackPriceCents / 100, 2, '.', ''),
-                    'priceCurrency'   => 'USD',
-                    'availability'    => self::resolveAvailability($set->availability),
-                    'url'             => $productUrl,
-                ]];
+            return strcmp($a, $b);
+        });
+
+        $currency = array_key_first($pricesByCurrency);
+        $entries = $pricesByCurrency[$currency];
+        $prices = array_column($entries, 'price');
+        $anyAvailable = in_array(true, array_column($entries, 'available'), true);
+
+        return [
+            '@type'         => 'AggregateOffer',
+            'priceCurrency' => $currency,
+            'lowPrice'      => self::formatPrice(min($prices)),
+            'highPrice'     => self::formatPrice(max($prices)),
+            'offerCount'    => count($prices),
+            'availability'  => $anyAvailable ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+            'url'           => $productUrl,
+        ];
     }
 
-    private static function resolveCurrencyCode(string $countryCode): ?string
+    private static function formatPrice(int $cents): string
     {
-        return match (strtoupper($countryCode)) {
-            'US' => 'USD',
-            'PL' => 'PLN',
-            'CA' => 'CAD',
-            'UK', 'GB' => 'GBP',
-            'DE' => 'EUR',
-            default => null,
-        };
+        return number_format($cents / 100, 2, '.', '');
     }
 
-    private static function resolveAvailability(?string $value): string
+    private static function isAvailable(?string $value): bool
     {
         $normalized = strtolower(trim((string)$value));
         if ($normalized === '') {
-            return 'https://schema.org/InStock';
+            // Retailer feeds usually omit availability for in-stock items.
+            return true;
         }
 
-        if (str_contains($normalized, 'retired') || str_contains($normalized, 'sold out') || str_contains($normalized, 'out of stock')) {
-            return 'https://schema.org/OutOfStock';
+        foreach (['retired', 'sold out', 'out of stock', 'unavailable', 'niedostępn'] as $needle) {
+            if (str_contains($normalized, $needle)) {
+                return false;
+            }
         }
 
-        if (str_contains($normalized, 'preorder') || str_contains($normalized, 'pre-order')) {
-            return 'https://schema.org/PreOrder';
-        }
-
-        return 'https://schema.org/InStock';
-    }
-
-    private static function buildPromotionPriceSpecification(int $listPriceCents, int $salePriceCents, string $currency): array
-    {
-        return [
-            [
-                '@type' => 'UnitPriceSpecification',
-                'name' => 'List price',
-                'price' => number_format($listPriceCents / 100, 2, '.', ''),
-                'priceCurrency' => $currency,
-            ],
-            [
-                '@type' => 'UnitPriceSpecification',
-                'name' => 'Sale price',
-                'price' => number_format($salePriceCents / 100, 2, '.', ''),
-                'priceCurrency' => $currency,
-            ],
-        ];
+        return true;
     }
 }
