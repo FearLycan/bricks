@@ -8,6 +8,7 @@ use yii\web\View;
  * @var View       $this
  * @var array      $heroSlides
  * @var array      $themeTiles
+ * @var array      $themeCovers
  * @var array      $browseTabs
  * @var array      $newArrivals
  * @var array      $onSale
@@ -68,6 +69,7 @@ $isGuest = Yii::$app->user->isGuest;
 
     <?= $this->render('_theme-tiles', [
             'themes' => $themeTiles,
+            'covers' => $themeCovers,
             'title'  => T::tr('Shop by theme'),
     ]) ?>
 

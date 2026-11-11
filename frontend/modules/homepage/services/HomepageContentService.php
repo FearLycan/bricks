@@ -3,13 +3,17 @@
 namespace frontend\modules\homepage\services;
 
 use common\components\SeasonalEventResolver;
+use common\enums\image\KindEnum;
+use common\enums\image\TypeEnum;
 use common\enums\StatusEnum;
 use common\models\OwnedSet;
 use common\models\Set;
+use common\models\SetImage;
 use common\models\SetMinifig;
 use common\models\Theme;
 use common\models\User;
 use common\models\Wishlist;
+use frontend\components\SeoHelper;
 use frontend\components\T;
 use Yii;
 use yii\db\Expression;
@@ -110,117 +114,183 @@ class HomepageContentService
 
     /**
      * @param Theme[] $themes
-     * @return array<int, array{label: string, url: string, image: string, accent: ?string}>
+     * @return array<int, array{label: string, url: string, cover: ?string, accent: ?string}>
      */
     private function buildNewTabTiles(array $themes): array
     {
+        $used = [];
         $tiles = [
-            $this->makeTile(T::tr('All new arrivals'), ['/lego'], 'gradient-blue', 'images/browse/new-arrivals.jpg'),
-            $this->makeTile(T::tr('On sale'), ['/lego/on-sale'], 'gradient-red', 'images/browse/on-sale.jpg'),
-            $this->makeTile(T::tr('LEGO® for adults'), ['/lego/for-adults'], 'gradient-purple', 'images/browse/adults.jpg'),
-            $this->makeTile(T::tr('Browse all sets'), ['/lego'], 'gradient-amber', 'images/browse/all-sets.jpg'),
+            $this->makeTile(T::tr('All new arrivals'), ['/lego'], 'gradient-blue', $this->pickCover('new', $used)),
+            $this->makeTile(T::tr('On sale'), ['/lego/on-sale'], 'gradient-red', $this->pickCover('on-sale', $used)),
+            $this->makeTile(T::tr('LEGO® for adults'), ['/lego/for-adults'], 'gradient-purple', $this->pickCover('for-adults', $used)),
+            $this->makeTile(T::tr('Browse all sets'), ['/lego'], 'gradient-amber', $this->pickCover('top', $used)),
         ];
 
         foreach (array_slice($themes, 0, 4) as $theme) {
-            $tiles[] = $this->themeToTile($theme);
+            $tiles[] = $this->themeToTile($theme, $used);
         }
 
         return $tiles;
     }
 
     /**
-     * @return array<int, array{label: string, url: string, image: string, accent: ?string}>
+     * @return array<int, array{label: string, url: string, cover: ?string, accent: ?string}>
      */
     private function buildAudienceTabTiles(): array
     {
+        $used = [];
+
         return [
-            $this->makeTile(T::tr('For toddlers (1+)'), ['/lego/for-toddlers'], 'gradient-pink', 'images/browse/toddlers.jpg'),
-            $this->makeTile(T::tr('For kids (5–8)'), ['/lego/for-kids'], 'gradient-amber', 'images/browse/kids.jpg'),
-            $this->makeTile(T::tr('For tweens (9–12)'), ['/lego/for-tweens'], 'gradient-green', 'images/browse/tweens.jpg'),
-            $this->makeTile(T::tr('For teens (13+)'), ['/lego/for-teens'], 'gradient-blue', 'images/browse/teens.jpg'),
-            $this->makeTile(T::tr('For adults (18+)'), ['/lego/for-adults'], 'gradient-purple', 'images/browse/adults.jpg'),
-            $this->makeTile(T::tr('Small builds (≤200 pcs)'), ['/lego/small-builds'], 'gradient-teal', 'images/browse/small-builds.jpg'),
-            $this->makeTile(T::tr('Big builds (2000+ pcs)'), ['/lego/big-builds'], 'gradient-red', 'images/browse/big-builds.jpg'),
-            $this->makeTile(T::tr('Browse all sets'), ['/lego'], 'gradient-slate', 'images/browse/all-sets.jpg'),
+            $this->makeTile(T::tr('For toddlers (1+)'), ['/lego/for-toddlers'], 'gradient-pink', $this->pickCover('for-toddlers', $used)),
+            $this->makeTile(T::tr('For kids (5–8)'), ['/lego/for-kids'], 'gradient-amber', $this->pickCover('for-kids', $used)),
+            $this->makeTile(T::tr('For tweens (9–12)'), ['/lego/for-tweens'], 'gradient-green', $this->pickCover('for-tweens', $used)),
+            $this->makeTile(T::tr('For teens (13+)'), ['/lego/for-teens'], 'gradient-blue', $this->pickCover('for-teens', $used)),
+            $this->makeTile(T::tr('For adults (18+)'), ['/lego/for-adults'], 'gradient-purple', $this->pickCover('for-adults', $used)),
+            $this->makeTile(T::tr('Small builds (≤200 pcs)'), ['/lego/small-builds'], 'gradient-teal', $this->pickCover('small-builds', $used)),
+            $this->makeTile(T::tr('Big builds (2000+ pcs)'), ['/lego/big-builds'], 'gradient-red', $this->pickCover('big-builds', $used)),
+            $this->makeTile(T::tr('Browse all sets'), ['/lego'], 'gradient-slate', $this->pickCover('top', $used)),
         ];
     }
 
     /**
-     * @param Theme[] $themes
-     * @return array<int, array{label: string, url: string, image: string, accent: ?string}>
+     * @param int[] $used set ids already shown in the same group (kept unique)
+     * @return array{label: string, url: string, cover: ?string, accent: ?string}
      */
-    private function themesToTiles(array $themes): array
+    private function themeToTile(Theme $theme, array &$used = []): array
     {
-        return array_map(fn(Theme $t) => $this->themeToTile($t), $themes);
-    }
-
-    /**
-     * @return array{label: string, url: string, image: string, accent: ?string}
-     */
-    private function themeToTile(Theme $theme): array
-    {
-        $name = (string)$theme->name;
-        $image = trim((string)$theme->image);
-
         return [
-            'label'  => $name,
+            'label'  => (string)$theme->name,
             'url'    => Url::to("/lego/theme/{$theme->slug}"),
-            'image'  => $image !== '' ? $image : $this->placeholderImage($name),
+            'cover'  => $theme->getTileImageUrl() ?? $this->pickCover('theme-' . (int)$theme->id, $used),
             'accent' => null,
         ];
     }
 
     /**
-     * @param array|string $route
-     * @param string|null  $image Tile image: an absolute URL or a path relative
-     *                            to the web root (e.g. 'images/browse/teens.jpg').
-     *                            Falls back to a generated placeholder when null
-     *                            or when a local file is missing.
-     * @return array{label: string, url: string, image: string, accent: ?string}
+     * Product photo per theme for the "Shop by theme" grid. A theme's own tile
+     * image (set in the admin) wins; otherwise its flagship set's photo.
+     *
+     * @param Theme[] $themes
+     * @return array<int, string|null> theme id => image url
      */
-    private function makeTile(string $label, $route, ?string $accent = null, ?string $image = null): array
+    public function getThemeCovers(array $themes): array
+    {
+        $used = [];
+        $covers = [];
+        foreach ($themes as $theme) {
+            $covers[(int)$theme->id] = $theme->getTileImageUrl() ?? $this->pickCover('theme-' . (int)$theme->id, $used);
+        }
+
+        return $covers;
+    }
+
+    /**
+     * @param array|string $route
+     * @return array{label: string, url: string, cover: ?string, accent: ?string}
+     */
+    private function makeTile(string $label, $route, ?string $accent = null, ?string $cover = null): array
     {
         return [
             'label'  => $label,
             'url'    => Url::to($route),
-            'image'  => $this->resolveImage($image, $label),
+            'cover'  => $cover,
             'accent' => $accent,
         ];
     }
 
     /**
-     * Resolves a tile image link. A null value, or a relative path pointing to a
-     * file that does not exist on disk, falls back to a generated placeholder so
-     * the homepage never renders a broken image.
+     * Photo of a representative set for a tile, unique within $used.
+     * Null when no set fits — the tile then shows its gradient only.
+     *
+     * @param int[] $used
      */
-    private function resolveImage(?string $image, string $label): string
+    private function pickCover(string $key, array &$used): ?string
     {
-        $image = $image !== null ? trim($image) : '';
-        if ($image === '') {
-            return $this->placeholderImage($label);
+        foreach ($this->coverCandidates($key) as $setId => $url) {
+            if (!in_array($setId, $used, true)) {
+                $used[] = $setId;
+
+                return $url;
+            }
         }
 
-        if (preg_match('#^(https?:)?//#', $image)) {
-            return $image;
-        }
-
-        $relative = ltrim($image, '/');
-        if (!is_file(Yii::getAlias('@webroot') . '/' . $relative)) {
-            return $this->placeholderImage($label);
-        }
-
-        return Yii::getAlias('@web') . '/' . $relative;
+        return null;
     }
 
-    private function placeholderImage(string $label): string
+    /**
+     * Best-first candidates (set id => main image URL) for a tile key, cached.
+     * Only active sets with a main image; small polybags are skipped where
+     * they would make a weak cover.
+     *
+     * @return array<int, string>
+     */
+    private function coverCandidates(string $key): array
     {
-        $clean = preg_replace('/[^\p{L}\p{N}\s+]/u', ' ', $label);
-        $clean = trim((string)preg_replace('/\s+/', ' ', (string)$clean));
-        if ($clean === '') {
-            $clean = 'LEGO';
-        }
+        return $this->cached('homepage.cover.' . $key, function () use ($key): array {
+            if ($key === 'on-sale') {
+                $result = [];
+                foreach ($this->getOnSale(8) as $set) {
+                    $image = $set->getMainImage();
+                    if ($image !== null && trim((string)$image->url) !== '') {
+                        $result[(int)$set->id] = Url::to($image->url);
+                    }
+                }
 
-        return 'https://placehold.co/600x800/0d2545/ffffff?text=' . rawurlencode($clean) . '&font=montserrat';
+                return $result;
+            }
+
+            $query = Set::find()
+                ->alias('s')
+                ->select(['s.id', 'cover_url' => 'mi.url'])
+                ->innerJoin(['mi' => SetImage::tableName()], 'mi.set_id = s.id AND mi.kind = :kind AND mi.type = :type', [
+                    ':kind' => KindEnum::MAIN->value,
+                    ':type' => TypeEnum::IMAGE->value,
+                ])
+                ->andWhere(['s.status' => StatusEnum::ACTIVE->value])
+                ->andWhere(['<>', 'mi.url', ''])
+                ->limit(8)
+                ->asArray();
+
+            $audience = SeoHelper::audiencePages()[$key]['filters'] ?? null;
+            if ($key === 'new') {
+                $query->andWhere(['<=', 's.launch_date', date('Y-m-d')])
+                    ->andWhere(['>=', 's.pieces', 150])
+                    ->orderBy(['s.launch_date' => SORT_DESC, 's.rating' => SORT_DESC]);
+            } elseif ($key === 'top') {
+                $query->andWhere(['not', ['s.rating' => null]])
+                    ->orderBy(['s.rating' => SORT_DESC, 's.pieces' => SORT_DESC]);
+            } elseif (str_starts_with($key, 'theme-')) {
+                // Prefer real builds over polybags, but don't exclude small
+                // ones outright: some themes (Duplo) are all under 100 pcs.
+                $query->andWhere(['s.theme_id' => (int)substr($key, 6)])
+                    ->orderBy([
+                        new Expression('CASE WHEN s.pieces >= 100 THEN 0 ELSE 1 END'),
+                        's.rating' => SORT_DESC,
+                        's.pieces' => SORT_DESC,
+                    ]);
+            } elseif ($audience !== null) {
+                foreach (['age_min' => '>=', 'age_max' => '<='] as $field => $op) {
+                    if (isset($audience[$field])) {
+                        $query->andWhere([$op, 's.age', (int)$audience[$field]]);
+                    }
+                }
+                foreach (['pieces_min' => '>=', 'pieces_max' => '<='] as $field => $op) {
+                    if (isset($audience[$field])) {
+                        $query->andWhere([$op, 's.pieces', (int)$audience[$field]]);
+                    }
+                }
+                $query->orderBy(['s.rating' => SORT_DESC, 's.pieces' => SORT_DESC]);
+            } else {
+                return [];
+            }
+
+            $result = [];
+            foreach ($query->all() as $row) {
+                $result[(int)$row['id']] = Url::to((string)$row['cover_url']);
+            }
+
+            return $result;
+        }, 21600);
     }
 
     /**
