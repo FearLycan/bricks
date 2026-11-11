@@ -269,7 +269,7 @@ $totalSteps = count($steps);
 
             <div class="review-step" data-step="preferences" hidden>
                 <p class="text-body-secondary mb-3">
-                    <?= T::tr('How you think about THIS specific set. Different sets can be for different reasons (display vs play) — these answers are saved per set.') ?>
+                    <?= T::tr('What this particular set is for you. You might buy one set for display and another for play, so we save these answers separately for each set.') ?>
                 </p>
                 <?php foreach (SetReview::PREFERENCE_QUESTIONS as $prefQ): ?>
                     <?php

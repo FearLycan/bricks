@@ -124,7 +124,7 @@ class AuthController extends Controller
         if ($model->load(Yii::$app->request->post()) && $model->validate() && $model->signup()) {
             $hours = (int)(Yii::$app->params['user.verificationTokenExpire'] / 3600);
             Yii::$app->session->setFlash('success', T::tr(
-                'Thanks for signing up. Check your inbox for a verification email — the link is valid for {hours} hours.',
+                'Thanks for signing up. Check your inbox for a verification email. The link is valid for {hours} hours.',
                 ['hours' => $hours]
             ));
             return $this->goHome();

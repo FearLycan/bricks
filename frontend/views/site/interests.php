@@ -12,7 +12,7 @@ use yii\web\View;
  */
 
 $this->title = T::tr('LEGO® Sets by Interest — Star Wars, Marvel and More');
-$this->params['metaDescription'] = T::tr('Discover LEGO sets curated by interest — Adults Welcome, Star Wars, Magazines, Polybags, Exclusive, Harry Potter, and more.');
+$this->params['metaDescription'] = T::tr('LEGO sets grouped by interest: Adults Welcome, Star Wars, Magazines, Polybags, Exclusive, Harry Potter and more.');
 $this->params['canonicalUrl'] = SeoHelper::buildAbsoluteUrl(['/interests']);
 $this->params['robots'] = 'index,follow';
 
@@ -51,7 +51,7 @@ $resolveImage = static function (?string $image): ?string {
 <?= $this->render('@frontend/views/_partials/_page-hero', [
         'eyebrow'         => T::tr('Browse'),
         'title'           => T::tr('Shop by interest'),
-        'intro'           => T::tr('Shortcuts into the catalog — pick what you’re into and we’ll show you matching sets.'),
+        'intro'           => T::tr('Shortcuts into the catalog. Pick what you\'re into and we\'ll show matching sets.'),
         'icon'            => 'bi-compass',
         'modifier'        => 'interests',
         'showBreadcrumbs' => true,

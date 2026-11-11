@@ -63,7 +63,7 @@ final class LegoFaq
                     ],
                     [
                         'q' => T::tr('What does "On Sale" mean?'),
-                        'a' => T::tr('"On Sale" lists sets where the lowest store offer we found is below the official LEGO price. The bigger the gap, the higher the saving — sorted from the biggest discount.'),
+                        'a' => T::tr('"On Sale" lists sets where the lowest store offer we found is below the official LEGO price. The biggest discounts are at the top.'),
                     ],
                     [
                         'q' => T::tr('What is the "Best offer" label on a set page?'),
@@ -71,7 +71,7 @@ final class LegoFaq
                     ],
                     [
                         'q' => T::tr('Do offer prices include shipping?'),
-                        'a' => T::tr('No — the price shown is the item price as listed by the store. Shipping, taxes and any coupon are calculated at the store checkout. Always verify the final price before placing the order.'),
+                        'a' => T::tr('No. The price shown is the item price listed by the store. Shipping, taxes and coupons are calculated at the store\'s checkout, so check the final price before you order.'),
                     ],
                 ],
             ],
@@ -82,11 +82,11 @@ final class LegoFaq
                 'items' => [
                     [
                         'q' => T::tr('How do I create an account?'),
-                        'a' => T::tr('Click "Register" in the top bar, fill in your username, email and password, and submit. We send a verification email with a link valid for 24 hours — click it to activate the account.'),
+                        'a' => T::tr('Click "Register" in the top bar, fill in your username, email and password, and submit. We\'ll email you a link that is valid for 24 hours. Click it to activate your account.'),
                     ],
                     [
-                        'q' => T::tr('I didn\'t receive the verification email — what now?'),
-                        'a' => T::tr('Check the spam folder first. If it\'s not there, use the "Resend verification" link on the sign-in page — we\'ll send a fresh link to the same address.'),
+                        'q' => T::tr('I didn\'t receive the verification email. What now?'),
+                        'a' => T::tr('Check your spam folder first. If it\'s not there, use the "Resend verification" link on the sign-in page and we\'ll send a new link to the same address.'),
                     ],
                     [
                         'q' => T::tr('How do I reset my password?'),
@@ -94,7 +94,7 @@ final class LegoFaq
                     ],
                     [
                         'q' => T::tr('How do I change the interface language?'),
-                        'a' => T::tr('Use the flag selector in the top bar to switch languages on any page. Signed-in users can also save a preferred language in Settings — we remember it across sessions and devices.'),
+                        'a' => T::tr('Use the flag selector in the top bar to switch languages on any page. If you\'re signed in, you can also save a preferred language in Settings and we\'ll use it on all your devices.'),
                     ],
                 ],
             ],
@@ -113,11 +113,11 @@ final class LegoFaq
                     ],
                     [
                         'q' => T::tr('Can I hide sets I already own from the catalog?'),
-                        'a' => T::tr('Yes. In Settings turn on "Hide sets I already own" — sets you marked as owned will disappear from the main catalog, search and new-arrival listings.'),
+                        'a' => T::tr('Yes. Turn on "Hide sets I already own" in Settings. Sets you marked as owned will no longer appear in the main catalog, search or new arrivals.'),
                     ],
                     [
                         'q' => T::tr('Is my wishlist visible to other users?'),
-                        'a' => T::tr('No — your wishlist and owned sets are private. We use them only for your personal homepage and recommendations.'),
+                        'a' => T::tr('No. Your wishlist and owned sets are private. We use them only for your personal homepage and recommendations.'),
                     ],
                 ],
             ],
@@ -132,7 +132,7 @@ final class LegoFaq
                     ],
                     [
                         'q' => T::tr('What\'s the difference between Quick and Detailed reviews?'),
-                        'a' => T::tr('Quick rating is one overall score (0–10) plus an optional one-line note — 30 seconds tops. Detailed reviews score 6 dimensions (Look, Build, Features, Quality, Value, Overall) and power the radar chart on the set page.'),
+                        'a' => T::tr('Quick rating is one overall score (0–10) plus an optional one-line note, about 30 seconds. Detailed reviews score 6 dimensions (Look, Build, Features, Quality, Value, Overall) and feed the radar chart on the set page.'),
                     ],
                     [
                         'q' => T::tr('What is my reviewer profile?'),
@@ -163,7 +163,7 @@ final class LegoFaq
                     ],
                     [
                         'q' => T::tr('Do you use cookies?'),
-                        'a' => T::tr('Yes — we use cookies for sign-in sessions, language preference and basic analytics (Google Analytics). We don\'t use third-party advertising cookies.'),
+                        'a' => T::tr('Yes. We use cookies for sign-in sessions, your language preference, analytics (Google Analytics) and ads (Google AdSense). Details are in our Privacy Policy.'),
                     ],
                 ],
             ],

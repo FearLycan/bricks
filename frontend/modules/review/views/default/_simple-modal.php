@@ -82,7 +82,7 @@ $i18n = [
                         <input class="form-check-input" type="checkbox" id="reviewOwnsSet" data-role="owns-set" checked>
                         <label class="form-check-label" for="reviewOwnsSet">
                             <i class="bi bi-bookmark-check me-1"></i>
-                            <?= T::tr('I own this set — add it to my collection') ?>
+                            <?= T::tr('I own this set: add it to my collection') ?>
                         </label>
                     </div>
                 <?php endif; ?>
