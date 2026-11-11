@@ -155,7 +155,7 @@ final class LegoFaq
                     ],
                     [
                         'q' => T::tr('What are affiliate links?'),
-                        'a' => T::tr('Some store links on offer cards are affiliate links — when you buy through them we may earn a small commission, at no extra cost to you. This is how we keep BrickAtlas free.'),
+                        'a' => T::tr('Some store links on offer cards are affiliate links. When you buy through one, we may earn a small commission and you pay the same price. That is how we keep BrickAtlas free.'),
                     ],
                     [
                         'q' => T::tr('Where does the set data come from?'),
