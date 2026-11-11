@@ -11,7 +11,7 @@ use yii\web\View;
  */
 
 $this->title = T::tr('Help and FAQ — BrickAtlas LEGO® Price Tracker');
-$this->params['metaDescription'] = T::tr('Answers to common questions about BrickAtlas — how price tracking works, managing your wishlist, writing reviews, accounts, privacy and more.');
+$this->params['metaDescription'] = T::tr('Answers to common questions about BrickAtlas: how price tracking works, your wishlist, reviews, accounts and privacy.');
 $this->params['canonicalUrl'] = SeoHelper::buildAbsoluteUrl(['/faq']);
 $this->params['robots'] = 'index,follow';
 
@@ -24,7 +24,7 @@ $this->registerCssFile('@web/css/faq.css', ['depends' => [\frontend\assets\AppAs
 <?= $this->render('@frontend/views/_partials/_page-hero', [
         'eyebrow'         => T::tr('Help'),
         'title'           => T::tr('How can we help?'),
-        'intro'           => T::tr('Quick answers about prices, your wishlist, reviews and your account. Type a keyword to filter — or browse by topic.'),
+        'intro'           => T::tr('Quick answers about prices, your wishlist, reviews and your account. Type a keyword to filter or browse by topic.'),
         'icon'            => 'bi-life-preserver',
         'modifier'        => 'faq',
         'showBreadcrumbs' => true,
@@ -36,7 +36,7 @@ $this->registerCssFile('@web/css/faq.css', ['depends' => [\frontend\assets\AppAs
         <input type="search"
                class="faq-search-input"
                id="faqSearch"
-               placeholder="<?= Html::encode(T::tr('Search the FAQ — try “wishlist”, “price” or “password”')) ?>"
+               placeholder="<?= Html::encode(T::tr('Search the FAQ (try "wishlist", "price" or "password")')) ?>"
                autocomplete="off"
                spellcheck="false"
                aria-label="<?= Html::encode(T::tr('Search FAQ')) ?>">

@@ -128,7 +128,6 @@ return [
     'Logout'                                                                                                                                                               => '退出登录',
     'Looks like this page is a missing piece from the set.'                                                                                                                => '看起来这个页面是套装里丢失的一块。',
     'Lowercase letter'                                                                                                                                                     => '小写字母',
-    "Make it strong — you won't need to remember it often."                                                                                                                => '设置一个强密码 — 您不需要经常记住它。',
     'Manage your BrickAtlas preferences.'                                                                                                                                  => '管理您的 BrickAtlas 偏好设置。',
     'March'                                                                                                                                                                => '三月',
     'Mark sets as owned with the box icon on each set card or on the set page.'                                                                                            => '在套装卡片或套装页面上,通过盒子图标将套装标记为已拥有。',
@@ -348,4 +347,5 @@ return [
     'Some product links are affiliate links. If you buy through one, we may earn a commission. You pay the same price.' => '部分产品链接为联盟链接。您通过这些链接购买时，我们可能获得佣金，您支付的价格不变。',
     'We process data to answer your messages and run your account (performance of a service), and to keep the site working and secure (our legitimate interest). We do not sell personal data. We share it only with the providers we use: hosting (MyDevil, Poland), Google (analytics and ads) and, when you click an affiliate link, the store or network behind it.' => '我们处理数据是为了回复您的消息和管理您的账户（履行服务），以及维持网站正常、安全地运行（正当利益）。我们不出售个人数据。数据仅提供给我们使用的服务商：托管服务（MyDevil，波兰）、Google（统计和广告），以及在您点击联盟链接时链接指向的商店或联盟网络。',
     'We may update this policy when the site changes. The date at the top shows the current version.' => '网站有变化时，我们可能会修改本政策。顶部的日期表示当前版本。',
+    'Pick a strong one. You won\'t need to type it often.' => '请设置一个强密码，平时不需要经常输入。',
 ];

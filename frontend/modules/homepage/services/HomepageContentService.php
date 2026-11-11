@@ -486,7 +486,7 @@ class HomepageContentService
         return match ($eventKey) {
             SeasonalEventResolver::KEY_CHRISTMAS => [
                 T::tr('Christmas LEGO® sets'),
-                T::tr('Frosty builds, festive scenes and gift-ready sets — perfect under the tree.'),
+                T::tr('Snowy builds, holiday scenes and sets that make good gifts.'),
             ],
             SeasonalEventResolver::KEY_HALLOWEEN => [
                 T::tr('Halloween LEGO® sets'),

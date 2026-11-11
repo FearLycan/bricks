@@ -128,7 +128,6 @@ return [
     'Logout'                                                                                                                                                               => 'ログアウト',
     'Looks like this page is a missing piece from the set.'                                                                                                                => 'このページはセットに足りないピースのようです。',
     'Lowercase letter'                                                                                                                                                     => '小文字',
-    "Make it strong — you won't need to remember it often."                                                                                                                => '強力なパスワードを設定してください — 頻繁に入力する必要はありません。',
     'Manage your BrickAtlas preferences.'                                                                                                                                  => 'BrickAtlasの設定を管理します。',
     'March'                                                                                                                                                                => '3月',
     'Mark sets as owned with the box icon on each set card or on the set page.'                                                                                            => '各セットのカードまたはセットページにあるボックスアイコンで所有マークを付けられます。',
@@ -348,4 +347,5 @@ return [
     'Some product links are affiliate links. If you buy through one, we may earn a commission. You pay the same price.' => '商品リンクの一部はアフィリエイトリンクです。リンク経由で購入された場合、当サイトが手数料を受け取ることがあります。お支払い金額は変わりません。',
     'We process data to answer your messages and run your account (performance of a service), and to keep the site working and secure (our legitimate interest). We do not sell personal data. We share it only with the providers we use: hosting (MyDevil, Poland), Google (analytics and ads) and, when you click an affiliate link, the store or network behind it.' => '当サイトは、お問い合わせへの返信とアカウントの運用（サービスの履行）、およびサイトを安全に運営するため（正当な利益）にデータを処理します。個人データを販売することはありません。データを提供するのは、当サイトが利用する事業者（ホスティング：MyDevil〔ポーランド〕、Google〔解析・広告〕）と、アフィリエイトリンクをクリックした場合のリンク先ショップまたはネットワークのみです。',
     'We may update this policy when the site changes. The date at the top shows the current version.' => 'サイトの変更に合わせて本ポリシーを改定することがあります。冒頭の日付が現行版を示します。',
+    'Pick a strong one. You won\'t need to type it often.' => '強力なパスワードを設定してください。頻繁に入力する必要はありません。',
 ];

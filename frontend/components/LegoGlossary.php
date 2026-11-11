@@ -114,7 +114,7 @@ final class LegoGlossary
                     [
                         'term'       => 'Minifig',
                         'full'       => 'Minifigure',
-                        'definition' => T::tr('The iconic 4 cm LEGO figure introduced in 1978. Customizable through swapping heads, torsos, and legs.'),
+                        'definition' => T::tr('The 4 cm LEGO figure, introduced in 1978. You can swap heads, torsos and legs between figures.'),
                     ],
                     [
                         'term'       => 'Baseplate',
@@ -200,7 +200,7 @@ final class LegoGlossary
                     [
                         'term'       => 'MOD',
                         'full'       => 'Modification',
-                        'definition' => T::tr('A change to an official set — adding details, extending baseplates, or remixing parts.'),
+                        'definition' => T::tr('A change to an official set, such as added details, a bigger baseplate or remixed parts.'),
                     ],
                     [
                         'term'       => 'SNOT',
@@ -220,7 +220,7 @@ final class LegoGlossary
                     [
                         'term'       => 'LURP',
                         'full'       => 'Little Ugly Rock Piece',
-                        'definition' => T::tr('The smaller cousin of BURP — a single-piece rock mold for compact scenes.'),
+                        'definition' => T::tr('The smaller cousin of BURP: a one-piece rock mold for compact scenes.'),
                     ],
                     [
                         'term'       => 'Greebling',
@@ -240,7 +240,7 @@ final class LegoGlossary
                     [
                         'term'       => 'NPU',
                         'full'       => 'Nice Parts Usage',
-                        'definition' => T::tr('A compliment for using a part in a clever, unexpected way — a wrench as a moustache, a flame as a fish tail.'),
+                        'definition' => T::tr('Praise for using a part in a clever, unexpected way, like a wrench as a moustache or a flame as a fish tail.'),
                     ],
                     [
                         'term'       => 'Illegal technique',
@@ -263,7 +263,7 @@ final class LegoGlossary
                     [
                         'term'       => 'BO',
                         'full'       => 'BrickOwl',
-                        'definition' => T::tr('An online LEGO marketplace and inventory tool — a smaller alternative to BrickLink.'),
+                        'definition' => T::tr('An online LEGO marketplace and inventory tool, smaller than BrickLink.'),
                     ],
                     [
                         'term'       => 'MISB',
@@ -331,7 +331,7 @@ final class LegoGlossary
                     [
                         'term'       => 'WIP',
                         'full'       => 'Work in Progress',
-                        'definition' => T::tr('Tag used when sharing a MOC that is still being built or refined — feedback welcome.'),
+                        'definition' => T::tr('Tag for a MOC that is still being built or refined. Feedback welcome.'),
                     ],
                     [
                         'term'       => 'Clone brand',

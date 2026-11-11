@@ -40,7 +40,7 @@ $this->registerCss('
         <div class="text-center mb-4">
             <?= Html::img('@web/images/logo-social.png', ['class' => 'mb-3', 'style' => 'width:80px;height:80px;object-fit:contain;', 'loading' => 'lazy', 'alt' => Yii::$app->name]) ?>
             <h1 class="auth-title"><?= Html::encode(T::tr('Choose new password')) ?></h1>
-            <p class="auth-subtitle"><?= Html::encode(T::tr("Make it strong — you won't need to remember it often.")) ?></p>
+            <p class="auth-subtitle"><?= Html::encode(T::tr("Pick a strong one. You won't need to type it often.")) ?></p>
         </div>
 
         <?php $form = ActiveForm::begin(['id' => 'reset-password-form']); ?>

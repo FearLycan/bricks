@@ -52,7 +52,7 @@ $this->title = 'Reset your password';
     <tr>
         <td style="background:#fff7ed;border-radius:10px;padding:14px 18px;border-left:3px solid #f97316;">
             <p style="margin:0;font-size:13px;color:#6b7280;line-height:1.5;">
-                Didn't request this? You can safely ignore this email — your password won't change.
+                Didn't request this? You can safely ignore this email. Your password won't change.
             </p>
         </td>
     </tr>

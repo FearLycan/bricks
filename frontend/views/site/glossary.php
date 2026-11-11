@@ -12,7 +12,7 @@ use yii\web\View;
  */
 
 $this->title = T::tr('LEGO Glossary: AFOL acronyms and slang explained');
-$this->params['metaDescription'] = T::tr('Plain-language definitions of LEGO acronyms and AFOL slang. AFOL, MOC, SNOT, UCS, MISB and dozens more explained — a reference guide for collectors.');
+$this->params['metaDescription'] = T::tr('Plain-language definitions of LEGO acronyms and AFOL slang: AFOL, MOC, SNOT, UCS, MISB and dozens more. A reference for collectors.');
 $this->params['canonicalUrl'] = SeoHelper::buildAbsoluteUrl(['/glossary']);
 $this->params['robots'] = 'index,follow';
 
@@ -38,7 +38,7 @@ $this->registerCssFile('@web/css/glossary.css', ['depends' => [\frontend\assets\
             <input type="search"
                    class="glossary-search-input"
                    id="glossarySearch"
-                   placeholder="<?= Html::encode(T::tr('Search — try “AFOL” or “sealed box”')) ?>"
+                   placeholder="<?= Html::encode(T::tr('Search (try "AFOL" or "sealed box")')) ?>"
                    autocomplete="off"
                    spellcheck="false"
                    aria-label="<?= Html::encode(T::tr('Search glossary')) ?>">

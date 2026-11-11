@@ -10,7 +10,7 @@ use yii\bootstrap5\Html;
 use yii\bootstrap5\ActiveForm;
 
 $this->title = T::tr('Contact BrickAtlas — Questions and Feedback');
-$this->params['metaDescription'] = T::tr('Get in touch with the BrickAtlas team. Send questions, business inquiries or bug reports — we usually reply within 24 hours.');
+$this->params['metaDescription'] = T::tr('Get in touch with BrickAtlas. Send us questions, business inquiries or bug reports and we\'ll reply as soon as we can.');
 $this->params['canonicalUrl'] = SeoHelper::buildAbsoluteUrl(['/site/contact']);
 $this->params['breadcrumbs'][] = T::tr('Contact');
 

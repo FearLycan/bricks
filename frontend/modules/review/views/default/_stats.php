@@ -102,7 +102,7 @@ $reviewListId = 'review-list-' . (int)$set->id;
     <?php if ($reviewCount === 0): ?>
         <div class="review-empty-state text-center">
             <div class="review-empty-emoji">🌟</div>
-            <h6 class="mb-2"><?= T::tr('No reviews yet — be the first!') ?></h6>
+            <h6 class="mb-2"><?= T::tr('No reviews yet. Be the first!') ?></h6>
             <p class="text-body-secondary small mb-3">
                 <?= T::tr('Your opinion helps others find the right set.') ?>
             </p>

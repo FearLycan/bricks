@@ -20,9 +20,9 @@ use yii\web\View;
             </span>
             <span class="bricks-wizard-cta-content">
                 <span class="bricks-wizard-cta-eyebrow"><?= Html::encode(T::tr('In a minute')) ?></span>
-                <span class="bricks-wizard-cta-title"><?= Html::encode(T::tr('Find your perfect set')) ?></span>
+                <span class="bricks-wizard-cta-title"><?= Html::encode(T::tr('Find the right set')) ?></span>
                 <span class="bricks-wizard-cta-lead">
-                    <?= Html::encode(T::tr('A few quick questions about budget, age and theme — we’ll match the best sets for you.')) ?>
+                    <?= Html::encode(T::tr('A few quick questions about budget, age and theme, and we\'ll match sets for you.')) ?>
                 </span>
             </span>
             <span class="bricks-wizard-cta-action">
