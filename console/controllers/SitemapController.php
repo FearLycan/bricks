@@ -117,6 +117,9 @@ class SitemapController extends Controller
             ['/glossary',             'monthly', '0.5'],
             ['/interests',            'weekly',  '0.7'],
             ['/faq',                  'monthly', '0.5'],
+            ['/about',                'yearly',  '0.3'],
+            ['/contact',              'yearly',  '0.3'],
+            ['/privacy',              'yearly',  '0.2'],
         ];
 
         foreach ($static as [$path, $changefreq, $priority]) {

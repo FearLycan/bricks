@@ -129,6 +129,7 @@ return [
                 'help'                                          => 'site/faq',
                 'contact'                                       => 'site/contact',
                 'about'                                         => 'site/about',
+                'privacy'                                       => 'site/privacy',
                 'wizard/save'                                   => 'wizard/default/save',
                 'wizard/load'                                   => 'wizard/default/load',
                 'review/save-simple'                            => 'review/default/save-simple',
