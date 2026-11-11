@@ -23,7 +23,7 @@ if (!Yii::$app->user->isGuest) {
                     <?= T::tr('Track every LEGO{sup} set you love', ['sup' => '<sup>®</sup>']) ?>
                 </h2>
                 <p class="bricks-guest-cta-lead">
-                    <?= Html::encode(T::tr('Create a free account to save sets to your wishlist, mark what you own, and get personalized price drops.')) ?>
+                    <?= Html::encode(T::tr('Create a free account to save sets to your wishlist and mark the ones you own.')) ?>
                 </p>
                 <ul class="bricks-guest-cta-benefits">
                     <li><i class="bi bi-heart-fill"></i><?= Html::encode(T::tr('Save sets to your wishlist')) ?></li>
