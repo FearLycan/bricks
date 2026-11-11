@@ -1,23 +1,34 @@
-# Homepage tile artwork (optional)
+# Tile artwork (optional)
 
 Drop a file named `<key>.webp` / `.jpg` / `.jpeg` / `.png` here and the matching
-homepage tile uses it full-bleed. Without a file the tile shows the photo of a
-representative set (automatic). No deploy needed — the file is picked up on the
-next page render (homepage cache: `php yii cache/flush-all` to see it at once).
+tile on the homepage and on /interests uses it instead of the automatic set
+photo. No deploy needed: the file is picked up on the next page render
+(homepage cache: `php yii cache/flush-all` to see it at once).
 
-| key | tile |
-|---|---|
-| new-arrivals | All new arrivals |
-| on-sale | On sale |
-| all-sets | Browse all sets |
-| adults | LEGO for adults / For adults (18+) |
-| toddlers | For toddlers (1+) |
-| kids | For kids (5–8) |
-| tweens | For tweens (9–12) |
-| teens | For teens (13+) |
-| small-builds | Small builds (≤200 pcs) |
-| big-builds | Big builds (2000+ pcs) |
+**Format: 800×600 px (4:3), WebP, under 120 KB.** The picture fills the whole
+image area of the card; the title is printed below it on white, so text in the
+image is not needed. Keep the subject in the centre (the card may crop a few
+pixels on the edges). Avoid LEGO logos, minifigures and licensed characters
+(trademarks).
 
-Recommended: 600×800 px (3:4), WebP, < 120 KB. Keep the lower third calm —
-the label is printed there on a dark gradient. Avoid LEGO logos, minifigures
-and licensed characters (trademarks).
+| key | homepage | /interests |
+|---|---|---|
+| on-sale | On sale | On sale |
+| new-arrivals | All new arrivals | |
+| all-sets | Browse all sets | |
+| adults | For adults (18+) | Adults welcome |
+| toddlers | For toddlers (1+) | |
+| kids | For kids (5–8) | For kids (5–8) |
+| tweens | For tweens (9–12) | For tweens (9–12) |
+| teens | For teens (13+) | |
+| small-builds | Small builds | Small builds |
+| big-builds | Big builds | Big builds |
+| exclusive | | LEGO Exclusive |
+| retiring-soon | | Retiring soon |
+| magazines | | Magazine sets |
+| polybags | | Polybags |
+| gwp | | Gift with purchase |
+| seasonal | | Seasonal |
+
+Themes (Star Wars, City, …) take their picture from the theme image field in
+the admin panel; without it, from a representative set of that theme.

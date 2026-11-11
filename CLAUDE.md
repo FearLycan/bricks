@@ -86,7 +86,7 @@ Integracja AliExpress: `common/components/aliexpress/*` (klient API, resolver li
 - Layout: `frontend/views/layouts/main.php` (+ `_categories-dropdown`, `_language-switcher`, `_user-dropdown-menu`).
 - Partiale wielokrotnego użytku: `views/_partials/_page-hero.php`, `modules/lego/views/lego/_list.php`, `_item.php`,
   `_banner-retiring.php`, `_banner-upcoming.php`, `modules/homepage/views/home/_section-slider.php`, `_set-card.php`.
-- Kafelki strony głównej: zdjęcie reprezentatywnego zestawu (`HomepageContentService::pickCover`, cache 6 h); własna grafika = plik w `frontend/web/images/browse/<key>.*` (lista kluczy w README tam), dla tematów pole `theme.image` w adminie.
+- Kafelki strony głównej i /interests: zdjęcie reprezentatywnego zestawu (`HomepageContentService::pickCover`, cache 6 h); własna grafika = plik 800×600 w `frontend/web/images/browse/<key>.*` (lista kluczy w README tam), dla tematów pole `theme.image` w adminie.
 - Assety: `frontend/assets/AppAsset.php` (Bootstrap 5, select2, venobox, Chart.js 4 z CDN — gotowe do wykresów).
 - CSS per strona rejestrowany w widoku (`registerCssFile('@web/css/x.css', ['depends' => [AppAsset::class]])`).
 - `common/components/Html::img`, `common/widgets/Alert`, `common/widgets/InlineScript`.
