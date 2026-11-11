@@ -1384,3 +1384,59 @@ a.bricks-collection-stats-tile:hover {
         display: none;
     }
 }
+
+/* ==========================================================================
+   Tiles with a product photo (browse tabs + shop by theme)
+   Set photos are product shots on white: a light tinted background plus
+   mix-blend-mode: multiply melts the white into the tile colour.
+   ========================================================================== */
+
+.bricks-browse-tile.has-product .bricks-browse-tile-media,
+.bricks-theme-tile.has-product .bricks-theme-tile-media {
+    background: linear-gradient(165deg, #ffffff 0%, var(--tile-tint, #e9eef8) 100%);
+}
+
+.bricks-tile-product {
+    position: absolute;
+    left: 8%;
+    right: 8%;
+    top: 7%;
+    width: 84%;
+    height: 62%;
+    object-fit: contain;
+    mix-blend-mode: multiply;
+    z-index: 1;
+    transition: transform 0.5s ease;
+}
+
+.bricks-browse-tile:hover .bricks-tile-product,
+.bricks-theme-tile:hover .bricks-tile-product {
+    transform: scale(1.06);
+}
+
+.bricks-browse-tile.has-product .bricks-browse-tile-overlay,
+.bricks-theme-tile.has-product .bricks-theme-tile-overlay {
+    z-index: 2;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0) 58%, rgba(10, 16, 32, 0.88) 100%);
+}
+
+.bricks-browse-tile.has-product .bricks-browse-tile-label,
+.bricks-theme-tile.has-product .bricks-theme-tile-body {
+    z-index: 3;
+}
+
+.bricks-theme-tile.has-product .bricks-tile-product {
+    top: 6%;
+    height: 58%;
+}
+
+/* Per-category tint (matches the existing accent names) */
+.bricks-browse-tile--gradient-blue   { --tile-tint: #cfe0ff; }
+.bricks-browse-tile--gradient-red    { --tile-tint: #ffd6d6; }
+.bricks-browse-tile--gradient-purple { --tile-tint: #e7d7ff; }
+.bricks-browse-tile--gradient-amber  { --tile-tint: #ffe7b3; }
+.bricks-browse-tile--gradient-green  { --tile-tint: #cdf3d9; }
+.bricks-browse-tile--gradient-pink   { --tile-tint: #ffd3e8; }
+.bricks-browse-tile--gradient-teal   { --tile-tint: #c8f0ea; }
+.bricks-browse-tile--gradient-slate  { --tile-tint: #dfe3ea; }
+.bricks-theme-tile                   { --tile-tint: #ffe9b8; }

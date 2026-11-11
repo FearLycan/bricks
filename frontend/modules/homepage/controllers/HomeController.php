@@ -36,9 +36,11 @@ class HomeController extends Controller
 
     public function actionIndex()
     {
+        $themeTiles = $this->content->getThemeTiles();
         $viewData = [
             'heroSlides'        => $this->content->getHeroSlides(),
-            'themeTiles'        => $this->content->getThemeTiles(),
+            'themeTiles'        => $themeTiles,
+            'themeCovers'       => $this->content->getThemeCovers($themeTiles),
             'browseTabs'        => $this->content->getBrowseTabs(),
             'newArrivals'       => $this->content->getNewArrivals(),
             'onSale'            => $this->content->getOnSale(),

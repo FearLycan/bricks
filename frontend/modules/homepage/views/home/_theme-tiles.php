@@ -9,6 +9,7 @@ use yii\web\View;
 /**
  * @var View    $this
  * @var Theme[] $themes
+ * @var array<int,string|null> $covers theme id => product image (optional)
  * @var string  $title
  */
 
@@ -30,15 +31,16 @@ $title = $title ?? T::tr('Shop by theme');
         </div>
         <div class="bricks-theme-grid">
             <?php foreach ($themes as $theme):
-                $img      = $theme->getTileImageUrl();
+                $img      = ($covers ?? [])[(int)$theme->id] ?? $theme->getTileImageUrl();
                 $name     = (string)$theme->name;
                 $setsText = $theme->sets_count !== null
                     ? T::tr('{n} sets', ['n' => (int)$theme->sets_count])
                     : null;
             ?>
-                <a href="<?= Url::to("/lego/theme/{$theme->slug}") ?>" class="bricks-theme-tile">
+                <a href="<?= Url::to("/lego/theme/{$theme->slug}") ?>" class="bricks-theme-tile <?= $img !== null ? 'has-product' : '' ?>">
                     <?php if ($img !== null): ?>
-                        <span class="bricks-theme-tile-media" style="background-image: url('<?= Html::encode($img) ?>');"></span>
+                        <span class="bricks-theme-tile-media"></span>
+                        <img class="bricks-tile-product" src="<?= Html::encode($img) ?>" alt="" loading="lazy" decoding="async">
                     <?php else: ?>
                         <span class="bricks-theme-tile-media bricks-theme-tile-media--fallback">
                             <span class="bricks-theme-tile-initial"><?= Html::encode(mb_strtoupper(mb_substr($name, 0, 1, 'UTF-8'), 'UTF-8')) ?></span>
