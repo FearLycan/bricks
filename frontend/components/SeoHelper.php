@@ -224,7 +224,7 @@ final class SeoHelper
 
     public static function buildPromoTitle(int $page = 1): string
     {
-        return self::appendPageSuffix(T::tr('LEGO Sets On Sale — Best Deals on BrickAtlas'), $page);
+        return self::appendPageSuffix(T::tr('LEGO Sets On Sale - Best Deals on BrickAtlas'), $page);
     }
 
     public static function buildPromoDescription(int $page = 1): string
@@ -236,7 +236,7 @@ final class SeoHelper
 
     public static function buildMagazinesTitle(int $page = 1): string
     {
-        return self::appendPageSuffix(T::tr('LEGO Magazine Sets — Mini-Builds from Kiosks'), $page);
+        return self::appendPageSuffix(T::tr('LEGO Magazine Sets - Mini-Builds from Kiosks'), $page);
     }
 
     public static function buildMagazinesDescription(int $page = 1): string
@@ -253,7 +253,7 @@ final class SeoHelper
 
     public static function buildExclusiveTitle(int $page = 1): string
     {
-        return self::appendPageSuffix(T::tr('LEGO Exclusive Sets — LEGO.com Premiums on BrickAtlas'), $page);
+        return self::appendPageSuffix(T::tr('LEGO Exclusive Sets - LEGO.com Premiums on BrickAtlas'), $page);
     }
 
     public static function buildExclusiveDescription(int $page = 1): string
@@ -270,7 +270,7 @@ final class SeoHelper
 
     public static function buildRetiringSoonTitle(int $page = 1): string
     {
-        return self::appendPageSuffix(T::tr('LEGO Sets Retiring Soon — Catch Before They Go'), $page);
+        return self::appendPageSuffix(T::tr('LEGO Sets Retiring Soon - Catch Before They Go'), $page);
     }
 
     public static function buildRetiringSoonDescription(int $page = 1): string
@@ -358,7 +358,7 @@ final class SeoHelper
             $setName = rtrim(mb_substr($setName, 0, $maxNameLen - 1)) . '…';
         }
 
-        return T::tr('{name} ({number}) — LEGO Set Prices | BrickAtlas', [
+        return T::tr('{name} ({number}) - LEGO Set Prices | BrickAtlas', [
             'name'   => $setName,
             'number' => $setNumber,
         ]);
@@ -425,7 +425,7 @@ final class SeoHelper
         return [
             'for-toddlers' => [
                 'filters'     => ['age_max' => 4],
-                'title'       => T::tr('LEGO Sets for Toddlers — Ages 1 to 4 on BrickAtlas'),
+                'title'       => T::tr('LEGO Sets for Toddlers - Ages 1 to 4 on BrickAtlas'),
                 'description' => T::tr('Browse LEGO Duplo sets and toddler-safe builds for ages 1 to 4. Compare prices, find big-piece sets and sensory toys on BrickAtlas.'),
                 'heroTitle'   => T::tr('LEGO sets for toddlers'),
                 'intro'       => T::tr('Duplo and other toddler-safe sets for the smallest hands, with large pieces, simple shapes and lots of color.'),
@@ -436,7 +436,7 @@ final class SeoHelper
             ],
             'for-kids' => [
                 'filters'     => ['age_min' => 5, 'age_max' => 8],
-                'title'       => T::tr('LEGO Sets for Kids — Ages 5 to 8 on BrickAtlas'),
+                'title'       => T::tr('LEGO Sets for Kids - Ages 5 to 8 on BrickAtlas'),
                 'description' => T::tr('Browse LEGO sets for kids aged 5 to 8. Compare prices and find approachable builds, fan-favourite themes and great gift ideas on BrickAtlas.'),
                 'heroTitle'   => T::tr('LEGO sets for kids'),
                 'intro'       => T::tr('Sets for primary-school kids. Old enough for regular bricks, simple enough to finish in one sitting.'),
@@ -447,7 +447,7 @@ final class SeoHelper
             ],
             'for-tweens' => [
                 'filters'     => ['age_min' => 9, 'age_max' => 12],
-                'title'       => T::tr('LEGO Sets for Tweens — Ages 9 to 12 on BrickAtlas'),
+                'title'       => T::tr('LEGO Sets for Tweens - Ages 9 to 12 on BrickAtlas'),
                 'description' => T::tr('Browse LEGO sets for kids aged 9 to 12. Compare prices on more advanced builds, popular themes and gift ideas on BrickAtlas.'),
                 'heroTitle'   => T::tr('LEGO sets for tweens'),
                 'intro'       => T::tr('Bigger, more detailed builds for ages 9 to 12, such as Star Wars vehicles, Friends towns and Ninjago dragons.'),
@@ -458,7 +458,7 @@ final class SeoHelper
             ],
             'for-teens' => [
                 'filters'     => ['age_min' => 13],
-                'title'       => T::tr('LEGO Sets for Teens — Ages 13 and Up on BrickAtlas'),
+                'title'       => T::tr('LEGO Sets for Teens - Ages 13 and Up on BrickAtlas'),
                 'description' => T::tr('Browse LEGO sets for teens aged 13 and up. Compare prices and find advanced builds, display models and complex sets on BrickAtlas.'),
                 'heroTitle'   => T::tr('LEGO sets for teens'),
                 'intro'       => T::tr('Detailed sets with longer build times and proper display models. They work for teens and adults alike.'),
@@ -470,7 +470,7 @@ final class SeoHelper
             'for-adults' => [
                 'filters'     => ['age_min' => 18],
                 'orTagSlug'   => '18-plus',
-                'title'       => T::tr('LEGO Sets for Adults — 18+ Builder Collection on BrickAtlas'),
+                'title'       => T::tr('LEGO Sets for Adults - 18+ Builder Collection on BrickAtlas'),
                 'description' => T::tr('Browse the LEGO 18+ adult collection on BrickAtlas. Compare prices on Icons, Architecture, Botanical Collection and other display-grade sets.'),
                 'heroTitle'   => T::tr('LEGO sets for adults'),
                 'intro'       => T::tr('LEGO sets for builders 18 and up: Icons, Architecture, Botanical Collection, Technic supercars and other display models.'),
@@ -481,7 +481,7 @@ final class SeoHelper
             ],
             'small-builds' => [
                 'filters'     => ['pieces_max' => 200],
-                'title'       => T::tr('Small LEGO Builds — Sets Under 200 Pieces on BrickAtlas'),
+                'title'       => T::tr('Small LEGO Builds - Sets Under 200 Pieces on BrickAtlas'),
                 'description' => T::tr('Browse LEGO sets with fewer than 200 pieces. Compare prices on polybags, mini-builds and quick gift ideas across major retailers on BrickAtlas.'),
                 'heroTitle'   => T::tr('Small LEGO builds'),
                 'intro'       => T::tr('Quick builds and pocket-money sets under 200 pieces. Good as small gifts, party favours or an impulse buy.'),
@@ -492,7 +492,7 @@ final class SeoHelper
             ],
             'big-builds' => [
                 'filters'     => ['pieces_min' => 2000],
-                'title'       => T::tr('Big LEGO Builds — Sets with 2000+ Pieces on BrickAtlas'),
+                'title'       => T::tr('Big LEGO Builds - Sets with 2000+ Pieces on BrickAtlas'),
                 'description' => T::tr('Browse LEGO sets with 2000+ pieces. Compare prices on UCS Star Wars, Modular Buildings, Technic flagships and other massive builds on BrickAtlas.'),
                 'heroTitle'   => T::tr('Big LEGO builds'),
                 'intro'       => T::tr('Big projects with thousands of pieces that take days to build: UCS Star Wars, Modular Buildings, Technic flagships and more.'),
