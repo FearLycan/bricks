@@ -2,7 +2,6 @@
 
 namespace frontend\components;
 
-use common\enums\StatusEnum;
 use common\models\Theme;
 use frontend\modules\homepage\services\HomepageContentService;
 use Yii;
@@ -29,10 +28,13 @@ final class LegoInterests
      */
     public static function getTiles(): array
     {
-        $themes = Theme::find()
-            ->where(['slug' => array_values(self::THEME_SLUGS), 'status' => StatusEnum::ACTIVE->value])
-            ->indexBy('slug')
-            ->all();
+        // Same lookup as the theme page itself (slug only), so a tile shows a
+        // photo whenever its link works. Top-level themes win over subthemes
+        // that happen to share a slug.
+        $themes = [];
+        foreach (Theme::find()->where(['slug' => array_values(self::THEME_SLUGS)])->orderBy(['parent_id' => SORT_ASC])->all() as $theme) {
+            $themes[$theme->slug] ??= $theme;
+        }
 
         $covers = new HomepageContentService();
         $usedByGroup = [];
