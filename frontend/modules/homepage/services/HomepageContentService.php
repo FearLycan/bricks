@@ -191,6 +191,7 @@ class HomepageContentService
     private function makeTile(string $label, $route, ?string $accent = null, ?string $cover = null, ?string $imageKey = null): array
     {
         return [
+            'icon'   => self::TILE_ICONS[$imageKey ?? ''] ?? 'bi-grid-3x3-gap',
             'label'  => $label,
             'url'    => Url::to($route),
             'image'  => $imageKey !== null ? $this->customTileImage($imageKey) : null,
@@ -206,6 +207,20 @@ class HomepageContentService
      * Keys: new-arrivals, on-sale, all-sets, adults, toddlers, kids, tweens,
      * teens, small-builds, big-builds.
      */
+    /** Bootstrap icon shown on a tile that has neither artwork nor a set photo. */
+    private const TILE_ICONS = [
+        'new-arrivals' => 'bi-stars',
+        'on-sale'      => 'bi-tags',
+        'all-sets'     => 'bi-grid-3x3-gap',
+        'adults'       => 'bi-cup-hot',
+        'toddlers'     => 'bi-balloon',
+        'kids'         => 'bi-rocket-takeoff',
+        'tweens'       => 'bi-controller',
+        'teens'        => 'bi-lightning-charge',
+        'small-builds' => 'bi-box',
+        'big-builds'   => 'bi-buildings',
+    ];
+
     private function customTileImage(string $key): ?string
     {
         $dir = Yii::getAlias('@webroot') . '/images/browse/';
@@ -248,7 +263,7 @@ class HomepageContentService
      */
     private function coverCandidates(string $key): array
     {
-        return $this->cached('homepage.cover.' . $key, function () use ($key): array {
+        return $this->cached('homepage.cover.v2.' . $key, function () use ($key): array {
             if ($key === 'on-sale') {
                 $result = [];
                 foreach ($this->getOnSale(8) as $set) {
@@ -273,6 +288,14 @@ class HomepageContentService
                 ->limit(8)
                 ->asArray();
 
+            // What makes a good cover: recent sets (Brickset has clean renders
+            // on white; pre-2015 entries are often box scans with their own
+            // backgrounds) and real builds (not games/gear with no pieces).
+            $preferGoodCover = [
+                new Expression("CASE WHEN s.launch_date >= '" . date('Y-m-d', strtotime('-8 years')) . "' THEN 0 ELSE 1 END"),
+                new Expression('CASE WHEN s.pieces >= 50 THEN 0 ELSE 1 END'),
+            ];
+
             $audience = SeoHelper::audiencePages()[$key]['filters'] ?? null;
             if ($key === 'new') {
                 $query->andWhere(['<=', 's.launch_date', date('Y-m-d')])
@@ -280,12 +303,13 @@ class HomepageContentService
                     ->orderBy(['s.launch_date' => SORT_DESC, 's.rating' => SORT_DESC]);
             } elseif ($key === 'top') {
                 $query->andWhere(['not', ['s.rating' => null]])
-                    ->orderBy(['s.rating' => SORT_DESC, 's.pieces' => SORT_DESC]);
+                    ->orderBy([...$preferGoodCover, 's.rating' => SORT_DESC, 's.pieces' => SORT_DESC]);
             } elseif (str_starts_with($key, 'theme-')) {
                 // Prefer real builds over polybags, but don't exclude small
                 // ones outright: some themes (Duplo) are all under 100 pcs.
                 $query->andWhere(['s.theme_id' => (int)substr($key, 6)])
                     ->orderBy([
+                        ...$preferGoodCover,
                         new Expression('CASE WHEN s.pieces >= 100 THEN 0 ELSE 1 END'),
                         's.rating' => SORT_DESC,
                         's.pieces' => SORT_DESC,
@@ -301,7 +325,7 @@ class HomepageContentService
                         $query->andWhere([$op, 's.pieces', (int)$audience[$field]]);
                     }
                 }
-                $query->orderBy(['s.rating' => SORT_DESC, 's.pieces' => SORT_DESC]);
+                $query->orderBy([...$preferGoodCover, 's.rating' => SORT_DESC, 's.pieces' => SORT_DESC]);
             } else {
                 return [];
             }

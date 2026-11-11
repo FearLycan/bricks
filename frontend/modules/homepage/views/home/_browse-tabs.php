@@ -38,19 +38,25 @@ $firstKey = array_key_first($nonEmpty);
                      id="<?= Html::encode($tabsId . '-' . $key) ?>"
                      role="tabpanel">
                     <div class="bricks-browse-grid">
-                        <?php foreach ($tab['tiles'] as $tile): ?>
-                            <?php
-                            $image = $tile['image'] ?? null;            // hand-made artwork (full-bleed)
-                            $cover = $image ? null : ($tile['cover'] ?? null); // otherwise the set photo
-                            ?>
-                            <a href="<?= Html::encode($tile['url']) ?>"
-                               class="bricks-browse-tile <?= !empty($tile['accent']) ? 'bricks-browse-tile--' . Html::encode($tile['accent']) : '' ?> <?= $cover ? 'has-product' : '' ?> <?= $image ? 'has-image' : '' ?>">
-                                <span class="bricks-browse-tile-media"<?= $image ? ' style="background-image: url(\'' . Html::encode($image) . '\');"' : '' ?>></span>
-                                <?php if ($cover): ?>
-                                    <img class="bricks-tile-product" src="<?= Html::encode($cover) ?>" alt="" loading="lazy" decoding="async">
-                                <?php endif; ?>
-                                <span class="bricks-browse-tile-overlay"></span>
-                                <span class="bricks-browse-tile-label"><?= Html::encode($tile['label']) ?></span>
+                        <?php foreach ($tab['tiles'] as $tile):
+                            $image  = $tile['image'] ?? null;                    // hand-made artwork
+                            $cover  = $image ? null : ($tile['cover'] ?? null);   // otherwise a set photo
+                            $accent = !empty($tile['accent']) ? ' bricks-ctile--' . $tile['accent'] : '';
+                        ?>
+                            <a href="<?= Html::encode($tile['url']) ?>" class="bricks-ctile bricks-ctile--browse<?= Html::encode($accent) ?><?= $image ? ' has-art' : '' ?>">
+                                <span class="bricks-ctile-stage">
+                                    <?php if ($image): ?>
+                                        <img class="bricks-ctile-art" src="<?= Html::encode($image) ?>" alt="" loading="lazy" decoding="async">
+                                    <?php elseif ($cover): ?>
+                                        <img class="bricks-ctile-photo" src="<?= Html::encode($cover) ?>" alt="" loading="lazy" decoding="async">
+                                    <?php else: ?>
+                                        <i class="bi <?= Html::encode($tile['icon'] ?? 'bi-grid-3x3-gap') ?> bricks-ctile-icon" aria-hidden="true"></i>
+                                    <?php endif; ?>
+                                </span>
+                                <span class="bricks-ctile-foot">
+                                    <span class="bricks-ctile-title"><?= Html::encode($tile['label']) ?></span>
+                                    <i class="bi bi-arrow-right bricks-ctile-go" aria-hidden="true"></i>
+                                </span>
                             </a>
                         <?php endforeach; ?>
                     </div>

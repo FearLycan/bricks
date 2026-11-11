@@ -1386,63 +1386,233 @@ a.bricks-collection-stats-tile:hover {
 }
 
 /* ==========================================================================
-   Tiles with a product photo (browse tabs + shop by theme)
-   Set photos are product shots on white: a light tinted background plus
-   mix-blend-mode: multiply melts the white into the tile colour.
+   Brick card tiles — browse tabs + shop by theme
+   A clean white "stage" for the set photo, and a solid coloured "brick"
+   footer whose studs poke up into the stage. No overlays on the photo:
+   product renders sit on white, so nothing needs blending.
    ========================================================================== */
 
-.bricks-browse-tile.has-product .bricks-browse-tile-media,
-.bricks-theme-tile.has-product .bricks-theme-tile-media {
-    background: linear-gradient(165deg, #ffffff 0%, var(--tile-tint, #e9eef8) 100%);
+.bricks-ctile {
+    --accent: #0f1b33;
+    --accent-ink: #ffffff;
+    --stud: 7px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    border-radius: 14px;
+    overflow: hidden;
+    background: #fff;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
+    color: var(--accent-ink);
+    text-decoration: none;
+    isolation: isolate;
+    transition: transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.28s ease, border-color 0.28s ease;
 }
 
-.bricks-tile-product {
+.bricks-ctile:hover,
+.bricks-ctile:focus-visible {
+    transform: translateY(-4px);
+    border-color: rgba(15, 23, 42, 0.14);
+    box-shadow: 0 20px 34px -18px rgba(15, 23, 42, 0.45);
+    color: var(--accent-ink);
+}
+
+.bricks-ctile:focus-visible {
+    outline: 3px solid #ffd400;
+    outline-offset: 2px;
+}
+
+/* Stage ------------------------------------------------------------------ */
+
+.bricks-ctile-stage {
+    position: relative;
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 4 / 3;
+    min-height: 0;
+    background: #fff;
+}
+
+.bricks-ctile--theme .bricks-ctile-stage {
+    aspect-ratio: 5 / 4;
+}
+
+.bricks-ctile-photo {
+    /* Absolutely placed so a tall or wide photo can never resize the stage */
     position: absolute;
-    left: 8%;
-    right: 8%;
-    top: 7%;
-    width: 84%;
-    height: 62%;
+    top: 10%;
+    left: 9%;
+    width: 82%;
+    height: 74%;
     object-fit: contain;
-    mix-blend-mode: multiply;
-    z-index: 1;
-    transition: transform 0.5s ease;
+    transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-.bricks-browse-tile:hover .bricks-tile-product,
-.bricks-theme-tile:hover .bricks-tile-product {
-    transform: scale(1.06);
+.bricks-ctile:hover .bricks-ctile-photo {
+    transform: scale(1.06) translateY(-2px);
 }
 
-.bricks-browse-tile.has-product .bricks-browse-tile-overlay,
-.bricks-theme-tile.has-product .bricks-theme-tile-overlay {
-    z-index: 2;
-    background: linear-gradient(180deg, rgba(0, 0, 0, 0) 58%, rgba(10, 16, 32, 0.88) 100%);
+/* Hand-made artwork fills the stage edge to edge */
+.bricks-ctile.has-art .bricks-ctile-stage {
+    padding: 0;
 }
 
-.bricks-browse-tile.has-product .bricks-browse-tile-label,
-.bricks-theme-tile.has-product .bricks-theme-tile-body {
-    z-index: 3;
+.bricks-ctile-art {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease;
 }
 
-.bricks-theme-tile.has-product .bricks-tile-product {
-    top: 6%;
-    height: 58%;
+.bricks-ctile:hover .bricks-ctile-art {
+    transform: scale(1.04);
 }
 
-/* Per-category tint (matches the existing accent names) */
-.bricks-browse-tile--gradient-blue   { --tile-tint: #cfe0ff; }
-.bricks-browse-tile--gradient-red    { --tile-tint: #ffd6d6; }
-.bricks-browse-tile--gradient-purple { --tile-tint: #e7d7ff; }
-.bricks-browse-tile--gradient-amber  { --tile-tint: #ffe7b3; }
-.bricks-browse-tile--gradient-green  { --tile-tint: #cdf3d9; }
-.bricks-browse-tile--gradient-pink   { --tile-tint: #ffd3e8; }
-.bricks-browse-tile--gradient-teal   { --tile-tint: #c8f0ea; }
-.bricks-browse-tile--gradient-slate  { --tile-tint: #dfe3ea; }
-.bricks-theme-tile                   { --tile-tint: #ffe9b8; }
-
-/* Hand-made tile artwork (frontend/web/images/browse/<key>.*) beats the accent gradient */
-.bricks-browse-tile.has-image .bricks-browse-tile-media {
-    background-size: cover;
-    background-position: center;
+/* No picture at all: accent-tinted stage with a big icon / initial */
+.bricks-ctile-icon,
+.bricks-ctile-initial {
+    font-size: clamp(2.2rem, 6vw, 3.2rem);
+    line-height: 1;
+    color: var(--accent);
+    opacity: 0.85;
+    transition: transform 0.4s ease;
 }
+
+.bricks-ctile-initial {
+    font-weight: 800;
+}
+
+.bricks-ctile-stage:has(> .bricks-ctile-icon),
+.bricks-ctile-stage:has(> .bricks-ctile-initial) {
+    background:
+        radial-gradient(circle at 1px 1px, color-mix(in srgb, var(--accent) 22%, transparent) 1px, transparent 1.5px) 0 0 / 14px 14px,
+        color-mix(in srgb, var(--accent) 7%, #fff);
+}
+
+.bricks-ctile:hover .bricks-ctile-icon {
+    transform: rotate(-8deg) scale(1.08);
+}
+
+/* Brick footer with studs ------------------------------------------------ */
+
+.bricks-ctile-foot {
+    position: relative;
+    flex: 1 1 auto;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.5rem;
+    min-height: 3.4rem;
+    padding: 0.7rem 0.85rem 0.75rem;
+    background: var(--accent);
+    color: var(--accent-ink);
+}
+
+/* Studs: side view of a brick's studs, standing on the footer's top edge */
+.bricks-ctile-foot::before {
+    content: "";
+    position: absolute;
+    left: 0.85rem;
+    top: calc(var(--stud) * -0.72);
+    width: calc(var(--stud) * 2.6 * 4 - var(--stud) * 0.9);
+    height: calc(var(--stud) * 0.72);
+    background: repeating-linear-gradient(90deg,
+        var(--accent) 0 calc(var(--stud) * 1.7),
+        transparent calc(var(--stud) * 1.7) calc(var(--stud) * 2.6));
+    border-radius: 2px 2px 0 0;
+    transition: transform 0.28s ease;
+}
+
+.bricks-ctile:hover .bricks-ctile-foot::before {
+    transform: translateY(-1px);
+}
+
+.bricks-ctile-text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.bricks-ctile-title {
+    font-weight: 800;
+    font-size: 0.98rem;
+    line-height: 1.18;
+    letter-spacing: -0.01em;
+    overflow-wrap: anywhere;
+}
+
+.bricks-ctile-meta {
+    margin-top: 0.12rem;
+    font-size: 0.76rem;
+    font-weight: 600;
+    color: color-mix(in srgb, var(--accent-ink) 72%, transparent);
+    font-variant-numeric: tabular-nums;
+}
+
+.bricks-ctile-go {
+    flex: 0 0 auto;
+    font-size: 1rem;
+    opacity: 0;
+    transform: translateX(-6px);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.bricks-ctile:hover .bricks-ctile-go,
+.bricks-ctile:focus-visible .bricks-ctile-go {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+@media (hover: none) {
+    .bricks-ctile-go { opacity: 0.8; transform: none; }
+}
+
+/* Themes: brand navy brick, count in brand yellow */
+.bricks-ctile--theme {
+    --accent: #0f1b33;
+}
+
+.bricks-ctile--theme .bricks-ctile-meta {
+    color: #ffd400;
+}
+
+/* Browse tabs: one brick colour per category (classic LEGO-ish palette) */
+.bricks-ctile--gradient-blue   { --accent: #0b5cd6; }
+.bricks-ctile--gradient-red    { --accent: #d01012; }
+.bricks-ctile--gradient-purple { --accent: #6b3fa0; }
+.bricks-ctile--gradient-amber  { --accent: #f2a900; --accent-ink: #1b1300; }
+.bricks-ctile--gradient-green  { --accent: #00852b; }
+.bricks-ctile--gradient-pink   { --accent: #d6418b; }
+.bricks-ctile--gradient-teal   { --accent: #008f9b; }
+.bricks-ctile--gradient-slate  { --accent: #3b4656; }
+
+@media (max-width: 575.98px) {
+    .bricks-ctile { --stud: 6px; border-radius: 12px; }
+    .bricks-ctile-title { font-size: 0.9rem; }
+    .bricks-ctile-foot { min-height: 3.1rem; padding: 0.6rem 0.7rem 0.65rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .bricks-ctile,
+    .bricks-ctile-photo,
+    .bricks-ctile-art,
+    .bricks-ctile-icon,
+    .bricks-ctile-go,
+    .bricks-ctile-foot::before { transition: none; }
+    .bricks-ctile:hover { transform: none; }
+    .bricks-ctile:hover .bricks-ctile-photo,
+    .bricks-ctile:hover .bricks-ctile-art { transform: none; }
+}
+
+/* Brick cards need room for Polish labels: 2 rows of 4 on desktop */
+@media (min-width: 1200px) {
+    .bricks-browse-grid { grid-template-columns: repeat(4, 1fr); }
+}
+.bricks-browse-grid,
+.bricks-theme-grid { align-items: stretch; }
