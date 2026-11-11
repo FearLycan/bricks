@@ -37,21 +37,22 @@ $title = $title ?? T::tr('Shop by theme');
                     ? T::tr('{n} sets', ['n' => (int)$theme->sets_count])
                     : null;
             ?>
-                <a href="<?= Url::to("/lego/theme/{$theme->slug}") ?>" class="bricks-theme-tile <?= $img !== null ? 'has-product' : '' ?>">
-                    <?php if ($img !== null): ?>
-                        <span class="bricks-theme-tile-media"></span>
-                        <img class="bricks-tile-product" src="<?= Html::encode($img) ?>" alt="" loading="lazy" decoding="async">
-                    <?php else: ?>
-                        <span class="bricks-theme-tile-media bricks-theme-tile-media--fallback">
-                            <span class="bricks-theme-tile-initial"><?= Html::encode(mb_strtoupper(mb_substr($name, 0, 1, 'UTF-8'), 'UTF-8')) ?></span>
-                        </span>
-                    <?php endif; ?>
-                    <span class="bricks-theme-tile-overlay"></span>
-                    <span class="bricks-theme-tile-body">
-                        <span class="bricks-theme-tile-name"><?= Html::encode($name) ?></span>
-                        <?php if ($setsText !== null): ?>
-                            <span class="bricks-theme-tile-meta"><?= Html::encode($setsText) ?></span>
+                <a href="<?= Url::to("/lego/theme/{$theme->slug}") ?>" class="bricks-ctile bricks-ctile--theme">
+                    <span class="bricks-ctile-stage">
+                        <?php if ($img !== null): ?>
+                            <img class="bricks-ctile-photo" src="<?= Html::encode($img) ?>" alt="" loading="lazy" decoding="async">
+                        <?php else: ?>
+                            <span class="bricks-ctile-initial" aria-hidden="true"><?= Html::encode(mb_strtoupper(mb_substr($name, 0, 1, 'UTF-8'), 'UTF-8')) ?></span>
                         <?php endif; ?>
+                    </span>
+                    <span class="bricks-ctile-foot">
+                        <span class="bricks-ctile-text">
+                            <span class="bricks-ctile-title"><?= Html::encode($name) ?></span>
+                            <?php if ($setsText !== null): ?>
+                                <span class="bricks-ctile-meta"><?= Html::encode($setsText) ?></span>
+                            <?php endif; ?>
+                        </span>
+                        <i class="bi bi-arrow-right bricks-ctile-go" aria-hidden="true"></i>
                     </span>
                 </a>
             <?php endforeach; ?>
