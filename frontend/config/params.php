@@ -2,7 +2,6 @@
 return [
     'gtag'        => '',
     'leadTag'     => '',
-    'smart-links' => [],
     'pagead2'     => '',
 
     // Homepage cache TTL in seconds. Override per-environment in params-local.php.

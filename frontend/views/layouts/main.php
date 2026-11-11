@@ -231,7 +231,9 @@ if ($socialImage !== '') {
                 <div class="col-md-2">
                     <p class="bricks-footer-nav-label"><?= Html::encode(T::tr('Company')) ?></p>
                     <ul class="bricks-footer-nav">
+                        <li><?= Html::a(T::tr('About'), ['/about'], ['class' => 'bricks-footer-nav-link']) ?></li>
                         <li><?= Html::a(T::tr('Contact'), ['/contact'], ['class' => 'bricks-footer-nav-link']) ?></li>
+                        <li><?= Html::a(T::tr('Privacy Policy'), ['/privacy'], ['class' => 'bricks-footer-nav-link']) ?></li>
                     </ul>
                 </div>
                 <div class="col-md-2">
@@ -270,11 +272,6 @@ if ($socialImage !== '') {
     <?= $this->renderFile(Yii::$app->getModule('wizard')->getViewPath() . '/_modal.php') ?>
 
     <?php $this->endBody() ?>
-
-
-    <?php if (Yii::$app->user->isGuest && isset(Yii::$app->params['smart-links']['aliexpress']) && Yii::$app->params['smart-links']['aliexpress']): ?>
-        <iframe src="<?= Yii::$app->params['smart-links']['aliexpress'] ?>" style="display:none;"></iframe>
-    <?php endif; ?>
 
 
     </body>

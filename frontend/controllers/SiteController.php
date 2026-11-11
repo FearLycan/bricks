@@ -103,4 +103,12 @@ class SiteController extends Controller
             'categories' => LegoFaq::getCategories(),
         ]);
     }
+
+    /**
+     * Displays the privacy policy at /privacy.
+     */
+    public function actionPrivacy(): string
+    {
+        return $this->render('privacy');
+    }
 }
