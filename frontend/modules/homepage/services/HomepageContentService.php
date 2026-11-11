@@ -114,16 +114,16 @@ class HomepageContentService
 
     /**
      * @param Theme[] $themes
-     * @return array<int, array{label: string, url: string, cover: ?string, accent: ?string}>
+     * @return array<int, array{label: string, url: string, image: ?string, cover: ?string, accent: ?string}>
      */
     private function buildNewTabTiles(array $themes): array
     {
         $used = [];
         $tiles = [
-            $this->makeTile(T::tr('All new arrivals'), ['/lego'], 'gradient-blue', $this->pickCover('new', $used)),
-            $this->makeTile(T::tr('On sale'), ['/lego/on-sale'], 'gradient-red', $this->pickCover('on-sale', $used)),
-            $this->makeTile(T::tr('LEGO® for adults'), ['/lego/for-adults'], 'gradient-purple', $this->pickCover('for-adults', $used)),
-            $this->makeTile(T::tr('Browse all sets'), ['/lego'], 'gradient-amber', $this->pickCover('top', $used)),
+            $this->makeTile(T::tr('All new arrivals'), ['/lego'], 'gradient-blue', $this->pickCover('new', $used), 'new-arrivals'),
+            $this->makeTile(T::tr('On sale'), ['/lego/on-sale'], 'gradient-red', $this->pickCover('on-sale', $used), 'on-sale'),
+            $this->makeTile(T::tr('LEGO® for adults'), ['/lego/for-adults'], 'gradient-purple', $this->pickCover('for-adults', $used), 'adults'),
+            $this->makeTile(T::tr('Browse all sets'), ['/lego'], 'gradient-amber', $this->pickCover('top', $used), 'all-sets'),
         ];
 
         foreach (array_slice($themes, 0, 4) as $theme) {
@@ -134,21 +134,21 @@ class HomepageContentService
     }
 
     /**
-     * @return array<int, array{label: string, url: string, cover: ?string, accent: ?string}>
+     * @return array<int, array{label: string, url: string, image: ?string, cover: ?string, accent: ?string}>
      */
     private function buildAudienceTabTiles(): array
     {
         $used = [];
 
         return [
-            $this->makeTile(T::tr('For toddlers (1+)'), ['/lego/for-toddlers'], 'gradient-pink', $this->pickCover('for-toddlers', $used)),
-            $this->makeTile(T::tr('For kids (5–8)'), ['/lego/for-kids'], 'gradient-amber', $this->pickCover('for-kids', $used)),
-            $this->makeTile(T::tr('For tweens (9–12)'), ['/lego/for-tweens'], 'gradient-green', $this->pickCover('for-tweens', $used)),
-            $this->makeTile(T::tr('For teens (13+)'), ['/lego/for-teens'], 'gradient-blue', $this->pickCover('for-teens', $used)),
-            $this->makeTile(T::tr('For adults (18+)'), ['/lego/for-adults'], 'gradient-purple', $this->pickCover('for-adults', $used)),
-            $this->makeTile(T::tr('Small builds (≤200 pcs)'), ['/lego/small-builds'], 'gradient-teal', $this->pickCover('small-builds', $used)),
-            $this->makeTile(T::tr('Big builds (2000+ pcs)'), ['/lego/big-builds'], 'gradient-red', $this->pickCover('big-builds', $used)),
-            $this->makeTile(T::tr('Browse all sets'), ['/lego'], 'gradient-slate', $this->pickCover('top', $used)),
+            $this->makeTile(T::tr('For toddlers (1+)'), ['/lego/for-toddlers'], 'gradient-pink', $this->pickCover('for-toddlers', $used), 'toddlers'),
+            $this->makeTile(T::tr('For kids (5–8)'), ['/lego/for-kids'], 'gradient-amber', $this->pickCover('for-kids', $used), 'kids'),
+            $this->makeTile(T::tr('For tweens (9–12)'), ['/lego/for-tweens'], 'gradient-green', $this->pickCover('for-tweens', $used), 'tweens'),
+            $this->makeTile(T::tr('For teens (13+)'), ['/lego/for-teens'], 'gradient-blue', $this->pickCover('for-teens', $used), 'teens'),
+            $this->makeTile(T::tr('For adults (18+)'), ['/lego/for-adults'], 'gradient-purple', $this->pickCover('for-adults', $used), 'adults'),
+            $this->makeTile(T::tr('Small builds (≤200 pcs)'), ['/lego/small-builds'], 'gradient-teal', $this->pickCover('small-builds', $used), 'small-builds'),
+            $this->makeTile(T::tr('Big builds (2000+ pcs)'), ['/lego/big-builds'], 'gradient-red', $this->pickCover('big-builds', $used), 'big-builds'),
+            $this->makeTile(T::tr('Browse all sets'), ['/lego'], 'gradient-slate', $this->pickCover('top', $used), 'all-sets'),
         ];
     }
 
@@ -186,16 +186,38 @@ class HomepageContentService
 
     /**
      * @param array|string $route
-     * @return array{label: string, url: string, cover: ?string, accent: ?string}
+     * @return array{label: string, url: string, image: ?string, cover: ?string, accent: ?string}
      */
-    private function makeTile(string $label, $route, ?string $accent = null, ?string $cover = null): array
+    private function makeTile(string $label, $route, ?string $accent = null, ?string $cover = null, ?string $imageKey = null): array
     {
         return [
             'label'  => $label,
             'url'    => Url::to($route),
+            'image'  => $imageKey !== null ? $this->customTileImage($imageKey) : null,
             'cover'  => $cover,
             'accent' => $accent,
         ];
+    }
+
+    /**
+     * Optional hand-made artwork for a fixed tile: drop a file named
+     * `<key>.webp|jpg|jpeg|png` into frontend/web/images/browse/ and the tile
+     * uses it (full-bleed); without a file the tile keeps the set photo.
+     * Keys: new-arrivals, on-sale, all-sets, adults, toddlers, kids, tweens,
+     * teens, small-builds, big-builds.
+     */
+    private function customTileImage(string $key): ?string
+    {
+        $dir = Yii::getAlias('@webroot') . '/images/browse/';
+        foreach (['webp', 'jpg', 'jpeg', 'png'] as $ext) {
+            $file = $dir . $key . '.' . $ext;
+            if (is_file($file)) {
+                // Version by mtime so a replaced file is not served from browser cache.
+                return Yii::getAlias('@web') . '/images/browse/' . $key . '.' . $ext . '?v=' . filemtime($file);
+            }
+        }
+
+        return null;
     }
 
     /**

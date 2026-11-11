@@ -1440,3 +1440,9 @@ a.bricks-collection-stats-tile:hover {
 .bricks-browse-tile--gradient-teal   { --tile-tint: #c8f0ea; }
 .bricks-browse-tile--gradient-slate  { --tile-tint: #dfe3ea; }
 .bricks-theme-tile                   { --tile-tint: #ffe9b8; }
+
+/* Hand-made tile artwork (frontend/web/images/browse/<key>.*) beats the accent gradient */
+.bricks-browse-tile.has-image .bricks-browse-tile-media {
+    background-size: cover;
+    background-position: center;
+}

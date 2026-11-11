@@ -5,7 +5,7 @@ use yii\web\View;
 
 /**
  * @var View  $this
- * @var array $tabs ['key' => ['label' => string, 'tiles' => [['label','url','cover','accent'], ...]], ...]
+ * @var array $tabs ['key' => ['label' => string, 'tiles' => [['label','url','image','cover','accent'], ...]], ...]
  */
 
 $nonEmpty = array_filter($tabs, static fn(array $tab) => !empty($tab['tiles']));
@@ -39,10 +39,13 @@ $firstKey = array_key_first($nonEmpty);
                      role="tabpanel">
                     <div class="bricks-browse-grid">
                         <?php foreach ($tab['tiles'] as $tile): ?>
-                            <?php $cover = $tile['cover'] ?? null; ?>
+                            <?php
+                            $image = $tile['image'] ?? null;            // hand-made artwork (full-bleed)
+                            $cover = $image ? null : ($tile['cover'] ?? null); // otherwise the set photo
+                            ?>
                             <a href="<?= Html::encode($tile['url']) ?>"
-                               class="bricks-browse-tile <?= !empty($tile['accent']) ? 'bricks-browse-tile--' . Html::encode($tile['accent']) : '' ?> <?= $cover ? 'has-product' : '' ?>">
-                                <span class="bricks-browse-tile-media"></span>
+                               class="bricks-browse-tile <?= !empty($tile['accent']) ? 'bricks-browse-tile--' . Html::encode($tile['accent']) : '' ?> <?= $cover ? 'has-product' : '' ?> <?= $image ? 'has-image' : '' ?>">
+                                <span class="bricks-browse-tile-media"<?= $image ? ' style="background-image: url(\'' . Html::encode($image) . '\');"' : '' ?>></span>
                                 <?php if ($cover): ?>
                                     <img class="bricks-tile-product" src="<?= Html::encode($cover) ?>" alt="" loading="lazy" decoding="async">
                                 <?php endif; ?>
