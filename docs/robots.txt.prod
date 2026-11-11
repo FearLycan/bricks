@@ -15,6 +15,7 @@ User-agent: BLEXBot
 User-agent: DataForSeoBot
 User-agent: Amazonbot
 User-agent: ImagesiftBot
+User-agent: ElevenlabsCrawler
 Disallow: /
 
 User-agent: *
@@ -42,6 +43,9 @@ Disallow: /*per-page=
 Disallow: /*setId=
 Disallow: /*sort_option=
 Disallow: /*/view?slug=
+Disallow: /*?sub=
+Disallow: /*&sub=
+Disallow: /*month=
 Crawl-delay: 2
 
 Sitemap: https://brickatlas.shop/sitemap.xml

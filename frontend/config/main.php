@@ -140,8 +140,10 @@ return [
                 'user/settings'                                 => 'user/settings/index',
                 'user/set-language/<lang:[a-z]{2}>'             => 'user/settings/set-language',
                 '<alias:products>'                              => 'product/product/index',
-                '<modules:lego>/<controler:theme>/<slug>'       => 'lego/theme/index',
+                // <sub> first: URL creation picks the first rule that fits, and with
+                // <slug> first a subtheme link came out as ?sub=... (duplicate URLs).
                 '<modules:lego>/<controler:theme>/<slug>/<sub>' => 'lego/theme/index',
+                '<modules:lego>/<controler:theme>/<slug>'       => 'lego/theme/index',
                 '<alias:lego>'                                  => 'lego/lego/index',
                 'lego/on-sale'                                  => 'lego/lego/promo',
                 'lego/magazines'                                => 'lego/lego/magazines',
