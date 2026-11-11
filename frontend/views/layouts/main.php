@@ -5,6 +5,8 @@ use common\schema\factory\OrganizationSchemaFactory;
 use common\schema\JsonLdRenderer;
 use common\widgets\Alert;
 use frontend\assets\AppAsset;
+use frontend\modules\homepage\services\HomepageContentService;
+use frontend\components\BotGuard;
 use frontend\components\SeoHelper;
 use frontend\components\T;
 use yii\bootstrap5\Breadcrumbs;
@@ -93,28 +95,60 @@ if ($socialImage !== '') {
         <?= JsonLdRenderer::render($schemaGraph) ?>
         <?php $this->head() ?>
 
-        <?php if (isset(Yii::$app->params['gtag']) && Yii::$app->params['gtag']): ?>
-            <!-- Google tag (gtag.js) -->
-            <script async src="https://www.googletagmanager.com/gtag/js?id=<?= Yii::$app->params['gtag'] ?>"></script>
+        <?php
+        $gtagId = (string)(Yii::$app->params['gtag'] ?? '');
+        $adsenseId = (string)(Yii::$app->params['pagead2'] ?? '');
+        $loadTags = !BotGuard::isAutomated();
+        ?>
+        <?php if ($adsenseId !== ''): ?>
+            <meta name="google-adsense-account" content="<?= Html::encode($adsenseId) ?>">
+        <?php endif; ?>
+        <?php if (isset(Yii::$app->params['leadTag']) && Yii::$app->params['leadTag']): ?>
+            <meta name="mylead-verification" content="<?= Html::encode(Yii::$app->params['leadTag']) ?>">
+        <?php endif; ?>
+
+        <?php if ($loadTags && ($gtagId !== '' || $adsenseId !== '')): ?>
             <script>
                 window.dataLayer = window.dataLayer || [];
+                function gtag() { dataLayer.push(arguments); }
 
-                function gtag() {
-                    dataLayer.push(arguments);
-                }
+                // Consent Mode v2: nothing is stored in the EEA, UK and
+                // Switzerland until the visitor answers Google's consent
+                // message (Privacy & messaging in AdSense). Elsewhere granted.
+                gtag('consent', 'default', {
+                    ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied',
+                    analytics_storage: 'denied', wait_for_update: 500,
+                    region: ['AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IS','IE','IT','LV','LI','LT','LU','MT','NL','NO','PL','PT','RO','SK','SI','ES','SE','GB','CH']
+                });
+                gtag('consent', 'default', {
+                    ad_storage: 'granted', ad_user_data: 'granted', ad_personalization: 'granted',
+                    analytics_storage: 'granted'
+                });
+                gtag('set', 'ads_data_redaction', true);
 
-                gtag('js', new Date());
-                gtag('config', '<?= Yii::$app->params['gtag'] ?>');
+                (function () {
+                    // Headless browsers that fake their user agent still report
+                    // navigator.webdriver; keep analytics and ads away from them.
+                    if (navigator.webdriver || /HeadlessChrome/i.test(navigator.userAgent)) {
+                        return;
+                    }
+                    function load(src, crossOrigin) {
+                        var s = document.createElement('script');
+                        s.async = true;
+                        s.src = src;
+                        if (crossOrigin) { s.crossOrigin = 'anonymous'; }
+                        document.head.appendChild(s);
+                    }
+                    <?php if ($gtagId !== ''): ?>
+                    gtag('js', new Date());
+                    gtag('config', <?= json_encode($gtagId) ?>);
+                    load('https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(<?= json_encode($gtagId) ?>));
+                    <?php endif; ?>
+                    <?php if ($adsenseId !== ''): ?>
+                    load('https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=' + encodeURIComponent(<?= json_encode($adsenseId) ?>), true);
+                    <?php endif; ?>
+                })();
             </script>
-        <?php endif; ?>
-
-        <?php if (isset(Yii::$app->params['leadTag']) && Yii::$app->params['leadTag']): ?>
-            <meta name="mylead-verification" content="<?= Yii::$app->params['leadTag'] ?>">
-        <?php endif; ?>
-
-        <?php if (isset(Yii::$app->params['pagead2']) && Yii::$app->params['pagead2']): ?>
-            <meta name="google-adsense-account" content="<?= Yii::$app->params['pagead2'] ?>">
-            <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=<?= Yii::$app->params['pagead2'] ?>" crossorigin="anonymous"></script>
         <?php endif; ?>
 
     </head>
@@ -169,9 +203,16 @@ if ($socialImage !== '') {
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="bricks-nav-link nav-link" href="<?= Url::to(['/lego/on-sale']) ?>">
-                                <i class="bi bi-tags me-1"></i><?= Html::encode(T::tr('On Sale')) ?>
-                            </a>
+                            <?php // Until there are real deals, point the slot at a page with content. ?>
+                            <?php if ((new HomepageContentService())->getOnSale(1) !== []): ?>
+                                <a class="bricks-nav-link nav-link" href="<?= Url::to(['/lego/on-sale']) ?>">
+                                    <i class="bi bi-tags me-1"></i><?= Html::encode(T::tr('On Sale')) ?>
+                                </a>
+                            <?php else: ?>
+                                <a class="bricks-nav-link nav-link" href="<?= Url::to(['/lego/retiring-soon']) ?>">
+                                    <i class="bi bi-hourglass-split me-1"></i><?= Html::encode(T::tr('Retiring Soon')) ?>
+                                </a>
+                            <?php endif; ?>
                         </li>
                         <?= $this->render('_categories-dropdown') ?>
                         <li class="nav-item">
