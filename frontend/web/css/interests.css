@@ -1,12 +1,12 @@
 /* ==========================================================================
    Interests landing page (/interests)
-   Grouped grid of category tiles. Each tile is either backed by a real theme
-   hero image, or falls back to a colored gradient + icon set by the
-   interests-tile--<modifier> class.
+   Grouped grid of white cards, same family as the homepage tiles: a set photo
+   on white (or full-bleed artwork from images/browse/), then title,
+   description and a link in the category accent colour.
    ========================================================================== */
 
 .interests-group {
-    margin-bottom: 3rem;
+    margin-bottom: 2.75rem;
 }
 
 .interests-group-title {
@@ -19,147 +19,209 @@
 
 .interests-grid {
     display: grid;
-    grid-template-columns: 1fr;
-    gap: 1rem;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
 }
 
-@media (min-width: 576px) {
+@media (min-width: 768px) {
     .interests-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.1rem;
     }
 }
 
-@media (min-width: 992px) {
+@media (min-width: 1200px) {
     .interests-grid {
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(4, 1fr);
         gap: 1.25rem;
     }
 }
 
-@media (min-width: 1400px) {
-    .interests-grid {
-        grid-template-columns: repeat(4, 1fr);
-    }
-}
+/* ---------------- Card ---------------- */
 
-/* ---------------- Tile ---------------- */
-
-.interests-tile {
-    position: relative;
-    display: block;
-    aspect-ratio: 5 / 4;
-    border-radius: 16px;
-    overflow: hidden;
-    color: #fff;
-    text-decoration: none;
-    background-color: #0d2545;
-    background-size: cover;
-    background-position: center;
-    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.12);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    isolation: isolate;
-}
-
-.interests-tile:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.22);
-    color: #fff;
-}
-
-.interests-tile-overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(160deg, rgba(8, 18, 38, 0.05) 0%, rgba(8, 18, 38, 0.85) 100%);
-    z-index: 1;
-    transition: background 0.2s ease;
-}
-
-.interests-tile:hover .interests-tile-overlay {
-    background: linear-gradient(160deg, rgba(8, 18, 38, 0.2) 0%, rgba(8, 18, 38, 0.92) 100%);
-}
-
-.interests-tile-body {
-    position: absolute;
-    inset: 0;
-    z-index: 2;
-    padding: 1.1rem 1.2rem;
+.interests-card {
+    --accent: #0b5cd6;
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    overflow: hidden;
+    color: #0f172a;
+    text-decoration: none;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
-.interests-tile-icon {
+.interests-card:hover,
+.interests-card:focus-visible {
+    color: #0f172a;
+    transform: translateY(-3px);
+    border-color: #d8dde5;
+    box-shadow: 0 12px 26px rgba(15, 23, 42, 0.10);
+}
+
+.interests-card:focus-visible {
+    outline: 3px solid color-mix(in srgb, var(--accent) 45%, transparent);
+    outline-offset: 2px;
+}
+
+.interests-card-stage {
+    position: relative;
+    flex: 0 0 auto;
+    aspect-ratio: 4 / 3;
+    background: #fff;
+    border-bottom: 1px solid #f1f5f9;
+    overflow: hidden;
+}
+
+.interests-card-photo {
     position: absolute;
-    top: 1rem;
-    right: 1.1rem;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.18);
-    backdrop-filter: blur(4px);
-    display: inline-flex;
+    top: 10%;
+    left: 9%;
+    width: 82%;
+    height: 74%;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+}
+
+.interests-card:hover .interests-card-photo {
+    transform: scale(1.04);
+}
+
+.interests-card-art {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* No picture at all: tinted dotted stage with the category icon. */
+.interests-card-stage:has(.interests-card-icon) {
+    background-color: color-mix(in srgb, var(--accent) 8%, #fff);
+    background-image: radial-gradient(color-mix(in srgb, var(--accent) 22%, transparent) 1.2px, transparent 1.3px);
+    background-size: 14px 14px;
+}
+
+.interests-card-icon {
+    position: absolute;
+    inset: 0;
+    display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.15rem;
-    transition: background 0.2s ease, transform 0.2s ease;
+    font-size: 2.6rem;
+    color: var(--accent);
 }
 
-.interests-tile:hover .interests-tile-icon {
-    background: #ffd400;
-    color: #0d2545;
-    transform: scale(1.08);
+.interests-card-foot {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    padding: 0.85rem 1rem 1rem;
 }
 
-.interests-tile-name {
-    font-size: 1.25rem;
-    font-weight: 800;
-    line-height: 1.15;
-    margin-bottom: 0.35rem;
-    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+.interests-card-title {
+    position: relative;
+    padding-top: 0.6rem;
+    font-size: 1.05rem;
+    font-weight: 750;
+    line-height: 1.25;
 }
 
-.interests-tile-description {
-    font-size: 0.92rem;
+.interests-card-title::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 22px;
+    height: 3px;
+    border-radius: 2px;
+    background: var(--accent);
+    transition: width 0.25s ease;
+}
+
+.interests-card:hover .interests-card-title::before {
+    width: 40px;
+}
+
+.interests-card-desc {
+    margin-top: 0.3rem;
+    font-size: 0.85rem;
     line-height: 1.4;
-    color: rgba(255, 255, 255, 0.86);
-    margin-bottom: 0.6rem;
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+    color: #64748b;
     display: -webkit-box;
-    -webkit-line-clamp: 2;
+    -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
 
-.interests-tile-cta {
-    font-size: 0.88rem;
+.interests-card-go {
+    margin-top: auto;
+    padding-top: 0.6rem;
+    font-size: 0.82rem;
     font-weight: 700;
-    color: #ffd400;
-    display: inline-flex;
-    align-items: center;
+    color: var(--accent);
+}
+
+.interests-card-go .bi {
+    display: inline-block;
+    margin-left: 0.2rem;
     transition: transform 0.2s ease;
 }
 
-.interests-tile:hover .interests-tile-cta {
+.interests-card:hover .interests-card-go .bi {
     transform: translateX(3px);
 }
 
-/* ---------------- Modifiers — gradient fallbacks ---------------- */
-/* Used when the tile has no background image. Applied below the overlay. */
+@media (max-width: 575.98px) {
+    .interests-card-foot {
+        padding: 0.7rem 0.75rem 0.8rem;
+    }
 
-.interests-tile:not(.interests-tile--has-image).interests-tile--adults      { background-image: linear-gradient(135deg, #1e1b4b 0%, #6d28d9 100%); }
-.interests-tile:not(.interests-tile--has-image).interests-tile--kids        { background-image: linear-gradient(135deg, #047857 0%, #fbbf24 100%); }
-.interests-tile:not(.interests-tile--has-image).interests-tile--sale        { background-image: linear-gradient(135deg, #7f1d1d 0%, #ef4444 100%); }
-.interests-tile:not(.interests-tile--has-image).interests-tile--exclusive   { background-image: linear-gradient(135deg, #422006 0%, #b45309 100%); }
-.interests-tile:not(.interests-tile--has-image).interests-tile--retiring    { background-image: linear-gradient(135deg, #4c0519 0%, #be123c 100%); }
-.interests-tile:not(.interests-tile--has-image).interests-tile--magazines   { background-image: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); }
-.interests-tile:not(.interests-tile--has-image).interests-tile--polybags    { background-image: linear-gradient(135deg, #14532d 0%, #22c55e 100%); }
-.interests-tile:not(.interests-tile--has-image).interests-tile--gwp         { background-image: linear-gradient(135deg, #831843 0%, #ec4899 100%); }
-.interests-tile:not(.interests-tile--has-image).interests-tile--seasonal    { background-image: linear-gradient(135deg, #134e4a 0%, #2dd4bf 100%); }
+    .interests-card-title {
+        font-size: 0.95rem;
+    }
 
-.interests-tile:not(.interests-tile--has-image).interests-tile--starwars    { background-image: linear-gradient(135deg, #000 0%, #4b5563 100%); }
-.interests-tile:not(.interests-tile--has-image).interests-tile--potter      { background-image: linear-gradient(135deg, #422006 0%, #78350f 100%); }
-.interests-tile:not(.interests-tile--has-image).interests-tile--marvel      { background-image: linear-gradient(135deg, #7f1d1d 0%, #dc2626 100%); }
-.interests-tile:not(.interests-tile--has-image).interests-tile--ninjago     { background-image: linear-gradient(135deg, #064e3b 0%, #facc15 100%); }
-.interests-tile:not(.interests-tile--has-image).interests-tile--city        { background-image: linear-gradient(135deg, #1e3a8a 0%, #60a5fa 100%); }
-.interests-tile:not(.interests-tile--has-image).interests-tile--friends     { background-image: linear-gradient(135deg, #831843 0%, #f472b6 100%); }
-.interests-tile:not(.interests-tile--has-image).interests-tile--technic     { background-image: linear-gradient(135deg, #18181b 0%, #f97316 100%); }
+    .interests-card-desc {
+        display: none;
+    }
+}
+
+/* ---------------- Accent per category ---------------- */
+
+.interests-card--adults       { --accent: #6b3fa0; }
+.interests-card--kids         { --accent: #00852b; }
+.interests-card--tweens       { --accent: #0b5cd6; }
+.interests-card--small-builds { --accent: #008f9b; }
+.interests-card--big-builds   { --accent: #3b4656; }
+.interests-card--sale         { --accent: #d01012; }
+.interests-card--exclusive    { --accent: #b45309; }
+.interests-card--retiring     { --accent: #be123c; }
+.interests-card--magazines    { --accent: #0b5cd6; }
+.interests-card--polybags     { --accent: #00852b; }
+.interests-card--gwp          { --accent: #d6418b; }
+.interests-card--seasonal     { --accent: #008f9b; }
+.interests-card--starwars     { --accent: #3b4656; }
+.interests-card--potter       { --accent: #7c2d12; }
+.interests-card--marvel       { --accent: #d01012; }
+.interests-card--ninjago      { --accent: #00852b; }
+.interests-card--city         { --accent: #0b5cd6; }
+.interests-card--friends      { --accent: #d6418b; }
+.interests-card--technic      { --accent: #ea580c; }
+
+@media (prefers-reduced-motion: reduce) {
+    .interests-card,
+    .interests-card-photo,
+    .interests-card-title::before,
+    .interests-card-go .bi {
+        transition: none;
+    }
+
+    .interests-card:hover {
+        transform: none;
+    }
+
+    .interests-card:hover .interests-card-photo {
+        transform: none;
+    }
+}

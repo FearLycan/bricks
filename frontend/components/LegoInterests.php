@@ -4,6 +4,7 @@ namespace frontend\components;
 
 use common\enums\StatusEnum;
 use common\models\Theme;
+use frontend\modules\homepage\services\HomepageContentService;
 use Yii;
 
 /**
@@ -12,8 +13,8 @@ use Yii;
  * Inspired by LEGO.com /pl-pl/categories/interests but limited to entries
  * that point at a populated slice of our catalog. Each tile maps to one of:
  *   - a curated filter route (e.g. /lego/magazines, /lego/tag/<slug>),
- *   - an existing Theme page (/lego/theme/<slug>) — image is pulled from the
- *     Theme row when available, otherwise the tile falls back to its gradient.
+ *   - an existing Theme page (/lego/theme/<slug>).
+ * Every tile gets a picture: artwork file, theme image or a set photo.
  *
  * Adding an entry: drop one row into the array. No DB schema change needed.
  */
@@ -28,10 +29,80 @@ final class LegoInterests
      */
     public static function getTiles(): array
     {
-        $themeImages = self::loadThemeImages([
-            'star-wars', 'harry-potter', 'city', 'friends',
-            'marvel-super-heroes', 'ninjago', 'technic',
-        ]);
+        $themes = Theme::find()
+            ->where(['slug' => array_values(self::THEME_SLUGS), 'status' => StatusEnum::ACTIVE->value])
+            ->indexBy('slug')
+            ->all();
+
+        $covers = new HomepageContentService();
+        $usedByGroup = [];
+        $tiles = [];
+        foreach (self::definitions() as $tile) {
+            $used = &$usedByGroup[$tile['group']];
+            $used ??= [];
+            $key = $tile['key'];
+            $theme = isset(self::THEME_SLUGS[$key]) ? ($themes[self::THEME_SLUGS[$key]] ?? null) : null;
+            $coverKey = $theme !== null ? 'theme-' . (int)$theme->id : (self::COVER_KEYS[$key] ?? null);
+
+            // Hand-made artwork (images/browse/<key>.*, full-bleed) wins;
+            // otherwise the theme image from the admin or a representative
+            // set photo (unique within its group), shown on white.
+            $tile['art'] = $covers->customTileImage(self::ARTWORK_KEYS[$key] ?? $key);
+            $tile['image'] = null;
+            if ($tile['art'] === null) {
+                $tile['image'] = $theme?->getTileImageUrl();
+                if ($tile['image'] === null && $coverKey !== null) {
+                    // Unique within the group; repeat a photo rather than show none.
+                    $fresh = [];
+                    $tile['image'] = $covers->pickCover($coverKey, $used) ?? $covers->pickCover($coverKey, $fresh);
+                }
+            }
+            $tiles[] = $tile;
+            unset($used);
+        }
+
+        return $tiles;
+    }
+
+    /** Interest key => theme slug. */
+    private const THEME_SLUGS = [
+        'star-wars'    => 'star-wars',
+        'harry-potter' => 'harry-potter',
+        'marvel'       => 'marvel-super-heroes',
+        'ninjago'      => 'ninjago',
+        'city'         => 'city',
+        'friends'      => 'friends',
+        'technic'      => 'technic',
+    ];
+
+    /** Interest key => HomepageContentService cover key (non-theme tiles). */
+    private const COVER_KEYS = [
+        'adults-welcome' => 'for-adults',
+        'for-kids'       => 'for-kids',
+        'for-tweens'     => 'for-tweens',
+        'small-builds'   => 'small-builds',
+        'big-builds'     => 'big-builds',
+        'on-sale'        => 'on-sale',
+        'exclusive'      => 'exclusive',
+        'retiring-soon'  => 'retiring-soon',
+        'magazines'      => 'magazines',
+        'polybags'       => 'tag-polybag',
+        'gwp'            => 'tag-gift-with-purchase',
+        'seasonal'       => 'tag-seasonal',
+    ];
+
+    /** Interest key => artwork file name, shared with the homepage tiles. */
+    private const ARTWORK_KEYS = [
+        'adults-welcome' => 'adults',
+        'for-kids'       => 'kids',
+        'for-tweens'     => 'tweens',
+    ];
+
+    /**
+     * @return array<int, array<string, mixed>>
+     */
+    private static function definitions(): array
+    {
 
         return [
             // --- Audience ---
@@ -169,7 +240,7 @@ final class LegoInterests
                 'url'         => ['/lego/theme/star-wars'],
                 'icon'        => 'bi-stars',
                 'modifier'    => 'starwars',
-                'image'       => $themeImages['star-wars'] ?? null,
+                'image'       => null,
             ],
             [
                 'key'         => 'harry-potter',
@@ -179,7 +250,7 @@ final class LegoInterests
                 'url'         => ['/lego/theme/harry-potter'],
                 'icon'        => 'bi-magic',
                 'modifier'    => 'potter',
-                'image'       => $themeImages['harry-potter'] ?? null,
+                'image'       => null,
             ],
             [
                 'key'         => 'marvel',
@@ -189,7 +260,7 @@ final class LegoInterests
                 'url'         => ['/lego/theme/marvel-super-heroes'],
                 'icon'        => 'bi-shield-fill',
                 'modifier'    => 'marvel',
-                'image'       => $themeImages['marvel-super-heroes'] ?? null,
+                'image'       => null,
             ],
             [
                 'key'         => 'ninjago',
@@ -199,7 +270,7 @@ final class LegoInterests
                 'url'         => ['/lego/theme/ninjago'],
                 'icon'        => 'bi-lightning-charge-fill',
                 'modifier'    => 'ninjago',
-                'image'       => $themeImages['ninjago'] ?? null,
+                'image'       => null,
             ],
             [
                 'key'         => 'city',
@@ -209,7 +280,7 @@ final class LegoInterests
                 'url'         => ['/lego/theme/city'],
                 'icon'        => 'bi-buildings',
                 'modifier'    => 'city',
-                'image'       => $themeImages['city'] ?? null,
+                'image'       => null,
             ],
             [
                 'key'         => 'friends',
@@ -219,7 +290,7 @@ final class LegoInterests
                 'url'         => ['/lego/theme/friends'],
                 'icon'        => 'bi-heart',
                 'modifier'    => 'friends',
-                'image'       => $themeImages['friends'] ?? null,
+                'image'       => null,
             ],
             [
                 'key'         => 'technic',
@@ -229,38 +300,8 @@ final class LegoInterests
                 'url'         => ['/lego/theme/technic'],
                 'icon'        => 'bi-gear-fill',
                 'modifier'    => 'technic',
-                'image'       => $themeImages['technic'] ?? null,
+                'image'       => null,
             ],
         ];
-    }
-
-    /**
-     * Pull the best available image URL for each theme slug. Hero takes
-     * precedence; the tile image is the fallback. Tiles whose theme has
-     * neither stay on their gradient background.
-     *
-     * @param string[] $slugs
-     * @return array<string, string|null>
-     */
-    private static function loadThemeImages(array $slugs): array
-    {
-        if ($slugs === []) {
-            return [];
-        }
-
-        $rows = Theme::find()
-            ->select(['slug', 'image', 'hero_image'])
-            ->where(['slug' => $slugs, 'status' => StatusEnum::ACTIVE->value])
-            ->asArray()
-            ->all();
-
-        $map = [];
-        foreach ($rows as $row) {
-            $hero  = trim((string)($row['hero_image'] ?? ''));
-            $image = trim((string)($row['image'] ?? ''));
-            $map[(string)$row['slug']] = $hero !== '' ? $hero : ($image !== '' ? $image : null);
-        }
-
-        return $map;
     }
 }
