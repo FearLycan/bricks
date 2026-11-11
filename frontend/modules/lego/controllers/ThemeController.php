@@ -27,8 +27,16 @@ class ThemeController extends Controller
         ];
     }
 
-    public function actionIndex(string $slug, ?string $sub = null): string
+    public function actionIndex(string $slug, ?string $sub = null)
     {
+        // Old links used /lego/theme/<slug>?sub=<sub>; send them to the path form.
+        if ($sub !== null && $this->request->getQueryParam('sub') !== null) {
+            $params = $this->request->getQueryParams();
+            unset($params['sub'], $params['slug'], $params['modules'], $params['controler']);
+
+            return $this->redirect(array_merge(['/lego/theme/index', 'modules' => 'lego', 'controler' => 'theme', 'slug' => $slug, 'sub' => $sub], $params), 301);
+        }
+
         $theme = $this->findModel($slug);
 
         $subTheme = null;

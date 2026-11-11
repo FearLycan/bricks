@@ -1,5 +1,8 @@
 RewriteEngine on
 
+# English is the default language and has no URL prefix: /en/... -> /... for good
+RewriteRule ^en(?:/(.*))?$ /$1 [R=301,L,QSA]
+
 # Chrome Private Prefetch Proxy advice file — needs a specific Content-Type
 <Files "traffic-advice">
     ForceType application/trafficadvice+json
