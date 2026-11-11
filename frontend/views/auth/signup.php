@@ -11,7 +11,7 @@ use yii\bootstrap5\ActiveForm;
 use yii\bootstrap5\Html;
 
 $this->title = T::tr('Create BrickAtlas Account - Track LEGO® Sets');
-$this->params['metaDescription'] = T::tr('Create a free BrickAtlas account to track LEGO sets, build a wishlist, write reviews and follow price drops across major retailers.');
+$this->params['metaDescription'] = T::tr('Create a free BrickAtlas account to track LEGO sets, build a wishlist and write reviews.');
 $this->params['canonicalUrl'] = SeoHelper::buildAbsoluteUrl(['/auth/signup']);
 
 $this->registerCssFile('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&display=swap');

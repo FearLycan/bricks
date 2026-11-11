@@ -151,7 +151,7 @@ final class LegoFaq
                 'items' => [
                     [
                         'q' => T::tr('What data do you collect about me?'),
-                        'a' => T::tr('Only what we need to run the service: your username, email, hashed password, language preference, and the sets you save to your wishlist, owned list or reviews. We don\'t sell or share this data.'),
+                        'a' => T::tr('Only what we need to run the service: your username, email, hashed password, language preference, and the sets you save to your wishlist, owned list or reviews. We don\'t sell this data.'),
                     ],
                     [
                         'q' => T::tr('What are affiliate links?'),

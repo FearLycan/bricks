@@ -10,7 +10,7 @@ use yii\bootstrap5\Html;
 use yii\bootstrap5\ActiveForm;
 
 $this->title = T::tr('Sign in to BrickAtlas - LEGO® Price Tracker');
-$this->params['metaDescription'] = T::tr('Sign in to BrickAtlas to access your LEGO wishlist, set reviews, owned-set collection and personalized price-drop notifications.');
+$this->params['metaDescription'] = T::tr('Sign in to BrickAtlas to access your LEGO wishlist, your reviews and your collection.');
 $this->params['canonicalUrl'] = SeoHelper::buildAbsoluteUrl(['/auth/login']);
 
 $this->registerCssFile('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&display=swap');
