@@ -10,7 +10,7 @@ use frontend\components\T;
 use yii\bootstrap5\ActiveForm;
 use yii\bootstrap5\Html;
 
-$this->title = T::tr('Create BrickAtlas Account — Track LEGO® Sets');
+$this->title = T::tr('Create BrickAtlas Account - Track LEGO® Sets');
 $this->params['metaDescription'] = T::tr('Create a free BrickAtlas account to track LEGO sets, build a wishlist, write reviews and follow price drops across major retailers.');
 $this->params['canonicalUrl'] = SeoHelper::buildAbsoluteUrl(['/auth/signup']);
 

@@ -221,7 +221,7 @@ class HomepageContentService
         'big-builds'   => 'bi-buildings',
     ];
 
-    private function customTileImage(string $key): ?string
+    public function customTileImage(string $key): ?string
     {
         $dir = Yii::getAlias('@webroot') . '/images/browse/';
         foreach (['webp', 'jpg', 'jpeg', 'png'] as $ext) {
@@ -241,7 +241,7 @@ class HomepageContentService
      *
      * @param int[] $used
      */
-    private function pickCover(string $key, array &$used): ?string
+    public function pickCover(string $key, array &$used): ?string
     {
         foreach ($this->coverCandidates($key) as $setId => $url) {
             if (!in_array($setId, $used, true)) {
@@ -254,8 +254,16 @@ class HomepageContentService
         return null;
     }
 
+    /** Cover keys that map to a `set.availability` value (same as the landing pages). */
+    private const AVAILABILITY_COVERS = [
+        'exclusive' => 'LEGO exclusive',
+        'magazines' => 'Magazine gift',
+    ];
+
     /**
      * Best-first candidates (set id => main image URL) for a tile key, cached.
+     * Keys: new, top, on-sale, retiring-soon, exclusive, magazines, theme-<id>,
+     * tag-<slug> and the audience slugs from SeoHelper::audiencePages().
      * Only active sets with a main image; small polybags are skipped where
      * they would make a weak cover.
      *
@@ -314,6 +322,18 @@ class HomepageContentService
                         's.rating' => SORT_DESC,
                         's.pieces' => SORT_DESC,
                     ]);
+            } elseif ($key === 'retiring-soon') {
+                $query->andWhere(['>=', 's.exit_date', date('Y-m-d')])
+                    ->andWhere(['<=', 's.exit_date', date('Y-m-d', strtotime('+' . Set::RETIRING_SOON_DAYS . ' days'))])
+                    ->orderBy([...$preferGoodCover, 's.rating' => SORT_DESC, 's.pieces' => SORT_DESC]);
+            } elseif (isset(self::AVAILABILITY_COVERS[$key])) {
+                $query->andWhere(['s.availability' => self::AVAILABILITY_COVERS[$key]])
+                    ->orderBy([...$preferGoodCover, 's.rating' => SORT_DESC, 's.pieces' => SORT_DESC]);
+            } elseif (str_starts_with($key, 'tag-')) {
+                $query->innerJoin('{{%set_tag}} ct', 'ct.set_id = s.id')
+                    ->innerJoin('{{%tag}} ctg', 'ctg.id = ct.tag_id')
+                    ->andWhere(['ctg.slug' => substr($key, 4)])
+                    ->orderBy([...$preferGoodCover, 's.rating' => SORT_DESC, 's.pieces' => SORT_DESC]);
             } elseif ($audience !== null) {
                 foreach (['age_min' => '>=', 'age_max' => '<='] as $field => $op) {
                     if (isset($audience[$field])) {

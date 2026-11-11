@@ -11,7 +11,7 @@ use yii\web\View;
  * @var array $tiles Output of LegoInterests::getTiles()
  */
 
-$this->title = T::tr('LEGO® Sets by Interest — Star Wars, Marvel and More');
+$this->title = T::tr('LEGO® Sets by Interest - Star Wars, Marvel and More');
 $this->params['metaDescription'] = T::tr('LEGO sets grouped by interest: Adults Welcome, Star Wars, Magazines, Polybags, Exclusive, Harry Potter and more.');
 $this->params['canonicalUrl'] = SeoHelper::buildAbsoluteUrl(['/interests']);
 $this->params['robots'] = 'index,follow';
@@ -36,15 +36,8 @@ $resolveImage = static function (?string $image): ?string {
     if ($image === '') {
         return null;
     }
-    if (preg_match('#^(https?:)?//#', $image)) {
-        return $image;
-    }
-    $relative = ltrim($image, '/');
-    if (is_file(Yii::getAlias('@webroot') . '/' . $relative)) {
-        return Yii::getAlias('@web') . '/' . $relative;
-    }
-    // Theme images stored in DB are typically `/uploads/...` paths — accept them as-is.
-    return '/' . $relative;
+
+    return preg_match('#^(https?:)?//#', $image) ? $image : '/' . ltrim($image, '/');
 };
 ?>
 
@@ -63,28 +56,29 @@ $resolveImage = static function (?string $image): ?string {
             <h2 class="interests-group-title"><?= Html::encode($groupName) ?></h2>
             <div class="interests-grid">
                 <?php foreach ($groupTiles as $tile):
-                    $imageUrl = $resolveImage($tile['image'] ?? null);
-                    $cardClass = 'interests-tile';
-                    if (!empty($tile['modifier'])) {
-                        $cardClass .= ' interests-tile--' . Html::encode((string)$tile['modifier']);
-                    }
-                    if ($imageUrl !== null) {
-                        $cardClass .= ' interests-tile--has-image';
+                    $art = $tile['art'] ?? null;
+                    $photo = $resolveImage($tile['image'] ?? null);
+                    $cardClass = 'interests-card interests-card--' . (string)($tile['modifier'] ?? 'default');
+                    if ($art !== null) {
+                        $cardClass .= ' has-art';
                     }
                 ?>
-                    <a class="<?= $cardClass ?>"
-                       href="<?= Html::encode(Url::to($tile['url'])) ?>"
-                       <?php if ($imageUrl !== null): ?>
-                           style="background-image: url('<?= Html::encode($imageUrl) ?>');"
-                       <?php endif; ?>>
-                        <span class="interests-tile-overlay"></span>
-                        <span class="interests-tile-body">
-                            <span class="interests-tile-icon"><i class="<?= Html::encode($tile['icon']) ?>"></i></span>
-                            <span class="interests-tile-name"><?= Html::encode($tile['name']) ?></span>
-                            <span class="interests-tile-description"><?= Html::encode($tile['description']) ?></span>
-                            <span class="interests-tile-cta">
+                    <a class="<?= Html::encode($cardClass) ?>" href="<?= Html::encode(Url::to($tile['url'])) ?>">
+                        <span class="interests-card-stage">
+                            <?php if ($art !== null): ?>
+                                <img class="interests-card-art" src="<?= Html::encode($art) ?>" alt="" loading="lazy" decoding="async">
+                            <?php elseif ($photo !== null): ?>
+                                <img class="interests-card-photo" src="<?= Html::encode($photo) ?>" alt="" loading="lazy" decoding="async">
+                            <?php else: ?>
+                                <i class="interests-card-icon <?= Html::encode($tile['icon']) ?>" aria-hidden="true"></i>
+                            <?php endif; ?>
+                        </span>
+                        <span class="interests-card-foot">
+                            <span class="interests-card-title"><?= Html::encode($tile['name']) ?></span>
+                            <span class="interests-card-desc"><?= Html::encode($tile['description']) ?></span>
+                            <span class="interests-card-go">
                                 <?= Html::encode(T::tr('Browse sets')) ?>
-                                <i class="bi bi-arrow-right ms-1"></i>
+                                <i class="bi bi-arrow-right" aria-hidden="true"></i>
                             </span>
                         </span>
                     </a>

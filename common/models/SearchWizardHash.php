@@ -187,9 +187,9 @@ class SearchWizardHash extends ActiveRecord
             ['value' => 'budget_plus', 'label' => 'Over $150', 'emoji' => '💎', 'description' => 'Flagship and limited editions'],
         ],
         'sizeOptions'        => [
-            ['value' => 'small', 'label' => 'Small', 'emoji' => '🔹', 'description' => 'Up to 200 pieces – quick to build (~1 h)'],
-            ['value' => 'medium', 'label' => 'Medium', 'emoji' => '🔷', 'description' => '200–600 pieces – a few hours of building'],
-            ['value' => 'large', 'label' => 'Large', 'emoji' => '🔶', 'description' => '600+ pieces – hours of building challenge'],
+            ['value' => 'small', 'label' => 'Small', 'emoji' => '🔹', 'description' => 'Up to 200 pieces, quick to build (~1 h)'],
+            ['value' => 'medium', 'label' => 'Medium', 'emoji' => '🔷', 'description' => '200–600 pieces, a few hours of building'],
+            ['value' => 'large', 'label' => 'Large', 'emoji' => '🔶', 'description' => '600+ pieces, a long and rewarding build'],
             ['value' => 'any', 'label' => 'Any size', 'emoji' => '↔️', 'description' => 'Show sets of all sizes'],
         ],
         'yearOptions'        => [
@@ -302,7 +302,7 @@ class SearchWizardHash extends ActiveRecord
             $desc = $min . '–' . $max . ' years old';
         }
 
-        return $note !== null ? $desc . ' – ' . $note : $desc;
+        return $note !== null ? $desc . ', ' . $note : $desc;
     }
 
     public function applyToQuery(ActiveQuery $query): void

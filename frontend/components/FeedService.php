@@ -51,7 +51,7 @@ final class FeedService
 
             return [
                 'version'       => 'https://jsonfeed.org/version/1.1',
-                'title'         => T::tr('BrickAtlas — LEGO catalog updates'),
+                'title'         => T::tr('BrickAtlas - LEGO catalog updates'),
                 'description'   => T::tr('Latest catalog activity on BrickAtlas: new sets, fresh store offers, published PDF instructions and sets approaching retirement.'),
                 'home_page_url' => Url::home(true),
                 'feed_url'      => Url::to(['/feed'], true),

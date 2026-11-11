@@ -23,7 +23,7 @@ use yii\web\View;
  * @var array|null $collectionStats
  */
 
-$this->title = T::tr('BrickAtlas — track LEGO® prices and find best deals');
+$this->title = T::tr('BrickAtlas - track LEGO® prices and find best deals');
 $this->params['metaDescription'] = T::tr('Track LEGO prices and find deals on sets: daily price drops, sets retiring soon, exclusive releases and minifigures on BrickAtlas.');
 $this->params['breadcrumbs'] = [];
 $this->params['fullWidth'] = true;
