@@ -249,7 +249,7 @@ if ($socialImage !== '') {
             <div class="row pt-3">
                 <div class="col-12">
                     <p class="bricks-footer-text small mb-1">
-                        <?= T::tr('Some product links are affiliate links — we may earn a commission on purchases through them.') ?>
+                        <?= T::tr('Some product links are affiliate links. If you buy through one, we may earn a commission. You pay the same price.') ?>
                     </p>
                     <p class="bricks-footer-text small mb-0">
                         <?= T::tr('LEGO® is a trademark of the LEGO Group. This website is not sponsored, authorized, or endorsed by the LEGO Group.') ?>

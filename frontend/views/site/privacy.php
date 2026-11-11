@@ -38,7 +38,7 @@ $sections = [
         T::tr('Some links to stores are affiliate links. When you click one and make a purchase, the store or affiliate network (for example Rakuten Advertising or Tradedoubler) may set its own cookie to attribute the sale, and we may earn a commission. This does not change the price you pay. The store\'s own privacy policy applies once you leave BrickAtlas.'),
     ],
     T::tr('Legal basis and sharing') => [
-        T::tr('We process data to answer your messages and provide your account (performance of a service), and to run, secure and improve the site (our legitimate interest). We do not sell personal data. Data is shared only with providers we rely on: hosting (MyDevil, Poland), Google (analytics and ads) and, if you click an affiliate link, the relevant store or network.'),
+        T::tr('We process data to answer your messages and run your account (performance of a service), and to keep the site working and secure (our legitimate interest). We do not sell personal data. We share it only with the providers we use: hosting (MyDevil, Poland), Google (analytics and ads) and, when you click an affiliate link, the store or network behind it.'),
     ],
     T::tr('Your rights') => [
         T::tr('Under the GDPR you have the right to access, correct, delete or restrict processing of your data, to object to processing, and to data portability. To exercise these rights, contact us through the {contact}. You may also lodge a complaint with the Polish data protection authority (Prezes Urzędu Ochrony Danych Osobowych, uodo.gov.pl) or your local supervisory authority.', [
@@ -46,7 +46,7 @@ $sections = [
         ]),
     ],
     T::tr('Changes') => [
-        T::tr('We may update this policy as the site evolves. The date at the top shows the latest version.'),
+        T::tr('We may update this policy when the site changes. The date at the top shows the current version.'),
     ],
 ];
 ?>
