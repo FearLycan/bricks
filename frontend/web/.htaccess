@@ -1,5 +1,15 @@
 RewriteEngine on
 
+# Hard block: SEO tools / scrapers (403 before PHP starts)
+RewriteCond %{HTTP_USER_AGENT} (SemrushBot|AhrefsBot|SERankingBacklinksBot|Bytespider|PetalBot|Reflectionbot|TokenFoundryBot|MJ12bot|DotBot|DataForSeoBot|BLEXBot|ElevenlabsCrawler) [NC]
+RewriteRule .* - [F,L]
+
+# Bots do not get modals or per-page variants
+RewriteCond %{REQUEST_URI} choice-modal [NC,OR]
+RewriteCond %{QUERY_STRING} (^|&)per-page= [NC]
+RewriteCond %{HTTP_USER_AGENT} (bot|crawler|spider) [NC]
+RewriteRule .* - [F,L]
+
 # English is the default language and has no URL prefix: /en/... -> /... for good
 RewriteRule ^en(?:/(.*))?$ /$1 [R=301,L,QSA]
 

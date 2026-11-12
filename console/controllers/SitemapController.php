@@ -2,6 +2,7 @@
 
 namespace console\controllers;
 
+use common\components\IndexPolicy;
 use common\enums\StatusEnum;
 use common\models\Set;
 use common\models\SetMinifig;
@@ -177,6 +178,11 @@ class SitemapController extends Controller
             ->andWhere(['in', 'parent_id', array_keys($mainThemeById)])
             ->andWhere(['not', ['slug' => null]])
             ->andWhere(['<>', 'slug', ''])
+            ->andWhere(['>=', Set::find()
+                ->alias('ss')
+                ->select(new \yii\db\Expression('COUNT(*)'))
+                ->where('ss.subtheme_id = {{%theme}}.id')
+                ->andWhere(['ss.status' => StatusEnum::ACTIVE->value]), IndexPolicy::MIN_SUBTHEME_SETS])
             ->asArray();
 
         foreach ($subThemesQuery->each() as $subTheme) {
@@ -197,10 +203,12 @@ class SitemapController extends Controller
     private function iterateSetEntries(string $baseUrl): Generator
     {
         $query = Set::find()
-            ->select(['slug', 'updated_at', 'created_at'])
-            ->where(['status' => StatusEnum::ACTIVE->value])
-            ->andWhere(['not', ['slug' => null]])
-            ->andWhere(['<>', 'slug', ''])
+            ->alias('s')
+            ->select(['s.slug', 's.updated_at', 's.created_at'])
+            ->where(['s.status' => StatusEnum::ACTIVE->value])
+            ->andWhere(['not', ['s.slug' => null]])
+            ->andWhere(['<>', 's.slug', ''])
+            ->andWhere(IndexPolicy::indexableSetCondition('s'))
             ->asArray();
 
         foreach ($query->batch(1000) as $rows) {
@@ -225,6 +233,7 @@ class SitemapController extends Controller
             ->andWhere(['not', ['sm.number' => null]])
             ->andWhere(['<>', 'sm.number', ''])
             ->groupBy(['sm.number'])
+            ->having(['>=', 'COUNT(DISTINCT sm.set_id)', IndexPolicy::MIN_MINIFIG_SETS])
             ->asArray();
 
         foreach ($query->each() as $row) {
@@ -248,6 +257,7 @@ class SitemapController extends Controller
             ->andWhere(['not', ['t.slug' => null]])
             ->andWhere(['<>', 't.slug', ''])
             ->groupBy(['t.id', 't.slug'])
+            ->having(['>=', 'COUNT(DISTINCT s.id)', IndexPolicy::MIN_TAG_SETS])
             ->asArray();
 
         foreach ($query->each() as $tag) {

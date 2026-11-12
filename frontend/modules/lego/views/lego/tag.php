@@ -1,5 +1,6 @@
 <?php
 
+use common\components\IndexPolicy;
 use common\components\Html;
 use common\models\Tag;
 use common\schema\factory\ItemListSchemaFactory;
@@ -23,7 +24,7 @@ $page = SeoHelper::resolvePageNumber();
 $this->title = T::tr('{tag} LEGO Sets - Tagged on BrickAtlas', ['tag' => $tag->name]) . ($page > 1 ? ' - ' . T::tr('Page {page}', ['page' => $page]) : '');
 $this->params['metaDescription'] = T::tr('Browse LEGO sets tagged "{tag}" on BrickAtlas. Compare current prices across retailers and find related themes and exclusive releases.', ['tag' => $tag->name]);
 $this->params['canonicalUrl'] = SeoHelper::buildAbsoluteUrl($page > 1 ? ['/lego/lego/tag', 'slug' => $tag->slug, 'page' => $page] : ['/lego/lego/tag', 'slug' => $tag->slug]);
-$this->params['robots'] = 'index,follow';
+$this->params['robots'] = IndexPolicy::forTag((int)$dataProvider->getTotalCount());
 
 SeoHelper::registerPaginationLinks($this, $dataProvider, $page, ['/lego/lego/tag', 'slug' => $tag->slug]);
 

@@ -23,7 +23,7 @@ Hosting: MyDevil (FreeBSD). Deploy ręczny (`git pull` na serwerze).
 |---|---|
 | title / meta description dla każdej strony katalogu | `frontend/components/SeoHelper::build*Title/Description/Intro` |
 | canonical | widok ustawia `$this->params['canonicalUrl']`, layout emituje |
-| robots | `$this->params['robots']` (domyślnie `index,follow`) |
+| robots | `$this->params['robots']` (domyślnie `index,follow`); dla zestawów/tagów/minifigów/podtematów `common/components/IndexPolicy` (cienkie strony = noindex + poza sitemapą) |
 | hreflang + x-default | automatycznie w `views/layouts/main.php` → `SeoHelper::registerHreflangLinks` |
 | rel prev/next | `SeoHelper::registerPaginationLinks` |
 | OG / Twitter | layout z `params['socialTitle'|'socialDescription'|'socialImage'|'ogType']` |
