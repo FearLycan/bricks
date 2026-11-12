@@ -30,8 +30,11 @@ class ThemeController extends Controller
     public function actionIndex(string $slug, ?string $sub = null)
     {
         // Old links used /lego/theme/<slug>?sub=<sub>; send them to the path form.
-        if ($sub !== null && $this->request->getQueryParam('sub') !== null) {
-            $params = $this->request->getQueryParams();
+        // Yii merges route params into getQueryParams(), so look at the raw
+        // query string: only a literal ?sub= in the URL triggers the redirect.
+        parse_str((string)$this->request->getQueryString(), $rawQuery);
+        if ($sub !== null && array_key_exists('sub', $rawQuery)) {
+            $params = $rawQuery;
             unset($params['sub'], $params['slug'], $params['modules'], $params['controler']);
 
             return $this->redirect(array_merge(['/lego/theme/index', 'modules' => 'lego', 'controler' => 'theme', 'slug' => $slug, 'sub' => $sub], $params), 301);
