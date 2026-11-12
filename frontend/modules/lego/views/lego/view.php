@@ -1,5 +1,6 @@
 <?php
 
+use common\components\IndexPolicy;
 use common\components\Html;
 use common\models\Set;
 use common\models\SetReview;
@@ -56,7 +57,7 @@ $ratingStarClasses = $buildRatingStars($reviewAverage !== null ? (float)$reviewA
 $this->title = SeoHelper::buildSetTitle($model);
 $this->params['metaDescription'] = SeoHelper::buildSetDescription($model);
 $this->params['canonicalUrl'] = SeoHelper::buildAbsoluteUrl("/lego/{$model->slug}");
-$this->params['robots'] = 'index,follow';
+$this->params['robots'] = IndexPolicy::forSet($model);
 $this->params['ogType'] = 'product';
 $this->params['socialImage'] = SeoHelper::buildAbsoluteUrl($model->getDisplayMainImageUrl());
 $this->params['breadcrumbs'][] = ['label' => Helper::getLegoName(), 'url' => ['/lego']];

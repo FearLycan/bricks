@@ -1,5 +1,6 @@
 <?php
 
+use common\components\IndexPolicy;
 use common\models\Theme;
 use common\schema\factory\ItemListSchemaFactory;
 use common\schema\JsonLdRenderer;
@@ -29,7 +30,7 @@ $this->params['canonicalUrl'] = SeoHelper::buildAbsoluteUrl($subTheme
                 ? ["/lego/theme/{$theme->slug}", 'page' => $page]
                 : ["/lego/theme/{$theme->slug}"])
 );
-$this->params['robots'] = 'index,follow';
+$this->params['robots'] = IndexPolicy::forTheme((int)$dataProvider->getTotalCount(), $subTheme !== null);
 
 $themeBaseUrl = $subTheme
     ? ["/lego/theme/{$theme->slug}/{$subTheme->slug}"]
