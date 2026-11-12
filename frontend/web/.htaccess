@@ -10,8 +10,8 @@ RewriteCond %{QUERY_STRING} (^|&)per-page= [NC]
 RewriteCond %{HTTP_USER_AGENT} (bot|crawler|spider) [NC]
 RewriteRule .* - [F,L]
 
-# English is the default language and has no URL prefix: /en/... -> /... for good
-RewriteRule ^en(?:/(.*))?$ /$1 [R=301,L,QSA]
+# Note: do not redirect /en/... here. The language switcher links to /en/...
+# and the app (codemix/localeurls) must see it to remember the choice.
 
 # Chrome Private Prefetch Proxy advice file — needs a specific Content-Type
 <Files "traffic-advice">
