@@ -1074,4 +1074,6 @@ return [
     'Sets for 50–150 USD make a good present. The biggest models cost more and work best as a main or joint gift.' => 'Les sets de 50 à 150 USD font de beaux cadeaux. Les plus grands modèles coûtent plus cher et conviennent mieux comme cadeau principal ou commun.',
     'What if I do not know which sets they already have?' => 'Et si je ne sais pas quels sets il ou elle possède déjà ?',
     'Pick a release from the last few months, which they are less likely to own, or go for flowers, which few people collect in full.' => 'Choisissez une nouveauté des derniers mois, qu\'il ou elle a peu de chances d\'avoir, ou des fleurs, que peu de gens collectionnent en entier.',
+    'The final battle from "Ocarina of Time" in brick form. The cheapest set in this section, and a scene every Zelda fan knows by heart.' => 'Le combat final d\'« Ocarina of Time » en briques. Le set le moins cher de cette section, et une scène que tout fan de Zelda connaît par cœur.',
+    'Gustav Klimt\'s "The Kiss" in 4,000 pieces. A picture to hang on the wall, and building it feels like laying a mosaic.' => '« Le Baiser » de Gustav Klimt en 4 000 pièces. Un tableau à accrocher au mur, dont le montage ressemble à la pose d\'une mosaïque.',
 ];

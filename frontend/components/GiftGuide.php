@@ -103,6 +103,7 @@ final class GiftGuide
                         'icon'  => 'bi-stars',
                         'title' => T::tr('For the Star Wars fan'),
                         'lead'  => T::tr('A safe choice if they watch "The Mandalorian" or the other series set in that galaxy.'),
+                        'tags'  => ['the-mandalorian-series', 'bounty-hunters'],
                         'sets'  => [
                             '75447' => T::tr('The Mandalorian\'s ship from the series most teens know. Over 900 pieces, yet still sturdy enough to play with, not only to display.'),
                             '75459' => T::tr('An Imperial Remnant shuttle from "The Mandalorian", rated 14+. A longer, calmer build for someone who likes detail.'),
@@ -113,6 +114,7 @@ final class GiftGuide
                         'icon'  => 'bi-speedometer2',
                         'title' => T::tr('For the car fan'),
                         'lead'  => T::tr('From small display cars to Technic mechanics with working parts.'),
+                        'tags'  => ['car', 'large-scale-vehicle'],
                         'sets'  => [
                             '42235' => T::tr('Technic means mechanics instead of studs. A supercar model with moving parts and about 900 pieces.'),
                             '42239' => T::tr('The Batmobile from Christopher Nolan\'s trilogy. It covers two passions at once: cars and comics.'),
@@ -123,6 +125,7 @@ final class GiftGuide
                         'icon'  => 'bi-controller',
                         'title' => T::tr('For the gamer'),
                         'lead'  => T::tr('Sets from games teenagers know: Nintendo, Minecraft and Sonic.'),
+                        'tags'  => ['video-game', 'gaming'],
                         'sets'  => [
                             '72046' => T::tr('A replica of the console from the 18+ range that a teenager will easily build. Great on a desk, especially for a retro gaming fan.'),
                             '21595' => T::tr('The Ender Dragon from Minecraft: recognisable to every player and big enough to last longer than one evening.'),
@@ -133,6 +136,7 @@ final class GiftGuide
                         'icon'  => 'bi-house-heart',
                         'title' => T::tr('For the shelf: ambitious builds'),
                         'lead'  => T::tr('Models that stay on display after the build instead of going back in the box.'),
+                        'tags'  => ['display-stand', '18-plus'],
                         'sets'  => [
                             '76478' => T::tr('A book nook that slots between books on a shelf, with Dumbledore\'s office. A great present for a Harry Potter fan who reads.'),
                             '21066' => T::tr('The New York skyline from the Architecture range. A smart desk model for someone into travel or design.'),
@@ -170,6 +174,7 @@ final class GiftGuide
                         'icon'  => 'bi-film',
                         'title' => T::tr('For the film fan'),
                         'lead'  => T::tr('Scenes and vehicles from films people grew up with.'),
+                        'tags'  => ['1980s', '1990s'],
                         'sets'  => [
                             '21371' => T::tr('Wallace and Gromit\'s house with their famous inventions. A warm, funny model for anyone who loves British animation.'),
                             '21370' => T::tr('E.T. on the bike against the moon, the best-known scene from the film. A present with plenty of nostalgia.'),
@@ -180,6 +185,7 @@ final class GiftGuide
                         'icon'  => 'bi-flower1',
                         'title' => T::tr('Flowers that never wilt'),
                         'lead'  => T::tr('Botanical sets look good in any home and never need watering.'),
+                        'tags'  => ['brick-built-plants', 'botanical-collection'],
                         'sets'  => [
                             '11512' => T::tr('A hanging pothos in a pot: a small, quick build that looks like the real plant. A safe pick when you are not sure what to buy.'),
                             '11513' => T::tr('A bouquet in dark, deep colours. A more elegant alternative to fresh flowers.'),
@@ -190,6 +196,7 @@ final class GiftGuide
                         'icon'  => 'bi-lamp',
                         'title' => T::tr('For the desk'),
                         'lead'  => T::tr('Small and medium models that fit on a desk or a shelf at work.'),
+                        'tags'  => ['display-stand', 'space'],
                         'sets'  => [
                             '75439' => T::tr('A Darth Vader bust with under 350 pieces. A Star Wars gadget for one evening and a modest budget.'),
                             '11382' => T::tr('The Hubble Space Telescope on a stand with a plaque. For someone into space and science.'),
@@ -200,18 +207,22 @@ final class GiftGuide
                         'icon'  => 'bi-controller',
                         'title' => T::tr('For the gamer'),
                         'lead'  => T::tr('Consoles and arcade machines for people who remember them from childhood.'),
+                        'tags'  => ['video-game', 'nintendo'],
                         'sets'  => [
                             '72306' => T::tr('The PlayStation console in LEGO, over 1,900 pieces. A strong pick for anyone who grew up with games.'),
                             '72051' => T::tr('A Donkey Kong arcade cabinet. Retro gaming in brick form that looks great in a gaming corner.'),
+                            '77093' => T::tr('The final battle from "Ocarina of Time" in brick form. The cheapest set in this section, and a scene every Zelda fan knows by heart.'),
                         ],
                     ],
                     [
                         'icon'  => 'bi-buildings',
                         'title' => T::tr('A big project for winter evenings'),
                         'lead'  => T::tr('Thousands of pieces and weeks of building, for someone who likes to take their time.'),
+                        'tags'  => ['real-place', 'fine-arts'],
                         'sets'  => [
                             '21067' => T::tr('London\'s Tower Bridge in 3,745 pieces. A large Architecture model that keeps a builder busy for many evenings.'),
                             '21373' => T::tr('Downton Abbey in 4,711 pieces, with characters from the series. A main present for a fan of period dramas.'),
+                            '31221' => T::tr('Gustav Klimt\'s "The Kiss" in 4,000 pieces. A picture to hang on the wall, and building it feels like laying a mosaic.'),
                         ],
                     ],
                 ],
