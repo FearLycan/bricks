@@ -35,6 +35,28 @@ final class GiftGuide
     }
 
     /**
+     * All guides in display order (homepage strip, menu, footer).
+     *
+     * @return array<string, array<string, mixed>>
+     */
+    public static function all(): array
+    {
+        return self::definitions();
+    }
+
+    /**
+     * Where generic "Gift ideas" links (menu, footer) point. With a single
+     * guide that is the guide itself; once there are several, point this at
+     * a listing page instead.
+     */
+    public static function entryRoute(): array
+    {
+        $first = array_values(self::definitions())[0];
+
+        return ['/lego/lego/gift-guide', 'slug' => $first['slug']];
+    }
+
+    /**
      * @return array<string, array<string, mixed>>
      */
     private static function definitions(): array
@@ -45,6 +67,7 @@ final class GiftGuide
                 'icon'        => 'bi-gift',
                 'modifier'    => 'teens',
                 'title'       => T::tr('LEGO gifts for teens (ages 13–16)'),
+                'teaser'      => T::tr('Sets picked by interest: Star Wars, cars, games and display models.'),
                 'metaTitle'   => T::tr('LEGO gift ideas for teens (13–16) - BrickAtlas'),
                 'description' => T::tr('Hand-picked LEGO sets for teenagers aged 13 to 16, grouped by interest: Star Wars, cars, video games and display models, with tips on choosing the right one.'),
                 'intro'       => '{n, plural, =1{# set} other{# sets}} picked for their interests, not just the age on the box. All of them are in the current LEGO range.', // translated in the view with the real count

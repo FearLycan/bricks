@@ -16,11 +16,15 @@ use yii\helpers\Url;
 final class MenuService
 {
     /**
-     * @return array<int, array{label:string,url:string,icon:string,modifier:?string}>
+     * @return array<int, array{label:string,url:string,icon:string,modifier:?string,dividerAfter?:bool}>
      */
     public function getCategoryItems(): array
     {
+        $gifts = $this->item(T::tr('Gift ideas'), GiftGuide::entryRoute(), 'bi-gift', 'gifts');
+        $gifts['dividerAfter'] = true;
+
         $items = [
+            $gifts,
             $this->item(T::tr('Magazines'), ['/lego/magazines'], 'bi-newspaper'),
             $this->item(T::tr('Polybags'), ['/lego/tag/polybag'], 'bi-bag'),
             $this->item(T::tr('Gift with Purchase'), ['/lego/tag/gift-with-purchase'], 'bi-gift'),

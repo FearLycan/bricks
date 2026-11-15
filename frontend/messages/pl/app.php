@@ -957,4 +957,7 @@ return [
     'Click a set to see the current offers and prices.' => 'Kliknij zestaw, żeby zobaczyć aktualne oferty i ceny.',
     'Looking for a gift?' => 'Szukasz prezentu?',
     'See our hand-picked LEGO gifts for teens.' => 'Zobacz nasze wybrane zestawy LEGO na prezent dla nastolatka.',
+    'Gift ideas' => 'Pomysły na prezent',
+    'See the guide' => 'Zobacz poradnik',
+    'Sets picked by interest: Star Wars, cars, games and display models.' => 'Zestawy wybrane według zainteresowań: Star Wars, motoryzacja, gry i modele na półkę.',
 ];
