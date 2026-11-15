@@ -21,8 +21,25 @@ final class GiftGuide
 {
     /** URL slug => guide key. */
     public const SLUGS = [
-        'gifts-for-teens' => 'teens',
+        'gifts-for-teens'  => 'teens',
+        'gifts-for-adults' => 'adults',
     ];
+
+    /**
+     * The guide linked from an audience listing (/lego/for-teens etc.), or null.
+     *
+     * @return array<string, mixed>|null
+     */
+    public static function forAudience(string $audienceSlug): ?array
+    {
+        foreach (self::definitions() as $guide) {
+            if (($guide['audience'] ?? null) === $audienceSlug) {
+                return $guide;
+            }
+        }
+
+        return null;
+    }
 
     /**
      * @return array<string, mixed>|null
@@ -68,6 +85,8 @@ final class GiftGuide
                 'modifier'    => 'teens',
                 'title'       => T::tr('LEGO gifts for teens (ages 13–16)'),
                 'teaser'      => T::tr('Sets picked by interest: Star Wars, cars, games and display models.'),
+                'audience'    => 'for-teens',
+                'audienceCta' => T::tr('See our hand-picked LEGO gifts for teens.'),
                 'metaTitle'   => T::tr('LEGO gift ideas for teens (13–16) - BrickAtlas'),
                 'description' => T::tr('Hand-picked LEGO sets for teenagers aged 13 to 16, grouped by interest: Star Wars, cars, video games and display models, with tips on choosing the right one.'),
                 'intro'       => '{n, plural, =1{# set} other{# sets}} picked for their interests, not just the age on the box. All of them are in the current LEGO range.', // translated in the view with the real count
@@ -125,6 +144,81 @@ final class GiftGuide
                     [T::tr('Can a 14-year-old build an 18+ set?'), T::tr('Yes, if they enjoy building and have some patience. LEGO instructions are picture-based and step by step, and the 18+ label is mostly about the theme and the length of the build.')],
                     [T::tr('How much should I spend on a LEGO gift for a teenager?'), T::tr('Sets with 300 to 1,000 pieces are a good starting point. Smaller ones work as an extra, bigger ones as the main present.')],
                     [T::tr('What if the set sells out before Christmas?'), T::tr('Every set page shows whether its retirement is coming up. Popular models are worth buying early.')],
+                ],
+            ],
+            'adults' => [
+                'slug'        => 'gifts-for-adults',
+                'icon'        => 'bi-gift',
+                'modifier'    => 'adults',
+                'title'       => T::tr('LEGO gifts for adults'),
+                'teaser'      => T::tr('Sets for film fans, gamers, plant lovers and big builds.'),
+                'audience'    => 'for-adults',
+                'audienceCta' => T::tr('See our hand-picked LEGO gifts for adults.'),
+                'metaTitle'   => T::tr('LEGO gift ideas for adults - BrickAtlas'),
+                'description' => T::tr('Hand-picked LEGO sets for adults, grouped by interest: films, plants, desk models, video games and big builds, with tips on choosing the right one.'),
+                'intro'       => '{n, plural, =1{# set} other{# sets}} for adults who love films, games, plants or big projects. All of them are in the current LEGO range.', // translated in the view with the real count
+                'wizard'      => ['recipient' => 'gift', 'profile' => 'adult'],
+                'tipsTitle'   => T::tr('How to choose LEGO for an adult'),
+                'tips'        => [
+                    [T::tr('Look at their passions, not the toy aisle.'), T::tr('Film fans, gamers and gardeners all have a LEGO set made for them.')],
+                    [T::tr('Think about where it will stand.'), T::tr('Most 18+ sets are display models, so size and style matter as much as the theme.')],
+                    [T::tr('It does not have to be expensive.'), T::tr('For 50–80 USD you get a set for an evening or two that looks great on a shelf.')],
+                    [T::tr('A big set is time for yourself.'), T::tr('Over 3,000 pieces is a project for the whole holiday break or several weeks of evenings.')],
+                ],
+                'sections'    => [
+                    [
+                        'icon'  => 'bi-film',
+                        'title' => T::tr('For the film fan'),
+                        'lead'  => T::tr('Scenes and vehicles from films people grew up with.'),
+                        'sets'  => [
+                            '21371' => T::tr('Wallace and Gromit\'s house with their famous inventions. A warm, funny model for anyone who loves British animation.'),
+                            '21370' => T::tr('E.T. on the bike against the moon, the best-known scene from the film. A present with plenty of nostalgia.'),
+                            '76355' => T::tr('The Batmobile from Tim Burton\'s "Batman Returns", with over 2,200 pieces. A big display model for a Batman fan.'),
+                        ],
+                    ],
+                    [
+                        'icon'  => 'bi-flower1',
+                        'title' => T::tr('Flowers that never wilt'),
+                        'lead'  => T::tr('Botanical sets look good in any home and never need watering.'),
+                        'sets'  => [
+                            '11512' => T::tr('A hanging pothos in a pot: a small, quick build that looks like the real plant. A safe pick when you are not sure what to buy.'),
+                            '11513' => T::tr('A bouquet in dark, deep colours. A more elegant alternative to fresh flowers.'),
+                            '11505' => T::tr('Woodland mushrooms with moss and small details. An unusual decoration for a shelf or desk.'),
+                        ],
+                    ],
+                    [
+                        'icon'  => 'bi-lamp',
+                        'title' => T::tr('For the desk'),
+                        'lead'  => T::tr('Small and medium models that fit on a desk or a shelf at work.'),
+                        'sets'  => [
+                            '75439' => T::tr('A Darth Vader bust with under 350 pieces. A Star Wars gadget for one evening and a modest budget.'),
+                            '11382' => T::tr('The Hubble Space Telescope on a stand with a plaque. For someone into space and science.'),
+                            '11381' => T::tr('The classic Jaguar E-Type in over 1,600 pieces. A present for a fan of old cars and good design.'),
+                        ],
+                    ],
+                    [
+                        'icon'  => 'bi-controller',
+                        'title' => T::tr('For the gamer'),
+                        'lead'  => T::tr('Consoles and arcade machines for people who remember them from childhood.'),
+                        'sets'  => [
+                            '72306' => T::tr('The PlayStation console in LEGO, over 1,900 pieces. A strong pick for anyone who grew up with games.'),
+                            '72051' => T::tr('A Donkey Kong arcade cabinet. Retro gaming in brick form that looks great in a gaming corner.'),
+                        ],
+                    ],
+                    [
+                        'icon'  => 'bi-buildings',
+                        'title' => T::tr('A big project for winter evenings'),
+                        'lead'  => T::tr('Thousands of pieces and weeks of building, for someone who likes to take their time.'),
+                        'sets'  => [
+                            '21067' => T::tr('London\'s Tower Bridge in 3,745 pieces. A large Architecture model that keeps a builder busy for many evenings.'),
+                            '21373' => T::tr('Downton Abbey in 4,711 pieces, with characters from the series. A main present for a fan of period dramas.'),
+                        ],
+                    ],
+                ],
+                'faq'         => [
+                    [T::tr('Is LEGO a good gift for an adult?'), T::tr('Yes. LEGO has a whole 18+ range: display models, flowers and replicas of famous vehicles and buildings. Many adults build to relax.')],
+                    [T::tr('How much should I spend on a LEGO set for an adult?'), T::tr('Sets for 50–150 USD make a good present. The biggest models cost more and work best as a main or joint gift.')],
+                    [T::tr('What if I do not know which sets they already have?'), T::tr('Pick a release from the last few months, which they are less likely to own, or go for flowers, which few people collect in full.')],
                 ],
             ],
         ];
