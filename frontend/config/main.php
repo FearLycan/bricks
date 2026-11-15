@@ -106,7 +106,12 @@ return [
         'urlManager'   => [
             'class'                       => \codemix\localeurls\UrlManager::class,
             'languages'                   => ['en', 'pl', 'de', 'fr', 'es', 'it', 'ja'],
-            'enableLanguageDetection'     => true,
+            // No Accept-Language redirects: every URL serves the language in its
+            // path (Google advises against auto-redirecting by locale). Visitors
+            // whose browser prefers another language get a suggestion card
+            // (views/layouts/_language-suggest.php). The cookie from an explicit
+            // choice still redirects (enableLanguagePersistence).
+            'enableLanguageDetection'     => false,
             'enableLanguagePersistence'   => true,
             'enableDefaultLanguageUrlCode' => false,
             'languageCookieDuration'      => 60 * 60 * 24 * 365,

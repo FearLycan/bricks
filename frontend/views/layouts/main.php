@@ -327,6 +327,10 @@ if ($socialImage !== '') {
         <?= $this->render('_consent-card') ?>
     <?php endif; ?>
 
+    <?php if ($loadTags): ?>
+        <?= $this->render('_language-suggest') ?>
+    <?php endif; ?>
+
     <?php $this->endBody() ?>
 
 
