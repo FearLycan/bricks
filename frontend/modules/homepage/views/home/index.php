@@ -59,6 +59,8 @@ $isGuest = Yii::$app->user->isGuest;
 
     <?= $this->render('_seasonal-spotlight', ['event' => $seasonalSpotlight]) ?>
 
+    <?= $this->render('_gift-guides') ?>
+
     <?= $this->render('_wizard-cta') ?>
 
     <?php if (!$isGuest): ?>

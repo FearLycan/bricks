@@ -957,4 +957,7 @@ return [
     'Click a set to see the current offers and prices.' => '点击套装可查看当前报价和价格。',
     'Looking for a gift?' => '在找礼物吗？',
     'See our hand-picked LEGO gifts for teens.' => '看看我们为青少年精选的乐高礼物。',
+    'Gift ideas' => '礼物推荐',
+    'See the guide' => '查看指南',
+    'Sets picked by interest: Star Wars, cars, games and display models.' => '按兴趣挑选的套装：星球大战、汽车、游戏和展示模型。',
 ];

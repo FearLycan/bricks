@@ -976,4 +976,7 @@ return [
     'Click a set to see the current offers and prices.' => '',
     'Looking for a gift?' => '',
     'See our hand-picked LEGO gifts for teens.' => '',
+    'Gift ideas' => '',
+    'See the guide' => '',
+    'Sets picked by interest: Star Wars, cars, games and display models.' => '',
 ];

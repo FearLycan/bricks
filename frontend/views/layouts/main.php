@@ -290,6 +290,7 @@ if ($socialImage !== '') {
                 <div class="col-md-2">
                     <p class="bricks-footer-nav-label"><?= Html::encode(T::tr('Resources')) ?></p>
                     <ul class="bricks-footer-nav">
+                        <li><?= Html::a(T::tr('Gift ideas'), \frontend\components\GiftGuide::entryRoute(), ['class' => 'bricks-footer-nav-link']) ?></li>
                         <li><?= Html::a(T::tr('Shop by interest'), ['/interests'], ['class' => 'bricks-footer-nav-link']) ?></li>
                         <li><?= Html::a(T::tr('LEGO Glossary'), ['/glossary'], ['class' => 'bricks-footer-nav-link']) ?></li>
                         <li><?= Html::a(T::tr('Help and FAQ'), ['/faq'], ['class' => 'bricks-footer-nav-link']) ?></li>

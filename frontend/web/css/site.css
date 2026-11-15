@@ -3946,3 +3946,12 @@ a, button {
         font-size: 1.2rem;
     }
 }
+
+/* Categories menu: gift guides entry */
+.dropdown-item.bricks-category-item--gifts {
+    font-weight: 600;
+}
+
+.dropdown-item.bricks-category-item--gifts i {
+    color: #d01012;
+}

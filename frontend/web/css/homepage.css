@@ -1623,3 +1623,114 @@ a.bricks-collection-stats-tile:hover {
 }
 .bricks-browse-grid,
 .bricks-theme-grid { align-items: stretch; }
+
+/* ---------- Gift guides strip ---------- */
+
+.bricks-section--gift-guides {
+    padding: 1.5rem 0 0;
+}
+
+.bricks-gift-guides {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr));
+    gap: 1rem;
+}
+
+.bricks-gift-guide-strip {
+    display: flex;
+    align-items: center;
+    gap: 1.1rem;
+    padding: 1.1rem 1.4rem;
+    border-radius: 1rem;
+    background: #fff;
+    border: 1px solid #e9e4d8;
+    border-left: 6px solid #d01012;
+    color: #1b1f3b;
+    text-decoration: none;
+    box-shadow: 0 6px 18px rgba(20, 24, 60, .06);
+    transition: transform .15s ease, box-shadow .15s ease;
+}
+
+.bricks-gift-guide-strip:hover,
+.bricks-gift-guide-strip:focus-visible {
+    color: #1b1f3b;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(20, 24, 60, .10);
+}
+
+.bricks-gift-guide-strip-icon {
+    flex: 0 0 52px;
+    height: 52px;
+    border-radius: .875rem;
+    background: #fff4cc;
+    color: #d01012;
+    display: grid;
+    place-items: center;
+    font-size: 1.6rem;
+}
+
+.bricks-gift-guide-strip-content {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.bricks-gift-guide-strip-eyebrow {
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: #d01012;
+}
+
+.bricks-gift-guide-strip-title {
+    font-weight: 800;
+    font-size: 1.15rem;
+    line-height: 1.25;
+}
+
+.bricks-gift-guide-strip-lead {
+    color: #5b6077;
+    font-size: .92rem;
+}
+
+.bricks-gift-guide-strip-action {
+    margin-left: auto;
+    white-space: nowrap;
+    font-weight: 700;
+    color: #d01012;
+}
+
+@media (max-width: 575.98px) {
+    .bricks-gift-guide-strip {
+        flex-wrap: wrap;
+        padding: 1rem 1.1rem;
+    }
+
+    .bricks-gift-guide-strip-icon {
+        flex-basis: 44px;
+        height: 44px;
+        font-size: 1.35rem;
+    }
+
+    .bricks-gift-guide-strip-content {
+        flex: 1 1 0;
+    }
+
+    .bricks-gift-guide-strip-action {
+        margin-left: 0;
+        width: 100%;
+        padding-left: calc(44px + 1.1rem);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .bricks-gift-guide-strip {
+        transition: none;
+    }
+
+    .bricks-gift-guide-strip:hover,
+    .bricks-gift-guide-strip:focus-visible {
+        transform: none;
+    }
+}

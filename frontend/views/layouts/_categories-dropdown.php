@@ -25,6 +25,9 @@ $items = $menu->getCategoryItems();
                     <span><?= Html::encode((string)$item['label']) ?></span>
                 </a>
             </li>
+            <?php if (!empty($item['dividerAfter'])): ?>
+                <li><hr class="dropdown-divider"></li>
+            <?php endif; ?>
         <?php endforeach; ?>
     </ul>
 </li>
