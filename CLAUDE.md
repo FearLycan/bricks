@@ -10,7 +10,7 @@ Hosting: MyDevil (FreeBSD). Deploy ręczny (`git pull` na serwerze).
 - Teksty widoczne dla użytkownika zawsze przez `frontend\components\T::tr('English source', [...])`.
   Źródło po angielsku, tłumaczenia w `frontend/messages/<lang>/app.php`.
   Po dodaniu stringów: `./yii message frontend/config/i18n.php`, potem uzupełnij `pl` (i resztę).
-- Języki: `en` (bez prefiksu), `pl`, `de`, `fr`, `es`, `it`, `ja`, `zh` — `codemix/localeurls`,
+- Języki: `en` (bez prefiksu), `pl`, `de`, `fr`, `es`, `it`, `ja` — `codemix/localeurls` (`zh` usunięty 11.2026, `/zh/*` → 301 przez `site/legacy-language`),
   lista w `SeoHelper::SUPPORTED_LANGUAGES`, `frontend/config/main.php` i `SitemapController` (trzymaj w sync).
 - Endpointy JSON bez języka dopisz do `ignoreLanguageUrlPatterns` w `frontend/config/main.php`. Modale HTML — nie.
 - Ceny w bazie w **centach** (int). Formatowanie: `Set::formatAmountFromCents($cents, $currency)`.

@@ -1077,4 +1077,8 @@ return [
     'The final battle from "Ocarina of Time" in brick form. The cheapest set in this section, and a scene every Zelda fan knows by heart.' => 'Le combat final d\'« Ocarina of Time » en briques. Le set le moins cher de cette section, et une scène que tout fan de Zelda connaît par cœur.',
     'Gustav Klimt\'s "The Kiss" in 4,000 pieces. A picture to hang on the wall, and building it feels like laying a mosaic.' => '« Le Baiser » de Gustav Klimt en 4 000 pièces. Un tableau à accrocher au mur, dont le montage ressemble à la pose d\'une mosaïque.',
     'More sets like these:' => 'Plus de sets similaires :',
+    'Available in your language' => 'Disponible en français',
+    'BrickAtlas is also available in your language: prices, gift guides and the set finder.' => 'BrickAtlas existe aussi en français : prix, guides cadeaux et outil de recherche de sets.',
+    'Switch' => 'Changer',
+    'No thanks' => 'Non merci',
 ];

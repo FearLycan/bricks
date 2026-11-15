@@ -1077,4 +1077,8 @@ return [
     'The final battle from "Ocarina of Time" in brick form. The cheapest set in this section, and a scene every Zelda fan knows by heart.' => 'Der finale Kampf aus „Ocarina of Time“ als LEGO Modell. Das günstigste Set in diesem Abschnitt, und jeder Zelda Fan kennt die Szene auswendig.',
     'Gustav Klimt\'s "The Kiss" in 4,000 pieces. A picture to hang on the wall, and building it feels like laying a mosaic.' => 'Gustav Klimts „Der Kuss“ mit 4.000 Teilen. Ein Bild für die Wand, und das Bauen fühlt sich an wie das Legen eines Mosaiks.',
     'More sets like these:' => 'Mehr ähnliche Sets:',
+    'Available in your language' => 'Auf Deutsch verfügbar',
+    'BrickAtlas is also available in your language: prices, gift guides and the set finder.' => 'BrickAtlas gibt es auch auf Deutsch: Preise, Geschenkratgeber und der Set-Finder.',
+    'Switch' => 'Wechseln',
+    'No thanks' => 'Nein, danke',
 ];
