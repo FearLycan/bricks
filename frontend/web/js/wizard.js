@@ -375,6 +375,12 @@
                 resetState();
                 const answers = JSON.parse(btn.dataset.wizardAnswers);
                 state.answers = Object.assign(state.answers, answers);
+                // Optional: start further in, e.g. data-wizard-step="3" when
+                // recipient and profile are already known (gift guides).
+                const startStep = parseInt(btn.dataset.wizardStep || '', 10);
+                if (startStep > 1 && startStep <= TOTAL_STEPS) {
+                    state.step = startStep;
+                }
                 _skipReset = true;
             } catch (_) {
                 _skipReset = false;

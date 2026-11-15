@@ -2,6 +2,7 @@
 
 namespace frontend\modules\lego\controllers;
 
+use frontend\components\GiftGuide;
 use common\components\AccessControl;
 use common\components\Controller;
 use common\enums\StatusEnum;
@@ -33,7 +34,7 @@ class LegoController extends Controller
                         'allow'   => true,
                         'actions' => [
                             'index', 'view', 'minifig', 'offer-reviews-modal', 'promo', 'new', 'tag',
-                            'magazines', 'exclusive', 'retiring-soon', 'audience',
+                            'magazines', 'exclusive', 'retiring-soon', 'audience', 'gift-guide',
                         ],
                         'roles'   => ['?', '@'],
                     ],
@@ -181,6 +182,28 @@ class LegoController extends Controller
 
         return $this->render('retiring-soon', [
             'dataProvider' => $dataProvider,
+        ]);
+    }
+
+    /**
+     * Hand-curated gift guide, e.g. /lego/gifts-for-teens (see GiftGuide).
+     */
+    public function actionGiftGuide(string $slug): string
+    {
+        $key = GiftGuide::SLUGS[$slug] ?? null;
+        $guide = $key !== null ? GiftGuide::get($key) : null;
+        if ($guide === null) {
+            $this->notFound();
+        }
+
+        $numbers = [];
+        foreach ($guide['sections'] as $section) {
+            $numbers = array_merge($numbers, array_keys($section['sets']));
+        }
+
+        return $this->render('gift-guide', [
+            'guide' => $guide,
+            'sets'  => GiftGuide::loadSets(array_map('strval', $numbers)),
         ]);
     }
 
