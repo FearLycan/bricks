@@ -317,7 +317,6 @@ class Set extends ActiveRecord
         'es' => 'es_ES',
         'it' => 'it_IT',
         'ja' => 'ja_JP',
-        'zh' => 'zh_CN',
     ];
 
     public static function formatAmountFromCents(int $amountInCents, string $currency = 'PLN'): string

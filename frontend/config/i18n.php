@@ -13,7 +13,7 @@
 return [
     'sourcePath'           => dirname(__DIR__),
     'messagePath'          => dirname(__DIR__) . '/messages',
-    'languages'            => ['en', 'pl', 'de', 'fr', 'es', 'it', 'ja', 'zh'],
+    'languages'            => ['en', 'pl', 'de', 'fr', 'es', 'it', 'ja'],
     'translator'           => ['T::tr', 'Yii::t', '\Yii::t'],
     'sort'                 => true,
     'removeUnused'         => false,

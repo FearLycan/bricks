@@ -32,6 +32,18 @@ class SiteController extends Controller
     }
 
     /**
+     * 301 for URLs of a removed language version (/zh, /zh/...): same path,
+     * default language, query string kept.
+     */
+    public function actionLegacyLanguage(string $path = ''): \yii\web\Response
+    {
+        $query = Yii::$app->request->queryString;
+        $target = '/' . ltrim($path, '/') . ($query !== '' ? '?' . $query : '');
+
+        return $this->redirect($target, 301);
+    }
+
+    /**
      * Displays homepage.
      *
      * @return mixed

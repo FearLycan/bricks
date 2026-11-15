@@ -11,7 +11,7 @@ use yii\web\View;
 
 final class SeoHelper
 {
-    public const SUPPORTED_LANGUAGES = ['en', 'pl', 'de', 'fr', 'es', 'it', 'ja', 'zh'];
+    public const SUPPORTED_LANGUAGES = ['en', 'pl', 'de', 'fr', 'es', 'it', 'ja'];
     public const DEFAULT_HREFLANG_LANGUAGE = 'en';
 
     public static function resolvePageNumber(): int

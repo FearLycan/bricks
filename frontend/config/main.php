@@ -96,7 +96,7 @@ return [
         ],
         'urlManager'   => [
             'class'                       => \codemix\localeurls\UrlManager::class,
-            'languages'                   => ['en', 'pl', 'de', 'fr', 'es', 'it', 'ja', 'zh'],
+            'languages'                   => ['en', 'pl', 'de', 'fr', 'es', 'it', 'ja'],
             'enableLanguageDetection'     => true,
             'enableLanguagePersistence'   => true,
             'enableDefaultLanguageUrlCode' => false,
@@ -108,6 +108,9 @@ return [
             // Modal/HTML endpoints (e.g. *-modal) MUST stay out of this list so the
             // rendered markup uses the active language.
             'ignoreLanguageUrlPatterns'   => [
+                // Removed /zh version: let site/legacy-language redirect it
+                // before language detection adds a prefix (see rules below).
+                '#^site/legacy-language#'                => '#^/?zh(/|$)#',
                 '#^autocomplete/#'                       => '#^/?autocomplete/#',
                 '#^wishlist/(toggle|remove)$#'           => '#^/?wishlist/(toggle|remove)$#',
                 '#^owned-set/(toggle|remove)$#'          => '#^/?owned-set/(toggle|remove)$#',
@@ -119,6 +122,10 @@ return [
             'enablePrettyUrl'             => true,
             'showScriptName'              => false,
             'rules'                       => [
+                // Chinese version removed (Nov 2026): old /zh URLs 301 to the
+                // same path in English so indexed pages keep their signals.
+                'zh'                                            => 'site/legacy-language',
+                'zh/<path:.*>'                                  => 'site/legacy-language',
                 ''                                              => 'homepage/home/index',
                 'feed'                                          => 'feed/index',
                 'feed.xml'                                      => 'feed/xml',
