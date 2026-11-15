@@ -1076,4 +1076,5 @@ return [
     'Pick a release from the last few months, which they are less likely to own, or go for flowers, which few people collect in full.' => 'Scegli una novità degli ultimi mesi, che difficilmente avrà già, oppure i fiori, che pochi collezionano tutti.',
     'The final battle from "Ocarina of Time" in brick form. The cheapest set in this section, and a scene every Zelda fan knows by heart.' => 'La battaglia finale di «Ocarina of Time» in mattoncini. Il set più economico di questa sezione, e una scena che ogni fan di Zelda conosce a memoria.',
     'Gustav Klimt\'s "The Kiss" in 4,000 pieces. A picture to hang on the wall, and building it feels like laying a mosaic.' => '«Il bacio» di Gustav Klimt in 4.000 pezzi. Un quadro da appendere al muro, e montarlo è come comporre un mosaico.',
+    'More sets like these:' => 'Altri set simili:',
 ];

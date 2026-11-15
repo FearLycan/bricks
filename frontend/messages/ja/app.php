@@ -1076,4 +1076,5 @@ return [
     'Pick a release from the last few months, which they are less likely to own, or go for flowers, which few people collect in full.' => 'まだ持っていない可能性が高い最近の新作か、全部集めている人が少ない花のセットを選ぶのがおすすめです。',
     'The final battle from "Ocarina of Time" in brick form. The cheapest set in this section, and a scene every Zelda fan knows by heart.' => '『時のオカリナ』の最終決戦をブロックで再現。このコーナーで最も手頃なセットで、ゼルダファンなら誰もが覚えている名場面です。',
     'Gustav Klimt\'s "The Kiss" in 4,000 pieces. A picture to hang on the wall, and building it feels like laying a mosaic.' => '4,000ピースのグスタフ・クリムト『接吻』。壁に飾れるアートで、組み立てはモザイクづくりのようです。',
+    'More sets like these:' => '似たセットをもっと見る：',
 ];

@@ -197,13 +197,16 @@ class LegoController extends Controller
         }
 
         $numbers = [];
+        $tagSlugs = [];
         foreach ($guide['sections'] as $section) {
             $numbers = array_merge($numbers, array_keys($section['sets']));
+            $tagSlugs = array_merge($tagSlugs, $section['tags'] ?? []);
         }
 
         return $this->render('gift-guide', [
             'guide' => $guide,
             'sets'  => GiftGuide::loadSets(array_map('strval', $numbers)),
+            'tags'  => GiftGuide::loadTags($tagSlugs),
         ]);
     }
 

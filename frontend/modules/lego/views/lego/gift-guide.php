@@ -14,6 +14,7 @@ use yii\web\View;
  * @var View                $this
  * @var array<string,mixed> $guide  See frontend\components\GiftGuide.
  * @var array<string,Set>   $sets   Sets still on sale, keyed by number.
+ * @var array<string,\common\models\Tag> $tags Indexable tags linked from sections, keyed by slug.
  */
 
 $route = ['/lego/lego/gift-guide', 'slug' => $guide['slug']];
@@ -81,6 +82,23 @@ $faqSchema = [
                 <?= Html::encode($section['title']) ?>
             </h2>
             <p class="gift-guide-lead"><?= Html::encode($section['lead']) ?></p>
+            <?php
+            $sectionTags = array_values(array_filter(array_map(
+                static fn(string $slug) => $tags[$slug] ?? null,
+                $section['tags'] ?? []
+            )));
+            ?>
+            <?php if ($sectionTags !== []): ?>
+                <div class="gift-guide-tags">
+                    <span class="gift-guide-tags-label"><?= Html::encode(T::tr('More sets like these:')) ?></span>
+                    <?php foreach ($sectionTags as $tag): ?>
+                        <a class="gift-guide-tag" href="<?= Html::encode(Url::to(['/lego/lego/tag', 'slug' => $tag->slug])) ?>">
+                            <i class="bi bi-tag" aria-hidden="true"></i><?= Html::encode($tag->name) ?>
+                            <small><?= Html::encode(Yii::$app->formatter->asInteger((int)$tag->sets_count)) ?></small>
+                        </a>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
             <div class="row g-3">
                 <?php foreach ($sectionSets as [$set, $why]): ?>
                     <?php

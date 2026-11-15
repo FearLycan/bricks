@@ -183,3 +183,55 @@
         transform: none;
     }
 }
+
+/* Section tag links ("More sets like these") */
+.gift-guide-tags {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .4rem;
+    margin: -.35rem 0 1rem;
+}
+
+.gift-guide-tags-label {
+    font-size: .8rem;
+    color: #5b6077;
+    margin-right: .15rem;
+}
+
+.gift-guide-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    padding: .25rem .65rem;
+    border-radius: 999px;
+    background: #f1f3f9;
+    border: 1px solid #e1e5f0;
+    color: #1b1f3b;
+    font-size: .82rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background-color .15s ease, border-color .15s ease;
+}
+
+.gift-guide-tag:hover,
+.gift-guide-tag:focus-visible {
+    background: #fff4cc;
+    border-color: #f0c400;
+    color: #1b1f3b;
+}
+
+.gift-guide-tag .bi {
+    color: #d01012;
+}
+
+.gift-guide-tag small {
+    color: #7a7f96;
+    font-weight: 500;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .gift-guide-tag {
+        transition: none;
+    }
+}
