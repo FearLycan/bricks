@@ -31,10 +31,11 @@ class SitemapController extends Controller
 
     /**
      * Google rejects sitemaps over 50,000 URLs or 50 MB uncompressed. Set
-     * slugs are long (~1.2 KB per URL with 9 hreflang alternates) so 40k
-     * lands at ~46 MB uncompressed — under both limits with margin to spare.
+     * slugs are long (~1.2 KB per URL with 9 hreflang alternates) so 25k
+     * lands at ~29 MB — well under both limits. Chunks are plain .xml (see
+     * openSitemapWriter), so the size limit applies to the file as written.
      */
-    private const MAX_URLS_PER_CHUNK = 40000;
+    private const MAX_URLS_PER_CHUNK = 25000;
 
     private const CUSTOM_LINKS = [
         /*[
@@ -275,7 +276,7 @@ class SitemapController extends Controller
     // ─── Streaming writer ──────────────────────────────────────────────────────
 
     /**
-     * Stream each yielded entry into one or more gzipped sitemap files,
+     * Stream each yielded entry into one or more sitemap files,
      * rotating to a new chunk before the URL count crosses Google's limit.
      *
      * @param iterable<int, array{loc:string,lastmod:?string,changefreq:string,priority:string}> $entries
@@ -315,14 +316,14 @@ class SitemapController extends Controller
 
     /**
      * If a base name produced a single chunk, write it as the base file name
-     * (e.g. `sitemap-static.xml.gz`). Otherwise number chunks from 1.
+     * (e.g. `sitemap-static.xml`). Otherwise number chunks from 1.
      */
     private function resolveChunkPath(string $baseName, int $chunkIndex): string
     {
         // Always use numbered chunks for predictability — even single-chunk
         // sub-sitemaps get `-1` to keep the index format consistent and avoid
         // collisions if a category later grows past one chunk.
-        $fileName = $baseName . '-' . $chunkIndex . '.xml.gz';
+        $fileName = $baseName . '-' . $chunkIndex . '.xml';
 
         return $this->buildOutputFilePath($fileName);
     }
@@ -335,9 +336,11 @@ class SitemapController extends Controller
         }
 
         $writer = new XMLWriter();
-        // The compress.zlib:// stream wrapper makes XMLWriter pipe directly
-        // into a gzip-compressed file — no in-memory buffer needed.
-        if (!$writer->openUri('compress.zlib://' . $filePath)) {
+        // Plain XML on purpose. Pre-gzipped .xml.gz files were served by the
+        // host as Content-Type application/xml + Content-Encoding gzip with a
+        // second gzip layer inside, so Google could not read them. The web
+        // server compresses plain .xml in transit (like sitemap.xml itself).
+        if (!$writer->openUri($filePath)) {
             throw new RuntimeException("Failed to open sitemap writer for {$filePath}");
         }
 
