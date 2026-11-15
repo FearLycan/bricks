@@ -389,7 +389,15 @@ $queueOfferImportModalUrl = Url::to(['/management/queue-offer-import-modal', 'se
                                                         <?= Html::a('<i class="bi bi-bag-check me-1"></i>' . T::tr('View offer'), $offer->url, [
                                                                 'class'  => 'btn btn-sm btn-success ms-auto lego-offer-action',
                                                                 'target' => '_blank',
-                                                                'rel'    => 'noopener noreferrer',
+                                                                // Affiliate links: "sponsored" per Google's link guidelines.
+                                                                'rel'    => 'sponsored nofollow noopener noreferrer',
+                                                                // Read by js/offer-tracking.js for the GA4 offer_click event.
+                                                                'data'   => [
+                                                                        'offer-store'    => $offer->store->name ?? '',
+                                                                        'offer-set'      => (string)$model->number,
+                                                                        'offer-price'    => $offer->price !== null ? number_format($offer->price / 100, 2, '.', '') : '',
+                                                                        'offer-currency' => strtoupper((string)($offer->currency_code ?: 'USD')),
+                                                                ],
                                                         ]) ?>
                                                     <?php endif; ?>
                                                 </div>
