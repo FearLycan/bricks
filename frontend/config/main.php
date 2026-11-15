@@ -42,6 +42,13 @@ return [
         ],
         'assetManager' => [
             'appendTimestamp' => true,
+            // Minified builds of the vendor bundles (the defaults point at the
+            // unminified files).
+            'bundles'         => [
+                \yii\web\JqueryAsset::class                 => ['js' => ['jquery.min.js']],
+                \yii\bootstrap5\BootstrapAsset::class       => ['css' => ['dist/css/bootstrap.min.css']],
+                \yii\bootstrap5\BootstrapPluginAsset::class => ['js' => ['dist/js/bootstrap.bundle.min.js']],
+            ],
         ],
         'request'      => [
             'csrfParam' => '_csrf-brick',

@@ -454,8 +454,40 @@
 
     // ─── Stats panel (radar + histogram + CTA) ───────────────────────────────
 
+    // Chart.js (~70 KB) is only needed for the radar charts, so it is loaded on
+    // demand the first time a radar canvas shows up instead of on every page.
+    const CHART_JS_URL = 'https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js';
+    let chartJsState = 'idle'; // idle | loading | ready | failed
+    const chartJsWaiting = [];
+
+    function withChartJs(callback) {
+        if (typeof Chart !== 'undefined') { callback(); return; }
+        if (chartJsState === 'failed') return;
+        chartJsWaiting.push(callback);
+        if (chartJsState === 'loading') return;
+        chartJsState = 'loading';
+        const script = document.createElement('script');
+        script.src = CHART_JS_URL;
+        script.async = true;
+        script.crossOrigin = 'anonymous';
+        script.onload = function () {
+            chartJsState = 'ready';
+            chartJsWaiting.splice(0).forEach(function (cb) { cb(); });
+        };
+        script.onerror = function () { chartJsState = 'failed'; };
+        document.head.appendChild(script);
+    }
+
     function bindRadarCharts(scope) {
-        if (typeof Chart === 'undefined') return;
+        const pending = Array.prototype.filter.call(
+            (scope || document).querySelectorAll('canvas[data-role="radar-chart"]:not([data-chart-bound="1"])'),
+            function (c) { return c.offsetParent !== null; } // visible ones only
+        );
+        if (pending.length === 0) return;
+        if (typeof Chart === 'undefined') {
+            withChartJs(function () { bindRadarCharts(scope); });
+            return;
+        }
         const canvases = (scope || document).querySelectorAll('canvas[data-role="radar-chart"]');
         canvases.forEach(function (canvas) {
             if (canvas.dataset.chartBound === '1') return;

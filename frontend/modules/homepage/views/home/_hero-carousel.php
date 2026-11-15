@@ -28,7 +28,7 @@ $heroId = 'bricks-hero-' . uniqid();
 <section class="bricks-hero-carousel">
     <div class="swiper bricks-hero-swiper" id="<?= Html::encode($heroId) ?>">
         <div class="swiper-wrapper">
-            <?php foreach ($slides as $slide):
+            <?php foreach (array_values($slides) as $slideIndex => $slide):
                 $imageUrl  = $slide->getDisplayMainImageUrl();
                 $themeName = $slide->theme ? $slide->theme->name : '';
                 $promoPrice = $slide->getFormattedPromotionalPrice('USD');
@@ -41,7 +41,7 @@ $heroId = 'bricks-hero-' . uniqid();
                             <div class="bricks-hero-slide-frame">
                                 <img src="<?= Html::encode($imageUrl) ?>"
                                      alt="<?= Html::encode((string)$slide->name) ?>"
-                                     loading="eager"
+                                     <?php if ($slideIndex === 0): ?>loading="eager" fetchpriority="high"<?php else: ?>loading="lazy" decoding="async"<?php endif; ?>
                                      class="bricks-hero-slide-image">
                             </div>
                         </div>
