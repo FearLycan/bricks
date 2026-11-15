@@ -26,7 +26,7 @@ class SitemapController extends Controller
      * without a URL prefix; every other locale gets a `/<lang>/...` prefix. This must
      * mirror the `languages` setting in `frontend/config/main.php`.
      */
-    private const LANGUAGES = ['en', 'pl', 'de', 'fr', 'es', 'it', 'ja', 'zh'];
+    private const LANGUAGES = ['en', 'pl', 'de', 'fr', 'es', 'it', 'ja'];
     private const DEFAULT_LANGUAGE = 'en';
 
     /**

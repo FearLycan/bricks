@@ -23,7 +23,6 @@ $languageNames = [
     'es' => 'Español',
     'it' => 'Italiano',
     'ja' => '日本語',
-    'zh' => '中文',
 ];
 $languageOptions = [];
 foreach (UserSettings::SUPPORTED_LANGUAGES as $code) {

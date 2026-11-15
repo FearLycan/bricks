@@ -19,7 +19,7 @@ use yii\db\Expression;
  */
 class UserSettings extends ActiveRecord
 {
-    public const SUPPORTED_LANGUAGES = ['en', 'pl', 'de', 'fr', 'es', 'it', 'ja', 'zh'];
+    public const SUPPORTED_LANGUAGES = ['en', 'pl', 'de', 'fr', 'es', 'it', 'ja'];
 
     public static function tableName(): string
     {

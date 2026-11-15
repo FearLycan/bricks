@@ -17,7 +17,6 @@ $names = [
     'es' => 'Español',
     'it' => 'Italiano',
     'ja' => '日本語',
-    'zh' => '中文',
 ];
 
 $flagUrl = static function (string $language): string {
