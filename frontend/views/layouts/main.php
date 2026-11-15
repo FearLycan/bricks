@@ -126,6 +126,15 @@ if ($socialImage !== '') {
                 });
                 gtag('set', 'ads_data_redaction', true);
 
+                // A choice made in our own consent card (analytics only; ad
+                // consent stays with Google's CMP once AdSense is approved).
+                try {
+                    var baConsent = JSON.parse(localStorage.getItem('ba_consent') || 'null');
+                    if (baConsent && baConsent.analytics === 'granted') {
+                        gtag('consent', 'update', { analytics_storage: 'granted' });
+                    }
+                } catch (e) {}
+
                 (function () {
                     // Headless browsers that fake their user agent still report
                     // navigator.webdriver; keep analytics and ads away from them.
@@ -275,6 +284,7 @@ if ($socialImage !== '') {
                         <li><?= Html::a(T::tr('About'), ['/about'], ['class' => 'bricks-footer-nav-link']) ?></li>
                         <li><?= Html::a(T::tr('Contact'), ['/contact'], ['class' => 'bricks-footer-nav-link']) ?></li>
                         <li><?= Html::a(T::tr('Privacy Policy'), ['/privacy'], ['class' => 'bricks-footer-nav-link']) ?></li>
+                        <li><a href="#" class="bricks-footer-nav-link" data-consent-open hidden><?= Html::encode(T::tr('Cookie settings')) ?></a></li>
                     </ul>
                 </div>
                 <div class="col-md-2">
@@ -311,6 +321,10 @@ if ($socialImage !== '') {
     </button>
 
     <?= $this->renderFile(Yii::$app->getModule('wizard')->getViewPath() . '/_modal.php') ?>
+
+    <?php if ($loadTags && $gtagId !== ''): ?>
+        <?= $this->render('_consent-card') ?>
+    <?php endif; ?>
 
     <?php $this->endBody() ?>
 

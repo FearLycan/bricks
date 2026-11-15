@@ -904,4 +904,9 @@ return [
     'Yes' => 'Oui',
     'LEGO® for adults' => 'LEGO® pour adultes',
     'About BrickAtlas' => 'À propos de BrickAtlas',
+    'Visit statistics' => 'Statistiques de visite',
+    'We use Google Analytics cookies to see which pages and sets are useful. If you decline, the site works just the same.' => 'Nous utilisons les cookies de Google Analytics pour savoir quelles pages et quels sets sont utiles. Si vous refusez, le site fonctionne exactement pareil.',
+    'Decline' => 'Refuser',
+    'Accept' => 'Accepter',
+    'Cookie settings' => 'Paramètres des cookies',
 ];

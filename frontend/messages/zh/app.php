@@ -904,4 +904,9 @@ return [
     'Yes' => '是',
     'LEGO® for adults' => '成人乐高®',
     'About BrickAtlas' => '关于 BrickAtlas',
+    'Visit statistics' => '访问统计',
+    'We use Google Analytics cookies to see which pages and sets are useful. If you decline, the site works just the same.' => '我们使用 Google Analytics Cookie 来了解哪些页面和套装有用。即使拒绝，网站也能正常使用。',
+    'Decline' => '拒绝',
+    'Accept' => '接受',
+    'Cookie settings' => 'Cookie 设置',
 ];

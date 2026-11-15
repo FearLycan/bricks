@@ -923,4 +923,9 @@ return [
     'Yes' => '',
     'LEGO® for adults' => '',
     'About BrickAtlas' => '',
+    'Visit statistics' => '',
+    'We use Google Analytics cookies to see which pages and sets are useful. If you decline, the site works just the same.' => '',
+    'Decline' => '',
+    'Accept' => '',
+    'Cookie settings' => '',
 ];
