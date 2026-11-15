@@ -1074,4 +1074,6 @@ return [
     'Sets for 50–150 USD make a good present. The biggest models cost more and work best as a main or joint gift.' => '50–150 美元的套装就是很好的礼物。最大的模型价格更高，更适合作为主礼物或合送礼物。',
     'What if I do not know which sets they already have?' => '如果不知道对方已有哪些套装怎么办？',
     'Pick a release from the last few months, which they are less likely to own, or go for flowers, which few people collect in full.' => '选最近几个月的新品，对方大概率还没有；或者选花卉系列，很少有人全部收集。',
+    'The final battle from "Ocarina of Time" in brick form. The cheapest set in this section, and a scene every Zelda fan knows by heart.' => '《时之笛》最终决战的积木版。本栏目中最实惠的套装，也是每位塞尔达粉丝都熟记于心的一幕。',
+    'Gustav Klimt\'s "The Kiss" in 4,000 pieces. A picture to hang on the wall, and building it feels like laying a mosaic.' => '4000 颗粒的古斯塔夫·克里姆特《吻》。可以挂在墙上的画作，拼搭过程就像拼马赛克。',
 ];

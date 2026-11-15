@@ -1093,4 +1093,6 @@ return [
     'Sets for 50–150 USD make a good present. The biggest models cost more and work best as a main or joint gift.' => '',
     'What if I do not know which sets they already have?' => '',
     'Pick a release from the last few months, which they are less likely to own, or go for flowers, which few people collect in full.' => '',
+    'The final battle from "Ocarina of Time" in brick form. The cheapest set in this section, and a scene every Zelda fan knows by heart.' => '',
+    'Gustav Klimt\'s "The Kiss" in 4,000 pieces. A picture to hang on the wall, and building it feels like laying a mosaic.' => '',
 ];
