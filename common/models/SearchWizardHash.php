@@ -2,6 +2,7 @@
 
 namespace common\models;
 
+use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
@@ -52,10 +53,15 @@ class SearchWizardHash extends ActiveRecord
      */
     private const SOFT_AGE_FLOOR = 6;
 
-    private const YEAR_MAP = [
-        'newest' => ['from' => 2024, 'to' => null],
-        'recent' => ['from' => 2022, 'to' => null],
-        'any'    => ['from' => null, 'to' => null],
+    /**
+     * Year filters, as offsets from the current year so they never go stale:
+     * "newest" = the last two years plus this one, "recent" = the last three
+     * years plus this one.
+     */
+    private const YEAR_OFFSETS = [
+        'newest' => 2,
+        'recent' => 3,
+        'any'    => null,
     ];
 
     private const INTERESTS_MAP = [
@@ -193,8 +199,9 @@ class SearchWizardHash extends ActiveRecord
             ['value' => 'any', 'label' => 'Any size', 'emoji' => '↔️', 'description' => 'Show sets of all sizes'],
         ],
         'yearOptions'        => [
-            ['value' => 'newest', 'label' => 'Latest releases only', 'emoji' => '✨', 'description' => 'Released in 2024–2026'],
-            ['value' => 'recent', 'label' => 'Last 3 years', 'emoji' => '📅', 'description' => 'Released from 2022'],
+            // descriptions for newest/recent are built in getJsConfig() from YEAR_OFFSETS
+            ['value' => 'newest', 'label' => 'Latest releases only', 'emoji' => '✨'],
+            ['value' => 'recent', 'label' => 'Last 3 years', 'emoji' => '📅'],
             ['value' => 'any', 'label' => 'Any year', 'emoji' => '⏳', 'description' => 'Older editions are fine too'],
         ],
     ];
@@ -268,6 +275,11 @@ class SearchWizardHash extends ActiveRecord
         ];
     }
 
+    /**
+     * Wizard options for the JS modal, translated into the current language.
+     * DISPLAY_CONFIG holds English source strings (message keys in
+     * frontend/messages/<lang>/app.php).
+     */
     public static function getJsConfig(): array
     {
         $config = self::DISPLAY_CONFIG;
@@ -279,9 +291,42 @@ class SearchWizardHash extends ActiveRecord
                 }
                 unset($profile['note']);
             }
+            unset($profile);
         }
 
+        $currentYear = (int)date('Y');
+        foreach ($config['yearOptions'] as &$option) {
+            if ($option['value'] === 'newest') {
+                $option['description'] = self::t('Released in {from}–{to}', ['from' => self::yearFrom('newest'), 'to' => $currentYear]);
+            } elseif ($option['value'] === 'recent') {
+                $option['description'] = self::t('Released from {from}', ['from' => self::yearFrom('recent')]);
+            }
+        }
+        unset($option);
+
+        array_walk_recursive($config, static function (&$value, $key): void {
+            if (in_array($key, ['label', 'description'], true) && is_string($value) && $value !== '') {
+                $value = self::t($value);
+            }
+        });
+
         return $config;
+    }
+
+    private static function yearFrom(string $key): ?int
+    {
+        $offset = self::YEAR_OFFSETS[$key] ?? null;
+
+        return $offset === null ? null : (int)date('Y') - $offset;
+    }
+
+    /**
+     * Idempotent translate: already-translated text has no message entry and
+     * comes back unchanged.
+     */
+    private static function t(string $message, array $params = []): string
+    {
+        return Yii::t('app', $message, $params);
     }
 
     private static function buildAgeDescription(string $profile, ?string $note): string
@@ -295,14 +340,14 @@ class SearchWizardHash extends ActiveRecord
         $max = $range['max'];
 
         if ($min === null) {
-            $desc = 'Up to ' . $max . ' years';
+            $desc = self::t('Up to {max} years', ['max' => $max]);
         } else if ($max === null) {
-            $desc = $min . '+ years old';
+            $desc = self::t('{min}+ years old', ['min' => $min]);
         } else {
-            $desc = $min . '–' . $max . ' years old';
+            $desc = self::t('{min}–{max} years old', ['min' => $min, 'max' => $max]);
         }
 
-        return $note !== null ? $desc . ', ' . $note : $desc;
+        return $note !== null ? $desc . ', ' . self::t($note) : $desc;
     }
 
     public function applyToQuery(ActiveQuery $query): void
@@ -427,9 +472,9 @@ class SearchWizardHash extends ActiveRecord
         }
 
         $year = $answers['year'] ?? null;
-        if ($year && isset(self::YEAR_MAP[$year])) {
-            $filters['year_from'] = self::YEAR_MAP[$year]['from'];
-            $filters['year_to'] = self::YEAR_MAP[$year]['to'];
+        if ($year && array_key_exists($year, self::YEAR_OFFSETS)) {
+            $filters['year_from'] = self::yearFrom($year);
+            $filters['year_to'] = null;
         }
 
         $interests = $answers['interests'] ?? [];
@@ -471,21 +516,23 @@ class SearchWizardHash extends ActiveRecord
             ? (self::findOptionLabel(self::DISPLAY_CONFIG['giftProfiles'], $profile) ?? $profile)
             : null;
         $profileDesc  = $profile ? self::profileDescription($profile) : null;
-        $profileFull  = $profileLabel . ($profileDesc ? ' (' . $profileDesc . ')' : '');
+        $profileFull  = $profileLabel !== null
+            ? $profileLabel . ($profileDesc ? ' (' . $profileDesc . ')' : '')
+            : null;
         $labels['for'] = $recipient === 'gift'
-            ? 'For: ' . ($profileFull ?? 'someone')
-            : 'For myself' . ($profileFull ? ' · ' . $profileFull : '');
+            ? self::t('For: {who}', ['who' => $profileFull ?? self::t('someone')])
+            : self::t('For myself') . ($profileFull ? ' · ' . $profileFull : '');
 
         $budget = $answers['budget'] ?? null;
         if ($budget && $budgetLabel = self::findOptionLabel(self::DISPLAY_CONFIG['budgetOptions'], $budget)) {
-            $labels['budget'] = 'Budget: ' . $budgetLabel;
+            $labels['budget'] = self::t('Budget: {value}', ['value' => $budgetLabel]);
         }
 
         $interests = $answers['interests'] ?? [];
         if (!empty($interests)) {
             $interestMap = [];
             foreach (self::DISPLAY_CONFIG['interestsByProfile'][$profile] ?? [] as $item) {
-                $interestMap[$item['key']] = $item['label'];
+                $interestMap[$item['key']] = self::t($item['label']);
             }
             $names = array_map(fn($k) => $interestMap[$k] ?? $k, $interests);
             $labels['interests'] = implode(', ', $names);
@@ -493,12 +540,12 @@ class SearchWizardHash extends ActiveRecord
 
         $size = $answers['size'] ?? null;
         if ($size && $size !== 'any' && $sizeLabel = self::findOptionLabel(self::DISPLAY_CONFIG['sizeOptions'], $size)) {
-            $labels['size'] = 'Size: ' . $sizeLabel;
+            $labels['size'] = self::t('Size: {value}', ['value' => $sizeLabel]);
         }
 
         $year = $answers['year'] ?? null;
         if ($year && $year !== 'any' && $yearLabel = self::findOptionLabel(self::DISPLAY_CONFIG['yearOptions'], $year)) {
-            $labels['year'] = 'Year: ' . $yearLabel;
+            $labels['year'] = self::t('Year: {value}', ['value' => $yearLabel]);
         }
 
         return $labels;
@@ -508,7 +555,7 @@ class SearchWizardHash extends ActiveRecord
     {
         foreach ($options as $opt) {
             if ($opt['value'] === $value) {
-                return $opt['label'];
+                return self::t($opt['label']);
             }
         }
         return null;
@@ -521,7 +568,7 @@ class SearchWizardHash extends ActiveRecord
                 continue;
             }
             return isset($p['description'])
-                ? $p['description']
+                ? self::t($p['description'])
                 : self::buildAgeDescription($profile, null);
         }
         return '';
