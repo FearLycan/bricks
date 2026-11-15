@@ -106,7 +106,9 @@ $reviewListId = 'review-list-' . (int)$set->id;
             <p class="text-body-secondary small mb-3">
                 <?= T::tr('Your opinion helps others find the right set.') ?>
             </p>
-            <?= Html::a('<i class="bi bi-stars me-1"></i>' . Html::encode($ctaLabel), $choiceUrl, [
+            <?= Html::a('<i class="bi bi-stars me-1"></i>' . Html::encode($ctaLabel), '#', [
+                    'role'           => 'button',
+                    'data-modal-url' => $choiceUrl,
                     'class'       => 'btn btn-primary js-load-modal',
                     'data-target' => '#mainModal',
             ]) ?>
@@ -127,7 +129,9 @@ $reviewListId = 'review-list-' . (int)$set->id;
                     <div class="text-body-secondary small mb-3">
                         <?= T::tr('Based on {n, plural, =1{# review} other{# reviews}}', ['n' => $reviewCount]) ?>
                     </div>
-                    <?= Html::a('<i class="bi bi-stars me-1"></i>' . Html::encode($ctaLabel), $choiceUrl, [
+                    <?= Html::a('<i class="bi bi-stars me-1"></i>' . Html::encode($ctaLabel), '#', [
+                            'role'           => 'button',
+                            'data-modal-url' => $choiceUrl,
                             'class'       => 'btn btn-primary w-100 js-load-modal',
                             'data-target' => '#mainModal',
                     ]) ?>

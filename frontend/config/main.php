@@ -69,6 +69,15 @@ return [
                         sprintf('app;dur=%.1f, db;dur=%.1f;desc="%d queries"', $ms, $db[1] * 1000, $db[0])
                     );
                 }
+                // Modal HTML fragments (…-modal) are not pages: keep them out
+                // of the index even if a crawler reaches one despite robots.txt.
+                if ($event->sender instanceof \yii\web\Response
+                    && \Yii::$app->has('request', true)
+                    && \Yii::$app->request instanceof \yii\web\Request
+                    && preg_match('#-modal(/|$)#', (string)\Yii::$app->request->pathInfo)
+                ) {
+                    $event->sender->headers->set('X-Robots-Tag', 'noindex, nofollow');
+                }
             },
         ],
         'log'          => [

@@ -22,6 +22,7 @@ use yii\web\View;
  * @var bool         $showBreadcrumbs
  * @var array|string|null $ctaUrl      Optional CTA link (Url::to args or string).
  * @var string|null  $ctaLabel
+ * @var string|null  $headingTag       'h1' (default) or 'h2' when the hero is a section of a page that has its own h1.
  */
 
 $title = (string)($title ?? '');
@@ -33,6 +34,7 @@ $modifier = isset($modifier) ? trim((string)$modifier) : '';
 $showBreadcrumbs = !empty($showBreadcrumbs);
 $ctaUrl = $ctaUrl ?? null;
 $ctaLabel = isset($ctaLabel) ? (string)$ctaLabel : '';
+$headingTag = (isset($headingTag) && $headingTag === 'h2') ? 'h2' : 'h1';
 
 $resolvedImage = null;
 if ($image !== '') {
@@ -75,12 +77,12 @@ $heroStyle = $resolvedImage !== null
                 <span class="bricks-page-hero-eyebrow"><?= Html::encode($eyebrow) ?></span>
             <?php endif; ?>
 
-            <h1 class="bricks-page-hero-title">
+            <<?= $headingTag ?> class="bricks-page-hero-title">
                 <?php if ($icon !== ''): ?>
                     <i class="<?= Html::encode($icon) ?> me-2"></i>
                 <?php endif; ?>
                 <?= Html::encode($title) ?>
-            </h1>
+            </<?= $headingTag ?>>
 
             <?php if ($intro !== ''): ?>
                 <p class="bricks-page-hero-lead"><?= Html::encode($intro) ?></p>

@@ -162,8 +162,10 @@ $queueOfferImportModalUrl = Url::to(['/management/queue-offer-import-modal', 'se
                 <?php else: ?>
                     <?= Html::a(
                             '<i class="bi bi-stars me-1 text-warning"></i>' . T::tr('Be the first to rate this set'),
-                            $reviewChoiceUrl,
+                            '#',
                             [
+                                    'role'           => 'button',
+                                    'data-modal-url' => $reviewChoiceUrl,
                                     'class'       => 'lego-rating-badge lego-rating-badge-empty js-load-modal',
                                     'data-target' => '#mainModal',
                             ]
@@ -298,7 +300,9 @@ $queueOfferImportModalUrl = Url::to(['/management/queue-offer-import-modal', 'se
                     <h3 class="h6 mb-0 text-body-secondary"><?= T::tr('Offers from other stores') ?></h3>
                     <?php if ($user?->isAdmin()): ?>
                         <div class="d-flex gap-2">
-                            <?= Html::a(T::tr('Add import link'), $queueOfferImportModalUrl, [
+                            <?= Html::a(T::tr('Add import link'), '#', [
+                                    'role'           => 'button',
+                                    'data-modal-url' => $queueOfferImportModalUrl,
                                     'class'       => 'btn btn-sm btn-outline-primary js-load-modal',
                                     'data-target' => '#mainModal',
                             ]) ?>
@@ -381,7 +385,9 @@ $queueOfferImportModalUrl = Url::to(['/management/queue-offer-import-modal', 'se
                                                     <span class="small text-body-secondary">
                                                                 <?= T::tr('Reviews') ?>: <?= Html::encode((string)$offer->getDisplayReviewCount()) ?>
                                                             </span>
-                                                    <?= Html::a(T::tr('View reviews'), $offerReviewsModalUrl, [
+                                                    <?= Html::a(T::tr('View reviews'), '#', [
+                                                            'role'           => 'button',
+                                                            'data-modal-url' => $offerReviewsModalUrl,
                                                             'class'       => 'btn btn-sm btn-outline-secondary js-load-modal',
                                                             'data-target' => '#mainModal',
                                                     ]) ?>

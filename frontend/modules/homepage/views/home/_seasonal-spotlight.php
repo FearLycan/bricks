@@ -20,6 +20,8 @@ echo $this->render('@frontend/views/_partials/_page-hero', [
         'icon'            => (string)$event['icon'],
         'modifier'        => (string)$event['key'],
         'showBreadcrumbs' => false,
+        // The homepage already has its own (visually hidden) h1.
+        'headingTag'      => 'h2',
         'ctaUrl'          => (string)$event['url'],
         'ctaLabel'        => (string)$event['ctaLabel'],
 ]);
