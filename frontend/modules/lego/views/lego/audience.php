@@ -47,12 +47,13 @@ $this->params['fullWidth'] = true;
 ]) ?>
 
 <div class="container">
-    <?php if ($slug === 'for-teens'): ?>
+    <?php $giftGuide = \frontend\components\GiftGuide::forAudience($slug); ?>
+    <?php if ($giftGuide !== null): ?>
         <a class="d-flex align-items-center gap-2 mb-3 p-3 rounded-3 text-decoration-none" style="background:#fff8e6;border:1px solid #fde7a8;color:#0f172a"
-           href="<?= \yii\helpers\Html::encode(\yii\helpers\Url::to(['/lego/lego/gift-guide', 'slug' => 'gifts-for-teens'])) ?>">
+           href="<?= \yii\helpers\Html::encode(\yii\helpers\Url::to(['/lego/lego/gift-guide', 'slug' => $giftGuide['slug']])) ?>">
             <i class="bi bi-gift text-warning fs-5" aria-hidden="true"></i>
             <span><strong><?= \yii\helpers\Html::encode(T::tr('Looking for a gift?')) ?></strong>
-                <?= \yii\helpers\Html::encode(T::tr('See our hand-picked LEGO gifts for teens.')) ?></span>
+                <?= \yii\helpers\Html::encode($giftGuide['audienceCta']) ?></span>
             <i class="bi bi-arrow-right ms-auto" aria-hidden="true"></i>
         </a>
     <?php endif; ?>
