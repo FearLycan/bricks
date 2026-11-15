@@ -85,6 +85,7 @@ use yii\widgets\ActiveForm;
     </div>
 
 
+<?php \frontend\assets\Select2Asset::register($this); ?>
 <?php InlineScript::begin(); ?>
     <script>
         (() => {

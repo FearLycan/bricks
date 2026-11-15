@@ -15,17 +15,15 @@ class AppAsset extends AssetBundle
 {
     public $basePath = '@webroot';
     public $baseUrl  = '@web';
+    // select2 lives in Select2Asset (catalog filters only); venobox CSS in
+    // DeferredStylesAsset (non-blocking).
     public $css      = [
-        'libs/select2/select2.min.css',
-        'libs/select2/select2-bootstrap-5-theme.min.css',
-        'libs/venobox/venobox.min.css',
         'css/site.css',
         'css/page-hero.css',
     ];
     public $js       = [
-        'libs/select2/select2.full.min.js',
         'libs/venobox/venobox.min.js',
-        ['https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js', 'crossorigin' => 'anonymous'],
+        // Chart.js is loaded on demand by js/review.js (radar charts only).
         'js/common.js',
         'js/search.js',
         'js/wizard.js',
@@ -40,5 +38,6 @@ class AppAsset extends AssetBundle
         BootstrapAsset::class,
         BootstrapPluginAsset::class,
         BootstrapIconAsset::class,
+        DeferredStylesAsset::class,
     ];
 }
