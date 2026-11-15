@@ -29,6 +29,7 @@ class AppAsset extends AssetBundle
         'js/common.js',
         'js/search.js',
         'js/wizard.js',
+        'js/offer-tracking.js',
         'js/effects.js',
         'js/wishlist.js',
         'js/owned-set.js',
