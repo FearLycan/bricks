@@ -2,8 +2,10 @@
 
 namespace frontend\components;
 
+use common\components\IndexPolicy;
 use common\enums\StatusEnum;
 use common\models\Set;
+use common\models\Tag;
 
 /**
  * Hand-curated gift guides (/lego/gifts-for-<who>).
@@ -233,6 +235,27 @@ final class GiftGuide
                 ],
             ],
         ];
+    }
+
+    /**
+     * Tags linked from a guide's sections, keyed by slug. Only active tags
+     * whose listing is indexable (IndexPolicy::MIN_TAG_SETS) are returned,
+     * so the guide never links to a thin, noindexed tag page.
+     *
+     * @param string[] $slugs
+     * @return array<string, Tag>
+     */
+    public static function loadTags(array $slugs): array
+    {
+        if ($slugs === []) {
+            return [];
+        }
+
+        return Tag::find()
+            ->where(['slug' => array_values(array_unique($slugs)), 'status' => StatusEnum::ACTIVE->value])
+            ->andWhere(['>=', 'sets_count', IndexPolicy::MIN_TAG_SETS])
+            ->indexBy('slug')
+            ->all();
     }
 
     /**

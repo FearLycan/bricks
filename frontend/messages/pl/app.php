@@ -1076,4 +1076,5 @@ return [
     'Pick a release from the last few months, which they are less likely to own, or go for flowers, which few people collect in full.' => 'Wybierz nowość z ostatnich miesięcy, której raczej jeszcze nie ma, albo postaw na kwiaty, bo mało kto zbiera je wszystkie.',
     'The final battle from "Ocarina of Time" in brick form. The cheapest set in this section, and a scene every Zelda fan knows by heart.' => 'Ostatnia walka z „Ocarina of Time” w wersji z klocków. Najtańszy zestaw w tej sekcji, a fani Zeldy znają tę scenę na pamięć.',
     'Gustav Klimt\'s "The Kiss" in 4,000 pieces. A picture to hang on the wall, and building it feels like laying a mosaic.' => '„Pocałunek” Gustava Klimta z 4000 elementów. Obraz do powieszenia na ścianie, a budowanie przypomina układanie mozaiki.',
+    'More sets like these:' => 'Więcej takich zestawów:',
 ];
