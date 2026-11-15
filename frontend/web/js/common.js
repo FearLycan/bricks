@@ -299,7 +299,9 @@
             event.preventDefault();
 
             const $element = $(this);
-            const url = $element.attr('href') || $element.data('modal-url') || '';
+            // Modal fragments are linked via data-modal-url (href="#") so search
+            // engines do not crawl them as pages; href stays as a fallback.
+            const url = $element.data('modal-url') || $element.attr('href') || '';
             if (!url || url === '#') {
                 return;
             }

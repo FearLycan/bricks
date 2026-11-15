@@ -43,8 +43,8 @@ Disallow: /*per-page=
 Disallow: /*setId=
 Disallow: /*sort_option=
 Disallow: /*/view?slug=
-Disallow: /*?sub=
-Disallow: /*&sub=
+# ?sub= is NOT blocked: those URLs 301 to /lego/theme/<theme>/<sub>, and
+# Google must be able to crawl them to see the redirect.
 Disallow: /*month=
 Crawl-delay: 2
 

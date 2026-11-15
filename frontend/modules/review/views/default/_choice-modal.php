@@ -42,7 +42,7 @@ $detailedUrl = Url::to(['/review/default/detailed-modal', 'setId' => (int)$set->
             </p>
             <div class="row g-3 review-choice-grid">
                 <div class="col-md-6">
-                    <a href="<?= Html::encode($simpleUrl) ?>" class="review-choice-card js-load-modal" data-target="#mainModal">
+                    <a href="#" role="button" data-modal-url="<?= Html::encode($simpleUrl) ?>" class="review-choice-card js-load-modal" data-target="#mainModal">
                         <div class="review-choice-icon"><i class="bi bi-lightning-charge-fill"></i></div>
                         <h6 class="mb-1"><?= T::tr('Quick rating') ?></h6>
                         <p class="small text-body-secondary mb-2">
@@ -58,7 +58,7 @@ $detailedUrl = Url::to(['/review/default/detailed-modal', 'setId' => (int)$set->
                     </a>
                 </div>
                 <div class="col-md-6">
-                    <a href="<?= Html::encode($detailedUrl) ?>" class="review-choice-card review-choice-card--detailed js-load-modal" data-target="#mainModal">
+                    <a href="#" role="button" data-modal-url="<?= Html::encode($detailedUrl) ?>" class="review-choice-card review-choice-card--detailed js-load-modal" data-target="#mainModal">
                         <div class="review-choice-icon"><i class="bi bi-bar-chart-line-fill"></i></div>
                         <h6 class="mb-1"><?= T::tr('Detailed review') ?></h6>
                         <p class="small text-body-secondary mb-2">

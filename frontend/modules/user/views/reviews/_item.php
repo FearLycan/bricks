@@ -84,8 +84,10 @@ $scoresMap = $review->isDetailed() ? $review->getScoresMap() : [];
         <div class="my-review-actions">
             <?= Html::a(
                     '<i class="bi bi-pencil me-1"></i>' . Html::encode(T::tr('Edit')),
-                    $editUrl,
+                    '#',
                     [
+                            'role'           => 'button',
+                            'data-modal-url' => $editUrl,
                             'class'       => 'btn btn-sm btn-outline-primary js-load-modal',
                             'data-target' => '#mainModal',
                             'encode'      => false,

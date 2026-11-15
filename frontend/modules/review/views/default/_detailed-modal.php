@@ -357,13 +357,13 @@ $totalSteps = count($steps);
         </div>
 
         <div class="modal-footer review-wizard-footer">
-            <a href="<?= Html::encode($choiceUrl) ?>" class="btn btn-link text-body-secondary me-auto js-load-modal" data-target="#mainModal">
+            <a href="#" role="button" data-modal-url="<?= Html::encode($choiceUrl) ?>" class="btn btn-link text-body-secondary me-auto js-load-modal" data-target="#mainModal">
                 <i class="bi bi-arrow-left me-1"></i><?= T::tr('Change rating type') ?>
             </a>
             <button type="button" class="btn btn-outline-secondary" data-role="back" hidden>
                 <i class="bi bi-arrow-left me-1"></i><?= T::tr('Back') ?>
             </button>
-            <a href="<?= Html::encode($simpleUrl) ?>" class="btn btn-outline-secondary js-load-modal" data-target="#mainModal" data-role="switch-simple">
+            <a href="#" role="button" data-modal-url="<?= Html::encode($simpleUrl) ?>" class="btn btn-outline-secondary js-load-modal" data-target="#mainModal" data-role="switch-simple">
                 <?= T::tr('Switch to quick rating') ?>
             </a>
             <button type="button" class="btn btn-primary" data-role="next">

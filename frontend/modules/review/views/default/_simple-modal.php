@@ -116,13 +116,13 @@ $i18n = [
 
                 <p class="small text-body-secondary mb-0">
                     <?= T::tr('Want to give a more thorough review?') ?>
-                    <a href="<?= Html::encode($detailedUrl) ?>" class="js-load-modal" data-target="#mainModal">
+                    <a href="#" role="button" data-modal-url="<?= Html::encode($detailedUrl) ?>" class="js-load-modal" data-target="#mainModal">
                         <?= T::tr('Switch to detailed review') ?>
                     </a>
                 </p>
             </div>
             <div class="modal-footer">
-                <a href="<?= Html::encode($choiceUrl) ?>" class="btn btn-link text-body-secondary me-auto js-load-modal" data-target="#mainModal">
+                <a href="#" role="button" data-modal-url="<?= Html::encode($choiceUrl) ?>" class="btn btn-link text-body-secondary me-auto js-load-modal" data-target="#mainModal">
                     <i class="bi bi-arrow-left me-1"></i><?= T::tr('Change rating type') ?>
                 </a>
                 <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal"><?= T::tr('Cancel') ?></button>
