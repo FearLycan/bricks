@@ -15,10 +15,12 @@ if (empty($slides)) {
     return;
 }
 
-$this->registerCssFile('https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css', [
+// Swiper 11.2.10 self-hosted (web/libs/swiper): no extra CDN connection
+// before first paint, and our year-long static cache applies.
+$this->registerCssFile('@web/libs/swiper/swiper-bundle.min.css', [
     'position' => View::POS_HEAD,
 ]);
-$this->registerJsFile('https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js', [
+$this->registerJsFile('@web/libs/swiper/swiper-bundle.min.js', [
     'position' => View::POS_END,
 ]);
 

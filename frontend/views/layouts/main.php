@@ -56,10 +56,9 @@ if ($socialDescription === '') {
 $this->registerMetaTag(['name' => 'description', 'content' => $metaDescription], 'description');
 $this->registerMetaTag(['name' => 'robots', 'content' => $robots], 'robots');
 $this->registerLinkTag(['rel' => 'canonical', 'href' => $canonicalUrl], 'canonical');
-// Set images and the hero carousel/Swiper come from these hosts: open the
-// connections early (helps LCP on mobile).
+// Set images (incl. the hero LCP image) come from Brickset: open the
+// connection early (helps LCP on mobile).
 $this->registerLinkTag(['rel' => 'preconnect', 'href' => 'https://images.brickset.com'], 'preconnect-brickset');
-$this->registerLinkTag(['rel' => 'preconnect', 'href' => 'https://cdn.jsdelivr.net'], 'preconnect-jsdelivr');
 $this->registerLinkTag(['rel' => 'alternate', 'type' => 'application/atom+xml',  'title' => Yii::$app->name . ' - ' . T::tr('catalog updates (Atom)'), 'href' => Url::to(['/feed.xml'], true)], 'feed-atom');
 $this->registerLinkTag(['rel' => 'alternate', 'type' => 'application/rss+xml',   'title' => Yii::$app->name . ' - ' . T::tr('catalog updates (RSS)'), 'href' => Url::to(['/feed.rss'], true)], 'feed-rss');
 $this->registerLinkTag(['rel' => 'alternate', 'type' => 'application/feed+json', 'title' => Yii::$app->name . ' - ' . T::tr('catalog updates (JSON Feed)'), 'href' => Url::to(['/feed'], true)], 'feed-json');
