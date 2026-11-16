@@ -8,7 +8,7 @@
  * path. When the browser prefers another supported language, this card offers
  * a switch, written in THAT language. Shown once: "No thanks", "Switch" or any
  * use of the language switcher stores the choice in localStorage for a year.
- * Waits until the consent card is answered so the two never stack.
+ * Waits until no consent UI is pending (see _consent-card.php) so cards never stack.
  *
  * @var yii\web\View $this
  */
@@ -144,15 +144,13 @@ foreach (SeoHelper::SUPPORTED_LANGUAGES as $lang) {
         stay.addEventListener('click', function () { remember('stay:' + CURRENT); card.hidden = true; });
         sw.addEventListener('click', function () { remember('switch:' + target); });
 
-        // Do not stack with the consent card: wait until it is answered.
+        // Do not stack with a consent UI (ours or Google's): wait until the
+        // consent card script reports that nothing is pending.
         function show() { card.hidden = false; }
-        var consent = document.getElementById('baConsent');
-        if (consent && !consent.hidden) {
-            new MutationObserver(function (m, obs) {
-                if (consent.hidden) { obs.disconnect(); setTimeout(show, 400); }
-            }).observe(consent, { attributes: true, attributeFilter: ['hidden'] });
-        } else {
+        if (!document.getElementById('baConsent') || window.baConsentSettled) {
             setTimeout(show, 1200);
+        } else {
+            document.addEventListener('ba:consent-settled', function () { setTimeout(show, 400); }, { once: true });
         }
     })();
 </script>

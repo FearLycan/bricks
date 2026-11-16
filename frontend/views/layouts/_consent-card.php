@@ -5,9 +5,10 @@
  *
  * Shown only to visitors whose browser time zone is in Europe, where Consent
  * Mode keeps GA4 cookies off until they agree (see the gtag defaults in
- * main.php). Covers analytics only: ad consent is Google's CMP job once
- * AdSense approves the site. The choice is kept in localStorage for a year;
- * the footer link "Cookie settings" reopens the card.
+ * main.php). Covers analytics only, and steps aside wherever Google's own
+ * consent message (AdSense CMP) is active: see the script below. The choice
+ * is kept in localStorage for a year; the footer link "Cookie settings"
+ * reopens whichever consent UI is in charge.
  *
  * @var yii\web\View $this
  */
@@ -103,6 +104,16 @@ use yii\helpers\Url;
         var card = document.getElementById('baConsent');
         if (!card) { return; }
 
+        // "Consent settled" tells other bottom cards (language suggestion)
+        // that no consent UI is pending, so they never stack with one.
+        var settledSent = false;
+        function settled() {
+            if (settledSent) { return; }
+            settledSent = true;
+            window.baConsentSettled = true;
+            document.dispatchEvent(new CustomEvent('ba:consent-settled'));
+        }
+
         function inEurope() {
             try {
                 var tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
@@ -127,6 +138,7 @@ use yii\helpers\Url;
                 window.gtag('consent', 'update', { analytics_storage: value });
             }
             card.hidden = true;
+            settled();
         }
 
         card.addEventListener('click', function (e) {
@@ -134,17 +146,78 @@ use yii\helpers\Url;
             if (btn) { save(btn.getAttribute('data-consent')); }
         });
 
-        if (inEurope()) {
-            document.querySelectorAll('[data-consent-open]').forEach(function (link) {
-                link.hidden = false;
-                link.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    card.hidden = false;
-                });
-            });
-            if (!read()) {
-                card.hidden = false;
-            }
+        if (!inEurope()) {
+            settled();
+            return;
         }
+
+        /*
+         * Google's consent message (AdSense > Privacy & messaging, a
+         * certified TCF CMP) takes over wherever it actually runs: it then
+         * collects ad consent and, with consent mode on, analytics too.
+         * Until AdSense approves the site the CMP loads but stays inactive
+         * (no TC string, no UI), and our analytics card keeps doing the job.
+         *
+         * Active = it showed its UI, the visitor answered it, or it holds an
+         * earlier answer (TC string). Inactive = loaded without any of that,
+         * no TCF API at all (blocked or no AdSense), or GDPR not applying.
+         */
+        var googleCmp = null;   // null = still checking, true/false = decided
+        var decidedOurs = false;
+
+        function useGoogle(eventStatus) {
+            googleCmp = true;
+            card.hidden = true; // in case ours was already up
+            if (eventStatus !== 'cmpuishown') { settled(); }
+        }
+
+        function useOurs() {
+            if (googleCmp !== null || decidedOurs) { return; }
+            decidedOurs = true;
+            googleCmp = false;
+            if (read()) { settled(); } else { card.hidden = false; }
+        }
+
+        function watchTcf() {
+            var inactiveTimer = null;
+            window.__tcfapi('addEventListener', 2, function (d, ok) {
+                if (!ok || !d) { return; }
+                if (d.gdprApplies === false) { useOurs(); return; }
+                var st = d.eventStatus;
+                if (st === 'cmpuishown' || st === 'useractioncomplete' || st === 'tcloaded' || d.tcString) {
+                    if (inactiveTimer) { clearTimeout(inactiveTimer); }
+                    if (googleCmp !== true || st === 'useractioncomplete') { useGoogle(st); }
+                    return;
+                }
+                // Loaded with nothing to show: give it a moment, then ours.
+                if (d.cmpStatus === 'loaded' && !inactiveTimer && googleCmp === null) {
+                    inactiveTimer = setTimeout(useOurs, 800);
+                }
+            });
+        }
+
+        var waited = 0;
+        (function waitForTcf() {
+            if (typeof window.__tcfapi === 'function') { watchTcf(); return; }
+            waited += 200;
+            if (waited >= 5000) { useOurs(); return; }
+            setTimeout(waitForTcf, 200);
+        })();
+        // Safety net: never leave a European visitor without any choice.
+        setTimeout(useOurs, 8000);
+
+        // Footer "Cookie settings": Google's message when it runs, else ours.
+        document.querySelectorAll('[data-consent-open]').forEach(function (link) {
+            link.hidden = false;
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+                if (googleCmp === true && window.googlefc && window.googlefc.showRevocationMessage) {
+                    window.googlefc.callbackQueue = window.googlefc.callbackQueue || [];
+                    window.googlefc.callbackQueue.push(window.googlefc.showRevocationMessage);
+                } else {
+                    card.hidden = false;
+                }
+            });
+        });
     })();
 </script>
