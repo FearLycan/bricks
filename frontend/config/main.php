@@ -85,6 +85,10 @@ return [
                 ) {
                     $event->sender->headers->set('X-Robots-Tag', 'noindex, nofollow');
                 }
+                // Temporary bot diagnostics (stops by itself, see params).
+                if ($event->sender instanceof \yii\web\Response) {
+                    \frontend\components\RequestFingerprintLog::record($event->sender);
+                }
             },
         ],
         'log'          => [
