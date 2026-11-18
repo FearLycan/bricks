@@ -10,4 +10,8 @@ return [
     'homepage.cache.onSale'   => 300,   // 5 min — prices move faster
     'homepage.cache.branding' => 1800,  // 30 min — hero, themes, minifigs
     'homepage.cache.personal' => 60,    // 60 s   — per-user personalization
+
+    // Bot diagnostics: page-view fingerprints in @runtime/fingerprints until
+    // this moment (UTC), then off. '' = off. See RequestFingerprintLog.
+    'fingerprintLog.until' => '2026-11-20 12:00:00 UTC',
 ];
