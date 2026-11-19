@@ -25,6 +25,10 @@ return [
     'sourceLanguage'      => 'en',
     'basePath'            => dirname(__DIR__),
     'bootstrap'           => ['log'],
+    // Abuse (empty UA, blocked networks, rate limit) is answered before routing.
+    'on beforeRequest'    => static function (): void {
+        \frontend\components\BotGuard::enforce();
+    },
     'controllerNamespace' => 'frontend\controllers',
     'defaultRoute'        => 'homepage/home/index',
     'components'          => [
