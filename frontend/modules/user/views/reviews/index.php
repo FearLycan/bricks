@@ -31,7 +31,7 @@ $this->params['breadcrumbs'][] = T::tr('My reviews');
 <div class="col-12 mt-4">
     <div class="d-flex justify-content-between align-items-baseline flex-wrap gap-2 mb-3">
         <h1 class="page-title mb-0">
-            <i class="bi bi-journal-richtext text-primary me-2"></i>
+            
             <?= Html::encode(T::tr('My reviews')) ?>
         </h1>
         <span class="text-body-secondary small">
@@ -47,7 +47,7 @@ $this->params['breadcrumbs'][] = T::tr('My reviews');
                 <?= Html::encode(T::tr('Find a set you own (or want) and share what you think.')) ?>
             </p>
             <?= Html::a(
-                '<i class="bi bi-search me-1"></i>' . Html::encode(T::tr('Browse sets')),
+                Html::encode(T::tr('Browse sets')),
                 Url::to(['/lego/index']),
                 ['class' => 'btn btn-primary', 'encode' => false]
             ) ?>
@@ -77,7 +77,7 @@ $this->params['breadcrumbs'][] = T::tr('My reviews');
 
     <div class="mt-4">
         <?= Html::a(
-            '<i class="bi bi-arrow-left me-2"></i>' . T::tr('Back to profile'),
+            '<i class="ph ph-arrow-left me-2"></i>' . T::tr('Back to profile'),
             ['/user/profile'],
             ['class' => 'btn btn-outline-secondary', 'encode' => false]
         ) ?>

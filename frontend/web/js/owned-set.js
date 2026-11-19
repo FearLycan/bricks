@@ -18,10 +18,10 @@
 
         const $icon = $button.find('i');
         if (isOwned) {
-            $icon.removeClass('bi-box-seam').addClass('bi-box-seam-fill');
+            $icon.removeClass('ph ph-package').addClass('ph-fill ph-package');
             $button.attr('title', $button.data('label-remove') || 'Remove from owned sets');
         } else {
-            $icon.removeClass('bi-box-seam-fill').addClass('bi-box-seam');
+            $icon.removeClass('ph-fill ph-package').addClass('ph ph-package');
             $button.attr('title', $button.data('label-add') || 'Add to owned sets');
         }
     };

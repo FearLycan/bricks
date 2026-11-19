@@ -24,7 +24,7 @@ $daysToExit = (int)$model->getDaysUntilExit();
             </span>
         </div>
         <div class="lego-status-banner__meta">
-            <i class="bi bi-calendar-x" aria-hidden="true"></i>
+            <i class="ph ph-calendar-x" aria-hidden="true"></i>
             <?= T::tr('Retires on {date}', ['date' => date('d.m.Y', strtotime($model->exit_date))]) ?>
         </div>
     </div>

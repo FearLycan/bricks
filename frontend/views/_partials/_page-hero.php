@@ -78,9 +78,6 @@ $heroStyle = $resolvedImage !== null
             <?php endif; ?>
 
             <<?= $headingTag ?> class="bricks-page-hero-title">
-                <?php if ($icon !== ''): ?>
-                    <i class="<?= Html::encode($icon) ?> me-2"></i>
-                <?php endif; ?>
                 <?= Html::encode($title) ?>
             </<?= $headingTag ?>>
 
@@ -91,7 +88,7 @@ $heroStyle = $resolvedImage !== null
             <?php if ($ctaUrl !== null && $ctaLabel !== ''): ?>
                 <a href="<?= Html::encode(is_array($ctaUrl) ? Url::to($ctaUrl) : (string)$ctaUrl) ?>" class="bricks-page-hero-cta">
                     <?= Html::encode($ctaLabel) ?>
-                    <i class="bi bi-arrow-right ms-2"></i>
+                    
                 </a>
             <?php endif; ?>
         </div>

@@ -25,14 +25,14 @@ $this->registerCssFile('@web/css/faq.css', ['depends' => [\frontend\assets\AppAs
         'eyebrow'         => T::tr('Help'),
         'title'           => T::tr('How can we help?'),
         'intro'           => T::tr('Quick answers about prices, your wishlist, reviews and your account. Type a keyword to filter or browse by topic.'),
-        'icon'            => 'bi-life-preserver',
+        'icon'            => 'ph ph-lifebuoy',
         'modifier'        => 'faq',
         'showBreadcrumbs' => true,
 ]) ?>
 
 <div class="container">
     <div class="faq-search-wrap">
-        <i class="bi bi-search faq-search-icon"></i>
+        <i class="ph ph-magnifying-glass faq-search-icon"></i>
         <input type="search"
                class="faq-search-input"
                id="faqSearch"
@@ -49,7 +49,6 @@ $this->registerCssFile('@web/css/faq.css', ['depends' => [\frontend\assets\AppAs
                 <?php foreach ($categories as $category): ?>
                     <li>
                         <a class="faq-toc-link" href="#<?= Html::encode($category['slug']) ?>" data-faq-toc>
-                            <i class="<?= Html::encode($category['icon']) ?> me-2"></i>
                             <span><?= Html::encode($category['name']) ?></span>
                             <span class="faq-toc-count"><?= count($category['items']) ?></span>
                         </a>
@@ -58,13 +57,13 @@ $this->registerCssFile('@web/css/faq.css', ['depends' => [\frontend\assets\AppAs
             </ul>
 
             <div class="faq-contact-card">
-                <i class="bi bi-envelope-paper-heart"></i>
+                
                 <p class="faq-contact-text">
                     <?= Html::encode(T::tr('Didn’t find what you were looking for?')) ?>
                 </p>
                 <a href="<?= \yii\helpers\Url::to(['/contact']) ?>" class="faq-contact-cta">
                     <?= Html::encode(T::tr('Get in touch')) ?>
-                    <i class="bi bi-arrow-right ms-1"></i>
+                    
                 </a>
             </div>
         </aside>
@@ -76,7 +75,6 @@ $this->registerCssFile('@web/css/faq.css', ['depends' => [\frontend\assets\AppAs
                 <section class="faq-category" id="<?= Html::encode($category['slug']) ?>" data-faq-category>
                     <header class="faq-category-header">
                         <h2 class="faq-category-title">
-                            <i class="<?= Html::encode($category['icon']) ?> me-2"></i>
                             <?= Html::encode($category['name']) ?>
                         </h2>
                     </header>
@@ -116,7 +114,7 @@ $this->registerCssFile('@web/css/faq.css', ['depends' => [\frontend\assets\AppAs
             <?php endforeach; ?>
 
             <p class="faq-empty" id="faqEmpty" hidden>
-                <i class="bi bi-emoji-frown me-2"></i>
+                
                 <?= Html::encode(T::tr('Nothing matches that search. Try a different keyword.')) ?>
             </p>
         </div>

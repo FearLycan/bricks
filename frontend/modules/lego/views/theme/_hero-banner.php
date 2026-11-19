@@ -59,7 +59,7 @@ $heroStyle = $heroImage !== null
 
             <?php if ($setsCount > 0): ?>
                 <span class="bricks-theme-hero-meta">
-                    <i class="bi bi-boxes"></i>
+                    
                     <?= T::tr('{n} sets', ['n' => $setsCount]) ?>
                 </span>
             <?php endif; ?>

@@ -900,22 +900,22 @@ class SetReview extends ActiveRecord
     /**
      * Builds the 5-icon Bootstrap-icons star sequence for a 0–10 score.
      *
-     * @return string[] e.g. ['bi-star-fill', 'bi-star-fill', 'bi-star-half', 'bi-star', 'bi-star']
+     * @return string[] e.g. ['ph-fill ph-star', 'ph-fill ph-star', 'ph-fill ph-star-half', 'ph ph-star', 'ph ph-star']
      */
     public static function buildStarClasses(?float $score): array
     {
         if ($score === null) {
-            return array_fill(0, 5, 'bi-star');
+            return array_fill(0, 5, 'ph ph-star');
         }
         $value = max(0.0, min(10.0, $score)) / 2.0;
         $classes = [];
         for ($i = 1; $i <= 5; $i++) {
             if ($value >= $i) {
-                $classes[] = 'bi-star-fill';
+                $classes[] = 'ph-fill ph-star';
             } elseif ($value >= $i - 0.5) {
-                $classes[] = 'bi-star-half';
+                $classes[] = 'ph-fill ph-star-half';
             } else {
-                $classes[] = 'bi-star';
+                $classes[] = 'ph ph-star';
             }
         }
         return $classes;

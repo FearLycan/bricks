@@ -43,14 +43,14 @@
     function openSearch() {
         isOpen = true;
         searchBox.classList.add('is-open');
-        searchIcon.className = 'bi bi-x-lg';
+        searchIcon.className = 'ph ph-x';
         setTimeout(function () { searchInput.focus(); }, 30);
     }
 
     function closeSearch() {
         isOpen = false;
         searchBox.classList.remove('is-open');
-        searchIcon.className = 'bi bi-search';
+        searchIcon.className = 'ph ph-magnifying-glass';
         searchInput.value = '';
         hideDropdown();
         lastFetchedTerm = '';
@@ -98,7 +98,7 @@
             html += '<div class="bricks-search-footer">'
                 + '<a class="bricks-search-footer-link" href="/lego?name=' + encodeURIComponent(term) + '">'
                 + 'See all ' + total + ' matching sets'
-                + '<i class="bi bi-arrow-right ms-1"></i>'
+                + '<i class="ph ph-arrow-right ms-1"></i>'
                 + '</a></div>';
         }
 
@@ -107,10 +107,10 @@
             html += '<div class="bricks-search-group-label">Themes</div>';
             themes.forEach(function (item) {
                 var label = item.parent
-                    ? '<span class="bricks-search-theme-breadcrumb">' + esc(item.parent) + ' <i class="bi bi-chevron-right"></i> </span>' + esc(item.name)
+                    ? '<span class="bricks-search-theme-breadcrumb">' + esc(item.parent) + ' <i class="ph ph-caret-right"></i> </span>' + esc(item.name)
                     : esc(item.name);
                 html += '<a class="bricks-search-item" href="' + esc(item.url) + '">'
-                    + '<div class="bricks-search-theme-icon"><i class="bi bi-grid-3x3-gap-fill"></i></div>'
+                    + '<div class="bricks-search-theme-icon"><i class="ph-fill ph-squares-four"></i></div>'
                     + '<span class="bricks-search-item-name">' + label + '</span>'
                     + '</a>';
             });

@@ -48,7 +48,6 @@ $wizardI18n = [
                 <div class="w-100">
                     <div class="d-flex justify-content-between align-items-center">
                         <div class="d-flex align-items-center gap-2">
-                            <i class="bi bi-magic wizard-header-icon"></i>
                             <span class="wizard-header-title"><?= Html::encode(T::tr('LEGO Set Finder')) ?></span>
                         </div>
                         <div class="d-flex align-items-center gap-3">
@@ -65,10 +64,10 @@ $wizardI18n = [
 
             <div class="modal-footer wizard-modal-footer border-0 pt-0">
                 <button type="button" class="btn btn-outline-secondary wizard-btn-back" id="wizardBackBtn" hidden>
-                    <i class="bi bi-arrow-left me-1"></i><?= Html::encode(T::tr('Back')) ?>
+                    <i class="ph ph-arrow-left me-1"></i><?= Html::encode(T::tr('Back')) ?>
                 </button>
                 <button type="button" class="btn btn-primary ms-auto wizard-btn-next" id="wizardNextBtn" disabled>
-                    <?= Html::encode(T::tr('Next')) ?><i class="bi bi-arrow-right ms-1"></i>
+                    <?= Html::encode(T::tr('Next')) ?><i class="ph ph-arrow-right ms-1"></i>
                 </button>
             </div>
 

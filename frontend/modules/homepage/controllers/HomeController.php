@@ -41,7 +41,7 @@ class HomeController extends Controller
             'heroSlides'        => $this->content->getHeroSlides(),
             'themeTiles'        => $themeTiles,
             'themeCovers'       => $this->content->getThemeCovers($themeTiles),
-            'browseTabs'        => $this->content->getBrowseTabs(),
+            'ageTiles'          => $this->content->getAgeTiles(),
             'newArrivals'       => $this->content->getNewArrivals(),
             'onSale'            => $this->content->getOnSale(),
             'topRated'          => $this->content->getTopRated(),

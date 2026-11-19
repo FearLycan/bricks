@@ -163,7 +163,7 @@
         const desc = opt.description ? '<span class="wizard-option-desc">' + escHtml(opt.description) + '</span>' : '';
         return (
             '<div class="wizard-option' + selectedClass + '" data-group="' + escHtml(groupKey) + '" data-value="' + escHtml(opt.value) + '" data-type="' + type + '">' +
-            '<span class="wizard-option-check"><i class="bi bi-check-lg"></i></span>' +
+            '<span class="wizard-option-check"><i class="ph ph-check"></i></span>' +
             '<span class="wizard-option-emoji">' + (opt.emoji || '') + '</span>' +
             '<span class="wizard-option-label">' + escHtml(opt.label) + '</span>' +
             desc +
@@ -247,9 +247,9 @@
 
         const t = i18n();
         if (state.step === TOTAL_STEPS) {
-            nextBtn.innerHTML = '<i class="bi bi-search me-1"></i>' + escHtml(t.findSets || 'Find Sets');
+            nextBtn.innerHTML = escHtml(t.findSets || 'Find Sets');
         } else {
-            nextBtn.innerHTML = escHtml(t.next || 'Next') + '<i class="bi bi-arrow-right ms-1"></i>';
+            nextBtn.innerHTML = escHtml(t.next || 'Next') + '<i class="ph ph-arrow-right ms-1"></i>';
         }
     }
 
@@ -328,7 +328,7 @@
         const nextBtn = document.getElementById('wizardNextBtn');
         if (nextBtn) {
             nextBtn.disabled = false;
-            nextBtn.innerHTML = '<i class="bi bi-search me-1"></i>' + escHtml(i18n().findSets || 'Find Sets');
+            nextBtn.innerHTML = escHtml(i18n().findSets || 'Find Sets');
         }
     }
 

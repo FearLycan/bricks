@@ -1081,4 +1081,11 @@ return [
     'BrickAtlas is also available in your language: prices, gift guides and the set finder.' => 'BrickAtlas existe aussi en français : prix, guides cadeaux et outil de recherche de sets.',
     'Switch' => 'Changer',
     'No thanks' => 'Non merci',
+    'Homepage sections' => 'Sections de la page d\'accueil',
+    'LEGO{sup} by age' => 'LEGO{sup} par âge',
+    'Toddlers' => 'Tout-petits',
+    'Kids' => 'Enfants',
+    'Older kids' => 'Grands enfants',
+    'Teens' => 'Ados',
+    'Adults' => 'Adultes',
 ];

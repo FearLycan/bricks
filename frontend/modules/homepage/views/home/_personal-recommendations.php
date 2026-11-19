@@ -20,7 +20,7 @@ if (empty($items)) {
         <div class="d-flex align-items-end justify-content-between mb-3 gap-3 flex-wrap">
             <div>
                 <span class="bricks-section-eyebrow">
-                    <i class="bi bi-stars me-1"></i><?= Html::encode(T::tr('Picked for you')) ?>
+                    <?= Html::encode(T::tr('Picked for you')) ?>
                 </span>
                 <h2 class="bricks-section-title mb-0"><?= Html::encode(T::tr('Recommended for you')) ?></h2>
             </div>
@@ -31,7 +31,7 @@ if (empty($items)) {
                     data-bricks-slider-prev
                     aria-label="<?= Html::encode(T::tr('Scroll left')) ?>"
                     hidden>
-                <i class="bi bi-chevron-left"></i>
+                <i class="ph ph-caret-left"></i>
             </button>
             <div class="bricks-slider-track" data-bricks-slider-track>
                 <?php foreach ($items as $item): ?>
@@ -45,7 +45,7 @@ if (empty($items)) {
                     data-bricks-slider-next
                     aria-label="<?= Html::encode(T::tr('Scroll right')) ?>"
                     hidden>
-                <i class="bi bi-chevron-right"></i>
+                <i class="ph ph-caret-right"></i>
             </button>
         </div>
     </div>

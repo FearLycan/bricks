@@ -37,7 +37,7 @@ $this->params['breadcrumbs'][] = Html::encode($tag->name);
 
 <div class="col-lg-12 mt-4">
     <h1 class="page-title">
-        <i class="bi bi-tag me-2"></i><?= Html::encode($tag->name) ?>
+        <?= Html::encode($tag->name) ?>
     </h1>
 </div>
 

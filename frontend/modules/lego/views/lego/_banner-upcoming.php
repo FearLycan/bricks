@@ -24,7 +24,7 @@ $daysToLaunch = (int)$model->getDaysUntilLaunch();
             </span>
         </div>
         <div class="lego-status-banner__meta">
-            <i class="bi bi-calendar-event" aria-hidden="true"></i>
+            <i class="ph ph-calendar-dots" aria-hidden="true"></i>
             <?= T::tr('Launches on {date}', ['date' => date('d.m.Y', strtotime($model->launch_date))]) ?>
         </div>
     </div>

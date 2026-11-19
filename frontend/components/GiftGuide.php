@@ -83,7 +83,7 @@ final class GiftGuide
         return [
             'teens' => [
                 'slug'        => 'gifts-for-teens',
-                'icon'        => 'bi-gift',
+                'icon'        => 'ph ph-gift',
                 'modifier'    => 'teens',
                 'title'       => T::tr('LEGO gifts for teens (ages 13–16)'),
                 'teaser'      => T::tr('Sets picked by interest: Star Wars, cars, games and display models.'),
@@ -102,7 +102,7 @@ final class GiftGuide
                 ],
                 'sections'    => [
                     [
-                        'icon'  => 'bi-stars',
+                        'icon'  => 'ph ph-sparkle',
                         'title' => T::tr('For the Star Wars fan'),
                         'lead'  => T::tr('A safe choice if they watch "The Mandalorian" or the other series set in that galaxy.'),
                         'tags'  => ['the-mandalorian-series', 'bounty-hunters'],
@@ -113,7 +113,7 @@ final class GiftGuide
                         ],
                     ],
                     [
-                        'icon'  => 'bi-speedometer2',
+                        'icon'  => 'ph ph-speedometer',
                         'title' => T::tr('For the car fan'),
                         'lead'  => T::tr('From small display cars to Technic mechanics with working parts.'),
                         'tags'  => ['car', 'large-scale-vehicle'],
@@ -124,7 +124,7 @@ final class GiftGuide
                         ],
                     ],
                     [
-                        'icon'  => 'bi-controller',
+                        'icon'  => 'ph ph-game-controller',
                         'title' => T::tr('For the gamer'),
                         'lead'  => T::tr('Sets from games teenagers know: Nintendo, Minecraft and Sonic.'),
                         'tags'  => ['video-game', 'gaming'],
@@ -135,7 +135,7 @@ final class GiftGuide
                         ],
                     ],
                     [
-                        'icon'  => 'bi-house-heart',
+                        'icon'  => 'ph ph-house-line',
                         'title' => T::tr('For the shelf: ambitious builds'),
                         'lead'  => T::tr('Models that stay on display after the build instead of going back in the box.'),
                         'tags'  => ['display-stand', '18-plus'],
@@ -154,7 +154,7 @@ final class GiftGuide
             ],
             'adults' => [
                 'slug'        => 'gifts-for-adults',
-                'icon'        => 'bi-gift',
+                'icon'        => 'ph ph-gift',
                 'modifier'    => 'adults',
                 'title'       => T::tr('LEGO gifts for adults'),
                 'teaser'      => T::tr('Sets for film fans, gamers, plant lovers and big builds.'),
@@ -173,7 +173,7 @@ final class GiftGuide
                 ],
                 'sections'    => [
                     [
-                        'icon'  => 'bi-film',
+                        'icon'  => 'ph ph-film-strip',
                         'title' => T::tr('For the film fan'),
                         'lead'  => T::tr('Scenes and vehicles from films people grew up with.'),
                         'tags'  => ['1980s', '1990s'],
@@ -184,7 +184,7 @@ final class GiftGuide
                         ],
                     ],
                     [
-                        'icon'  => 'bi-flower1',
+                        'icon'  => 'ph ph-flower',
                         'title' => T::tr('Flowers that never wilt'),
                         'lead'  => T::tr('Botanical sets look good in any home and never need watering.'),
                         'tags'  => ['brick-built-plants', 'botanical-collection'],
@@ -195,7 +195,7 @@ final class GiftGuide
                         ],
                     ],
                     [
-                        'icon'  => 'bi-lamp',
+                        'icon'  => 'ph ph-lamp',
                         'title' => T::tr('For the desk'),
                         'lead'  => T::tr('Small and medium models that fit on a desk or a shelf at work.'),
                         'tags'  => ['display-stand', 'space'],
@@ -206,7 +206,7 @@ final class GiftGuide
                         ],
                     ],
                     [
-                        'icon'  => 'bi-controller',
+                        'icon'  => 'ph ph-game-controller',
                         'title' => T::tr('For the gamer'),
                         'lead'  => T::tr('Consoles and arcade machines for people who remember them from childhood.'),
                         'tags'  => ['video-game', 'nintendo'],
@@ -217,7 +217,7 @@ final class GiftGuide
                         ],
                     ],
                     [
-                        'icon'  => 'bi-buildings',
+                        'icon'  => 'ph ph-buildings',
                         'title' => T::tr('A big project for winter evenings'),
                         'lead'  => T::tr('Thousands of pieces and weeks of building, for someone who likes to take their time.'),
                         'tags'  => ['real-place', 'fine-arts'],

@@ -34,15 +34,15 @@ $themeUrl    = Url::to("/lego/theme/{$theme->slug}");
             <?php endif; ?>
             <div class="bricks-spotlight-meta">
                 <?php if ($setsCount !== null): ?>
-                    <span><i class="bi bi-box-seam me-1"></i><?= T::tr('{n} sets', ['n' => $setsCount]) ?></span>
+                    <span><?= T::tr('{n} sets', ['n' => $setsCount]) ?></span>
                 <?php endif; ?>
                 <?php if ($theme->year_from): ?>
-                    <span><i class="bi bi-calendar3 me-1"></i><?= Html::encode((string)$theme->year_from) ?><?= $theme->year_to ? '–' . Html::encode((string)$theme->year_to) : '' ?></span>
+                    <span><?= Html::encode((string)$theme->year_from) ?><?= $theme->year_to ? '–' . Html::encode((string)$theme->year_to) : '' ?></span>
                 <?php endif; ?>
             </div>
             <a href="<?= $themeUrl ?>" class="bricks-spotlight-cta">
                 <?= Html::encode(T::tr('Explore the theme')) ?>
-                <i class="bi bi-arrow-right ms-2"></i>
+                
             </a>
         </div>
     </div>

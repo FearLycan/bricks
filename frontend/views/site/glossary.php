@@ -26,7 +26,7 @@ $this->registerCssFile('@web/css/glossary.css', ['depends' => [\frontend\assets\
         'eyebrow'         => T::tr('For AFOLs'),
         'title'           => T::tr('LEGO Glossary'),
         'intro'           => T::tr('What every acronym and bit of slang on this site actually means.'),
-        'icon'            => 'bi-journal-text',
+        'icon'            => 'ph ph-book-open-text',
         'modifier'        => 'glossary',
         'showBreadcrumbs' => true,
 ]) ?>
@@ -34,7 +34,7 @@ $this->registerCssFile('@web/css/glossary.css', ['depends' => [\frontend\assets\
 <div class="container">
     <div class="glossary-toolbar">
         <div class="glossary-search-wrap">
-            <i class="bi bi-search glossary-search-icon"></i>
+            <i class="ph ph-magnifying-glass glossary-search-icon"></i>
             <input type="search"
                    class="glossary-search-input"
                    id="glossarySearch"
@@ -50,7 +50,7 @@ $this->registerCssFile('@web/css/glossary.css', ['depends' => [\frontend\assets\
                     <?= Html::encode(T::tr('Default')) ?>
                 </button>
                 <button type="button" class="btn btn-outline-secondary" data-glossary-sort="alpha">
-                    <i class="bi bi-sort-alpha-down me-1"></i><?= Html::encode(T::tr('A → Z')) ?>
+                    <?= Html::encode(T::tr('A → Z')) ?>
                 </button>
             </div>
         </div>
@@ -63,7 +63,6 @@ $this->registerCssFile('@web/css/glossary.css', ['depends' => [\frontend\assets\
                 <?php foreach ($categories as $category): ?>
                     <li>
                         <a class="glossary-toc-link" href="#<?= Html::encode($category['slug']) ?>" data-glossary-toc>
-                            <i class="<?= Html::encode($category['icon']) ?> me-2"></i>
                             <span><?= Html::encode($category['name']) ?></span>
                             <span class="glossary-toc-count"><?= count($category['terms']) ?></span>
                         </a>
@@ -77,7 +76,6 @@ $this->registerCssFile('@web/css/glossary.css', ['depends' => [\frontend\assets\
                 <section class="glossary-category" id="<?= Html::encode($category['slug']) ?>" data-glossary-category>
                     <header class="glossary-category-header">
                         <h2 class="glossary-category-title">
-                            <i class="<?= Html::encode($category['icon']) ?> me-2"></i>
                             <?= Html::encode($category['name']) ?>
                         </h2>
                         <?php if (!empty($category['intro'])): ?>
@@ -115,7 +113,7 @@ $this->registerCssFile('@web/css/glossary.css', ['depends' => [\frontend\assets\
             <?php endforeach; ?>
 
             <p class="glossary-empty" id="glossaryEmpty" hidden>
-                <i class="bi bi-emoji-frown me-2"></i>
+                
                 <?= Html::encode(T::tr('Nothing matches that search. Try a different keyword.')) ?>
             </p>
         </div>

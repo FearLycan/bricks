@@ -25,7 +25,7 @@ final class LegoGlossary
             [
                 'slug'  => 'community',
                 'name'  => T::tr('Community'),
-                'icon'  => 'bi-people-fill',
+                'icon'  => 'ph-fill ph-users',
                 'intro' => T::tr('Labels fans use to identify themselves and the groups they build with.'),
                 'terms' => [
                     [
@@ -73,7 +73,7 @@ final class LegoGlossary
             [
                 'slug'  => 'parts',
                 'name'  => T::tr('Parts & Bricks'),
-                'icon'  => 'bi-grid-3x3-gap-fill',
+                'icon'  => 'ph-fill ph-squares-four',
                 'intro' => T::tr('Names for the individual elements you actually snap together.'),
                 'terms' => [
                     [
@@ -131,7 +131,7 @@ final class LegoGlossary
             [
                 'slug'  => 'sets',
                 'name'  => T::tr('Sets & Themes'),
-                'icon'  => 'bi-box-seam-fill',
+                'icon'  => 'ph-fill ph-package',
                 'intro' => T::tr('Names for set lines, exclusives, and what happens when a set retires.'),
                 'terms' => [
                     [
@@ -189,7 +189,7 @@ final class LegoGlossary
             [
                 'slug'  => 'techniques',
                 'name'  => T::tr('Building Techniques'),
-                'icon'  => 'bi-tools',
+                'icon'  => 'ph ph-wrench',
                 'intro' => T::tr('Vocabulary for how AFOLs actually put bricks together.'),
                 'terms' => [
                     [
@@ -252,7 +252,7 @@ final class LegoGlossary
             [
                 'slug'  => 'marketplace',
                 'name'  => T::tr('Marketplace'),
-                'icon'  => 'bi-shop',
+                'icon'  => 'ph ph-storefront',
                 'intro' => T::tr('Vocabulary that pops up on resale sites and trade forums.'),
                 'terms' => [
                     [
@@ -300,7 +300,7 @@ final class LegoGlossary
             [
                 'slug'  => 'tools',
                 'name'  => T::tr('Tools & Ecosystem'),
-                'icon'  => 'bi-puzzle-fill',
+                'icon'  => 'ph-fill ph-puzzle-piece',
                 'intro' => T::tr('Apps, databases and acronyms from around the LEGO ecosystem.'),
                 'terms' => [
                     [

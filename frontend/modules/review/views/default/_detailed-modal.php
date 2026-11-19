@@ -168,7 +168,7 @@ $renderSlider = static function (string $dimensionKey, float $initialScore, stri
     $html .= '</div>';
     $html .= '<div class="review-stars" data-role="score-stars" aria-hidden="true">';
     for ($i = 0; $i < 5; $i++) {
-        $html .= '<span class="review-star"><i class="bi bi-star"></i></span>';
+        $html .= '<span class="review-star"><i class="ph ph-star"></i></span>';
     }
     $html .= '</div>';
     $html .= '<input type="range" class="form-range review-slider" min="1" max="10" step="0.25" value="' . $value . '" data-role="score-slider" data-dimension="' . Html::encode($dimensionKey) . '">';
@@ -203,7 +203,7 @@ $totalSteps = count($steps);
                 <div class="d-flex justify-content-between align-items-start mb-2">
                     <div>
                         <h5 class="modal-title d-flex align-items-center gap-2 mb-1">
-                            <i class="bi bi-bar-chart-line-fill text-primary"></i>
+                            
                             <span data-role="step-title"><?= Html::encode($stepTitles[$steps[0]] ?? '') ?></span>
                         </h5>
                         <div class="small text-body-secondary">
@@ -315,7 +315,7 @@ $totalSteps = count($steps);
                     </div>
                     <div class="review-stars" data-role="overall-stars" aria-hidden="true">
                         <?php for ($i = 0; $i < 5; $i++): ?>
-                            <span class="review-star"><i class="bi bi-star"></i></span>
+                            <span class="review-star"><i class="ph ph-star"></i></span>
                         <?php endfor; ?>
                     </div>
                     <p class="small text-body-secondary mt-2 mb-0">
@@ -358,19 +358,19 @@ $totalSteps = count($steps);
 
         <div class="modal-footer review-wizard-footer">
             <a href="#" role="button" data-modal-url="<?= Html::encode($choiceUrl) ?>" class="btn btn-link text-body-secondary me-auto js-load-modal" data-target="#mainModal">
-                <i class="bi bi-arrow-left me-1"></i><?= T::tr('Change rating type') ?>
+                <i class="ph ph-arrow-left me-1"></i><?= T::tr('Change rating type') ?>
             </a>
             <button type="button" class="btn btn-outline-secondary" data-role="back" hidden>
-                <i class="bi bi-arrow-left me-1"></i><?= T::tr('Back') ?>
+                <i class="ph ph-arrow-left me-1"></i><?= T::tr('Back') ?>
             </button>
             <a href="#" role="button" data-modal-url="<?= Html::encode($simpleUrl) ?>" class="btn btn-outline-secondary js-load-modal" data-target="#mainModal" data-role="switch-simple">
                 <?= T::tr('Switch to quick rating') ?>
             </a>
             <button type="button" class="btn btn-primary" data-role="next">
-                <?= T::tr('Next') ?><i class="bi bi-arrow-right ms-1"></i>
+                <?= T::tr('Next') ?><i class="ph ph-arrow-right ms-1"></i>
             </button>
             <button type="button" class="btn btn-success" data-role="submit" hidden>
-                <i class="bi bi-check-lg me-1"></i><?= $existing ? T::tr('Update review') : T::tr('Publish review') ?>
+                <?= $existing ? T::tr('Update review') : T::tr('Publish review') ?>
             </button>
         </div>
     </div>

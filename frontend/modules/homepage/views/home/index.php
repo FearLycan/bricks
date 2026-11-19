@@ -9,7 +9,7 @@ use yii\web\View;
  * @var array      $heroSlides
  * @var array      $themeTiles
  * @var array      $themeCovers
- * @var array      $browseTabs
+ * @var array      $ageTiles
  * @var array      $newArrivals
  * @var array      $onSale
  * @var array      $topRated
@@ -57,6 +57,8 @@ $isGuest = Yii::$app->user->isGuest;
         </section>
     <?php endif; ?>
 
+    <?= $this->render('_section-nav') ?>
+
     <?= $this->render('_seasonal-spotlight', ['event' => $seasonalSpotlight]) ?>
 
     <?= $this->render('_gift-guides') ?>
@@ -67,7 +69,7 @@ $isGuest = Yii::$app->user->isGuest;
         <?= $this->render('_personal-wishlist', ['items' => $wishlistPreview]) ?>
     <?php endif; ?>
 
-    <?= $this->render('_browse-tabs', ['tabs' => $browseTabs]) ?>
+    <?= $this->render('_age-tiles', ['tiles' => $ageTiles]) ?>
 
     <?= $this->render('_theme-tiles', [
             'themes' => $themeTiles,
@@ -77,6 +79,7 @@ $isGuest = Yii::$app->user->isGuest;
 
     <?= $this->render('_section-slider', [
             'title'       => T::tr('New arrivals'),
+            'sectionId'   => 'new-arrivals',
             'items'       => $newArrivals,
             'seeAllUrl'   => ['/lego'],
             'seeAllLabel' => T::tr('See all'),
@@ -102,13 +105,15 @@ $isGuest = Yii::$app->user->isGuest;
     <?php endif; ?>
 
     <?= $this->render('_section-slider', [
-            'title' => T::tr('Coming soon'),
-            'items' => $comingSoon,
+            'title'     => T::tr('Coming soon'),
+            'sectionId' => 'coming-soon',
+            'items'     => $comingSoon,
     ]) ?>
 
     <?= $this->render('_section-slider', [
-            'title' => T::tr('LEGO{sup} for adults', ['sup' => '<sup>®</sup>']),
-            'items' => $forAdults,
+            'title'     => T::tr('LEGO{sup} for adults', ['sup' => '<sup>®</sup>']),
+            'sectionId' => 'for-adults',
+            'items'     => $forAdults,
     ]) ?>
 
     <?= $this->render('_featured-minifigs', ['minifigs' => $featuredMinifigs]) ?>

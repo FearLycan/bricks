@@ -37,7 +37,7 @@ $this->params['fullWidth'] = true;
         'title'           => T::tr('LEGO Sets Retiring Soon'),
         'intro'           => SeoHelper::buildRetiringSoonIntro(),
         'image'           => 'images/categories/retiring-soon.jpg',
-        'icon'            => 'bi-hourglass-split',
+        'icon'            => 'ph ph-hourglass-medium',
         'modifier'        => 'retiring-soon',
         'showBreadcrumbs' => true,
 ]) ?>

@@ -19,15 +19,12 @@ if ($guides === []) {
 }
 ?>
 
-<section class="bricks-section bricks-section--gift-guides">
+<section class="bricks-section bricks-section--gift-guides" id="gift-ideas">
     <div class="container">
         <div class="bricks-gift-guides">
             <?php foreach ($guides as $guide): ?>
                 <a class="bricks-gift-guide-strip"
                    href="<?= Html::encode(Url::to(['/lego/lego/gift-guide', 'slug' => $guide['slug']])) ?>">
-                    <span class="bricks-gift-guide-strip-icon" aria-hidden="true">
-                        <i class="bi <?= Html::encode($guide['icon']) ?>"></i>
-                    </span>
                     <span class="bricks-gift-guide-strip-content">
                         <span class="bricks-gift-guide-strip-eyebrow"><?= Html::encode(T::tr('Gift guide')) ?></span>
                         <span class="bricks-gift-guide-strip-title"><?= Html::encode($guide['title']) ?></span>
@@ -35,7 +32,7 @@ if ($guides === []) {
                     </span>
                     <span class="bricks-gift-guide-strip-action">
                         <?= Html::encode(T::tr('See the guide')) ?>
-                        <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                        <i class="ph ph-arrow-right" aria-hidden="true"></i>
                     </span>
                 </a>
             <?php endforeach; ?>

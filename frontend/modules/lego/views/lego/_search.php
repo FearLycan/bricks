@@ -31,7 +31,7 @@ use yii\widgets\ActiveForm;
                         <?= $form->field($model, 'name')->label(false) ?>
                     </div>
                     <div class="col-2 d-lg-none" style="text-align: right;">
-                        <?= Html::submitButton(Html::tag('i', '', ['class' => 'bi bi-search']), ['class' => 'btn btn-primary w-100']) ?>
+                        <?= Html::submitButton(Html::tag('i', '', ['class' => 'ph ph-magnifying-glass']), ['class' => 'btn btn-primary w-100']) ?>
                     </div>
                 </div>
             </div>

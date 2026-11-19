@@ -39,7 +39,7 @@ $this->params['fullWidth'] = true;
         'title'           => T::tr('LEGO Exclusive Sets'),
         'intro'           => SeoHelper::buildExclusiveIntro(),
         'image'           => 'images/categories/exclusive.jpg',
-        'icon'            => 'bi-gem',
+        'icon'            => 'ph ph-diamond',
         'modifier'        => 'exclusive',
         'showBreadcrumbs' => true,
 ]) ?>

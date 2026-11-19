@@ -14,6 +14,7 @@ use yii\web\View;
  * @var Set[]       $items
  * @var string|null $seeAllUrl
  * @var string|null $seeAllLabel
+ * @var string|null $sectionId      Optional id (anchor for the homepage section nav)
  * @var string|null $modifierClass  Optional extra class on .bricks-section (e.g. brand variant)
  */
 
@@ -24,16 +25,17 @@ if (empty($items)) {
 $seeAllUrl   = $seeAllUrl   ?? null;
 $seeAllLabel = $seeAllLabel ?? T::tr('See all');
 $modifierClass = $modifierClass ?? '';
+$sectionId     = $sectionId ?? null;
 ?>
 
-<section class="bricks-section bricks-section--slider <?= Html::encode($modifierClass) ?>">
+<section class="bricks-section bricks-section--slider <?= Html::encode($modifierClass) ?>"<?= !empty($sectionId) ? ' id="' . Html::encode($sectionId) . '"' : '' ?>>
     <div class="container">
         <div class="d-flex align-items-end justify-content-between mb-3 gap-3 flex-wrap">
             <h2 class="bricks-section-title mb-0"><?= $title ?></h2>
             <?php if ($seeAllUrl !== null): ?>
                 <a href="<?= Html::encode(Url::to($seeAllUrl)) ?>" class="bricks-section-see-all">
                     <?= Html::encode($seeAllLabel) ?>
-                    <i class="bi bi-arrow-right ms-1"></i>
+                    <i class="ph ph-arrow-right ms-1"></i>
                 </a>
             <?php endif; ?>
         </div>
@@ -43,7 +45,7 @@ $modifierClass = $modifierClass ?? '';
                     data-bricks-slider-prev
                     aria-label="<?= Html::encode(T::tr('Scroll left')) ?>"
                     hidden>
-                <i class="bi bi-chevron-left"></i>
+                <i class="ph ph-caret-left"></i>
             </button>
             <div class="bricks-slider-track" data-bricks-slider-track>
                 <?php foreach ($items as $item): ?>
@@ -57,7 +59,7 @@ $modifierClass = $modifierClass ?? '';
                     data-bricks-slider-next
                     aria-label="<?= Html::encode(T::tr('Scroll right')) ?>"
                     hidden>
-                <i class="bi bi-chevron-right"></i>
+                <i class="ph ph-caret-right"></i>
             </button>
         </div>
     </div>

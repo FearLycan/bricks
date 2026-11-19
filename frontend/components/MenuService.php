@@ -20,15 +20,15 @@ final class MenuService
      */
     public function getCategoryItems(): array
     {
-        $gifts = $this->item(T::tr('Gift ideas'), GiftGuide::entryRoute(), 'bi-gift', 'gifts');
+        $gifts = $this->item(T::tr('Gift ideas'), GiftGuide::entryRoute(), 'ph ph-gift', 'gifts');
         $gifts['dividerAfter'] = true;
 
         $items = [
             $gifts,
-            $this->item(T::tr('Magazines'), ['/lego/magazines'], 'bi-newspaper'),
-            $this->item(T::tr('Polybags'), ['/lego/tag/polybag'], 'bi-bag'),
-            $this->item(T::tr('Gift with Purchase'), ['/lego/tag/gift-with-purchase'], 'bi-gift'),
-            $this->item(T::tr('Seasonal'), ['/lego/tag/seasonal'], 'bi-snow'),
+            $this->item(T::tr('Magazines'), ['/lego/magazines'], 'ph ph-newspaper'),
+            $this->item(T::tr('Polybags'), ['/lego/tag/polybag'], 'ph ph-bag'),
+            $this->item(T::tr('Gift with Purchase'), ['/lego/tag/gift-with-purchase'], 'ph ph-gift'),
+            $this->item(T::tr('Seasonal'), ['/lego/tag/seasonal'], 'ph ph-snowflake'),
         ];
 
         $seasonal = $this->buildSeasonalItem();
@@ -36,9 +36,9 @@ final class MenuService
             $items[] = $seasonal;
         }
 
-        $items[] = $this->item(T::tr('Exclusive'), ['/lego/exclusive'], 'bi-gem');
-        $items[] = $this->item(T::tr('Retiring Soon'), ['/lego/retiring-soon'], 'bi-hourglass-split');
-        $items[] = $this->item(T::tr('For Adults (18+)'), ['/lego/for-adults'], 'bi-person');
+        $items[] = $this->item(T::tr('Exclusive'), ['/lego/exclusive'], 'ph ph-diamond');
+        $items[] = $this->item(T::tr('Retiring Soon'), ['/lego/retiring-soon'], 'ph ph-hourglass-medium');
+        $items[] = $this->item(T::tr('For Adults (18+)'), ['/lego/for-adults'], 'ph ph-user');
 
         return $items;
     }
