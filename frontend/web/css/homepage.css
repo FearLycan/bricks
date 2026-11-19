@@ -1738,7 +1738,7 @@ a.bricks-collection-stats-tile:hover {
 
 /* ---------- Section shortcuts + sticky section bar ---------- */
 
-.bricks-snav { padding: 1.25rem 0 .25rem; }
+.bricks-snav { padding: 1.5rem 0 2rem; }
 .bricks-snav-tiles {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -1834,14 +1834,21 @@ a.bricks-collection-stats-tile:hover {
 .bricks-age-tile:hover,
 .bricks-age-tile:focus-visible { transform: translateY(-3px); box-shadow: 0 12px 26px rgba(26, 26, 46, .12); }
 .bricks-age-photo {
+    position: relative;
     aspect-ratio: 4 / 3;
-    display: grid;
-    place-items: center;
-    padding: .85rem;
     background: var(--age-soft);
 }
-.bricks-age-photo img { max-width: 100%; max-height: 100%; object-fit: contain; mix-blend-mode: multiply; }
-.bricks-age-foot { display: flex; color: #fff; }
+/* Absolute + contain: tall product shots stay inside the box, so every tile
+   in a row has the same photo height and the footers line up. */
+.bricks-age-photo img {
+    position: absolute;
+    inset: .85rem;
+    width: calc(100% - 1.7rem);
+    height: calc(100% - 1.7rem);
+    object-fit: contain;
+    mix-blend-mode: multiply;
+}
+.bricks-age-foot { display: flex; color: #fff; margin-top: auto; }
 .bricks-age-foot b {
     background: var(--age-c);
     min-width: 4.5rem;
@@ -1884,13 +1891,21 @@ a.bricks-collection-stats-tile:hover {
 .bricks-ttile:hover,
 .bricks-ttile:focus-visible { color: #1a1a2e; transform: translateY(-3px); box-shadow: 0 12px 26px rgba(26, 26, 46, .1); }
 .bricks-ttile-stage {
+    position: relative;
     aspect-ratio: 4 / 3;
     display: grid;
     place-items: center;
-    padding: .85rem;
     background: linear-gradient(180deg, var(--tt-soft), #fff 78%);
 }
-.bricks-ttile-stage img { max-width: 100%; max-height: 100%; object-fit: contain; mix-blend-mode: multiply; transition: transform .2s ease; }
+.bricks-ttile-stage img {
+    position: absolute;
+    inset: .85rem;
+    width: calc(100% - 1.7rem);
+    height: calc(100% - 1.7rem);
+    object-fit: contain;
+    mix-blend-mode: multiply;
+    transition: transform .2s ease;
+}
 .bricks-ttile:hover .bricks-ttile-stage img { transform: scale(1.04); }
 .bricks-ttile-initial { font-size: 2.4rem; font-weight: 800; color: var(--tt-c); }
 .bricks-ttile-foot {
