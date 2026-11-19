@@ -67,7 +67,9 @@ class FingerprintController extends Controller
             ]);
             $anomaly[$key] = ($anomaly[$key] ?? 0) + 1;
             $tagged += empty($r['bg']) ? 1 : 0;
-            $v = (string)($r['bgr'] ?? (empty($r['bg']) ? 'human' : 'declared'));
+            // Rows logged before BotGuard v2 (19.11.2026 ~10:00) carry no
+            // verdict; keep them apart so they don't pass for "human".
+            $v = (string)($r['bgr'] ?? 'before-v2');
             $verdicts[$v] = ($verdicts[$v] ?? 0) + 1;
             if ($v === 'human') {
                 $humanIps[$ip] = ($humanIps[$ip] ?? 0) + 1;
