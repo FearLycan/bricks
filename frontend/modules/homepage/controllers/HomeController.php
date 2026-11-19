@@ -37,6 +37,7 @@ class HomeController extends Controller
     public function actionIndex()
     {
         $themeTiles = $this->content->getThemeTiles();
+        $themeSpotlight = $this->content->getThemeSpotlight();
         $viewData = [
             'heroSlides'        => $this->content->getHeroSlides(),
             'themeTiles'        => $themeTiles,
@@ -47,7 +48,8 @@ class HomeController extends Controller
             'topRated'          => $this->content->getTopRated(),
             'comingSoon'        => $this->content->getComingSoon(),
             'forAdults'         => $this->content->getForAdults(),
-            'themeSpotlight'    => $this->content->getThemeSpotlight(),
+            'themeSpotlight'    => $themeSpotlight,
+            'spotlightSets'     => $themeSpotlight ? $this->content->getThemeSpotlightSets($themeSpotlight) : ['picks' => [], 'news' => []],
             'seasonalSpotlight' => $this->content->getSeasonalSpotlight(),
             'featuredMinifigs'  => $this->content->getFeaturedMinifigs(),
             'wishlistPreview'   => [],

@@ -1088,4 +1088,12 @@ return [
     'Older kids' => '小学校高学年',
     'Teens' => 'ティーン',
     'Adults' => '大人',
+    'Biggest set' => '最大のセット',
+    'Top rated · {rating}' => '高評価 · {rating}',
+    'Best price per piece' => 'ピース単価が最安',
+    'For collectors' => 'コレクター向け',
+    'Newest in this theme' => 'このテーマの新作',
+    'New release' => '新作',
+    '{n} pcs' => '{n}ピース',
+    'since {year}' => '{year}年から',
 ];

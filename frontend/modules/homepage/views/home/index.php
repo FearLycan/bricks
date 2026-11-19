@@ -16,6 +16,7 @@ use yii\web\View;
  * @var array      $comingSoon
  * @var array      $forAdults
  * @var Theme|null $themeSpotlight
+ * @var array      $spotlightSets
  * @var array|null $seasonalSpotlight
  * @var array      $featuredMinifigs
  * @var array      $wishlistPreview
@@ -93,7 +94,7 @@ $isGuest = Yii::$app->user->isGuest;
             'modifierClass' => 'bricks-section--accent-sale',
     ]) ?>
 
-    <?= $this->render('_theme-spotlight', ['theme' => $themeSpotlight]) ?>
+    <?= $this->render('_theme-spotlight', ['theme' => $themeSpotlight, 'sets' => $spotlightSets]) ?>
 
     <?= $this->render('_section-slider', [
             'title' => T::tr('Top rated'),

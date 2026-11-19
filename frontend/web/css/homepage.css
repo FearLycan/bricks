@@ -537,88 +537,287 @@
     color: rgba(255, 255, 255, 0.8);
 }
 
-/* ---------- Theme spotlight banner ---------- */
+/* ---------- Theme spotlight ----------
+   Theme colour (ThemePalette accent) under the text column, the picked sets
+   on a light tint of the same colour. On phones the colour sits on top. */
 
 .bricks-spotlight {
-    padding: 4.5rem 0;
-    color: #fff;
-    background-color: #0f172a;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    position: relative;
-    overflow: hidden;
+    padding: 2.5rem 0;
 }
 
-.bricks-spotlight-inner {
-    max-width: 620px;
+.bricks-spotlight-box {
+    display: grid;
+    grid-template-columns: minmax(260px, 1fr) 2.3fr;
+    align-items: stretch;
+    border-radius: 20px;
+    overflow: hidden;
+    background: var(--sp-soft);
+}
+
+.bricks-spotlight--solo .bricks-spotlight-box {
+    grid-template-columns: 1fr;
+}
+
+.bricks-spotlight-text {
+    min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: 0.85rem;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 2.25rem;
+    background: linear-gradient(160deg, var(--sp-accent) 0%, color-mix(in srgb, var(--sp-accent) 82%, #000) 100%);
+    background-color: var(--sp-accent);
+    color: #fff;
 }
 
 .bricks-spotlight-eyebrow {
     display: inline-block;
-    align-self: flex-start;
-    background: rgba(255, 212, 0, 0.18);
-    color: #ffd400;
+    background: rgba(255, 255, 255, 0.18);
+    color: #fff;
     text-transform: uppercase;
-    letter-spacing: 0.16em;
-    font-size: 0.72rem;
-    font-weight: 700;
-    padding: 0.35rem 0.75rem;
+    letter-spacing: 0.12em;
+    font-size: 0.7rem;
+    font-weight: 800;
+    padding: 0.4rem 0.7rem;
     border-radius: 999px;
 }
 
 .bricks-spotlight-title {
-    font-size: clamp(2rem, 4.5vw, 3rem);
-    font-weight: 800;
+    font-size: clamp(2rem, 3.6vw, 2.75rem);
+    font-weight: 900;
     line-height: 1.05;
-    margin: 0;
-    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);
-}
-
-.bricks-spotlight-description {
-    font-size: 1.05rem;
-    line-height: 1.5;
-    color: rgba(255, 255, 255, 0.86);
-    margin: 0;
-    max-width: 55ch;
+    margin: 0.85rem 0 0.4rem;
+    color: #fff;
 }
 
 .bricks-spotlight-meta {
     display: flex;
     flex-wrap: wrap;
-    gap: 1.25rem;
+    gap: 0.9rem;
     font-size: 0.95rem;
-    color: rgba(255, 255, 255, 0.8);
-    margin-top: 0.25rem;
+    color: rgba(255, 255, 255, 0.85);
 }
 
 .bricks-spotlight-cta {
-    display: inline-flex;
-    align-items: center;
-    align-self: flex-start;
+    display: inline-block;
     background: #ff8a00;
     color: #1a1a1a;
     font-weight: 700;
-    padding: 0.75rem 1.5rem;
+    padding: 0.7rem 1.4rem;
     border-radius: 999px;
     text-decoration: none;
-    margin-top: 0.75rem;
-    transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    margin-top: 1.25rem;
+    transition: background 0.2s ease;
 }
 
 .bricks-spotlight-cta:hover {
     background: #ffd400;
     color: #1a1a1a;
-    transform: translateX(3px);
-    box-shadow: 0 12px 26px rgba(255, 138, 0, 0.4);
 }
 
-@media (max-width: 575.98px) {
+.bricks-spotlight-news {
+    margin-top: 1.5rem;
+    max-width: 100%;
+}
+
+.bricks-spotlight-news-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 0.5rem;
+}
+
+.bricks-spotlight-chips {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+}
+
+.bricks-spotlight-chip {
+    max-width: 100%;
+    padding: 0.45rem 0.75rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.95);
+    color: #1a1a2e;
+    font-size: 0.82rem;
+    font-weight: 600;
+    line-height: 1.25;
+    text-decoration: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.bricks-spotlight-chip:hover {
+    background: #fff;
+    color: #1a1a2e;
+}
+
+.bricks-spotlight-chip b {
+    color: var(--sp-accent);
+    margin-right: 0.4rem;
+}
+
+.bricks-spotlight-sets {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    align-content: center;
+    gap: 0.9rem;
+    padding: 2.25rem;
+}
+
+.bricks-spotlight-card {
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    border-radius: 14px;
+    overflow: hidden;
+    color: #1a1a2e;
+    text-decoration: none;
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.1);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.bricks-spotlight-card:hover {
+    color: #1a1a2e;
+    transform: translateY(-3px);
+    box-shadow: 0 14px 28px rgba(15, 23, 42, 0.16);
+}
+
+.bricks-spotlight-card-img {
+    position: relative;
+    display: block;
+    aspect-ratio: 4 / 3;
+}
+
+.bricks-spotlight-card-img img {
+    position: absolute;
+    inset: 0.75rem;
+    width: calc(100% - 1.5rem);
+    height: calc(100% - 1.5rem);
+    object-fit: contain;
+}
+
+.bricks-spotlight-badge {
+    position: absolute;
+    top: 0.6rem;
+    left: 0.6rem;
+    z-index: 1;
+    max-width: calc(100% - 1.2rem);
+    padding: 0.35rem 0.55rem;
+    border-radius: 6px;
+    background: var(--sp-soft);
+    color: var(--sp-accent);
+    font-size: 0.7rem;
+    font-weight: 700;
+    line-height: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.bricks-spotlight-badge.is-warn {
+    background: #fff1e0;
+    color: #a14d00;
+}
+
+.bricks-spotlight-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    flex: 1;
+    padding: 0.65rem 0.75rem 0.75rem;
+    border-top: 1px solid #eef0f3;
+}
+
+.bricks-spotlight-card-name {
+    font-size: 0.85rem;
+    font-weight: 700;
+    line-height: 1.25;
+    min-height: 2.1rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.bricks-spotlight-card-meta {
+    font-size: 0.75rem;
+    color: #5f6472;
+}
+
+.bricks-spotlight-card-price {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0 0.4rem;
+    margin-top: auto;
+}
+
+.bricks-spotlight-card-price b {
+    font-size: 0.95rem;
+    font-weight: 800;
+}
+
+.bricks-spotlight-card-price small {
+    font-size: 0.72rem;
+    color: #5f6472;
+}
+
+@media (max-width: 1199.98px) {
+    .bricks-spotlight-box {
+        grid-template-columns: 1fr;
+    }
+
+    .bricks-spotlight-chips {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+}
+
+@media (max-width: 767.98px) {
     .bricks-spotlight {
-        padding: 3rem 0;
+        padding: 2rem 0;
+    }
+
+    .bricks-spotlight-box {
+        grid-template-columns: 1fr;
+    }
+
+    .bricks-spotlight-text {
+        padding: 1.5rem 1.4rem;
+    }
+
+    .bricks-spotlight-chips {
+        flex-direction: row;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        padding-bottom: 0.25rem;
+        scrollbar-width: none;
+    }
+
+    .bricks-spotlight-chip {
+        flex: 0 0 auto;
+        max-width: 240px;
+    }
+
+    .bricks-spotlight-sets {
+        grid-template-columns: none;
+        grid-auto-flow: column;
+        grid-auto-columns: 62%;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        padding: 1.25rem 1.4rem 1.4rem;
+        scroll-padding-left: 1.4rem;
+        scrollbar-width: none;
+    }
+
+    .bricks-spotlight-card {
+        scroll-snap-align: start;
     }
 }
 

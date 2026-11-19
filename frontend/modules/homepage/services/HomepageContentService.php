@@ -584,6 +584,90 @@ class HomepageContentService
     }
 
     /**
+     * Sets shown inside the theme spotlight: up to 4 picks, each with the
+     * reason it was picked, plus the newest sets as text links (no set
+     * appears twice). Only sets on sale now: launched, not retired, with a
+     * main image. A set with no exit date counts as on sale only if it came
+     * out this year or last year (older ones are usually gone from shelves).
+     *
+     * Badges: biggest, top-rated (rating >= 4.0), best price per piece
+     * (300+ pieces), retiring soon. An empty slot is filled with the next
+     * biggest set: "for collectors" if 18+, otherwise no badge.
+     *
+     * @return array{picks: list<array{set: Set, badge: ?string}>, news: Set[]}
+     */
+    public function getThemeSpotlightSets(Theme $theme, int $picks = 4, int $news = 3): array
+    {
+        $key = 'homepage.themeSpotlightSets.v1.' . (int)$theme->id . '.' . date('Y-m-d');
+
+        return $this->cached($key, function () use ($theme, $picks, $news): array {
+            $today = date('Y-m-d');
+            $pool = Set::find()
+                ->alias('s')
+                ->select(['s.*'])
+                ->innerJoin(['mi' => SetImage::tableName()], 'mi.set_id = s.id AND mi.kind = :kind AND mi.type = :type AND mi.url <> \'\'', [
+                    ':kind' => KindEnum::MAIN->value,
+                    ':type' => TypeEnum::IMAGE->value,
+                ])
+                ->andWhere(['s.theme_id' => (int)$theme->id])
+                ->andWhere(['s.status' => StatusEnum::ACTIVE->value])
+                ->andWhere(['not', ['s.launch_date' => null]])
+                ->andWhere(['<=', 's.launch_date', $today])
+                ->andWhere(['or',
+                    ['>=', 's.exit_date', $today],
+                    ['and', ['s.exit_date' => null], ['>=', 's.year', (int)date('Y') - 1]],
+                ])
+                ->andWhere(['>', 's.pieces', 0])
+                ->with(['mainImageRelation', 'setPrices'])
+                ->groupBy('s.id')
+                ->limit(300)
+                ->all();
+
+            $taken = [];
+            $result = [];
+            $take = function (?Set $set, ?string $badge) use (&$taken, &$result): void {
+                if ($set !== null && !isset($taken[(int)$set->id])) {
+                    $taken[(int)$set->id] = true;
+                    $result[] = ['set' => $set, 'badge' => $badge];
+                }
+            };
+            $best = function (callable $filter, callable $compare) use ($pool, &$taken): ?Set {
+                $candidates = array_values(array_filter($pool, fn(Set $s) => !isset($taken[(int)$s->id]) && $filter($s)));
+                usort($candidates, $compare);
+
+                return $candidates[0] ?? null;
+            };
+            $byPieces = fn(Set $a, Set $b) => [(int)$b->pieces, (int)$b->id] <=> [(int)$a->pieces, (int)$a->id];
+            $ppp = fn(Set $s) => (int)$s->price / (int)$s->pieces;
+            $soon = date('Y-m-d', strtotime('+' . Set::RETIRING_SOON_DAYS . ' days'));
+
+            $take($best(fn(Set $s) => true, $byPieces), 'biggest');
+            $take($best(
+                fn(Set $s) => (float)$s->rating >= 4.0,
+                fn(Set $a, Set $b) => [(float)$b->rating, (int)$b->pieces] <=> [(float)$a->rating, (int)$a->pieces],
+            ), 'top-rated');
+            $take($best(
+                fn(Set $s) => (int)$s->price > 0 && (int)$s->pieces >= 300,
+                fn(Set $a, Set $b) => $ppp($a) <=> $ppp($b),
+            ), 'best-ppp');
+            $take($best(
+                fn(Set $s) => (int)$s->price > 0 && $s->exit_date !== null && $s->exit_date <= $soon,
+                fn(Set $a, Set $b) => [(string)$a->exit_date, -(int)$a->pieces] <=> [(string)$b->exit_date, -(int)$b->pieces],
+            ), 'retiring');
+
+            while (count($result) < $picks && ($set = $best(fn(Set $s) => (int)$s->price > 0, $byPieces)) !== null) {
+                $take($set, (int)$set->age >= 18 ? 'collectors' : null);
+            }
+            $result = array_slice($result, 0, $picks);
+
+            $newest = array_values(array_filter($pool, fn(Set $s) => !isset($taken[(int)$s->id])));
+            usort($newest, fn(Set $a, Set $b) => [(string)$b->launch_date, (int)$b->id] <=> [(string)$a->launch_date, (int)$a->id]);
+
+            return ['picks' => $result, 'news' => array_slice($newest, 0, $news)];
+        }, $this->cacheTtlCatalog);
+    }
+
+    /**
      * @return SetMinifig[]
      */
     public function getFeaturedMinifigs(int $limit = 8): array
