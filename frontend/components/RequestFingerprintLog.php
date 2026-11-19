@@ -34,7 +34,7 @@ final class RequestFingerprintLog
             if (!$request instanceof Request
                 || !in_array($request->method, ['GET', 'HEAD'], true)
                 || $request->isAjax
-                || $response->format !== Response::FORMAT_HTML
+                || ($response->format !== Response::FORMAT_HTML && BotGuard::verdict()['block'] === null)
             ) {
                 return;
             }
@@ -68,6 +68,7 @@ final class RequestFingerprintLog
                 'ref'   => $referer !== '' ? $cut((string)parse_url($referer, PHP_URL_HOST), 80) : '',
                 'ck'    => array_slice(array_keys($_COOKIE), 0, 12),
                 'bg'    => BotGuard::isAutomated(),
+                'bgr'   => BotGuard::reason(),
             ];
 
             $dir = Yii::getAlias('@runtime/fingerprints');

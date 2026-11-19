@@ -78,8 +78,12 @@ listy do selectów `getAvailableYearsList/ThemesList/SubthemesList`.
 
 `brickset/sync-sets`, `brickset/sync-recently-updated-sets`, `brickset/sync-instructions`, `brickset/sync-themes`,
 `rebrickable/sync-minifigs`, `ali-express-review/sync|fetch`, `set-offer-discovery/queue-matches`,
-`set-offer-import/process-pending`, `sitemap/generate`, `set/rebuild-slugs`, `tag/recount-sets`, `theme/recount-sets`.
+`set-offer-import/process-pending`, `sitemap/generate`, `bot-guard/update-ranges` (co tydzień; listy IP centrów danych dla `BotGuard`), `fingerprint/report`, `set/rebuild-slugs`, `tag/recount-sets`, `theme/recount-sets`.
 Integracja AliExpress: `common/components/aliexpress/*` (klient API, resolver linków, matcher, importer).
+
+## Ruch botów
+
+`frontend/components/BotGuard` decyduje per zapytanie: człowiek (GA + AdSense), automat (strona bez tagów: zadeklarowany bot, brak `Accept-Language` i `Sec-Fetch-*`, IP centrum danych poza iCloud Private Relay) albo blokada (pusty UA, `params['botGuard.blockCidrs']` → 403, limit `botGuard.rateLimit`/5 min → 429; zweryfikowane DNS-em wyszukiwarki zwolnione). Wymuszane w `on beforeRequest`. W layoucie tagi tylko gdy `!BotGuard::isAutomated()`.
 
 ## Frontend
 

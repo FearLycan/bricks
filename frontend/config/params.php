@@ -13,5 +13,16 @@ return [
 
     // Bot diagnostics: page-view fingerprints in @runtime/fingerprints until
     // this moment (UTC), then off. '' = off. See RequestFingerprintLog.
-    'fingerprintLog.until' => '2026-11-20 12:00:00 UTC',
+    'fingerprintLog.until' => '2026-11-23 12:00:00 UTC',
+
+    // BotGuard (see frontend\components\BotGuard): networks answered with 403
+    // (abusive scrapers seen in the fingerprint log, 11.2026) and page views
+    // allowed per IP per 5 minutes before 429 (verified search bots exempt).
+    'botGuard.blockCidrs' => [
+        '34.89.140.28/32',   // Google Cloud, ~4.7k views/day on the same pages, fake Android UA
+        '43.172.0.0/15',     // Tencent Cloud
+        '47.79.0.0/16',      // Alibaba Cloud
+        '47.82.0.0/16',      // Alibaba Cloud
+    ],
+    'botGuard.rateLimit' => 60,
 ];

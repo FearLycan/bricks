@@ -47,7 +47,7 @@ class FingerprintController extends Controller
             return ExitCode::OK;
         }
 
-        $ips = $prefix16 = $prefix24 = $uas = $anomaly = $ipPaths = [];
+        $ips = $prefix16 = $prefix24 = $uas = $anomaly = $ipPaths = $verdicts = $humanIps = [];
         $tagged = $withCookies = 0;
         foreach ($rows as $r) {
             $ip = (string)$r['ip'];
@@ -67,6 +67,11 @@ class FingerprintController extends Controller
             ]);
             $anomaly[$key] = ($anomaly[$key] ?? 0) + 1;
             $tagged += empty($r['bg']) ? 1 : 0;
+            $v = (string)($r['bgr'] ?? (empty($r['bg']) ? 'human' : 'declared'));
+            $verdicts[$v] = ($verdicts[$v] ?? 0) + 1;
+            if ($v === 'human') {
+                $humanIps[$ip] = ($humanIps[$ip] ?? 0) + 1;
+            }
             $withCookies += !empty($r['ck']) ? 1 : 0;
         }
 
@@ -75,6 +80,15 @@ class FingerprintController extends Controller
             $total, $hours, count($ips), round(100 * ($total - $withCookies) / $total), round(100 * $tagged / $total)
         ));
 
+        $this->table('BotGuard verdict (human = GA/AdSense load)', $verdicts, $top);
+        $this->table('Top IPs judged human (check for missed bots)', $humanIps, 15, function (string $ip) use ($ipPaths, $rows): string {
+            foreach ($rows as $r) {
+                if ($r['ip'] === $ip) {
+                    return count($ipPaths[$ip]) . ' pages  ' . $this->uaShort((string)$r['ua']);
+                }
+            }
+            return '';
+        });
         $this->table('Top IPs (views, distinct pages, UA)', $ips, $top, function (string $ip) use ($ipPaths, $rows): string {
             $ua = '';
             foreach ($rows as $r) {
