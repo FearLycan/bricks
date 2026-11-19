@@ -16,6 +16,9 @@ User-agent: DataForSeoBot
 User-agent: Amazonbot
 User-agent: ImagesiftBot
 User-agent: ElevenlabsCrawler
+# Meta's AI training crawler: ~45% of all page views (11.2026), Meta AI
+# rarely links to sources. Link previews (facebookexternalhit) stay allowed.
+User-agent: meta-externalagent
 Disallow: /
 
 User-agent: *
