@@ -42,11 +42,11 @@ class Alert extends Widget
      * @var array<string, string> Map of a flash key to Bootstrap Icons class.
      */
     public array $alertIcons = [
-        'error'   => 'bi-exclamation-octagon-fill',
-        'danger'  => 'bi-exclamation-octagon-fill',
-        'success' => 'bi-check-circle-fill',
-        'info'    => 'bi-info-circle-fill',
-        'warning' => 'bi-exclamation-triangle-fill',
+        'error'   => 'ph-fill ph-warning-octagon',
+        'danger'  => 'ph-fill ph-warning-octagon',
+        'success' => 'ph-fill ph-check-circle',
+        'info'    => 'ph-fill ph-info',
+        'warning' => 'ph-fill ph-warning',
     ];
 
     /**
@@ -119,7 +119,7 @@ class Alert extends Widget
     private function renderInlineBody(string $iconClass, string $message): string
     {
         $icon = $iconClass !== ''
-            ? '<i class="bi ' . $iconClass . ' me-2 flex-shrink-0"></i>'
+            ? '<i class="' . $iconClass . ' me-2 flex-shrink-0"></i>'
             : '';
 
         return $icon . '<span>' . $message . '</span>';
@@ -145,7 +145,7 @@ class Alert extends Widget
         $bg = $this->toastBackgrounds[$type] ?? 'text-bg-secondary';
         $iconClass = $this->alertIcons[$type] ?? '';
         $icon = $iconClass !== ''
-            ? '<i class="bi ' . $iconClass . ' me-2 flex-shrink-0 fs-5"></i>'
+            ? '<i class="' . $iconClass . ' me-2 flex-shrink-0 fs-5"></i>'
             : '';
 
         $body = '<div class="toast-body d-flex align-items-center">'

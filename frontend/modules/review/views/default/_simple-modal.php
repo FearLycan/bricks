@@ -33,7 +33,7 @@ $i18n = [
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
                         <h5 class="modal-title d-flex align-items-center gap-2 mb-1">
-                            <i class="bi bi-lightning-charge-fill text-warning"></i>
+                            
                             <?= T::tr('Quick rating') ?>
                         </h5>
                         <div class="small text-body-secondary">
@@ -59,7 +59,7 @@ $i18n = [
                     </div>
                     <div class="review-stars" data-role="score-stars" aria-hidden="true">
                         <?php for ($i = 0; $i < 5; $i++): ?>
-                            <span class="review-star"><i class="bi bi-star"></i></span>
+                            <span class="review-star"><i class="ph ph-star"></i></span>
                         <?php endfor; ?>
                     </div>
                     <input
@@ -81,7 +81,7 @@ $i18n = [
                     <div class="form-check review-owns-check">
                         <input class="form-check-input" type="checkbox" id="reviewOwnsSet" data-role="owns-set" checked>
                         <label class="form-check-label" for="reviewOwnsSet">
-                            <i class="bi bi-bookmark-check me-1"></i>
+                            
                             <?= T::tr('I own this set: add it to my collection') ?>
                         </label>
                     </div>
@@ -123,7 +123,7 @@ $i18n = [
             </div>
             <div class="modal-footer">
                 <a href="#" role="button" data-modal-url="<?= Html::encode($choiceUrl) ?>" class="btn btn-link text-body-secondary me-auto js-load-modal" data-target="#mainModal">
-                    <i class="bi bi-arrow-left me-1"></i><?= T::tr('Change rating type') ?>
+                    <i class="ph ph-arrow-left me-1"></i><?= T::tr('Change rating type') ?>
                 </a>
                 <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal"><?= T::tr('Cancel') ?></button>
                 <button type="submit" class="btn btn-primary" data-role="submit">

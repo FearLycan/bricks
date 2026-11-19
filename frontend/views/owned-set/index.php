@@ -29,12 +29,11 @@ $hasItems = !empty($items);
 
 <div class="col-12 mt-4">
     <h1 class="page-title mb-3">
-        <i class="bi bi-box-seam-fill text-primary me-2"></i>
+        
         <?= Html::encode($this->title) ?>
     </h1>
 
     <div class="owned-set-empty js-owned-set-empty-template <?= $hasItems ? 'd-none' : '' ?>">
-        <div class="owned-set-empty-icon"><i class="bi bi-box-seam"></i></div>
         <p class="mb-2 fw-semibold"><?= Html::encode(T::tr('You have no owned sets yet')) ?></p>
         <p class="mb-3"><?= Html::encode(T::tr('Browse the catalog and tap the box icon on any set you already own.')) ?></p>
         <?= Html::a(T::tr('Browse LEGO sets'), ['/lego'], ['class' => 'btn btn-primary btn-sm']) ?>
@@ -66,7 +65,7 @@ $hasItems = !empty($items);
                         data-set-id="<?= (int)$set->id ?>"
                         data-remove-url="<?= Html::encode($removeUrl) ?>"
                         aria-label="<?= Html::encode(T::tr('Remove from owned sets')) ?>">
-                    <i class="bi bi-trash"></i>
+                    <i class="ph ph-trash"></i>
                     <span><?= Html::encode(T::tr('Remove')) ?></span>
                 </button>
             </div>

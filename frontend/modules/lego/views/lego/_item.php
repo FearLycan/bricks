@@ -30,7 +30,7 @@ $isOwned = !$isGuest && OwnedSet::isOwnedByCurrentUser((int)$model->id);
                         aria-pressed="<?= $isOwned ? 'true' : 'false' ?>"
                         aria-label="<?= Html::encode(T::tr('Toggle owned set')) ?>"
                         title="<?= Html::encode($isOwned ? T::tr('Remove from owned sets') : T::tr('Add to owned sets')) ?>">
-                    <i class="bi <?= $isOwned ? 'bi-box-seam-fill' : 'bi-box-seam' ?>"></i>
+                    <i class="<?= $isOwned ? 'ph-fill ph-package' : 'ph ph-package' ?>"></i>
                 </button>
             <?php endif; ?>
             <?php if (!$isGuest): ?>
@@ -41,7 +41,7 @@ $isOwned = !$isGuest && OwnedSet::isOwnedByCurrentUser((int)$model->id);
                         aria-pressed="<?= $isWishlisted ? 'true' : 'false' ?>"
                         aria-label="<?= Html::encode(T::tr('Toggle wishlist')) ?>"
                         title="<?= Html::encode($isWishlisted ? T::tr('Remove from wishlist') : T::tr('Add to wishlist')) ?>">
-                    <i class="bi <?= $isWishlisted ? 'bi-heart-fill' : 'bi-heart' ?>"></i>
+                    <i class="<?= $isWishlisted ? 'ph-fill ph-heart' : 'ph ph-heart' ?>"></i>
                 </button>
             <?php endif; ?>
             <img src="<?= $model->getMainImage()->url ?? "https://placehold.co/300x220?text={$model->number}" ?>"
@@ -82,11 +82,11 @@ $isOwned = !$isGuest && OwnedSet::isOwnedByCurrentUser((int)$model->id);
                     <?php $ratingHalf = ((float)$model->rating - $ratingFull) >= 0.5; ?>
                     <?php for ($i = 1; $i <= 5; $i++): ?>
                         <?php if ($i <= $ratingFull): ?>
-                            <i class="bi bi-star-fill"></i>
+                            <i class="ph-fill ph-star"></i>
                         <?php elseif ($ratingHalf && $i === $ratingFull + 1): ?>
-                            <i class="bi bi-star-half"></i>
+                            <i class="ph-fill ph-star-half"></i>
                         <?php else: ?>
-                            <i class="bi bi-star"></i>
+                            <i class="ph ph-star"></i>
                         <?php endif; ?>
                     <?php endfor; ?>
                     <span class="set-card-rating-value"><?= Html::encode(number_format((float)$model->rating, 1)) ?></span>
@@ -122,25 +122,25 @@ $isOwned = !$isGuest && OwnedSet::isOwnedByCurrentUser((int)$model->id);
             <div class="set-card-meta">
                 <?php if ($model->age !== null): ?>
                     <span class="set-card-meta-item" title="<?= T::tr('Age restriction') ?>">
-                        <i class="bi bi-cake me-1"></i>
+                        <i class="ph ph-cake me-1"></i>
                         <?= Html::encode($model->age) ?>+
                     </span>
                 <?php endif; ?>
                 <?php if ($model->pieces !== null): ?>
                     <span class="set-card-meta-item" title="<?= T::tr('Pieces') ?>">
-                        <i class="bi bi-columns-gap me-1"></i>
+                        <i class="ph ph-puzzle-piece me-1"></i>
                         <?= Html::encode($model->pieces) ?>
                     </span>
                 <?php endif; ?>
                 <?php if ($model->year !== null): ?>
                     <span class="set-card-meta-item" title="<?= T::tr('Release year') ?>">
-                        <i class="bi bi-calendar-check me-1"></i>
+                        <i class="ph ph-calendar-check me-1"></i>
                         <?= Html::encode($model->year) ?>
                     </span>
                 <?php endif; ?>
                 <?php if ($model->minifigures): ?>
                     <span class="set-card-meta-item" title="<?= T::tr("Minifigures") ?>">
-                        <i class="bi bi-people me-1"></i>
+                        <i class="ph ph-users me-1"></i>
                         <?= Html::encode($model->minifigures) ?>
                     </span>
                 <?php endif; ?>

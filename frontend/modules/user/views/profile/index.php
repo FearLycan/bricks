@@ -48,13 +48,13 @@ $joinedFormatted = Yii::$app->formatter->asDate($createdAt->format('Y-m-d'), 'lo
     <div class="user-page-header d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4">
         <div class="user-page-header-text">
             <h1 class="page-title mb-1">
-                <i class="bi bi-person-vcard-fill text-primary me-2"></i>
+                
                 <?= Html::encode(T::tr('My profile')) ?>
             </h1>
             <p class="text-muted mb-0"><?= Html::encode(T::tr('A quick look at your account on BrickAtlas.')) ?></p>
         </div>
         <?= Html::a(
-            '<i class="bi bi-sliders me-2"></i>' . T::tr('Settings'),
+            T::tr('Settings'),
             ['/user/settings'],
             ['class' => 'btn btn-primary', 'encode' => false]
         ) ?>
@@ -70,24 +70,24 @@ $joinedFormatted = Yii::$app->formatter->asDate($createdAt->format('Y-m-d'), 'lo
                         <p class="user-page-email"><?= Html::encode((string)$user->email) ?></p>
                         <div class="user-page-pills">
                             <span class="user-page-pill user-page-pill--member">
-                                <i class="bi bi-hash"></i><?= Html::encode($memberNumber) ?>
+                                <?= Html::encode($memberNumber) ?>
                             </span>
                             <?php if ($user->isActive()): ?>
                                 <span class="user-page-pill user-page-pill--active">
-                                    <i class="bi bi-check-circle-fill"></i><?= Html::encode($user->getStatusLabel()) ?>
+                                    <?= Html::encode($user->getStatusLabel()) ?>
                                 </span>
                             <?php else: ?>
                                 <span class="user-page-pill">
-                                    <i class="bi bi-circle"></i><?= Html::encode($user->getStatusLabel()) ?>
+                                    <?= Html::encode($user->getStatusLabel()) ?>
                                 </span>
                             <?php endif; ?>
                             <?php if ($user->isAdmin()): ?>
                                 <span class="user-page-pill user-page-pill--admin">
-                                    <i class="bi bi-shield-fill"></i><?= Html::encode($user->getRoleLabel()) ?>
+                                    <?= Html::encode($user->getRoleLabel()) ?>
                                 </span>
                             <?php else: ?>
                                 <span class="user-page-pill">
-                                    <i class="bi bi-person"></i><?= Html::encode($user->getRoleLabel()) ?>
+                                    <?= Html::encode($user->getRoleLabel()) ?>
                                 </span>
                             <?php endif; ?>
                         </div>
@@ -98,7 +98,7 @@ $joinedFormatted = Yii::$app->formatter->asDate($createdAt->format('Y-m-d'), 'lo
             <section class="user-page-card">
                 <div class="d-flex justify-content-between align-items-baseline mb-3">
                     <h3 class="user-page-card-title">
-                        <i class="bi bi-info-circle-fill"></i><?= Html::encode(T::tr('Account details')) ?>
+                        <?= Html::encode(T::tr('Account details')) ?>
                     </h3>
                     <span class="user-page-eyebrow"><?= Html::encode(T::tr('Identity')) ?></span>
                 </div>
@@ -125,7 +125,7 @@ $joinedFormatted = Yii::$app->formatter->asDate($createdAt->format('Y-m-d'), 'lo
             <section class="user-page-card mb-3">
                 <div class="d-flex justify-content-between align-items-baseline mb-3">
                     <h3 class="user-page-card-title">
-                        <i class="bi bi-calendar-event-fill"></i><?= Html::encode(T::tr('Membership tenure')) ?>
+                        <?= Html::encode(T::tr('Membership tenure')) ?>
                     </h3>
                     <span class="user-page-eyebrow"><?= Html::encode(T::tr('Since')) ?> <?= Html::encode($joinedFormatted) ?></span>
                 </div>
@@ -152,7 +152,6 @@ $joinedFormatted = Yii::$app->formatter->asDate($createdAt->format('Y-m-d'), 'lo
 
             <div class="user-page-stats-row">
                 <a class="user-page-stat-tile user-page-stat-tile--compact" href="<?= Url::to(['/owned-set/index']) ?>">
-                    <span class="user-page-stat-icon user-page-stat-icon--owned"><i class="bi bi-box-seam-fill"></i></span>
                     <div class="user-page-stat-body">
                         <div class="user-page-stat-value"><?= (int)$ownedCount ?></div>
                         <div class="user-page-stat-label"><?= Html::encode(T::tr('Owned sets')) ?></div>
@@ -160,7 +159,6 @@ $joinedFormatted = Yii::$app->formatter->asDate($createdAt->format('Y-m-d'), 'lo
                 </a>
 
                 <a class="user-page-stat-tile user-page-stat-tile--compact" href="<?= Url::to(['/wishlist/index']) ?>">
-                    <span class="user-page-stat-icon user-page-stat-icon--wishlist"><i class="bi bi-heart-fill"></i></span>
                     <div class="user-page-stat-body">
                         <div class="user-page-stat-value"><?= (int)$wishlistCount ?></div>
                         <div class="user-page-stat-label"><?= Html::encode(T::tr('On your wishlist')) ?></div>
@@ -168,7 +166,6 @@ $joinedFormatted = Yii::$app->formatter->asDate($createdAt->format('Y-m-d'), 'lo
                 </a>
 
                 <a class="user-page-stat-tile user-page-stat-tile--compact" href="<?= Url::to(['/user/reviews']) ?>">
-                    <span class="user-page-stat-icon user-page-stat-icon--reviews"><i class="bi bi-journal-richtext"></i></span>
                     <div class="user-page-stat-body">
                         <div class="user-page-stat-value"><?= (int)$reviewCount ?></div>
                         <div class="user-page-stat-label"><?= Html::encode(T::tr('Your reviews')) ?></div>
@@ -193,7 +190,7 @@ $joinedFormatted = Yii::$app->formatter->asDate($createdAt->format('Y-m-d'), 'lo
         <section class="user-page-card user-review-card mt-4">
             <div class="d-flex justify-content-between align-items-baseline mb-3 flex-wrap gap-2">
                 <h3 class="user-page-card-title">
-                    <i class="bi bi-stars text-warning"></i><?= Html::encode(T::tr('Your review profile')) ?>
+                    <?= Html::encode(T::tr('Your review profile')) ?>
                 </h3>
                 <span class="user-page-eyebrow">
                     <?= T::tr('{n, plural, =1{# review} other{# reviews}}', ['n' => $totalReviewCount]) ?>
@@ -205,7 +202,7 @@ $joinedFormatted = Yii::$app->formatter->asDate($createdAt->format('Y-m-d'), 'lo
 
             <?php if (!$hasEnoughForWidgets): ?>
                 <div class="user-review-empty">
-                    <i class="bi bi-info-circle"></i>
+                    
                     <div>
                         <div class="fw-semibold mb-1"><?= Html::encode(T::tr('A few more detailed reviews unlock your taste profile')) ?></div>
                         <div class="small text-body-secondary">
@@ -219,7 +216,7 @@ $joinedFormatted = Yii::$app->formatter->asDate($createdAt->format('Y-m-d'), 'lo
                         <div class="col-lg-6">
                             <div class="user-review-section">
                                 <h6 class="user-review-section-title">
-                                    <i class="bi bi-bullseye"></i><?= Html::encode(T::tr('What you look for in sets')) ?>
+                                    <?= Html::encode(T::tr('What you look for in sets')) ?>
                                 </h6>
                                 <?php foreach ($preferenceQuestionKeys as $qKey): ?>
                                     <?php if (!isset($userPreferences[$qKey])) { continue; } ?>
@@ -256,7 +253,7 @@ $joinedFormatted = Yii::$app->formatter->asDate($createdAt->format('Y-m-d'), 'lo
                         <div class="col-lg-6">
                             <div class="user-review-section">
                                 <h6 class="user-review-section-title">
-                                    <i class="bi bi-radar"></i><?= Html::encode(T::tr('How you rate vs. the community')) ?>
+                                    <?= Html::encode(T::tr('How you rate vs. the community')) ?>
                                 </h6>
                                 <div class="user-review-radar-wrap">
                                     <canvas data-role="radar-chart" data-chart="<?= Html::encode($radarChartJson) ?>"></canvas>
@@ -285,7 +282,7 @@ $joinedFormatted = Yii::$app->formatter->asDate($createdAt->format('Y-m-d'), 'lo
                 <?php if (!empty($recommendedSets)): ?>
                     <div class="user-review-section mt-4">
                         <h6 class="user-review-section-title">
-                            <i class="bi bi-people-fill"></i><?= Html::encode(T::tr('Reviewers like you also rated these highly')) ?>
+                            <?= Html::encode(T::tr('Reviewers like you also rated these highly')) ?>
                         </h6>
                         <div class="user-review-recs">
                             <?php foreach ($recommendedSets as $rec): ?>
@@ -300,11 +297,11 @@ $joinedFormatted = Yii::$app->formatter->asDate($createdAt->format('Y-m-d'), 'lo
                                         <div class="user-review-rec-meta">
                                             <?php if ($set->rating !== null): ?>
                                                 <span class="badge text-bg-warning text-dark">
-                                                    <i class="bi bi-star-fill"></i> <?= Html::encode(number_format((float)$set->rating, 2, '.', '')) ?>
+                                                    <i class="ph-fill ph-star"></i> <?= Html::encode(number_format((float)$set->rating, 2, '.', '')) ?>
                                                 </span>
                                             <?php endif; ?>
                                             <span class="small text-body-secondary">
-                                                <i class="bi bi-people"></i>
+                                                
                                                 <?= T::tr('{n, plural, =1{# peer} other{# peers}}', ['n' => (int)$rec['peer_count']]) ?>
                                             </span>
                                         </div>

@@ -61,7 +61,7 @@ $heroId = 'bricks-hero-' . uniqid();
                                 <?php if ($slide->rating): ?>
                                     <span class="dot-sep">&middot;</span>
                                     <span class="bricks-hero-slide-rating">
-                                        <i class="bi bi-star-fill"></i>
+                                        <i class="ph-fill ph-star"></i>
                                         <?= Html::encode(number_format((float)$slide->rating, 1)) ?>
                                     </span>
                                 <?php endif; ?>
@@ -83,7 +83,7 @@ $heroId = 'bricks-hero-' . uniqid();
                             <?php endif; ?>
                             <span class="bricks-hero-slide-cta">
                                 <?= Html::encode(T::tr('Compare prices')) ?>
-                                <i class="bi bi-arrow-right ms-1"></i>
+                                
                             </span>
                         </div>
                     </a>

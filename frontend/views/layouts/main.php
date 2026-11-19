@@ -174,7 +174,7 @@ if ($socialImage !== '') {
         <div class="bricks-topbar">
             <div class="text-center py-2">
                 <span class="small bricks-topbar-text">
-                    <i class="bi bi-lightning-charge-fill me-1"></i><?= T::tr('Track LEGO{sup} prices and never miss a deal', ['sup' => '<sup>®</sup>']) ?>
+                    <?= T::tr('Track LEGO{sup} prices and never miss a deal', ['sup' => '<sup>®</sup>']) ?>
                 </span>
             </div>
         </div>
@@ -197,7 +197,7 @@ if ($socialImage !== '') {
                                spellcheck="false"
                                aria-label="<?= Html::encode(T::tr('Search LEGO sets and themes')) ?>">
                         <button class="bricks-search-toggle" id="bricksSearchToggle" type="button" aria-label="<?= Html::encode(T::tr('Search')) ?>">
-                            <i class="bi bi-search" id="bricksSearchIcon"></i>
+                            <i class="ph ph-magnifying-glass" id="bricksSearchIcon"></i>
                         </button>
                     </div>
                     <div class="bricks-search-dropdown" id="bricksSearchDropdown" role="listbox" aria-live="polite"></div>
@@ -218,18 +218,18 @@ if ($socialImage !== '') {
                             <?php // Until there are real deals, point the slot at a page with content. ?>
                             <?php if ((new HomepageContentService())->getOnSale(1) !== []): ?>
                                 <a class="bricks-nav-link nav-link" href="<?= Url::to(['/lego/on-sale']) ?>">
-                                    <i class="bi bi-tags me-1"></i><?= Html::encode(T::tr('On Sale')) ?>
+                                    <?= Html::encode(T::tr('On Sale')) ?>
                                 </a>
                             <?php else: ?>
                                 <a class="bricks-nav-link nav-link" href="<?= Url::to(['/lego/retiring-soon']) ?>">
-                                    <i class="bi bi-hourglass-split me-1"></i><?= Html::encode(T::tr('Retiring Soon')) ?>
+                                    <?= Html::encode(T::tr('Retiring Soon')) ?>
                                 </a>
                             <?php endif; ?>
                         </li>
                         <?= $this->render('_categories-dropdown') ?>
                         <li class="nav-item">
                             <a class="bricks-nav-link nav-link bricks-wizard-nav-btn" href="#" data-bs-toggle="modal" data-bs-target="#wizardModal">
-                                <i class="bi bi-magic me-1"></i><?= Html::encode(T::tr('Find a Set')) ?>
+                                <?= Html::encode(T::tr('Find a Set')) ?>
                             </a>
                         </li>
                     </ul>
@@ -321,7 +321,7 @@ if ($socialImage !== '') {
             class="bricks-scroll-top"
             aria-label="<?= Html::encode(T::tr('Back to top')) ?>"
             title="<?= Html::encode(T::tr('Back to top')) ?>">
-        <i class="bi bi-arrow-up"></i>
+        <i class="ph ph-arrow-up"></i>
     </button>
 
     <?= $this->renderFile(Yii::$app->getModule('wizard')->getViewPath() . '/_modal.php') ?>

@@ -48,7 +48,7 @@ $grouped = $grouped ?? false;
         <div class="new-arrivals-month-section" data-key="<?= $key ?>">
             <div class="new-arrivals-month-header">
                 <a href="<?= Html::encode(Url::to(['/lego', 'year' => date('Y', strtotime("$key-01")), 'month' => date('n', strtotime("$key-01"))])) ?>" class="new-arrivals-month-label">
-                    <i class="bi bi-calendar3 me-2"></i>
+                    
                     <?= Html::encode(Yii::$app->formatter->asDate(strtotime("$key-01"), 'LLLL yyyy')) ?>
                 </a>
             </div>

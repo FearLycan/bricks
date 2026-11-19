@@ -24,7 +24,7 @@ final class LegoFaq
             [
                 'slug' => 'about',
                 'name' => T::tr('About BrickAtlas'),
-                'icon' => 'bi-info-circle-fill',
+                'icon' => 'ph-fill ph-info',
                 'items' => [
                     [
                         'q' => T::tr('What is BrickAtlas?'),
@@ -47,7 +47,7 @@ final class LegoFaq
             [
                 'slug' => 'prices',
                 'name' => T::tr('Prices and offers'),
-                'icon' => 'bi-tags-fill',
+                'icon' => 'ph-fill ph-tag',
                 'items' => [
                     [
                         'q' => T::tr('Where do you get prices from?'),
@@ -78,7 +78,7 @@ final class LegoFaq
             [
                 'slug' => 'account',
                 'name' => T::tr('Account and access'),
-                'icon' => 'bi-person-circle',
+                'icon' => 'ph ph-user-circle',
                 'items' => [
                     [
                         'q' => T::tr('How do I create an account?'),
@@ -101,7 +101,7 @@ final class LegoFaq
             [
                 'slug' => 'collection',
                 'name' => T::tr('Wishlist and collection'),
-                'icon' => 'bi-heart-fill',
+                'icon' => 'ph-fill ph-heart',
                 'items' => [
                     [
                         'q' => T::tr('How do I add a set to my wishlist?'),
@@ -124,7 +124,7 @@ final class LegoFaq
             [
                 'slug' => 'reviews',
                 'name' => T::tr('Reviews and ratings'),
-                'icon' => 'bi-star-fill',
+                'icon' => 'ph-fill ph-star',
                 'items' => [
                     [
                         'q' => T::tr('How do I review a set?'),
@@ -147,7 +147,7 @@ final class LegoFaq
             [
                 'slug' => 'privacy',
                 'name' => T::tr('Data and privacy'),
-                'icon' => 'bi-shield-lock-fill',
+                'icon' => 'ph-fill ph-shield-check',
                 'items' => [
                     [
                         'q' => T::tr('What data do you collect about me?'),

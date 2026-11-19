@@ -50,12 +50,12 @@ $firstKey = array_key_first($nonEmpty);
                                     <?php elseif ($cover): ?>
                                         <img class="bricks-ctile-photo" src="<?= Html::encode($cover) ?>" alt="" loading="lazy" decoding="async">
                                     <?php else: ?>
-                                        <i class="bi <?= Html::encode($tile['icon'] ?? 'bi-grid-3x3-gap') ?> bricks-ctile-icon" aria-hidden="true"></i>
+                                        <i class="<?= Html::encode($tile['icon'] ?? 'ph ph-squares-four') ?> bricks-ctile-icon" aria-hidden="true"></i>
                                     <?php endif; ?>
                                 </span>
                                 <span class="bricks-ctile-foot">
                                     <span class="bricks-ctile-title"><?= Html::encode($tile['label']) ?></span>
-                                    <i class="bi bi-arrow-right bricks-ctile-go" aria-hidden="true"></i>
+                                    <i class="ph ph-arrow-right bricks-ctile-go" aria-hidden="true"></i>
                                 </span>
                             </a>
                         <?php endforeach; ?>

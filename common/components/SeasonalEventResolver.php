@@ -30,19 +30,19 @@ final class SeasonalEventResolver
         $today = $today ?? new \DateTimeImmutable('today');
 
         if (self::isInChristmasWindow($today)) {
-            return self::eventPayload(self::KEY_CHRISTMAS, 'Christmas', 'bi-tree', 'images/seasonal/christmas.jpg');
+            return self::eventPayload(self::KEY_CHRISTMAS, 'Christmas', 'ph ph-tree-evergreen', 'images/seasonal/christmas.jpg');
         }
 
         if (self::isInHalloweenWindow($today)) {
-            return self::eventPayload(self::KEY_HALLOWEEN, 'Halloween', 'bi-emoji-dizzy', 'images/seasonal/halloween.jpg');
+            return self::eventPayload(self::KEY_HALLOWEEN, 'Halloween', 'ph ph-ghost', 'images/seasonal/halloween.jpg');
         }
 
         if (self::isInEasterWindow($today)) {
-            return self::eventPayload(self::KEY_EASTER, 'Easter', 'bi-egg', 'images/seasonal/easter.jpg');
+            return self::eventPayload(self::KEY_EASTER, 'Easter', 'ph ph-egg', 'images/seasonal/easter.jpg');
         }
 
         if (self::isInValentineWindow($today)) {
-            return self::eventPayload(self::KEY_VALENTINE, 'Valentine', 'bi-heart-fill', 'images/seasonal/valentines.jpg');
+            return self::eventPayload(self::KEY_VALENTINE, 'Valentine', 'ph-fill ph-heart', 'images/seasonal/valentines.jpg');
         }
 
         return null;

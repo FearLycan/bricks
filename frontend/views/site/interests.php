@@ -45,7 +45,7 @@ $resolveImage = static function (?string $image): ?string {
         'eyebrow'         => T::tr('Browse'),
         'title'           => T::tr('Shop by interest'),
         'intro'           => T::tr('Shortcuts into the catalog. Pick what you\'re into and we\'ll show matching sets.'),
-        'icon'            => 'bi-compass',
+        'icon'            => 'ph ph-compass',
         'modifier'        => 'interests',
         'showBreadcrumbs' => true,
 ]) ?>
@@ -78,7 +78,7 @@ $resolveImage = static function (?string $image): ?string {
                             <span class="interests-card-desc"><?= Html::encode($tile['description']) ?></span>
                             <span class="interests-card-go">
                                 <?= Html::encode(T::tr('Browse sets')) ?>
-                                <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                                <i class="ph ph-arrow-right" aria-hidden="true"></i>
                             </span>
                         </span>
                     </a>

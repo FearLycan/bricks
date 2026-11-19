@@ -49,12 +49,12 @@ $scoresMap = $review->isDetailed() ? $review->getScoresMap() : [];
             </span>
             <span class="my-review-stars" aria-hidden="true">
                 <?php foreach ($stars as $cls): ?>
-                    <i class="bi <?= Html::encode($cls) ?>"></i>
+                    <i class="<?= Html::encode($cls) ?>"></i>
                 <?php endforeach; ?>
             </span>
             <?php if ($dateLabel): ?>
                 <span class="text-body-secondary small">
-                    <i class="bi bi-calendar3 me-1"></i><?= Html::encode($dateLabel) ?>
+                    <?= Html::encode($dateLabel) ?>
                 </span>
             <?php endif; ?>
         </div>
@@ -83,7 +83,7 @@ $scoresMap = $review->isDetailed() ? $review->getScoresMap() : [];
 
         <div class="my-review-actions">
             <?= Html::a(
-                    '<i class="bi bi-pencil me-1"></i>' . Html::encode(T::tr('Edit')),
+                    Html::encode(T::tr('Edit')),
                     '#',
                     [
                             'role'           => 'button',
@@ -94,7 +94,7 @@ $scoresMap = $review->isDetailed() ? $review->getScoresMap() : [];
                     ]
             ) ?>
             <?= Html::a(
-                    '<i class="bi bi-box-arrow-up-right me-1"></i>' . Html::encode(T::tr('Open set')),
+                    '<i class="ph ph-arrow-square-out me-1"></i>' . Html::encode(T::tr('Open set')),
                     $setUrl . '#reviews',
                     ['class' => 'btn btn-sm btn-outline-secondary', 'encode' => false]
             ) ?>

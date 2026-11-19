@@ -39,7 +39,7 @@ $this->params['breadcrumbs'][] = T::tr('Settings');
 
 <div class="col-12 mt-4">
     <h1 class="page-title mb-1">
-        <i class="bi bi-sliders text-primary me-2"></i>
+        
         <?= Html::encode(T::tr('Settings')) ?>
     </h1>
     <p class="text-muted mb-4"><?= Html::encode(T::tr('Tweak how the catalog behaves for your account.')) ?></p>
@@ -55,7 +55,7 @@ $this->params['breadcrumbs'][] = T::tr('Settings');
             <section class="user-page-card">
                 <div class="d-flex justify-content-between align-items-baseline mb-2">
                     <h3 class="user-page-card-title">
-                        <i class="bi bi-funnel-fill"></i><?= Html::encode(T::tr('Catalog display')) ?>
+                        <?= Html::encode(T::tr('Catalog display')) ?>
                     </h3>
                     <span class="user-page-eyebrow"><?= Html::encode(T::tr('Preferences')) ?></span>
                 </div>
@@ -86,7 +86,7 @@ $this->params['breadcrumbs'][] = T::tr('Settings');
             <section class="user-page-card mt-3 d-none">
                 <div class="d-flex justify-content-between align-items-baseline mb-2">
                     <h3 class="user-page-card-title">
-                        <i class="bi bi-translate"></i><?= Html::encode(T::tr('Language')) ?>
+                        <?= Html::encode(T::tr('Language')) ?>
                     </h3>
                     <span class="user-page-eyebrow"><?= Html::encode(T::tr('Preferences')) ?></span>
                 </div>
@@ -112,7 +112,7 @@ $this->params['breadcrumbs'][] = T::tr('Settings');
 
             <div class="d-flex flex-wrap gap-2 mt-3">
                 <button type="submit" class="btn btn-primary">
-                    <i class="bi bi-check2 me-2"></i><?= Html::encode(T::tr('Save settings')) ?>
+                    <?= Html::encode(T::tr('Save settings')) ?>
                 </button>
                 <?= Html::a(T::tr('Cancel'), ['/user/profile'], ['class' => 'btn btn-outline-secondary']) ?>
             </div>
@@ -123,7 +123,7 @@ $this->params['breadcrumbs'][] = T::tr('Settings');
         <div class="col-lg-4">
             <section class="user-page-card">
                 <h3 class="user-page-card-title mb-2">
-                    <i class="bi bi-info-circle-fill"></i><?= Html::encode(T::tr('Tips')) ?>
+                    <?= Html::encode(T::tr('Tips')) ?>
                 </h3>
                 <p class="text-muted small mb-2">
                     <?= Html::encode(T::tr('Tap the box icon on any set to mark it as owned.')) ?>

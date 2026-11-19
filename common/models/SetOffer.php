@@ -181,14 +181,14 @@ class SetOffer extends ActiveRecord
             $fullThreshold = (float)$index;
             $halfThreshold = $fullThreshold - 0.5;
             if ($normalizedRating >= $fullThreshold) {
-                $classes[] = 'bi-star-fill';
+                $classes[] = 'ph-fill ph-star';
                 continue;
             }
             if ($normalizedRating >= $halfThreshold) {
-                $classes[] = 'bi-star-half';
+                $classes[] = 'ph-fill ph-star-half';
                 continue;
             }
-            $classes[] = 'bi-star';
+            $classes[] = 'ph ph-star';
         }
 
         return $classes;

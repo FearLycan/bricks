@@ -52,7 +52,7 @@ if ($showAvailabilityBadge) {
                         aria-pressed="<?= $isOwned ? 'true' : 'false' ?>"
                         aria-label="<?= Html::encode(T::tr('Toggle owned set')) ?>"
                         title="<?= Html::encode($isOwned ? T::tr('Remove from owned sets') : T::tr('Add to owned sets')) ?>">
-                    <i class="bi <?= $isOwned ? 'bi-box-seam-fill' : 'bi-box-seam' ?>"></i>
+                    <i class="<?= $isOwned ? 'ph-fill ph-package' : 'ph ph-package' ?>"></i>
                 </button>
             <?php endif; ?>
             <?php if (!$isGuest): ?>
@@ -63,7 +63,7 @@ if ($showAvailabilityBadge) {
                         aria-pressed="<?= $isWishlisted ? 'true' : 'false' ?>"
                         aria-label="<?= Html::encode(T::tr('Toggle wishlist')) ?>"
                         title="<?= Html::encode($isWishlisted ? T::tr('Remove from wishlist') : T::tr('Add to wishlist')) ?>">
-                    <i class="bi <?= $isWishlisted ? 'bi-heart-fill' : 'bi-heart' ?>"></i>
+                    <i class="<?= $isWishlisted ? 'ph-fill ph-heart' : 'ph ph-heart' ?>"></i>
                 </button>
             <?php endif; ?>
             <img src="<?= Html::encode($imageUrl) ?>"
@@ -95,11 +95,11 @@ if ($showAvailabilityBadge) {
                 <div class="set-card-rating">
                     <?php for ($i = 1; $i <= 5; $i++): ?>
                         <?php if ($i <= $ratingFull): ?>
-                            <i class="bi bi-star-fill"></i>
+                            <i class="ph-fill ph-star"></i>
                         <?php elseif ($ratingHalf && $i === $ratingFull + 1): ?>
-                            <i class="bi bi-star-half"></i>
+                            <i class="ph-fill ph-star-half"></i>
                         <?php else: ?>
-                            <i class="bi bi-star"></i>
+                            <i class="ph ph-star"></i>
                         <?php endif; ?>
                     <?php endfor; ?>
                     <span class="set-card-rating-value"><?= Html::encode(number_format((float)$model->rating, 1)) ?></span>

@@ -52,7 +52,7 @@ if (!$hasActiveFilters) {
 
 <?php if (!empty($wizardData)): ?>
     <div class="alert wizard-banner mb-3 d-flex align-items-start gap-3">
-        <i class="bi bi-magic wizard-banner-icon flex-shrink-0"></i>
+        
         <div class="flex-grow-1 min-w-0">
             <div class="fw-semibold wizard-banner-title"><?= Html::encode(T::tr('Results matched by the finder')) ?></div>
             <div class="wizard-banner-tags mt-1">
@@ -64,10 +64,10 @@ if (!$hasActiveFilters) {
         <button type="button" class="btn btn-sm wizard-banner-edit flex-shrink-0"
                 data-wizard-answers="<?= Html::encode(Json::encode($wizardData['answers'])) ?>"
                 title="<?= Html::encode(T::tr('Edit finder selections')) ?>">
-            <i class="bi bi-pencil"></i>
+            <i class="ph ph-pencil-simple"></i>
         </button>
         <a href="<?= Html::encode(Url::to(['/lego'])) ?>" class="btn btn-sm wizard-banner-clear flex-shrink-0" title="<?= Html::encode(T::tr('Clear finder filters')) ?>">
-            <i class="bi bi-x-lg"></i>
+            <i class="ph ph-x"></i>
         </a>
     </div>
 <?php endif; ?>

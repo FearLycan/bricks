@@ -113,6 +113,39 @@ class HomepageContentService
     }
 
     /**
+     * "LEGO by age" row on the homepage: one tile per audience landing page
+     * (SeoHelper::audiencePages), with an age range, a colour and a set photo
+     * (unique within the row).
+     *
+     * @return array<int, array{range: string, label: string, url: string, cover: ?string, color: string, color2: string, soft: string}>
+     */
+    public function getAgeTiles(): array
+    {
+        $used = [];
+        $rows = [
+            ['for-toddlers', '1–4', T::tr('Toddlers'), '#1e6fd9', '#3f8cf0', '#e7f0fd'],
+            ['for-kids', '5–8', T::tr('Kids'), '#d93025', '#ea5246', '#fde9e7'],
+            ['for-tweens', '9–12', T::tr('Older kids'), '#1f9d55', '#33b46b', '#e6f6ec'],
+            ['for-teens', '13+', T::tr('Teens'), '#d6418b', '#e5679f', '#fdebf4'],
+            ['for-adults', '18+', T::tr('Adults'), '#1a1a2e', '#33334d', '#eceef3'],
+        ];
+        $tiles = [];
+        foreach ($rows as [$slug, $range, $label, $color, $color2, $soft]) {
+            $tiles[] = [
+                'range'  => $range,
+                'label'  => $label,
+                'url'    => Url::to('/lego/' . $slug),
+                'cover'  => $this->pickCover($slug, $used),
+                'color'  => $color,
+                'color2' => $color2,
+                'soft'   => $soft,
+            ];
+        }
+
+        return $tiles;
+    }
+
+    /**
      * @param Theme[] $themes
      * @return array<int, array{label: string, url: string, image: ?string, cover: ?string, accent: ?string}>
      */
@@ -191,7 +224,7 @@ class HomepageContentService
     private function makeTile(string $label, $route, ?string $accent = null, ?string $cover = null, ?string $imageKey = null): array
     {
         return [
-            'icon'   => self::TILE_ICONS[$imageKey ?? ''] ?? 'bi-grid-3x3-gap',
+            'icon'   => self::TILE_ICONS[$imageKey ?? ''] ?? 'ph ph-squares-four',
             'label'  => $label,
             'url'    => Url::to($route),
             'image'  => $imageKey !== null ? $this->customTileImage($imageKey) : null,
@@ -209,16 +242,16 @@ class HomepageContentService
      */
     /** Bootstrap icon shown on a tile that has neither artwork nor a set photo. */
     private const TILE_ICONS = [
-        'new-arrivals' => 'bi-stars',
-        'on-sale'      => 'bi-tags',
-        'all-sets'     => 'bi-grid-3x3-gap',
-        'adults'       => 'bi-cup-hot',
-        'toddlers'     => 'bi-balloon',
-        'kids'         => 'bi-rocket-takeoff',
-        'tweens'       => 'bi-controller',
-        'teens'        => 'bi-lightning-charge',
-        'small-builds' => 'bi-box',
-        'big-builds'   => 'bi-buildings',
+        'new-arrivals' => 'ph ph-sparkle',
+        'on-sale'      => 'ph ph-tag',
+        'all-sets'     => 'ph ph-squares-four',
+        'adults'       => 'ph ph-coffee',
+        'toddlers'     => 'ph ph-balloon',
+        'kids'         => 'ph ph-rocket-launch',
+        'tweens'       => 'ph ph-game-controller',
+        'teens'        => 'ph ph-lightning',
+        'small-builds' => 'ph ph-cube',
+        'big-builds'   => 'ph ph-buildings',
     ];
 
     public function customTileImage(string $key): ?string

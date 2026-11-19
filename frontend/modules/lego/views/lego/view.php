@@ -37,17 +37,17 @@ $reviewCount = (int)($reviewStats['review_count'] ?? 0);
 
 $buildRatingStars = static function (?float $score): array {
     if ($score === null) {
-        return array_fill(0, 5, 'bi-star');
+        return array_fill(0, 5, 'ph ph-star');
     }
     $value = max(0.0, min(10.0, $score)) / 2.0;
     $classes = [];
     for ($i = 1; $i <= 5; $i++) {
         if ($value >= $i) {
-            $classes[] = 'bi-star-fill';
+            $classes[] = 'ph-fill ph-star';
         } else if ($value >= $i - 0.5) {
-            $classes[] = 'bi-star-half';
+            $classes[] = 'ph-fill ph-star-half';
         } else {
-            $classes[] = 'bi-star';
+            $classes[] = 'ph ph-star';
         }
     }
     return $classes;
@@ -88,7 +88,7 @@ $queueOfferImportModalUrl = Url::to(['/management/queue-offer-import-modal', 'se
                         <button type="button" class="lego-gallery-nav lego-gallery-nav-prev"
                                 id="legoGalleryPrev"
                                 aria-label="<?= Html::encode(T::tr('Previous image')) ?>">
-                            <i class="bi bi-chevron-left"></i>
+                            <i class="ph ph-caret-left"></i>
                         </button>
                     <?php endif; ?>
 
@@ -98,7 +98,7 @@ $queueOfferImportModalUrl = Url::to(['/management/queue-offer-import-modal', 'se
                         <button type="button" class="lego-gallery-nav lego-gallery-nav-next"
                                 id="legoGalleryNext"
                                 aria-label="<?= Html::encode(T::tr('Next image')) ?>">
-                            <i class="bi bi-chevron-right"></i>
+                            <i class="ph ph-caret-right"></i>
                         </button>
                     <?php endif; ?>
                 </div>
@@ -152,7 +152,7 @@ $queueOfferImportModalUrl = Url::to(['/management/queue-offer-import-modal', 'se
                         <span class="lego-rating-badge-score"><?= Html::encode(number_format((float)$reviewAverage, 2, '.', '')) ?></span>
                         <span class="lego-rating-badge-stars">
                             <?php foreach ($ratingStarClasses as $cls): ?>
-                                <i class="bi <?= Html::encode($cls) ?>"></i>
+                                <i class="<?= Html::encode($cls) ?>"></i>
                             <?php endforeach; ?>
                         </span>
                         <span class="text-body-secondary">
@@ -161,7 +161,7 @@ $queueOfferImportModalUrl = Url::to(['/management/queue-offer-import-modal', 'se
                     </a>
                 <?php else: ?>
                     <?= Html::a(
-                            '<i class="bi bi-stars me-1 text-warning"></i>' . T::tr('Be the first to rate this set'),
+                            T::tr('Be the first to rate this set'),
                             '#',
                             [
                                     'role'           => 'button',
@@ -197,7 +197,7 @@ $queueOfferImportModalUrl = Url::to(['/management/queue-offer-import-modal', 'se
 
                 <?php if ($bestOffer): ?>
                     <div class="small text-success mb-3">
-                        <i class="bi bi-tag-fill me-1"></i>
+                        
                         <?= T::tr('Best offer') ?>:
                         <strong><?= Html::encode($bestOffer->store->name ?? T::tr('Unknown store')) ?></strong>
                         (<?= Html::encode($bestOffer->getFormattedPriceOrDefault(T::tr('No price'))) ?>)
@@ -206,19 +206,19 @@ $queueOfferImportModalUrl = Url::to(['/management/queue-offer-import-modal', 'se
 
                 <div class="lego-quick-facts">
                     <div class="lego-quick-fact lego-quick-fact--third">
-                        <span class="label"><i class="bi bi-cake me-1"></i><?= T::tr('Age') ?></span>
+                        <span class="label"><?= T::tr('Age') ?></span>
                         <span class="value"><?= Html::encode($model->getAgeText()) ?></span>
                     </div>
                     <div class="lego-quick-fact lego-quick-fact--third">
-                        <span class="label"><i class="bi bi-columns-gap me-1"></i><?= T::tr('Pieces') ?></span>
+                        <span class="label"><?= T::tr('Pieces') ?></span>
                         <span class="value"><?= Html::encode($model->getPiecesText()) ?></span>
                     </div>
                     <div class="lego-quick-fact lego-quick-fact--third">
-                        <span class="label"><i class="bi bi-people me-1"></i><?= T::tr('Minifigures') ?></span>
+                        <span class="label"><?= T::tr('Minifigures') ?></span>
                         <span class="value"><?= Html::encode($model->getMinifiguresText()) ?></span>
                     </div>
                     <div class="lego-quick-fact lego-quick-fact--half">
-                        <span class="label"><i class="bi bi-calendar-check me-1"></i><?= T::tr('Launch date') ?></span>
+                        <span class="label"><?= T::tr('Launch date') ?></span>
                         <span class="value">
                             <?php if ($model->launch_date !== null): ?>
                                 <?= Html::a(
@@ -236,7 +236,7 @@ $queueOfferImportModalUrl = Url::to(['/management/queue-offer-import-modal', 'se
                         </span>
                     </div>
                     <div class="lego-quick-fact lego-quick-fact--half">
-                        <span class="label"><i class="bi bi-calendar-x me-1"></i><?= T::tr('Exit date') ?></span>
+                        <span class="label"><?= T::tr('Exit date') ?></span>
                         <span class="value">
                             <?php if ($model->exit_date !== null): ?>
                                 <?= Html::encode(date('d.m.Y', strtotime($model->exit_date))) ?>
@@ -249,7 +249,7 @@ $queueOfferImportModalUrl = Url::to(['/management/queue-offer-import-modal', 'se
 
                 <?php if ($model->isLimitedRun()): ?>
                     <div class="lego-production-span">
-                        <i class="bi bi-hourglass-split" aria-hidden="true"></i>
+                        <i class="ph ph-hourglass-medium" aria-hidden="true"></i>
                         <span class="date"><?= Html::encode(date('d.m.Y', strtotime($model->launch_date))) ?></span>
                         <span class="arrow" aria-hidden="true">→</span>
                         <span class="date"><?= Html::encode(date('d.m.Y', strtotime($model->exit_date))) ?></span>
@@ -379,7 +379,7 @@ $queueOfferImportModalUrl = Url::to(['/management/queue-offer-import-modal', 'se
 
                                                 <div class="mt-3 d-flex gap-3 align-items-center flex-wrap lego-offer-meta">
                                                             <span class="badge text-bg-warning text-dark">
-                                                                <i class="bi bi-star-fill me-1"></i>
+                                                                <i class="ph-fill ph-star me-1"></i>
                                                                 <?= Html::encode(number_format((float)$offer->getDisplayRatingValue(), 1, '.', '')) ?>
                                                             </span>
                                                     <span class="small text-body-secondary">
@@ -392,7 +392,7 @@ $queueOfferImportModalUrl = Url::to(['/management/queue-offer-import-modal', 'se
                                                             'data-target' => '#mainModal',
                                                     ]) ?>
                                                     <?php if ($offer->url): ?>
-                                                        <?= Html::a('<i class="bi bi-bag-check me-1"></i>' . T::tr('View offer'), $offer->url, [
+                                                        <?= Html::a(T::tr('View offer'), $offer->url, [
                                                                 'class'  => 'btn btn-sm btn-success ms-auto lego-offer-action',
                                                                 'target' => '_blank',
                                                                 // Affiliate links: "sponsored" per Google's link guidelines.
@@ -533,7 +533,7 @@ $queueOfferImportModalUrl = Url::to(['/management/queue-offer-import-modal', 'se
                                 <ul class="list-unstyled mb-0">
                                     <?php foreach ($model->setInstructions as $instruction): ?>
                                         <li class="mb-2">
-                                            <?= Html::a('<i class="bi bi-file-earmark-pdf me-2"></i>' . Html::encode($instruction->description ?: T::tr('Instruction PDF')),
+                                            <?= Html::a('<i class="ph ph-file-pdf me-2"></i>' . Html::encode($instruction->description ?: T::tr('Instruction PDF')),
                                                     $instruction->url, [
                                                             'class'  => 'text-decoration-none',
                                                             'target' => '_blank',
@@ -603,10 +603,10 @@ $queueOfferImportModalUrl = Url::to(['/management/queue-offer-import-modal', 'se
             <div class="modal-body p-0 text-center position-relative">
                 <img id="imageZoomModalImage" src="" alt="" class="img-fluid rounded">
                 <button id="imageZoomPrev" type="button" class="btn btn-light position-absolute top-50 start-0 translate-middle-y ms-2" aria-label="<?= Html::encode(T::tr('Previous image')) ?>">
-                    <i class="bi bi-chevron-left"></i>
+                    <i class="ph ph-caret-left"></i>
                 </button>
                 <button id="imageZoomNext" type="button" class="btn btn-light position-absolute top-50 end-0 translate-middle-y me-2" aria-label="<?= Html::encode(T::tr('Next image')) ?>">
-                    <i class="bi bi-chevron-right"></i>
+                    <i class="ph ph-caret-right"></i>
                 </button>
             </div>
         </div>

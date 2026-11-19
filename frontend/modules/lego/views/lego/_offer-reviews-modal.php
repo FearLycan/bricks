@@ -30,7 +30,7 @@ use frontend\components\T;
                 <span class="h5 mb-0"><?= Html::encode($averageRating !== null ? number_format((float)$averageRating, 1, '.', '') : '0.0') ?></span>
                 <span class="text-warning">
                     <?php foreach ($ratingStarClasses as $iconClass): ?>
-                        <i class="bi <?= Html::encode($iconClass) ?>"></i>
+                        <i class="<?= Html::encode($iconClass) ?>"></i>
                     <?php endforeach; ?>
                 </span>
                 <span class="text-body-secondary"><?= Html::encode((string)$reviewsTotal) ?> <?= T::tr('reviews') ?></span>
@@ -60,13 +60,13 @@ use frontend\components\T;
                                 <?php endif; ?>
                                 <?php if ($review->rating_value !== null): ?>
                                     <span class="small text-body-secondary">
-                                        <i class="bi bi-star-fill text-warning me-1"></i>
+                                        <i class="ph-fill ph-star text-warning me-1"></i>
                                         <?= Html::encode(number_format((float)$review->rating_value, 1, '.', '')) ?>/<?= Html::encode((string)($review->rating_scale_max ?? 5)) ?>
                                     </span>
                                 <?php endif; ?>
                                 <?php if ($review->reviewed_at): ?>
                                     <span class="small text-body-secondary ms-auto">
-                                        <i class="bi bi-calendar3 me-1"></i><?= Html::encode(date('Y-m-d', strtotime((string)$review->reviewed_at))) ?>
+                                        <?= Html::encode(date('Y-m-d', strtotime((string)$review->reviewed_at))) ?>
                                     </span>
                                 <?php endif; ?>
                             </div>

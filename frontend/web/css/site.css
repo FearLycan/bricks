@@ -1674,7 +1674,7 @@ a, button {
     font-weight: 500;
 }
 
-.bricks-search-theme-breadcrumb .bi-chevron-right {
+.bricks-search-theme-breadcrumb .ph-caret-right {
     font-size: 0.65rem;
     vertical-align: middle;
 }
@@ -3926,7 +3926,7 @@ a, button {
     transform: translateY(0) scale(0.96);
 }
 
-.bricks-scroll-top.is-scrolling .bi {
+.bricks-scroll-top.is-scrolling i {
     animation: bricks-scroll-top-bounce 0.7s ease-out;
 }
 

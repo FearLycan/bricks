@@ -87,6 +87,9 @@ Integracja AliExpress: `common/components/aliexpress/*` (klient API, resolver li
 - Partiale wielokrotnego użytku: `views/_partials/_page-hero.php`, `modules/lego/views/lego/_list.php`, `_item.php`,
   `_banner-retiring.php`, `_banner-upcoming.php`, `modules/homepage/views/home/_section-slider.php`, `_set-card.php`.
 - Kafelki strony głównej i /interests: zdjęcie reprezentatywnego zestawu (`HomepageContentService::pickCover`, cache 6 h); własna grafika = plik 800×600 w `frontend/web/images/browse/<key>.*` (lista kluczy w README tam), dla tematów pole `theme.image` w adminie.
+- Ikony: **Phosphor** (self-hosted podzbiór, `frontend/assets/IconAsset.php`, `css/icons.css`): `<i class="ph ph-heart">`, `ph-fill`, `ph-duotone`.
+  Po dodaniu nowej ikony w kodzie przebuduj podzbiór: `python3 tools/icons/build.py <ścieżka do @phosphor-icons/web/src>` (instrukcja w pliku).
+  Ikony tylko funkcjonalne (wyszukiwarka, zamknij, strzałki, serce/pudełko, gwiazdki, alerty, parametry na kafelkach) — **bez ikon w nagłówkach, menu, przyciskach z tekstem i listach** (11.2026 usunięte jako ozdobniki).
 - Assety: `frontend/assets/AppAsset.php` (Bootstrap 5, select2, venobox, Chart.js 4 z CDN — gotowe do wykresów).
 - CSS per strona rejestrowany w widoku (`registerCssFile('@web/css/x.css', ['depends' => [AppAsset::class]])`).
 - `common/components/Html::img`, `common/widgets/Alert`, `common/widgets/InlineScript`.

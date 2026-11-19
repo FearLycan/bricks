@@ -26,22 +26,19 @@ if (!Yii::$app->user->isGuest) {
                     <?= Html::encode(T::tr('Create a free account to save sets to your wishlist and mark the ones you own.')) ?>
                 </p>
                 <ul class="bricks-guest-cta-benefits">
-                    <li><i class="bi bi-heart-fill"></i><?= Html::encode(T::tr('Save sets to your wishlist')) ?></li>
-                    <li><i class="bi bi-box-seam-fill"></i><?= Html::encode(T::tr('Track sets you already own')) ?></li>
-                    <li><i class="bi bi-stars"></i><?= Html::encode(T::tr('Get recommendations based on your collection')) ?></li>
+                    <li><?= Html::encode(T::tr('Save sets to your wishlist')) ?></li>
+                    <li><?= Html::encode(T::tr('Track sets you already own')) ?></li>
+                    <li><?= Html::encode(T::tr('Get recommendations based on your collection')) ?></li>
                 </ul>
                 <div class="bricks-guest-cta-actions">
                     <a href="<?= Url::to(['/auth/signup']) ?>" class="bricks-guest-cta-primary">
                         <?= Html::encode(T::tr('Create free account')) ?>
-                        <i class="bi bi-arrow-right ms-2"></i>
+                        
                     </a>
                     <a href="<?= Url::to(['/auth/login']) ?>" class="bricks-guest-cta-secondary">
                         <?= Html::encode(T::tr('Sign in')) ?>
                     </a>
                 </div>
-            </div>
-            <div class="bricks-guest-cta-decoration" aria-hidden="true">
-                <i class="bi bi-bricks"></i>
             </div>
         </div>
     </div>

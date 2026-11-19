@@ -18,10 +18,10 @@
 
         const $icon = $button.find('i');
         if (inWishlist) {
-            $icon.removeClass('bi-heart').addClass('bi-heart-fill');
+            $icon.removeClass('ph ph-heart').addClass('ph-fill ph-heart');
             $button.attr('title', $button.data('label-remove') || 'Remove from wishlist');
         } else {
-            $icon.removeClass('bi-heart-fill').addClass('bi-heart');
+            $icon.removeClass('ph-fill ph-heart').addClass('ph ph-heart');
             $button.attr('title', $button.data('label-add') || 'Add to wishlist');
         }
     };

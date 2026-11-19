@@ -16,31 +16,31 @@ use yii\helpers\Url;
             type="button"
             data-bs-toggle="dropdown"
             aria-expanded="false">
-        <i class="bi bi-person-circle"></i>
+        <i class="ph ph-user-circle"></i>
         <span><?= Html::encode(trim((string)($user->username ?? T::tr('User')))) ?></span>
     </button>
 
     <ul class="dropdown-menu dropdown-menu-end">
         <li>
-            <?= Html::a('<i class="bi bi-person-vcard me-2"></i>' . T::tr('Profile'), ['/user/profile'], [
+            <?= Html::a(T::tr('Profile'), ['/user/profile'], [
                     'class'  => 'dropdown-item',
                     'encode' => false,
             ]) ?>
         </li>
         <li>
-            <?= Html::a('<i class="bi bi-heart me-2"></i>' . T::tr('Wishlist'), ['/wishlist/index'], [
+            <?= Html::a(T::tr('Wishlist'), ['/wishlist/index'], [
                     'class'  => 'dropdown-item',
                     'encode' => false,
             ]) ?>
         </li>
         <li>
-            <?= Html::a('<i class="bi bi-box-seam me-2"></i>' . T::tr('Owned sets'), ['/owned-set/index'], [
+            <?= Html::a(T::tr('Owned sets'), ['/owned-set/index'], [
                     'class'  => 'dropdown-item',
                     'encode' => false,
             ]) ?>
         </li>
         <li>
-            <?= Html::a('<i class="bi bi-sliders me-2"></i>' . T::tr('Settings'), ['/user/settings'], [
+            <?= Html::a(T::tr('Settings'), ['/user/settings'], [
                     'class'  => 'dropdown-item',
                     'encode' => false,
             ]) ?>
@@ -48,7 +48,7 @@ use yii\helpers\Url;
 
         <?php if ($user->isAdmin()): ?>
             <li>
-                <?= Html::a('<i class="bi bi-person-square me-2"></i>' . T::tr('Admin panel'), Yii::$app->backendUrlManager->createAbsoluteUrl(['/']), [
+                <?= Html::a(T::tr('Admin panel'), Yii::$app->backendUrlManager->createAbsoluteUrl(['/']), [
                         'class' => 'dropdown-item',
                 ]) ?>
             </li>

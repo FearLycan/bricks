@@ -78,7 +78,6 @@ $faqSchema = [
         ?>
         <section class="gift-guide-block">
             <h2 class="gift-guide-h2">
-                <i class="bi <?= Html::encode($section['icon']) ?>" aria-hidden="true"></i>
                 <?= Html::encode($section['title']) ?>
             </h2>
             <p class="gift-guide-lead"><?= Html::encode($section['lead']) ?></p>
@@ -93,7 +92,7 @@ $faqSchema = [
                     <span class="gift-guide-tags-label"><?= Html::encode(T::tr('More sets like these:')) ?></span>
                     <?php foreach ($sectionTags as $tag): ?>
                         <a class="gift-guide-tag" href="<?= Html::encode(Url::to(['/lego/lego/tag', 'slug' => $tag->slug])) ?>">
-                            <i class="bi bi-tag" aria-hidden="true"></i><?= Html::encode($tag->name) ?>
+                            <?= Html::encode($tag->name) ?>
                             <small><?= Html::encode(Yii::$app->formatter->asInteger((int)$tag->sets_count)) ?></small>
                         </a>
                     <?php endforeach; ?>
@@ -124,10 +123,10 @@ $faqSchema = [
                                 </h3>
                                 <div class="gift-guide-card-facts">
                                     <?php if ($set->age !== null): ?>
-                                        <span><i class="bi bi-cake" aria-hidden="true"></i> <?= Html::encode($set->age) ?>+</span>
+                                        <span><i class="ph ph-cake" aria-hidden="true"></i> <?= Html::encode($set->age) ?>+</span>
                                     <?php endif; ?>
                                     <?php if ($set->pieces !== null): ?>
-                                        <span><i class="bi bi-columns-gap" aria-hidden="true"></i> <?= Html::encode(T::tr('{n} pieces', ['n' => Yii::$app->formatter->asInteger($set->pieces)])) ?></span>
+                                        <span><i class="ph ph-puzzle-piece" aria-hidden="true"></i> <?= Html::encode(T::tr('{n} pieces', ['n' => Yii::$app->formatter->asInteger($set->pieces)])) ?></span>
                                     <?php endif; ?>
                                 </div>
                                 <p class="gift-guide-card-why"><?= Html::encode($why) ?></p>
@@ -150,7 +149,7 @@ $faqSchema = [
         <button type="button" class="btn btn-danger"
                 data-wizard-answers="<?= Html::encode(Json::encode($guide['wizard'])) ?>"
                 data-wizard-step="3">
-            <i class="bi bi-magic me-1" aria-hidden="true"></i><?= Html::encode(T::tr('Open the set finder')) ?>
+            <?= Html::encode(T::tr('Open the set finder')) ?>
         </button>
     </section>
 

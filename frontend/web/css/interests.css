@@ -163,13 +163,13 @@
     color: var(--accent);
 }
 
-.interests-card-go .bi {
+.interests-card-go i {
     display: inline-block;
     margin-left: 0.2rem;
     transition: transform 0.2s ease;
 }
 
-.interests-card:hover .interests-card-go .bi {
+.interests-card:hover .interests-card-go i {
     transform: translateX(3px);
 }
 
@@ -213,7 +213,7 @@
     .interests-card,
     .interests-card-photo,
     .interests-card-title::before,
-    .interests-card-go .bi {
+    .interests-card-go i {
         transition: none;
     }
 

@@ -206,7 +206,7 @@ $this->registerCss('
                     <p class="contact-info-label"><?= Html::encode(T::tr('Contact info')) ?></p>
 
                     <div class="contact-info-item">
-                        <div class="contact-info-icon"><i class="bi bi-clock"></i></div>
+                        <div class="contact-info-icon"></div>
                         <div class="contact-info-text">
                             <strong><?= Html::encode(T::tr('Response time')) ?></strong>
                             <span><?= Html::encode(T::tr('Usually within 24 hours')) ?></span>
@@ -214,7 +214,7 @@ $this->registerCss('
                     </div>
 
                     <div class="contact-info-item">
-                        <div class="contact-info-icon"><i class="bi bi-globe2"></i></div>
+                        <div class="contact-info-icon"></div>
                         <div class="contact-info-text">
                             <strong><?= Html::encode(T::tr('Platform')) ?></strong>
                             <span><?= Html::encode(Yii::$app->name) ?></span>
@@ -257,7 +257,7 @@ $this->registerCss('
                         ])->label(T::tr('Message')) ?>
                     </div>
 
-                    <?= Html::submitButton(T::tr('Send message') . ' <i class="bi bi-arrow-right ms-1"></i>', [
+                    <?= Html::submitButton(T::tr('Send message'), [
                         'class'          => 'btn btn-contact',
                         'name'           => 'contact-button',
                         'encode'         => false,

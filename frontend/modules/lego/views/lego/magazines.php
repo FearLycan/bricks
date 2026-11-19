@@ -39,7 +39,7 @@ $this->params['fullWidth'] = true;
         'title'           => T::tr('LEGO Magazine Sets'),
         'intro'           => SeoHelper::buildMagazinesIntro(),
         'image'           => 'images/categories/magazines.jpg',
-        'icon'            => 'bi-newspaper',
+        'icon'            => 'ph ph-newspaper',
         'modifier'        => 'magazines',
         'showBreadcrumbs' => true,
 ]) ?>

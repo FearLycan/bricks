@@ -69,17 +69,17 @@ $displayQuestionOrder = [
 
 $buildStars = static function (?float $score): array {
     if ($score === null) {
-        return array_fill(0, 5, 'bi-star');
+        return array_fill(0, 5, 'ph ph-star');
     }
     $value = max(0.0, min(10.0, (float)$score)) / 2.0;
     $classes = [];
     for ($i = 1; $i <= 5; $i++) {
         if ($value >= $i) {
-            $classes[] = 'bi-star-fill';
+            $classes[] = 'ph-fill ph-star';
         } else if ($value >= $i - 0.5) {
-            $classes[] = 'bi-star-half';
+            $classes[] = 'ph-fill ph-star-half';
         } else {
-            $classes[] = 'bi-star';
+            $classes[] = 'ph ph-star';
         }
     }
     return $classes;
@@ -106,7 +106,7 @@ $reviewListId = 'review-list-' . (int)$set->id;
             <p class="text-body-secondary small mb-3">
                 <?= T::tr('Your opinion helps others find the right set.') ?>
             </p>
-            <?= Html::a('<i class="bi bi-stars me-1"></i>' . Html::encode($ctaLabel), '#', [
+            <?= Html::a(Html::encode($ctaLabel), '#', [
                     'role'           => 'button',
                     'data-modal-url' => $choiceUrl,
                     'class'       => 'btn btn-primary js-load-modal',
@@ -123,13 +123,13 @@ $reviewListId = 'review-list-' . (int)$set->id;
                     </div>
                     <div class="review-stars review-stars--lg" aria-hidden="true">
                         <?php foreach ($starClasses as $cls): ?>
-                            <i class="bi <?= Html::encode($cls) ?>"></i>
+                            <i class="<?= Html::encode($cls) ?>"></i>
                         <?php endforeach; ?>
                     </div>
                     <div class="text-body-secondary small mb-3">
                         <?= T::tr('Based on {n, plural, =1{# review} other{# reviews}}', ['n' => $reviewCount]) ?>
                     </div>
-                    <?= Html::a('<i class="bi bi-stars me-1"></i>' . Html::encode($ctaLabel), '#', [
+                    <?= Html::a(Html::encode($ctaLabel), '#', [
                             'role'           => 'button',
                             'data-modal-url' => $choiceUrl,
                             'class'       => 'btn btn-primary w-100 js-load-modal',
@@ -142,7 +142,7 @@ $reviewListId = 'review-list-' . (int)$set->id;
                         ?>
                         <div class="d-none review-match <?= Html::encode($matchClass) ?> mt-3" title="<?= Html::encode(T::tr('Estimated from your previous reviews and what other reviewers said about this set.')) ?>">
                             <div class="review-match-head">
-                                <i class="bi bi-bullseye"></i>
+                                
                                 <span class="fw-semibold small"><?= Html::encode(T::tr('Matches your taste')) ?></span>
                             </div>
                             <div class="review-match-meter" style="--pct: <?= (int)$userMatchScore ?>%">
@@ -155,11 +155,11 @@ $reviewListId = 'review-list-' . (int)$set->id;
                     <?php if ($userReview): ?>
                         <div class="review-your-summary mt-3">
                             <div class="small text-body-secondary mb-1">
-                                <i class="bi bi-person-check me-1"></i><?= T::tr('Your review') ?>
+                                <?= T::tr('Your review') ?>
                             </div>
                             <div class="d-flex align-items-center gap-2">
                                 <span class="badge text-bg-warning text-dark">
-                                    <i class="bi bi-star-fill me-1"></i><?= Html::encode(number_format((float)$userReview->overall_score, 2, '.', '')) ?>
+                                    <i class="ph-fill ph-star me-1"></i><?= Html::encode(number_format((float)$userReview->overall_score, 2, '.', '')) ?>
                                 </span>
                                 <span class="small text-body-secondary">
                                     <?= $userReview->isDetailed() ? T::tr('Detailed') : T::tr('Quick') ?>
@@ -181,7 +181,7 @@ $reviewListId = 'review-list-' . (int)$set->id;
                         </div>
                     <?php else: ?>
                         <div class="review-radar-empty small text-body-secondary text-center py-4">
-                            <i class="bi bi-bar-chart-line"></i>
+                            
                             <div><?= T::tr('Detailed reviews unlock the radar chart.') ?></div>
                         </div>
                     <?php endif; ?>
@@ -254,11 +254,11 @@ $reviewListId = 'review-list-' . (int)$set->id;
                         data-bs-toggle="collapse" data-bs-target="#<?= Html::encode($aggregateCollapseId) ?>"
                         aria-expanded="false" aria-controls="<?= Html::encode($aggregateCollapseId) ?>">
                     <span class="d-flex align-items-center gap-2">
-                        <i class="bi bi-chat-square-text"></i>
+                        
                         <span class="fw-semibold"><?= T::tr('What reviewers say') ?></span>
                         <span class="badge text-bg-light border ms-1"><?= T::tr('{n, plural, =1{# question} other{# questions}}', ['n' => count($aggregatesToShow)]) ?></span>
                     </span>
-                    <i class="bi bi-chevron-down review-collapse-chevron"></i>
+                    <i class="ph ph-caret-down review-collapse-chevron"></i>
                 </button>
                 <div class="collapse" id="<?= Html::encode($aggregateCollapseId) ?>">
                     <div class="row g-3 pt-3">
@@ -304,7 +304,7 @@ $reviewListId = 'review-list-' . (int)$set->id;
                         <div class="col-md-6">
                             <div class="review-highlight-card review-highlight-card--positive">
                                 <div class="review-highlight-header">
-                                    <i class="bi bi-hand-thumbs-up-fill"></i>
+                                    <i class="ph-fill ph-thumbs-up"></i>
                                     <span><?= T::tr('What people loved') ?></span>
                                 </div>
                                 <ul class="review-highlight-list">
@@ -324,7 +324,7 @@ $reviewListId = 'review-list-' . (int)$set->id;
                         <div class="col-md-6">
                             <div class="review-highlight-card review-highlight-card--negative">
                                 <div class="review-highlight-header">
-                                    <i class="bi bi-hand-thumbs-down-fill"></i>
+                                    <i class="ph-fill ph-thumbs-down"></i>
                                     <span><?= T::tr('What could be better') ?></span>
                                 </div>
                                 <ul class="review-highlight-list">
@@ -372,7 +372,7 @@ $reviewListId = 'review-list-' . (int)$set->id;
                                 <div class="d-flex align-items-center gap-2">
                                     <span class="text-warning">
                                         <?php foreach ($reviewStars as $cls): ?>
-                                            <i class="bi <?= Html::encode($cls) ?>"></i>
+                                            <i class="<?= Html::encode($cls) ?>"></i>
                                         <?php endforeach; ?>
                                     </span>
                                     <span class="badge text-bg-warning text-dark">
@@ -400,13 +400,13 @@ $reviewListId = 'review-list-' . (int)$set->id;
                                     <div class="review-item-pros-cons">
                                         <?php if ($likedText): ?>
                                             <div class="review-item-pros">
-                                                <i class="bi bi-plus-circle-fill text-success"></i>
+                                                <i class="ph-fill ph-plus-circle text-success"></i>
                                                 <span><?= nl2br(Html::encode($likedText)) ?></span>
                                             </div>
                                         <?php endif; ?>
                                         <?php if ($dislikedText): ?>
                                             <div class="review-item-cons">
-                                                <i class="bi bi-dash-circle-fill text-danger"></i>
+                                                <i class="ph-fill ph-minus-circle text-danger"></i>
                                                 <span><?= nl2br(Html::encode($dislikedText)) ?></span>
                                             </div>
                                         <?php endif; ?>
@@ -434,11 +434,11 @@ $reviewListId = 'review-list-' . (int)$set->id;
                                                 data-bs-toggle="collapse" data-bs-target="#<?= Html::encode($reviewAnswersCollapseId) ?>"
                                                 aria-expanded="false" aria-controls="<?= Html::encode($reviewAnswersCollapseId) ?>">
                                             <span class="d-flex align-items-center gap-2">
-                                                <i class="bi bi-list-check"></i>
+                                                
                                                 <span class="small fw-semibold"><?= T::tr('Detailed answers') ?></span>
                                                 <span class="badge text-bg-light border ms-1"><?= count($radioAnswers) ?></span>
                                             </span>
-                                            <i class="bi bi-chevron-down review-collapse-chevron"></i>
+                                            <i class="ph ph-caret-down review-collapse-chevron"></i>
                                         </button>
                                         <div class="collapse" id="<?= Html::encode($reviewAnswersCollapseId) ?>">
                                             <div class="review-item-answers pt-2">

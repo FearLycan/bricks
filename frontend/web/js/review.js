@@ -39,13 +39,13 @@
         const stars = starsEl.querySelectorAll('.review-star i');
         stars.forEach(function (icon, idx) {
             const starIndex = idx + 1;
-            icon.classList.remove('bi-star', 'bi-star-half', 'bi-star-fill');
+            // Phosphor: weight class (ph / ph-fill) + glyph class.
             if (value >= starIndex) {
-                icon.classList.add('bi-star-fill');
+                icon.className = 'ph-fill ph-star';
             } else if (value >= starIndex - 0.5) {
-                icon.classList.add('bi-star-half');
+                icon.className = 'ph-fill ph-star-half';
             } else {
-                icon.classList.add('bi-star');
+                icon.className = 'ph ph-star';
             }
         });
     }

@@ -21,7 +21,7 @@ if (empty($items)) {
         <div class="bricks-wishlist-bar">
             <div class="bricks-wishlist-bar-head">
                 <div class="bricks-wishlist-bar-title-wrap">
-                    <span class="bricks-wishlist-bar-icon"><i class="bi bi-heart-fill"></i></span>
+                    <span class="bricks-wishlist-bar-icon"><i class="ph-fill ph-heart"></i></span>
                     <div>
                         <h2 class="bricks-section-title mb-0"><?= Html::encode(T::tr('Your wishlist')) ?></h2>
                         <p class="bricks-wishlist-bar-sub mb-0">
@@ -31,7 +31,7 @@ if (empty($items)) {
                 </div>
                 <a href="<?= Url::to(['/wishlist/index']) ?>" class="bricks-section-see-all">
                     <?= Html::encode(T::tr('See all')) ?>
-                    <i class="bi bi-arrow-right ms-1"></i>
+                    <i class="ph ph-arrow-right ms-1"></i>
                 </a>
             </div>
             <div class="bricks-wishlist-bar-items">
