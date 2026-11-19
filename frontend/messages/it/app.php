@@ -1088,4 +1088,12 @@ return [
     'Older kids' => 'Ragazzi',
     'Teens' => 'Adolescenti',
     'Adults' => 'Adulti',
+    'Biggest set' => 'Il set più grande',
+    'Top rated · {rating}' => 'Il più votato · {rating}',
+    'Best price per piece' => 'Miglior prezzo per pezzo',
+    'For collectors' => 'Per collezionisti',
+    'Newest in this theme' => 'Novità del tema',
+    'New release' => 'Novità',
+    '{n} pcs' => '{n} pezzi',
+    'since {year}' => 'dal {year}',
 ];
