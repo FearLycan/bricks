@@ -59,6 +59,12 @@ class ThemeController extends Controller
 
         $dataProvider = $searchModel->search($this->request->queryParams);
 
+        // Empty theme/subtheme (no filters applied): 404 instead of a
+        // noindexed 200 that Google reports as soft 404.
+        if ($rawQuery === [] && (int)$dataProvider->getTotalCount() === 0) {
+            $this->notFound();
+        }
+
         return $this->render('index', [
             'searchModel'  => $searchModel,
             'dataProvider' => $dataProvider,

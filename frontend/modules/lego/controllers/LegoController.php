@@ -262,6 +262,12 @@ class LegoController extends Controller
         $params = array_merge($this->request->queryParams, ['tag_slug' => $slug]);
         $dataProvider = $searchModel->search($params);
 
+        // A tag with no sets at all (no filters applied) is an empty page:
+        // answer 404 instead of a noindexed 200 that Google reports as soft 404.
+        if ((string)$this->request->getQueryString() === '' && (int)$dataProvider->getTotalCount() === 0) {
+            $this->notFound();
+        }
+
         return $this->render('tag', [
             'tag'          => $tag,
             'searchModel'  => $searchModel,

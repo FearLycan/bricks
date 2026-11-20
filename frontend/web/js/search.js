@@ -10,6 +10,14 @@
 
     if (!searchBox) return;
 
+    // Autocomplete returns language-neutral paths (/lego/...); keep the
+    // visitor in the language of the page they are on.
+    var langMatch = window.location.pathname.match(/^\/(pl|de|fr|es|it|ja)(?=\/|$)/);
+    var langPrefix = langMatch ? '/' + langMatch[1] : '';
+    function localPath(path) {
+        return path && path.charAt(0) === '/' ? langPrefix + path : path;
+    }
+
     (function setupPlacement() {
         var desktopSlot = document.getElementById('bricksSearchDesktopSlot');
         if (!searchWrap || !desktopSlot) return;
@@ -84,7 +92,7 @@
         if (sets.length) {
             html += '<div class="bricks-search-group-label">Sets</div>';
             sets.forEach(function (item) {
-                html += '<a class="bricks-search-item" href="' + esc(item.url) + '">'
+                html += '<a class="bricks-search-item" href="' + esc(localPath(item.url)) + '">'
                     + '<img class="bricks-search-item-img" src="' + esc(item.img) + '" alt="' + esc(item.name) + '" loading="lazy">'
                     + '<div class="bricks-search-item-info">'
                     + '<span class="bricks-search-item-name">' + esc(item.name) + '</span>'
@@ -96,7 +104,7 @@
         var total = data.setsTotal || 0;
         if (total > 0) {
             html += '<div class="bricks-search-footer">'
-                + '<a class="bricks-search-footer-link" href="/lego?name=' + encodeURIComponent(term) + '">'
+                + '<a class="bricks-search-footer-link" href="' + langPrefix + '/lego?name=' + encodeURIComponent(term) + '">'
                 + 'See all ' + total + ' matching sets'
                 + '<i class="ph ph-arrow-right ms-1"></i>'
                 + '</a></div>';
@@ -109,7 +117,7 @@
                 var label = item.parent
                     ? '<span class="bricks-search-theme-breadcrumb">' + esc(item.parent) + ' <i class="ph ph-caret-right"></i> </span>' + esc(item.name)
                     : esc(item.name);
-                html += '<a class="bricks-search-item" href="' + esc(item.url) + '">'
+                html += '<a class="bricks-search-item" href="' + esc(localPath(item.url)) + '">'
                     + '<div class="bricks-search-theme-icon"><i class="ph-fill ph-squares-four"></i></div>'
                     + '<span class="bricks-search-item-name">' + label + '</span>'
                     + '</a>';
