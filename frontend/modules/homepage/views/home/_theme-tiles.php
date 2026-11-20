@@ -39,7 +39,7 @@ $title = $title ?? T::tr('Shop by theme');
                     : null;
             ?>
                 <?php [$accent, $soft] = ThemePalette::forSlug((string)$theme->slug); ?>
-                <a href="<?= Url::to("/lego/theme/{$theme->slug}") ?>" class="bricks-ttile"
+                <a href="<?= \frontend\components\LangUrl::to("/lego/theme/{$theme->slug}") ?>" class="bricks-ttile"
                    style="--tt-c: <?= Html::encode($accent) ?>; --tt-soft: <?= Html::encode($soft) ?>">
                     <span class="bricks-ttile-stage">
                         <?php if ($img !== null): ?>

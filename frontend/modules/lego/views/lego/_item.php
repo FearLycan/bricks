@@ -19,7 +19,7 @@ $isOwned = !$isGuest && OwnedSet::isOwnedByCurrentUser((int)$model->id);
 
 ?>
 
-<a href="<?= "/lego/{$model->slug}" ?>" class="text-decoration-none text-reset">
+<a href="<?= \frontend\components\LangUrl::to("/lego/{$model->slug}") ?>" class="text-decoration-none text-reset">
     <div class="card h-100">
         <div class="set-card-img-wrap">
             <?php if (!$isGuest && $model->isReleased()): ?>

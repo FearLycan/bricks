@@ -41,7 +41,7 @@ if ($showAvailabilityBadge) {
 }
 ?>
 
-<a href="<?= Url::to("/lego/{$model->slug}") ?>" class="text-decoration-none text-reset bricks-set-card">
+<a href="<?= \frontend\components\LangUrl::to("/lego/{$model->slug}") ?>" class="text-decoration-none text-reset bricks-set-card">
     <div class="card h-100">
         <div class="set-card-img-wrap">
             <?php if (!$isGuest && $model->isReleased()): ?>

@@ -11,7 +11,7 @@ use yii\web\View;
  */
 
 $image = trim((string)$model->image);
-$href  = Url::to("/lego/minifig/{$model->number}");
+$href  = \frontend\components\LangUrl::to("/lego/minifig/{$model->number}");
 ?>
 
 <a href="<?= $href ?>" class="bricks-minifig-card">

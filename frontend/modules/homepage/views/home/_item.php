@@ -15,7 +15,7 @@ use yii\web\View;
 
 </p>
 
-<a href="<?= "/lego/{$model->slug}" ?>" class="text-decoration-none text-reset">
+<a href="<?= \frontend\components\LangUrl::to("/lego/{$model->slug}") ?>" class="text-decoration-none text-reset">
     <div class="card h-100">
         <img src="<?= $model->getMainImage()->url ?? "https://placehold.co/300x220?text={$model->number}" ?>" class="card-img-top img-fluid set-card-image" loading="lazy" alt="<?= Html::encode($model->name) ?>">
         <div class="card-body">

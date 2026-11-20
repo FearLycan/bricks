@@ -24,7 +24,7 @@ $current = $calendars['current'];
 $older = $calendars['older'];
 $route = ['/lego/lego/advent-calendars'];
 $fmt = static fn(?array $p): string => $p !== null ? Set::formatAmountFromCents($p['cents'], $p['currency']) : '–';
-$setUrl = static fn(Set $s): string => Url::to("/lego/{$s->slug}");
+$setUrl = static fn(Set $s): string => \frontend\components\LangUrl::to("/lego/{$s->slug}");
 
 $prices = array_filter(array_column($current, 'price'));
 $minPrice = $prices !== [] ? $fmt(array_reduce($prices, static fn($c, $p) => $c === null || $p['cents'] < $c['cents'] ? $p : $c)) : null;

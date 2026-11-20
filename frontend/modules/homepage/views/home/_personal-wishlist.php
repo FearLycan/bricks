@@ -39,7 +39,7 @@ if (empty($items)) {
                     $mainImage = $set->getMainImage();
                     $imageUrl  = $mainImage !== null ? $mainImage->url : "https://placehold.co/120x120?text={$set->number}";
                 ?>
-                    <a href="<?= Url::to("/lego/{$set->slug}") ?>" class="bricks-wishlist-bar-item">
+                    <a href="<?= \frontend\components\LangUrl::to("/lego/{$set->slug}") ?>" class="bricks-wishlist-bar-item">
                         <span class="bricks-wishlist-bar-item-media">
                             <img src="<?= Html::encode($imageUrl) ?>"
                                  alt="<?= Html::encode((string)$set->name) ?>"

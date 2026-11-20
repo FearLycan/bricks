@@ -38,7 +38,7 @@ $heroId = 'bricks-hero-' . uniqid();
                 $savings    = $slide->getPromotionalSavingsPercent('USD');
             ?>
                 <div class="swiper-slide bricks-hero-slide">
-                    <a href="<?= Url::to("/lego/{$slide->slug}") ?>" class="bricks-hero-slide-link">
+                    <a href="<?= \frontend\components\LangUrl::to("/lego/{$slide->slug}") ?>" class="bricks-hero-slide-link">
                         <div class="bricks-hero-slide-media">
                             <div class="bricks-hero-slide-frame">
                                 <img src="<?= Html::encode($imageUrl) ?>"
