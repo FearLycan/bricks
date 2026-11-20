@@ -1836,6 +1836,10 @@ a.bricks-collection-stats-tile:hover {
     gap: 1rem;
 }
 
+.bricks-gift-guide-strip:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+}
+
 .bricks-gift-guide-strip {
     display: flex;
     align-items: center;
@@ -2149,6 +2153,10 @@ a.bricks-collection-stats-tile:hover {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 0.6rem;
+}
+
+.bricks-gift-picker-item:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
 }
 
 .bricks-gift-picker-item {

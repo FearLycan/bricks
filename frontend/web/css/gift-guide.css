@@ -245,7 +245,8 @@
 
 .gift-hub-grid {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    /* all guides in one row on desktop (5 fit at ~240px), fewer on smaller screens */
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 1rem;
 }
 
@@ -403,12 +404,6 @@
 .gift-hub-retiring a {
     color: #d01012;
     font-weight: 700;
-}
-
-@media (max-width: 1199.98px) {
-    .gift-hub-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
 }
 
 @media (max-width: 767.98px) {
