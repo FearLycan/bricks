@@ -1022,6 +1022,12 @@ a, button {
     color: #1a1a2e !important;
 }
 
+/* "Gifts" during the gift season (GiftGuide::isGiftSeason) */
+.bricks-nav-link.bricks-nav-link--season {
+    color: #d01012 !important;
+    font-weight: 800;
+}
+
 .bricks-user-btn {
     background: none;
     border: none;

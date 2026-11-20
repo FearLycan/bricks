@@ -62,7 +62,10 @@ $isGuest = Yii::$app->user->isGuest;
 
     <?= $this->render('_seasonal-spotlight', ['event' => $seasonalSpotlight]) ?>
 
-    <?= $this->render('_gift-guides') ?>
+    <?php // During the gift season the Christmas banner already holds the guide picker. ?>
+    <?php if (!(($seasonalSpotlight['key'] ?? '') === 'christmas' && \frontend\components\GiftGuide::isGiftSeason())): ?>
+        <?= $this->render('_gift-guides') ?>
+    <?php endif; ?>
 
     <?= $this->render('_wizard-cta') ?>
 

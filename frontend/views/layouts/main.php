@@ -215,6 +215,12 @@ if ($socialImage !== '') {
                             </a>
                         </li>
                         <li class="nav-item">
+                            <a class="bricks-nav-link nav-link<?= \frontend\components\GiftGuide::isGiftSeason() ? ' bricks-nav-link--season' : '' ?>"
+                               href="<?= Url::to(\frontend\components\GiftGuide::entryRoute()) ?>">
+                                <?= Html::encode(T::tr('Gifts')) ?>
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <?php // Until there are real deals, point the slot at a page with content. ?>
                             <?php if ((new HomepageContentService())->getOnSale(1) !== []): ?>
                                 <a class="bricks-nav-link nav-link" href="<?= Url::to(['/lego/on-sale']) ?>">

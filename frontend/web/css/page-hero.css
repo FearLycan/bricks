@@ -218,3 +218,31 @@
 .bricks-page-hero--valentine .bricks-page-hero-eyebrow {
     color: #ffd0db;
 }
+
+/* ---- Optional aside (e.g. homepage Christmas banner + gift picker) ------- */
+
+.bricks-page-hero-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+    gap: 2rem;
+    align-items: center;
+}
+
+.bricks-page-hero-aside {
+    padding: 2rem 0;
+}
+
+@media (max-width: 991.98px) {
+    .bricks-page-hero-row {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+
+    .bricks-page-hero--aside .bricks-page-hero-inner {
+        padding-bottom: 1.25rem;
+    }
+
+    .bricks-page-hero-aside {
+        padding: 0 0 2rem;
+    }
+}

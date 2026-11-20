@@ -2125,3 +2125,71 @@ a.bricks-collection-stats-tile:hover {
     border-radius: 999px;
     white-space: nowrap;
 }
+
+/* ---------- Gift guide picker (inside the Christmas banner) ---------- */
+
+.bricks-gift-picker {
+    padding: 1.1rem 1.25rem;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.1);
+    scroll-margin-top: 140px;
+}
+
+.bricks-gift-picker-label {
+    margin-bottom: 0.65rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.88);
+}
+
+.bricks-gift-picker-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.6rem;
+}
+
+.bricks-gift-picker-item {
+    display: flex;
+    flex-direction: column;
+    padding: 0.7rem 0.9rem;
+    border-radius: 14px;
+    background: #fff;
+    color: #1b1f3b;
+    text-decoration: none;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.bricks-gift-picker-item:hover,
+.bricks-gift-picker-item:focus-visible {
+    color: #1b1f3b;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
+}
+
+.bricks-gift-picker-item b {
+    font-size: 1.3rem;
+    font-weight: 900;
+    line-height: 1.15;
+    color: var(--gp-accent);
+}
+
+.bricks-gift-picker-item span {
+    font-size: 0.8rem;
+    color: #5b6077;
+}
+
+.bricks-gift-picker-all {
+    display: inline-block;
+    margin-top: 0.75rem;
+    color: #ffd400;
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.bricks-gift-picker-all:hover {
+    color: #fff;
+}
