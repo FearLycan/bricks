@@ -34,7 +34,7 @@ class LegoController extends Controller
                         'allow'   => true,
                         'actions' => [
                             'index', 'view', 'minifig', 'offer-reviews-modal', 'promo', 'new', 'tag',
-                            'magazines', 'exclusive', 'retiring-soon', 'audience', 'gift-guide',
+                            'magazines', 'exclusive', 'retiring-soon', 'audience', 'gift-guide', 'gifts',
                         ],
                         'roles'   => ['?', '@'],
                     ],
@@ -183,6 +183,19 @@ class LegoController extends Controller
         return $this->render('retiring-soon', [
             'dataProvider' => $dataProvider,
         ]);
+    }
+
+    /**
+     * Hub listing every gift guide (/lego/gifts), with 3 sets per guide.
+     */
+    public function actionGifts(): string
+    {
+        $cards = [];
+        foreach (GiftGuide::all() as $guide) {
+            $cards[] = ['guide' => $guide, 'covers' => GiftGuide::coverSets($guide)];
+        }
+
+        return $this->render('gifts', ['cards' => $cards]);
     }
 
     /**

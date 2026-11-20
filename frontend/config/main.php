@@ -186,6 +186,7 @@ return [
                 'lego/exclusive'                                => 'lego/lego/exclusive',
                 'lego/retiring-soon'                            => 'lego/lego/retiring-soon',
                 'lego/new'                                      => 'lego/lego/new',
+                'lego/gifts'                                    => 'lego/lego/gifts',
                 'lego/<slug:(for-toddlers|for-kids|for-tweens|for-teens|for-adults|small-builds|big-builds)>' => 'lego/lego/audience',
                 'lego/<slug:(' . implode('|', array_keys(\frontend\components\GiftGuide::SLUGS)) . ')>' => 'lego/lego/gift-guide',
                 '<alias:lego>/minifig/<number:[A-Za-z0-9\\-]+>' => 'lego/lego/minifig',
