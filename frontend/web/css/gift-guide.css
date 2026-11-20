@@ -313,6 +313,7 @@
     border-radius: 999px;
     background: var(--gh-soft);
     color: var(--gh-accent);
+    color: color-mix(in srgb, var(--gh-accent) 80%, #000);
     font-size: .75rem;
     font-weight: 700;
 }

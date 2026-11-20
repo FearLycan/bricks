@@ -2124,6 +2124,8 @@ a.bricks-collection-stats-tile:hover {
     font-size: .72rem;
     font-weight: 700;
     color: var(--tt-c);
+    /* darkened: the palette accents are too light for small text (WCAG AA) */
+    color: color-mix(in srgb, var(--tt-c) 68%, #000);
     background: var(--tt-soft);
     padding: .15rem .5rem;
     border-radius: 999px;

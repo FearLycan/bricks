@@ -178,11 +178,11 @@ if ($socialImage !== '') {
                 </span>
             </div>
         </div>
-        <nav class="navbar navbar-expand-md navbar-light bricks-nav-bar">
+        <nav class="navbar navbar-expand-md navbar-light bricks-nav-bar" aria-label="<?= Html::encode(T::tr('Main navigation')) ?>">
             <div class="container-fluid px-3 px-lg-4">
                 <a class="navbar-brand bricks-brand d-flex align-items-center gap-2 text-decoration-none" href="<?= Yii::$app->homeUrl ?>">
                     <?= Html::img('@web/images/logo.png', [
-                            'alt'   => Yii::$app->name,
+                            'alt'   => '',
                             'class' => 'bricks-brand-icon',
                     ]) ?>
                     <span class="bricks-brand-name"><?= Html::encode(Yii::$app->name) ?></span>

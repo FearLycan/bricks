@@ -84,9 +84,9 @@ if ($showAvailabilityBadge) {
             <?php if ($model->subtheme): ?>
                 <span class="set-card-theme-tag mb-2"><?= Html::encode($model->subtheme->name) ?></span>
             <?php endif; ?>
-            <h5 class="card-title set-card-title flex-grow-1">
+            <h3 class="card-title set-card-title flex-grow-1">
                 <?= Html::encode($model->name) ?>
-            </h5>
+            </h3>
             <?php if ($model->rating): ?>
                 <?php
                 $ratingFull = (int)floor((float)$model->rating);
