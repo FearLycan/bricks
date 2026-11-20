@@ -123,10 +123,10 @@ class HomepageContentService
     {
         $used = [];
         $rows = [
-            ['for-toddlers', '1–4', T::tr('Toddlers'), '#1e6fd9', '#3f8cf0', '#e7f0fd'],
-            ['for-kids', '5–8', T::tr('Kids'), '#d93025', '#ea5246', '#fde9e7'],
-            ['for-tweens', '9–12', T::tr('Older kids'), '#1f9d55', '#33b46b', '#e6f6ec'],
-            ['for-teens', '13+', T::tr('Teens'), '#d6418b', '#e5679f', '#fdebf4'],
+            ['for-toddlers', '1–4', T::tr('Toddlers'), '#195eb7', '#1e6fd9', '#e7f0fd'],
+            ['for-kids', '5–8', T::tr('Kids'), '#b8291f', '#d93025', '#fde9e7'],
+            ['for-tweens', '9–12', T::tr('Older kids'), '#166e3c', '#1a8648', '#e6f6ec'],
+            ['for-teens', '13+', T::tr('Teens'), '#b1266b', '#d33282', '#fdebf4'],
             ['for-adults', '18+', T::tr('Adults'), '#1a1a2e', '#33334d', '#eceef3'],
         ];
         $tiles = [];

@@ -73,9 +73,9 @@ $isOwned = !$isGuest && OwnedSet::isOwnedByCurrentUser((int)$model->id);
             <?php if ($model->subtheme): ?>
                 <span class="set-card-theme-tag mb-2"><?= Html::encode($model->subtheme->name) ?></span>
             <?php endif; ?>
-            <h5 class="card-title set-card-title flex-grow-1">
+            <h2 class="card-title set-card-title flex-grow-1">
                 <?= Html::encode($model->name) ?>
-            </h5>
+            </h2>
             <?php if ($model->rating): ?>
                 <div class="set-card-rating">
                     <?php $ratingFull = floor((float)$model->rating); ?>

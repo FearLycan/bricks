@@ -1358,4 +1358,6 @@ return [
     '{n, plural, =1{# small set} other{# small sets}} of up to about 300 pieces, among the least expensive in the current LEGO range. A full build, not just a token present.' => '{n, plural, =1{# set pequeño} other{# sets pequeños}} de hasta unas 300 piezas, entre los más baratos de la gama actual de LEGO. Un montaje completo, no un simple detalle.',
     'Recommended in our gift guide' => 'Recomendado en nuestra guía de regalos',
     'Also in:' => 'También en:',
+    'Main navigation' => 'Navegación principal',
+    'Set name or number' => 'Nombre o número del set',
 ];

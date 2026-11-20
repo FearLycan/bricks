@@ -1358,4 +1358,6 @@ return [
     '{n, plural, =1{# small set} other{# small sets}} of up to about 300 pieces, among the least expensive in the current LEGO range. A full build, not just a token present.' => '300ピースくらいまでの小さなセット{n}個。現行LEGOラインナップの中でも手頃なものばかりで、しっかり組み立てられます。',
     'Recommended in our gift guide' => 'ギフトガイドのおすすめ',
     'Also in:' => 'こちらにも掲載:',
+    'Main navigation' => 'メインナビゲーション',
+    'Set name or number' => 'セット名または番号',
 ];

@@ -28,10 +28,10 @@ use yii\widgets\ActiveForm;
             <div class="col-12 col-md-3 mb-3 mb-lg-0">
                 <div class="row g-2">
                     <div class="col-10 col-lg-12">
-                        <?= $form->field($model, 'name')->label(false) ?>
+                        <?= $form->field($model, 'name')->label(false)->textInput(['aria-label' => T::tr('Set name or number')]) ?>
                     </div>
                     <div class="col-2 d-lg-none" style="text-align: right;">
-                        <?= Html::submitButton(Html::tag('i', '', ['class' => 'ph ph-magnifying-glass']), ['class' => 'btn btn-primary w-100']) ?>
+                        <?= Html::submitButton(Html::tag('i', '', ['class' => 'ph ph-magnifying-glass', 'aria-hidden' => 'true']), ['class' => 'btn btn-primary w-100', 'aria-label' => T::tr('Search')]) ?>
                     </div>
                 </div>
             </div>
