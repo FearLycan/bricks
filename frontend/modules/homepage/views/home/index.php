@@ -67,19 +67,9 @@ $isGuest = Yii::$app->user->isGuest;
         <?= $this->render('_gift-guides') ?>
     <?php endif; ?>
 
-    <?= $this->render('_wizard-cta') ?>
-
     <?php if (!$isGuest): ?>
         <?= $this->render('_personal-wishlist', ['items' => $wishlistPreview]) ?>
     <?php endif; ?>
-
-    <?= $this->render('_age-tiles', ['tiles' => $ageTiles]) ?>
-
-    <?= $this->render('_theme-tiles', [
-            'themes' => $themeTiles,
-            'covers' => $themeCovers,
-            'title'  => T::tr('Shop by theme'),
-    ]) ?>
 
     <?= $this->render('_section-slider', [
             'title'       => T::tr('New arrivals'),
@@ -88,6 +78,14 @@ $isGuest = Yii::$app->user->isGuest;
             'seeAllUrl'   => ['/lego'],
             'seeAllLabel' => T::tr('See all'),
     ]) ?>
+
+    <?= $this->render('_theme-tiles', [
+            'themes' => $themeTiles,
+            'covers' => $themeCovers,
+            'title'  => T::tr('Shop by theme'),
+    ]) ?>
+
+    <?= $this->render('_age-tiles', ['tiles' => $ageTiles]) ?>
 
     <?= $this->render('_section-slider', [
             'title'         => T::tr('On sale'),
@@ -113,6 +111,9 @@ $isGuest = Yii::$app->user->isGuest;
             'sectionId' => 'coming-soon',
             'items'     => $comingSoon,
     ]) ?>
+
+    <?php // Set finder CTA below the lists: for people who scrolled and did not pick anything. ?>
+    <?= $this->render('_wizard-cta') ?>
 
     <?= $this->render('_section-slider', [
             'title'     => T::tr('LEGO{sup} for adults', ['sup' => '<sup>®</sup>']),
