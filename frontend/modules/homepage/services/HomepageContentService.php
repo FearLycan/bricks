@@ -410,23 +410,27 @@ class HomepageContentService
     }
 
     /**
-     * Homepage lists show buildable sets only: no gear (video games, posters,
-     * plush: 0 pieces), no magazine freebies and no tiny polybags.
+     * Homepage lists show sets people can buy: no gear (video games, posters,
+     * plush: 0 pieces), no tiny polybags, and nothing that only comes free
+     * (magazine gifts, promotions, gifts with purchase, Insiders rewards).
      */
     private static function realSetCondition(): array
     {
         return ['and',
             ['>=', 's.pieces', 30],
-            ['or', ['s.availability' => null], ['not', ['s.availability' => 'Magazine gift']]],
+            ['or', ['s.availability' => null], ['not', ['s.availability' => self::NOT_FOR_SALE]]],
         ];
     }
+
+    /** `set.availability` values of sets that are not sold on their own. */
+    private const NOT_FOR_SALE = ['Magazine gift', 'Promotional', 'LEGO Gift with Purchase', 'Insiders Reward'];
 
     /**
      * @return Set[]
      */
     public function getNewArrivals(int $limit = 12): array
     {
-        return $this->cached("homepage.newArrivals.v2.{$limit}", function () use ($limit) {
+        return $this->cached("homepage.newArrivals.v3.{$limit}", function () use ($limit) {
             return Set::find()
                 ->alias('s')
                 ->andWhere(['s.status' => StatusEnum::ACTIVE->value])
@@ -469,7 +473,7 @@ class HomepageContentService
      */
     public function getTopRated(int $limit = 12): array
     {
-        return $this->cached("homepage.topRated.v2.{$limit}", function () use ($limit) {
+        return $this->cached("homepage.topRated.v3.{$limit}", function () use ($limit) {
             return Set::find()
                 ->alias('s')
                 ->andWhere(['s.status' => StatusEnum::ACTIVE->value])
@@ -490,7 +494,7 @@ class HomepageContentService
      */
     public function getComingSoon(int $limit = 12): array
     {
-        return $this->cached("homepage.comingSoon.v2.{$limit}", function () use ($limit) {
+        return $this->cached("homepage.comingSoon.v3.{$limit}", function () use ($limit) {
             return Set::find()
                 ->alias('s')
                 ->andWhere(['s.status' => StatusEnum::ACTIVE->value])
@@ -508,7 +512,7 @@ class HomepageContentService
      */
     public function getForAdults(int $limit = 12): array
     {
-        return $this->cached("homepage.forAdults.v2.{$limit}", function () use ($limit) {
+        return $this->cached("homepage.forAdults.v3.{$limit}", function () use ($limit) {
             return Set::find()
                 ->alias('s')
                 ->andWhere(['s.status' => StatusEnum::ACTIVE->value])
@@ -616,7 +620,7 @@ class HomepageContentService
      */
     public function getThemeSpotlightSets(Theme $theme, int $picks = 4, int $news = 3): array
     {
-        $key = 'homepage.themeSpotlightSets.v1.' . (int)$theme->id . '.' . date('Y-m-d');
+        $key = 'homepage.themeSpotlightSets.v2.' . (int)$theme->id . '.' . date('Y-m-d');
 
         return $this->cached($key, function () use ($theme, $picks, $news): array {
             $today = date('Y-m-d');
@@ -635,7 +639,7 @@ class HomepageContentService
                     ['>=', 's.exit_date', $today],
                     ['and', ['s.exit_date' => null], ['>=', 's.year', (int)date('Y') - 1]],
                 ])
-                ->andWhere(['>', 's.pieces', 0])
+                ->andWhere(self::realSetCondition())
                 ->with(['mainImageRelation', 'setPrices'])
                 ->groupBy('s.id')
                 ->limit(300)
