@@ -3,6 +3,7 @@
 use common\models\OwnedSet;
 use common\models\Set;
 use common\models\Wishlist;
+use frontend\components\AvailabilityBadge;
 use frontend\components\T;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -52,21 +53,7 @@ $isOwned = !$isGuest && OwnedSet::isOwnedByCurrentUser((int)$model->id);
             <?php if ($savingsPercent !== null): ?>
                 <span class="set-card-discount-badge">−<?= $savingsPercent ?>%</span>
             <?php endif; ?>
-            <?php if ($model->availability !== null && $model->availability !== '' && $model->availability !== '{Not specified}'): ?>
-                <?php
-                $availLower = strtolower($model->availability);
-                if (str_contains($availLower, 'exclusive')) {
-                    $availBadgeClass = 'set-card-availability-badge--exclusive';
-                } elseif (str_contains($availLower, 'available') || str_contains($availLower, 'retail')) {
-                    $availBadgeClass = 'set-card-availability-badge--available';
-                } else {
-                    $availBadgeClass = 'set-card-availability-badge--unavailable';
-                }
-                ?>
-                <span class="set-card-availability-badge <?= $availBadgeClass ?>">
-                    <?= Html::encode($model->availability) ?>
-                </span>
-            <?php endif; ?>
+            <?= AvailabilityBadge::render($model->availability) ?>
         </div>
         <div class="card-body d-flex flex-column pb-2">
             <p class="set-card-number text-muted mb-1"><?= Html::encode($model->number) ?></p>
@@ -94,7 +81,9 @@ $isOwned = !$isGuest && OwnedSet::isOwnedByCurrentUser((int)$model->id);
             <?php endif; ?>
             <?php $promoPriceCents = $model->getPromotionalPriceCents('USD'); ?>
             <?php $promoPrice = $model->getFormattedPromotionalPrice('USD'); ?>
-            <?php if ($promoPrice !== null): ?>
+            <?php if ($promoPrice === null && AvailabilityBadge::isGiftWithPurchase($model->availability)): ?>
+                <?= AvailabilityBadge::renderGwpNote() ?>
+            <?php elseif ($promoPrice !== null): ?>
                 <div class="mt-2">
                     <span class="fw-bold text-success font-size-large"><?= Html::encode($promoPrice) ?></span>
                     <span class="text-muted text-decoration-line-through ms-2 small"><?= Html::encode($model->getFormattedPrice('USD') ?? '') ?></span>
