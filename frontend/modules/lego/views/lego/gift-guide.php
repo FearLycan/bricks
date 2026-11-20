@@ -148,7 +148,7 @@ $faqSchema = [
         </div>
         <button type="button" class="btn btn-danger"
                 data-wizard-answers="<?= Html::encode(Json::encode($guide['wizard'])) ?>"
-                data-wizard-step="3">
+                data-wizard-step="<?= (int)($guide['wizardStep'] ?? 3) ?>">
             <?= Html::encode(T::tr('Open the set finder')) ?>
         </button>
     </section>

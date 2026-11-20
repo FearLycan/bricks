@@ -245,8 +245,8 @@
 
 .gift-hub-grid {
     display: grid;
-    /* all guides in one row on desktop (5 fit at ~240px), fewer on smaller screens */
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    /* 3 per row on desktop (6 guides = 2 even rows), 2 on tablets, 1 on phones */
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr));
     gap: 1rem;
 }
 

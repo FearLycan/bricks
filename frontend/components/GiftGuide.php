@@ -28,6 +28,7 @@ final class GiftGuide
         'gifts-for-teens'  => 'teens',
         'gifts-for-adults' => 'adults',
         'flower-gifts'     => 'flowers',
+        'small-gifts'      => 'small',
     ];
 
     /**
@@ -541,6 +542,94 @@ final class GiftGuide
                     [T::tr('Do LEGO bouquets come with a vase?'), T::tr('Most bouquets do not, so plan a vase or a tall glass. Potted plants such as the orchid, the peace lily or the bonsai come with a brick-built pot.')],
                     [T::tr('How long does it take to build a LEGO bouquet?'), T::tr('A set of about 300 pieces takes an hour or so, 600 to 800 pieces two to three hours, and the biggest arrangements an evening or two.')],
                     [T::tr('Are LEGO flowers a good gift for someone who has never built LEGO?'), T::tr('Yes. The instructions are picture-based and step by step, and many people who receive a bouquet go on to collect the whole series.')],
+                ],
+            ],
+            'small' => [
+                'picker'      => false, // occasion, not a recipient: hub only, not the homepage "who is it for" picker
+                'hint'        => T::tr('Stocking fillers'),
+                'ageLabel'    => T::tr('Small gifts'),
+                'accent'      => '#e8590c',
+                'soft'        => '#fff0e6',
+                'slug'        => 'small-gifts',
+                'icon'        => 'ph ph-gift',
+                'modifier'    => 'small-gifts',
+                'title'       => T::tr('Small LEGO gifts and stocking fillers'),
+                'teaser'      => T::tr('Sets of up to about 300 pieces for St Nicholas Day, a stocking or a small surprise.'),
+                'audience'    => null,
+                'audienceCta' => '',
+                'metaTitle'   => T::tr('Small LEGO gifts and stocking fillers - BrickAtlas'),
+                'description' => T::tr('Hand-picked small LEGO sets of up to about 300 pieces: inexpensive presents for St Nicholas Day, a Christmas stocking or a small surprise, for kids, gamers and adults.'),
+                'intro'       => '{n, plural, =1{# small set} other{# small sets}} of up to about 300 pieces, among the least expensive in the current LEGO range. A full build, not just a token present.', // translated in the view with the real count
+                'wizard'      => ['recipient' => 'gift'],
+                'wizardStep'  => 2, // recipient known, profile not: start at who it is for
+                'tipsTitle'   => T::tr('How to choose a small LEGO gift'),
+                'tips'        => [
+                    [T::tr('Small but complete.'), T::tr('Even a set of 100 pieces is a full build, often with a minifigure, so it is a real present and not just a token.')],
+                    [T::tr('Pick by interest, not by size.'), T::tr('A small Pokémon or Minecraft set will please a fan more than a bigger box from a theme they do not follow.')],
+                    [T::tr('Watch the age on the box.'), T::tr('Sets rated 5+ suit the youngest; 3-in-1 Creator sets rated 7+ and 8+ give older kids three models in one box.')],
+                    [T::tr('Two small sets can make a scene.'), T::tr('Small sets from the same theme combine well, so two of them can be a bigger present than one medium set.')],
+                ],
+                'sections'    => [
+                    [
+                        'icon'  => 'ph ph-baby',
+                        'title' => T::tr('For the youngest'),
+                        'lead'  => T::tr('Sets rated 5+ with few pieces: built in a few minutes, played with for much longer.'),
+                        'tags'  => ['car', 'disney-princess'],
+                        'sets'  => [
+                            '60487' => T::tr('A yellow taxi from LEGO City, about 120 pieces. A simple build and a car that goes straight into play.'),
+                            '42681' => T::tr('An axolotl adventure boat from Friends, under 100 pieces. One of the least expensive sets in the current range.'),
+                            '43284' => T::tr('Mini Anna and Elsa from "Frozen", about 65 pieces. A small present for a young Disney fan.'),
+                        ],
+                    ],
+                    [
+                        'icon'  => 'ph ph-game-controller',
+                        'title' => T::tr('For gamers and Pokémon fans'),
+                        'lead'  => T::tr('Small sets with characters children know from games.'),
+                        'tags'  => ['pokemon', 'minecraft', 'video-game'],
+                        'sets'  => [
+                            '72159' => T::tr('Jigglypuff giving a concert, under 100 pieces. The smallest of the new Pokémon sets.'),
+                            '21583' => T::tr('Steve\'s taiga adventure from Minecraft, about 80 pieces. A quick build that every player recognises.'),
+                            '31380' => T::tr('A retro games console from the Creator 3-in-1 range, under 300 pieces. The same pieces build two other models.'),
+                        ],
+                    ],
+                    [
+                        'icon'  => 'ph ph-paw-print',
+                        'title' => T::tr('Animals: three models in one box'),
+                        'lead'  => T::tr('Creator 3-in-1 sets: build one animal, then rebuild the same pieces into two others.'),
+                        'tags'  => ['3-in-1', 'animals'],
+                        'sets'  => [
+                            '31376' => T::tr('A cute hamster with a flower, about 170 pieces. A sweet little present that can become two other animals.'),
+                            '31377' => T::tr('A turtle with a water lily, about 120 pieces. A calm little build for an animal lover.'),
+                            '31379' => T::tr('A fierce dinosaur, under 300 pieces. The biggest set in this guide and a hit with dinosaur fans.'),
+                        ],
+                    ],
+                    [
+                        'icon'  => 'ph ph-motorcycle',
+                        'title' => T::tr('Vehicles and dragons'),
+                        'lead'  => T::tr('Small builds for kids who like speed and action.'),
+                        'tags'  => ['car', 'dragon'],
+                        'sets'  => [
+                            '42225' => T::tr('A yellow Technic motorcycle, about 150 pieces. A first taste of Technic for a small budget.'),
+                            '60485' => T::tr('A hot rod from LEGO City, about 80 pieces, rated 5+. A small racer for the youngest builders.'),
+                            '71862' => T::tr('Lloyd\'s dragon from Ninjago, about 80 pieces. A small dragon for a Ninjago fan.'),
+                        ],
+                    ],
+                    [
+                        'icon'  => 'ph ph-flower',
+                        'title' => T::tr('For teens and adults'),
+                        'lead'  => T::tr('Small builds that look good on a desk or a shelf.'),
+                        'tags'  => ['brick-built-plants'],
+                        'sets'  => [
+                            '11508' => T::tr('Daisies, about 130 pieces. A small bouquet that never wilts, as an add-on or on its own.'),
+                            '40953' => T::tr('A London double-decker bus, about 250 pieces. A small present for someone who loves travel.'),
+                            '10343' => T::tr('A mini orchid in a pot, under 300 pieces. An elegant small present that takes about an hour to build.'),
+                        ],
+                    ],
+                ],
+                'faq'         => [
+                    [T::tr('What small LEGO set makes a good stocking filler?'), T::tr('A set of 100 to 300 pieces from a theme the person likes: a small City vehicle, a Pokémon or Minecraft set, a 3-in-1 Creator animal or a small botanical set.')],
+                    [T::tr('Is a small LEGO set enough as a present?'), T::tr('For St Nicholas Day, a stocking or as an extra, yes. It is a complete build, often with a minifigure, and small sets can be combined into a bigger scene.')],
+                    [T::tr('Where can I find bigger gift ideas?'), T::tr('Our gift guides for kids, teenagers and adults pick sets by interest at every size.')],
                 ],
             ],
         ];
