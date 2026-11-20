@@ -16,7 +16,7 @@ use yii\web\View;
 <div class="bricks-gift-picker" id="gift-ideas">
     <div class="bricks-gift-picker-label"><?= Html::encode(T::tr('Looking for a gift? Pick who it is for')) ?></div>
     <div class="bricks-gift-picker-grid">
-        <?php foreach (GiftGuide::all() as $guide): ?>
+        <?php foreach (array_filter(GiftGuide::all(), static fn(array $g) => $g['picker'] ?? true) as $guide): ?>
             <a class="bricks-gift-picker-item"
                href="<?= Html::encode(Url::to(['/lego/lego/gift-guide', 'slug' => $guide['slug']])) ?>"
                style="--gp-accent: <?= Html::encode($guide['accent']) ?>;">
