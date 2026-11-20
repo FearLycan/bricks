@@ -57,7 +57,9 @@ $ratingStarClasses = $buildRatingStars($reviewAverage !== null ? (float)$reviewA
 
 $this->title = SeoHelper::buildSetTitle($model);
 $this->params['metaDescription'] = SeoHelper::buildSetDescription($model);
-$this->params['canonicalUrl'] = SeoHelper::buildAbsoluteUrl("/lego/{$model->slug}");
+// Self-referencing canonical in the page's own language: hreflang
+// alternates are ignored when a page canonicalises to another language.
+$this->params['canonicalUrl'] = Url::to(['/lego/lego/view', 'modules' => 'lego', 'slug' => $model->slug], true);
 $this->params['robots'] = IndexPolicy::forSet($model);
 $this->params['ogType'] = 'product';
 $this->params['socialImage'] = SeoHelper::buildAbsoluteUrl($model->getDisplayMainImageUrl());

@@ -62,7 +62,7 @@ $schema = [
             '@type'    => 'ListItem',
             'position' => $i + 1,
             'name'     => (string)$row['set']->name,
-            'url'      => SeoHelper::buildAbsoluteUrl("/lego/{$row['set']->slug}"),
+            'url'      => Url::to(['/lego/lego/view', 'modules' => 'lego', 'slug' => $row['set']->slug], true),
         ], $current, array_keys($current)),
     ],
     [

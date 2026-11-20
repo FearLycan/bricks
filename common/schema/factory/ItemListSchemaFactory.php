@@ -32,7 +32,7 @@ final class ItemListSchemaFactory
             $items[] = [
                 '@type'    => 'ListItem',
                 'position' => $position,
-                'url'      => Url::to("/lego/{$model->slug}", true),
+                'url'      => Url::to(['/lego/lego/view', 'modules' => 'lego', 'slug' => $model->slug], true),
                 'name'     => $name,
             ];
             $position++;
