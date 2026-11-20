@@ -25,8 +25,14 @@ use yii\web\View;
             </a>
         <?php endforeach; ?>
     </div>
-    <a class="bricks-gift-picker-all" href="<?= Html::encode(Url::to(GiftGuide::entryRoute())) ?>">
-        <?= Html::encode(T::tr('All gift guides')) ?>
-        <i class="ph ph-arrow-right" aria-hidden="true"></i>
-    </a>
+    <div class="bricks-gift-picker-links">
+        <a class="bricks-gift-picker-all" href="<?= Html::encode(Url::to(GiftGuide::entryRoute())) ?>">
+            <?= Html::encode(T::tr('All gift guides')) ?>
+            <i class="ph ph-arrow-right" aria-hidden="true"></i>
+        </a>
+        <a class="bricks-gift-picker-all" href="<?= Html::encode(Url::to(['/lego/lego/advent-calendars'])) ?>">
+            <?= Html::encode(T::tr('LEGO advent calendars {year}', ['year' => \frontend\components\AdventCalendars::seasonYear()])) ?>
+            <i class="ph ph-arrow-right" aria-hidden="true"></i>
+        </a>
+    </div>
 </div>

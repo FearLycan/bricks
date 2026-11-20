@@ -110,6 +110,10 @@ $ageLinks = [
                 <?= Html::encode(T::tr('Open the gift finder')) ?>
             </button>
             <p class="gift-hub-retiring">
+                <a href="<?= Html::encode(Url::to(['/lego/lego/advent-calendars'])) ?>"><?= Html::encode(T::tr('LEGO advent calendars {year}', ['year' => \frontend\components\AdventCalendars::seasonYear()])) ?></a>
+                <?= Html::encode(T::tr('all compared in one table.')) ?>
+            </p>
+            <p class="gift-hub-retiring">
                 <a href="<?= Html::encode(Url::to(['/lego/lego/retiring-soon'])) ?>"><?= Html::encode(T::tr('Sets retiring soon')) ?></a>
                 <?= Html::encode(T::tr('are worth buying before the holidays.')) ?>
             </p>

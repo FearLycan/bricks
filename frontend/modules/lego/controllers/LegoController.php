@@ -34,7 +34,7 @@ class LegoController extends Controller
                         'allow'   => true,
                         'actions' => [
                             'index', 'view', 'minifig', 'offer-reviews-modal', 'promo', 'new', 'tag',
-                            'magazines', 'exclusive', 'retiring-soon', 'audience', 'gift-guide', 'gifts',
+                            'magazines', 'exclusive', 'retiring-soon', 'audience', 'gift-guide', 'gifts', 'advent-calendars',
                         ],
                         'roles'   => ['?', '@'],
                     ],
@@ -182,6 +182,20 @@ class LegoController extends Controller
 
         return $this->render('retiring-soon', [
             'dataProvider' => $dataProvider,
+        ]);
+    }
+
+    /**
+     * This season's LEGO advent calendars side by side (/lego/advent-calendars).
+     */
+    public function actionAdventCalendars(): string
+    {
+        $year = \frontend\components\AdventCalendars::seasonYear();
+
+        return $this->render('advent-calendars', [
+            'year'      => $year,
+            'calendars' => \frontend\components\AdventCalendars::load($year),
+            'daysLeft'  => \frontend\components\AdventCalendars::daysToFirstDoor(),
         ]);
     }
 
