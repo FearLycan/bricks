@@ -101,3 +101,7 @@ Integracja AliExpress: `common/components/aliexpress/*` (klient API, resolver li
 ## Przed wydaniem (zmiany na stronie głównej albo nowe strony/linki)
 
 Sprawdź spójność strony głównej (prośba Damiana, 11.2026): czy niczego nie ma za dużo albo za mało i czy to samo nie powtarza się w kilku miejscach (menu, pasek skrótów `_section-nav`, baner sezonowy z wyborem prezentu, kafelki wieku/tematów, slidery, CTA kreatora). Listy na stronie głównej pokazują tylko prawdziwe zestawy (`HomepageContentService::realSetCondition`: ≥30 elementów, bez „Magazine gift”).
+
+## Linki i adresy w wersjach językowych
+
+`Url::to('/lego/...')` ze zwykłym stringiem NIE dostaje prefiksu języka (codemix/localeurls), więc na `/pl/` prowadzi do wersji angielskiej. Używaj tablicowej trasy (`Url::to(['/lego/lego/view', 'modules' => 'lego', 'slug' => $s])`) albo `frontend\components\LangUrl::to('/lego/...')`. Dotyczy też canonical, og:url i JSON-LD (w 11.2026 canonical stron zestawów wskazywał EN i Google wykluczył ~18 tys. stron PL/DE/FR/IT).
