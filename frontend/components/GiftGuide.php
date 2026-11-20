@@ -23,6 +23,8 @@ final class GiftGuide
 {
     /** URL slug => guide key. */
     public const SLUGS = [
+        'gifts-for-kids'   => 'kids',
+        'gifts-for-tweens' => 'tweens',
         'gifts-for-teens'  => 'teens',
         'gifts-for-adults' => 'adults',
     ];
@@ -81,6 +83,170 @@ final class GiftGuide
     private static function definitions(): array
     {
         return [
+            'kids' => [
+                'slug'        => 'gifts-for-kids',
+                'icon'        => 'ph ph-gift',
+                'modifier'    => 'kids',
+                'title'       => T::tr('LEGO gifts for kids (ages 5–8)'),
+                'teaser'      => T::tr('Fire engines, horses, Pokémon and dinosaurs: sets a 6-year-old can build.'),
+                'audience'    => 'for-kids',
+                'audienceCta' => T::tr('See our hand-picked LEGO gifts for kids aged 5 to 8.'),
+                'metaTitle'   => T::tr('LEGO gift ideas for kids aged 5 to 8 - BrickAtlas'),
+                'description' => T::tr('Hand-picked LEGO sets for 5, 6, 7 and 8 year olds, grouped by interest: vehicles, animals, Pokémon, dinosaurs and Disney princesses, with tips on choosing the right size.'),
+                'intro'       => '{n, plural, =1{# set} other{# sets}} that a child aged 5 to 8 can build with a little help, grouped by what they like. All of them are in the current LEGO range.', // translated in the view with the real count
+                'wizard'      => ['recipient' => 'gift', 'profile' => 'child'],
+                'tipsTitle'   => T::tr('How to choose LEGO for a 5–8 year old'),
+                'tips'        => [
+                    [T::tr('The age on the box is a minimum.'), T::tr('A 6+ set suits most six-year-olds. Sets marked 8+ or 9+ usually need an adult nearby, at least for the first build.')],
+                    [T::tr('Up to about 300 pieces they can build alone.'), T::tr('That is one afternoon. 400–700 pieces is a weekend project, best built together.')],
+                    [T::tr('At this age a set is a toy.'), T::tr('Vehicles that roll, buildings that open and minifigures to act out stories with matter more than display value.')],
+                    [T::tr('Sets marked 4+ are very simple.'), T::tr('They use big starter pieces and take minutes to build. Great for a five-year-old, often too easy for a seven-year-old.')],
+                ],
+                'sections'    => [
+                    [
+                        'icon'  => 'ph ph-siren',
+                        'title' => T::tr('Fire engines, police and big vehicles'),
+                        'lead'  => T::tr('LEGO City is the classic first theme: trucks, rescue vehicles and people to play with.'),
+                        'tags'  => ['police', 'fire', 'construction'],
+                        'sets'  => [
+                            '60499' => T::tr('An airport fire engine with a water cannon and plenty of details. Almost 700 pieces, so a good main present for a seven-year-old.'),
+                            '60495' => T::tr('A recycling truck with sorting bins. Children see one on their own street, which makes it great for play.'),
+                            '60479' => T::tr('A small police prisoner transport, about 200 pieces. Built in one sitting, good as a first set or an extra.'),
+                        ],
+                    ],
+                    [
+                        'icon'  => 'ph ph-horse',
+                        'title' => T::tr('Horses, animals and Friends'),
+                        'lead'  => T::tr('Friends sets are about animals, friendship and everyday places, with mini-dolls instead of minifigures.'),
+                        'tags'  => ['horse', 'animals', 'pets'],
+                        'sets'  => [
+                            '42688' => T::tr('A horse stable with a riding area, horses and grooming accessories. For a child who loves horses, it is hard to beat.'),
+                            '42701' => T::tr('A koala care centre with several animals. Over 500 pieces, so it can fill a whole weekend.'),
+                            '42679' => T::tr('A bunny hotel with fewer than 200 pieces, rated 5+. A quick build for the youngest in this age group.'),
+                        ],
+                    ],
+                    [
+                        'icon'  => 'ph ph-game-controller',
+                        'title' => T::tr('Pokémon and Minecraft'),
+                        'lead'  => T::tr('Characters children know from games and cartoons. The new Pokémon sets are among the most wanted LEGO this year.'),
+                        'tags'  => ['pokemon', 'video-game', 'minecraft'],
+                        'sets'  => [
+                            '72164' => T::tr('Pikachu\'s training house, rated 6+. A safe choice for any Pokémon fan, even one who has never built LEGO before.'),
+                            '72162' => T::tr('Eevee and Lapras on a treasure hunt, about 600 pieces. More to build for an older Pokémon fan.'),
+                            '21585' => T::tr('A chicken farm from Minecraft. A small, inexpensive set that fans of the game recognise straight away.'),
+                        ],
+                    ],
+                    [
+                        'icon'  => 'ph ph-planet',
+                        'title' => T::tr('Dinosaurs and Star Wars'),
+                        'lead'  => T::tr('Action, chases and big creatures from Jurassic World and Star Wars.'),
+                        'tags'  => ['dinosaur', 'space'],
+                        'sets'  => [
+                            '77983' => T::tr('A mosasaurus attacking a boat, from "Jurassic World Rebirth". Over 700 pieces of adventure for a dinosaur fan.'),
+                            '75423' => T::tr('Luke Skywalker\'s X-wing from the first Star Wars film, rated 6+. A young fan can build the famous starfighter.'),
+                            '77977' => T::tr('A baby pteranodon built from almost 400 pieces. A smaller present for anyone who loves dinosaurs.'),
+                        ],
+                    ],
+                    [
+                        'icon'  => 'ph ph-crown',
+                        'title' => T::tr('Disney princesses'),
+                        'lead'  => T::tr('Castles and scenes from Disney films, with mini-doll princesses.'),
+                        'tags'  => ['disney-princess', 'princess', 'castle'],
+                        'sets'  => [
+                            '43297' => T::tr('Rapunzel\'s castle from "Tangled", almost 700 pieces. A main present for a fan of Disney princesses.'),
+                            '43299' => T::tr('Ariel\'s royal wedding from "The Little Mermaid". A scene to play out, about 500 pieces.'),
+                            '43294' => T::tr('Rapunzel\'s mini tower with fewer than 200 pieces, rated 5+. A small first set or an extra present.'),
+                        ],
+                    ],
+                ],
+                'faq'         => [
+                    [T::tr('Which LEGO is best for a 6-year-old?'), T::tr('Sets marked 5+ or 6+ with 200 to 500 pieces: City vehicles, Friends, Pokémon or Disney. Pick by what the child likes, because the theme matters more than the piece count.')],
+                    [T::tr('Is LEGO Friends only for girls?'), T::tr('No. Friends is about animals, friends and everyday places, and many boys enjoy it too, just as many girls love City fire engines. Choose by interest, not by the colour of the box.')],
+                    [T::tr('Can a 5-year-old build LEGO alone?'), T::tr('Small sets of up to about 200 pieces, yes. Bigger ones go better together: the adult finds the pieces and the child puts them on.')],
+                ],
+            ],
+            'tweens' => [
+                'slug'        => 'gifts-for-tweens',
+                'icon'        => 'ph ph-gift',
+                'modifier'    => 'tweens',
+                'title'       => T::tr('LEGO gifts for kids aged 9–12'),
+                'teaser'      => T::tr('Harry Potter, Technic, Minecraft and dragons: bigger builds for older kids.'),
+                'audience'    => 'for-tweens',
+                'audienceCta' => T::tr('See our hand-picked LEGO gifts for kids aged 9 to 12.'),
+                'metaTitle'   => T::tr('LEGO gift ideas for kids aged 9 to 12 - BrickAtlas'),
+                'description' => T::tr('Hand-picked LEGO sets for 9, 10, 11 and 12 year olds, grouped by interest: Harry Potter, Technic, Minecraft, dragons and creative builds, with buying tips.'),
+                'intro'       => '{n, plural, =1{# set} other{# sets}} for kids aged 9 to 12 who are ready for bigger, more detailed builds. All of them are in the current LEGO range.', // translated in the view with the real count
+                'wizard'      => ['recipient' => 'gift', 'profile' => 'older_child'],
+                'tipsTitle'   => T::tr('How to choose LEGO for a 9–12 year old'),
+                'tips'        => [
+                    [T::tr('They can build on their own now.'), T::tr('Most children of this age follow instructions for 500 to 1,000 pieces without help, so the set can be bigger than before.')],
+                    [T::tr('Technic is the next step.'), T::tr('Gears, axles and moving parts, for kids who like to know how things work.')],
+                    [T::tr('A favourite film or game wins.'), T::tr('A Harry Potter or Minecraft fan will be happier with a set from that world than with a random big box.')],
+                    [T::tr('Check the size.'), T::tr('Many sets for this age are also models to display. Make sure there is shelf space before buying a 1,500-piece castle.')],
+                ],
+                'sections'    => [
+                    [
+                        'icon'  => 'ph ph-magic-wand',
+                        'title' => T::tr('For the Harry Potter fan'),
+                        'lead'  => T::tr('Magical creatures, wizarding shops and Hogwarts itself, from a small figure to a big castle.'),
+                        'tags'  => ['harry-potter', 'hogwarts', 'castle'],
+                        'sets'  => [
+                            '76477' => T::tr('Norbert, Hagrid\'s baby dragon, as a large buildable figure. A smaller present that every Harry Potter reader will recognise.'),
+                            '76471' => T::tr('The dark shops of Knockturn Alley from "Half-Blood Prince". Almost 800 pieces with several minifigures.'),
+                            '76473' => T::tr('The east wing of Hogwarts from "Chamber of Secrets", over 2,100 pieces. A main present, or a joint one from the whole family.'),
+                        ],
+                    ],
+                    [
+                        'icon'  => 'ph ph-gear',
+                        'title' => T::tr('Technic cars and motorbikes'),
+                        'lead'  => T::tr('Real vehicles with working steering and moving parts, for kids who like mechanics.'),
+                        'tags'  => ['car', 'motorcycle'],
+                        'sets'  => [
+                            '42238' => T::tr('A Ducati motocross bike, about 450 pieces. A good first Technic set.'),
+                            '42227' => T::tr('A Jeep Wrangler Rubicon with working steering, about 700 pieces. Fun to build and to drive around the room.'),
+                            '42241' => T::tr('The Bugatti Chiron Pur Sport, about 770 pieces. A supercar for a young car fan that also looks good on a shelf.'),
+                        ],
+                    ],
+                    [
+                        'icon'  => 'ph ph-game-controller',
+                        'title' => T::tr('Minecraft and Pokémon'),
+                        'lead'  => T::tr('Bigger sets from the games kids of this age play most.'),
+                        'tags'  => ['minecraft', 'video-game', 'pokemon'],
+                        'sets'  => [
+                            '21596' => T::tr('An Evoker attack on a Minecraft village, about 600 pieces with several characters.'),
+                            '21597' => T::tr('A Ghast station from Minecraft, over 750 pieces. One of the biggest new Minecraft sets.'),
+                            '72163' => T::tr('Mewtwo\'s lab break, rated 10+. A bigger Pokémon set for an older fan.'),
+                        ],
+                    ],
+                    [
+                        'icon'  => 'ph ph-sword',
+                        'title' => T::tr('Ninjas, dragons and pirates'),
+                        'lead'  => T::tr('Big builds full of action: Ninjago ships and battles, and a pirate ship that turns into other models.'),
+                        'tags'  => ['ninja', 'dragon', 'pirate'],
+                        'sets'  => [
+                            '71871' => T::tr('A Ninjago battle at the Dragon\'s Blade, over 1,000 pieces. A main present for a Ninjago fan.'),
+                            '71869' => T::tr('The Land Bounty, the ninjas\' big ship from Ninjago Dragons Rising, over 1,200 pieces.'),
+                            '31387' => T::tr('A pirate ship from the Creator 3-in-1 range, over 1,000 pieces. The same pieces build two other models, so it lasts longer.'),
+                        ],
+                    ],
+                    [
+                        'icon'  => 'ph ph-paint-brush',
+                        'title' => T::tr('Friends and creative builds'),
+                        'lead'  => T::tr('Detailed buildings and decorative models for kids who like to design and decorate.'),
+                        'tags'  => ['3-in-1', 'musical-instrument'],
+                        'sets'  => [
+                            '42704' => T::tr('The Grand Hotel in Heartlake City, over 1,400 pieces. The biggest new Friends set, with lots of rooms to furnish.'),
+                            '42705' => T::tr('A cosy cabin in an autumn forest, over 1,200 pieces. A calmer, detailed build.'),
+                            '31392' => T::tr('A decorative piano from the Creator 3-in-1 range, under 500 pieces. It can be rebuilt into two other models.'),
+                        ],
+                    ],
+                ],
+                'faq'         => [
+                    [T::tr('Which LEGO is best for a 10-year-old?'), T::tr('Sets marked 9+ or 10+ with 500 to 1,000 pieces. Harry Potter, Minecraft, Technic and Ninjago are the most popular choices at this age.')],
+                    [T::tr('Is Technic too hard for a 10-year-old?'), T::tr('Not if they have built LEGO before. Start with a smaller Technic set of 400 to 800 pieces; the big supercars are rated 18+ for a reason.')],
+                    [T::tr('Can a 12-year-old build an 18+ set?'), T::tr('Often yes, with some patience. The 18+ label is mostly about the theme and the length of the build. Our guide for teenagers has more ideas.')],
+                ],
+            ],
             'teens' => [
                 'slug'        => 'gifts-for-teens',
                 'icon'        => 'ph ph-gift',

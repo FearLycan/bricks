@@ -1831,7 +1831,8 @@ a.bricks-collection-stats-tile:hover {
 
 .bricks-gift-guides {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr));
+    /* 2 per row on desktop so an even number of guides never leaves one alone */
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 520px), 1fr));
     gap: 1rem;
 }
 
