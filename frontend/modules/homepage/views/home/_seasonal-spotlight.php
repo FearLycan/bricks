@@ -1,5 +1,6 @@
 <?php
 
+use frontend\components\GiftGuide;
 use frontend\components\T;
 use yii\web\View;
 
@@ -24,4 +25,9 @@ echo $this->render('@frontend/views/_partials/_page-hero', [
         'headingTag'      => 'h2',
         'ctaUrl'          => (string)$event['url'],
         'ctaLabel'        => (string)$event['ctaLabel'],
+        // Before Christmas the banner also carries the gift guide picker
+        // (the separate gift guide strip is then skipped in index.php).
+        'aside'           => ($event['key'] ?? '') === 'christmas' && GiftGuide::isGiftSeason()
+            ? $this->render('_gift-picker')
+            : '',
 ]);

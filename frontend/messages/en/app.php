@@ -1209,4 +1209,11 @@ return [
     'are worth buying before the holidays.' => '',
     'Ages 5–8' => '',
     'Ages 13–16' => '',
+    'Gifts' => '',
+    'Looking for a gift? Pick who it is for' => '',
+    'All gift guides' => '',
+    'Fire engines, horses, Pokémon' => '',
+    'Harry Potter, Technic, Minecraft' => '',
+    'Star Wars, cars, games' => '',
+    'Films, flowers, big builds' => '',
 ];

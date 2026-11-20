@@ -69,6 +69,17 @@ final class GiftGuide
      * Where generic "Gift ideas" links (menu, footer, homepage shortcut)
      * point: the /lego/gifts hub listing every guide.
      */
+    /**
+     * Pre-Christmas gift season (15 Nov - 24 Dec): the "Gifts" menu link is
+     * highlighted and the homepage Christmas banner carries the guide picker.
+     */
+    public static function isGiftSeason(?\DateTimeImmutable $today = null): bool
+    {
+        $md = (int)($today ?? new \DateTimeImmutable('now'))->format('md');
+
+        return $md >= 1115 && $md <= 1224;
+    }
+
     public static function entryRoute(): array
     {
         return ['/lego/lego/gifts'];
@@ -112,6 +123,7 @@ final class GiftGuide
     {
         return [
             'kids' => [
+                'hint'        => T::tr('Fire engines, horses, Pokémon'),
                 'ageLabel'    => T::tr('Ages 5–8'),
                 'accent'      => '#0d6efd',
                 'soft'        => '#e7f0ff',
@@ -197,6 +209,7 @@ final class GiftGuide
                 ],
             ],
             'tweens' => [
+                'hint'        => T::tr('Harry Potter, Technic, Minecraft'),
                 'ageLabel'    => T::tr('Ages 9–12'),
                 'accent'      => '#198754',
                 'soft'        => '#e6f4ec',
@@ -282,6 +295,7 @@ final class GiftGuide
                 ],
             ],
             'teens' => [
+                'hint'        => T::tr('Star Wars, cars, games'),
                 'ageLabel'    => T::tr('Ages 13–16'),
                 'accent'      => '#6f42c1',
                 'soft'        => '#f0eafa',
@@ -356,6 +370,7 @@ final class GiftGuide
                 ],
             ],
             'adults' => [
+                'hint'        => T::tr('Films, flowers, big builds'),
                 'ageLabel'    => T::tr('Adults'),
                 'accent'      => '#d01012',
                 'soft'        => '#fde8e8',

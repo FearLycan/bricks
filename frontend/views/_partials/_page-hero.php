@@ -23,6 +23,7 @@ use yii\web\View;
  * @var array|string|null $ctaUrl      Optional CTA link (Url::to args or string).
  * @var string|null  $ctaLabel
  * @var string|null  $headingTag       'h1' (default) or 'h2' when the hero is a section of a page that has its own h1.
+ * @var string|null  $aside            Optional raw HTML shown to the right of the text (stacks below on phones).
  */
 
 $title = (string)($title ?? '');
@@ -35,6 +36,7 @@ $showBreadcrumbs = !empty($showBreadcrumbs);
 $ctaUrl = $ctaUrl ?? null;
 $ctaLabel = isset($ctaLabel) ? (string)$ctaLabel : '';
 $headingTag = (isset($headingTag) && $headingTag === 'h2') ? 'h2' : 'h1';
+$aside = isset($aside) ? (string)$aside : '';
 
 $resolvedImage = null;
 if ($image !== '') {
@@ -61,8 +63,8 @@ $heroStyle = $resolvedImage !== null
     : '';
 ?>
 
-<section class="<?= implode(' ', $classes) ?>"<?= $heroStyle ?>>
-    <div class="container">
+<section class="<?= implode(' ', $classes) ?><?= $aside !== '' ? ' bricks-page-hero--aside' : '' ?>"<?= $heroStyle ?>>
+    <div class="container<?= $aside !== '' ? ' bricks-page-hero-row' : '' ?>">
         <div class="bricks-page-hero-inner">
             <?php if ($showBreadcrumbs): ?>
                 <?= Breadcrumbs::widget([
@@ -92,5 +94,8 @@ $heroStyle = $resolvedImage !== null
                 </a>
             <?php endif; ?>
         </div>
+        <?php if ($aside !== ''): ?>
+            <div class="bricks-page-hero-aside"><?= $aside ?></div>
+        <?php endif; ?>
     </div>
 </section>

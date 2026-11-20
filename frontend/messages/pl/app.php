@@ -1205,4 +1205,11 @@ return [
     'are worth buying before the holidays.' => '– warto kupić je przed świętami.',
     'Ages 5–8' => '5–8 lat',
     'Ages 13–16' => '13–16 lat',
+    'Gifts' => 'Prezenty',
+    'Looking for a gift? Pick who it is for' => 'Szukasz prezentu? Wybierz dla kogo',
+    'All gift guides' => 'Wszystkie poradniki prezentowe',
+    'Fire engines, horses, Pokémon' => 'wozy strażackie, konie, Pokémony',
+    'Harry Potter, Technic, Minecraft' => 'Harry Potter, Technic, Minecraft',
+    'Star Wars, cars, games' => 'Star Wars, auta, gry',
+    'Films, flowers, big builds' => 'filmy, kwiaty, duże projekty',
 ];
