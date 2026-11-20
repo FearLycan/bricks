@@ -3,6 +3,7 @@
 use common\models\OwnedSet;
 use common\models\Set;
 use common\models\Wishlist;
+use frontend\components\AvailabilityBadge;
 use frontend\components\T;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -26,19 +27,7 @@ $promoPrice = $model->getFormattedPromotionalPrice('USD');
 $basePrice = $promoPrice !== null ? $model->getFormattedPrice('USD') : $model->getFormattedLocalRetailPrice();
 $savingsPercent = $model->getPromotionalSavingsPercent('USD');
 
-$availability = (string)$model->availability;
-$showAvailabilityBadge = $availability !== '' && $availability !== '{Not specified}';
-$availBadgeClass = '';
-if ($showAvailabilityBadge) {
-    $availLower = strtolower($availability);
-    if (str_contains($availLower, 'exclusive')) {
-        $availBadgeClass = 'set-card-availability-badge--exclusive';
-    } elseif (str_contains($availLower, 'available') || str_contains($availLower, 'retail')) {
-        $availBadgeClass = 'set-card-availability-badge--available';
-    } else {
-        $availBadgeClass = 'set-card-availability-badge--unavailable';
-    }
-}
+$isGwp = AvailabilityBadge::isGiftWithPurchase($model->availability);
 ?>
 
 <a href="<?= \frontend\components\LangUrl::to("/lego/{$model->slug}") ?>" class="text-decoration-none text-reset bricks-set-card">
@@ -73,11 +62,7 @@ if ($showAvailabilityBadge) {
             <?php if ($savingsPercent !== null): ?>
                 <span class="set-card-discount-badge">−<?= $savingsPercent ?>%</span>
             <?php endif; ?>
-            <?php if ($showAvailabilityBadge): ?>
-                <span class="set-card-availability-badge <?= $availBadgeClass ?>">
-                    <?= Html::encode($availability) ?>
-                </span>
-            <?php endif; ?>
+            <?= AvailabilityBadge::render($model->availability) ?>
         </div>
         <div class="card-body d-flex flex-column pb-2">
             <p class="set-card-number text-muted mb-1"><?= Html::encode($model->number) ?></p>
@@ -105,7 +90,9 @@ if ($showAvailabilityBadge) {
                     <span class="set-card-rating-value"><?= Html::encode(number_format((float)$model->rating, 1)) ?></span>
                 </div>
             <?php endif; ?>
-            <?php if ($promoPrice !== null): ?>
+            <?php if ($isGwp && $promoPrice === null): ?>
+                <?= AvailabilityBadge::renderGwpNote() ?>
+            <?php elseif ($promoPrice !== null): ?>
                 <div class="mt-2">
                     <span class="fw-bold text-success font-size-large"><?= Html::encode($promoPrice) ?></span>
                     <span class="text-muted text-decoration-line-through ms-2 small"><?= Html::encode($basePrice ?? '') ?></span>

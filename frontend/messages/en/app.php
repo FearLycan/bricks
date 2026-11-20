@@ -1364,4 +1364,12 @@ return [
     'Also in:' => '',
     'Main navigation' => '',
     'Set name or number' => '',
+    'Free gift' => '',
+    'Free with a LEGO order' => '',
+    'Limited availability' => '',
+    'LEGO exclusive' => '',
+    'Promotional' => '',
+    'Magazine gift' => '',
+    'LEGO Insiders reward' => '',
+    'LEGO Education' => '',
 ];

@@ -1360,4 +1360,12 @@ return [
     'Also in:' => 'こちらにも掲載:',
     'Main navigation' => 'メインナビゲーション',
     'Set name or number' => 'セット名または番号',
+    'Free gift' => 'プレゼント',
+    'Free with a LEGO order' => 'LEGO公式の購入特典',
+    'Limited availability' => '数量限定',
+    'LEGO exclusive' => 'LEGO限定',
+    'Promotional' => 'プロモーション',
+    'Magazine gift' => '雑誌付録',
+    'LEGO Insiders reward' => 'LEGO Insiders特典',
+    'LEGO Education' => 'LEGO Education',
 ];

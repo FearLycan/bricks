@@ -257,6 +257,29 @@ a, button {
     color: #991b1b;
 }
 
+.set-card-availability-badge--muted {
+    background: #eef0f3;
+    color: #475066;
+}
+
+/* LEGO gift with purchase (AvailabilityBadge) */
+.set-card-availability-badge--gwp {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: #6d28d9;
+    color: #fff;
+}
+
+.set-card-gwp-note {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: .875rem;
+    font-weight: 600;
+    color: #5b21b6;
+}
+
 .lego-set .card {
     transition: box-shadow 0.25s ease, transform 0.25s ease;
     border: 1px solid #e9ecef;

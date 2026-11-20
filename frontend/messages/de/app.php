@@ -1360,4 +1360,12 @@ return [
     'Also in:' => 'Auch in:',
     'Main navigation' => 'Hauptnavigation',
     'Set name or number' => 'Name oder Nummer des Sets',
+    'Free gift' => 'Gratis',
+    'Free with a LEGO order' => 'Gratis zu einer LEGO Bestellung',
+    'Limited availability' => 'Begrenzt verfügbar',
+    'LEGO exclusive' => 'Exklusiv bei LEGO',
+    'Promotional' => 'Werbeset',
+    'Magazine gift' => 'Magazin-Beilage',
+    'LEGO Insiders reward' => 'LEGO Insiders Prämie',
+    'LEGO Education' => 'LEGO Education',
 ];
