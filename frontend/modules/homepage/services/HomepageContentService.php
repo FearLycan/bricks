@@ -134,7 +134,7 @@ class HomepageContentService
             $tiles[] = [
                 'range'  => $range,
                 'label'  => $label,
-                'url'    => Url::to('/lego/' . $slug),
+                'url'    => \frontend\components\LangUrl::to('/lego/' . $slug),
                 'cover'  => $this->pickCover($slug, $used),
                 'color'  => $color,
                 'color2' => $color2,
@@ -193,7 +193,7 @@ class HomepageContentService
     {
         return [
             'label'  => (string)$theme->name,
-            'url'    => Url::to("/lego/theme/{$theme->slug}"),
+            'url'    => \frontend\components\LangUrl::to("/lego/theme/{$theme->slug}"),
             'cover'  => $theme->getTileImageUrl() ?? $this->pickCover('theme-' . (int)$theme->id, $used),
             'accent' => null,
         ];

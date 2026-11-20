@@ -50,7 +50,7 @@ $piecesFormatted = number_format($piecesTotal, 0, '.', ' ');
                     <span class="bricks-collection-stats-label"><?= Html::encode(T::tr('On your wishlist')) ?></span>
                 </a>
                 <?php if ($topTheme instanceof Theme): ?>
-                    <a class="bricks-collection-stats-tile bricks-collection-stats-tile--theme" href="<?= Url::to("/lego/theme/{$topTheme->slug}") ?>">
+                    <a class="bricks-collection-stats-tile bricks-collection-stats-tile--theme" href="<?= \frontend\components\LangUrl::to("/lego/theme/{$topTheme->slug}") ?>">
                         <span class="bricks-collection-stats-value"><?= Html::encode((string)$topTheme->name) ?></span>
                         <span class="bricks-collection-stats-label"><?= Html::encode(T::tr('Your top theme')) ?></span>
                     </a>

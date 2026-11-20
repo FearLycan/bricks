@@ -25,7 +25,7 @@ if (!$theme instanceof Theme) {
 $picks     = $sets['picks'] ?? [];
 $news      = $sets['news'] ?? [];
 $setsCount = $theme->sets_count !== null ? (int)$theme->sets_count : null;
-$themeUrl  = Url::to("/lego/theme/{$theme->slug}");
+$themeUrl  = \frontend\components\LangUrl::to("/lego/theme/{$theme->slug}");
 [$accent, $soft] = ThemePalette::forSlug((string)$theme->slug);
 
 $badgeLabel = static function (string $badge, Set $set): string {
@@ -64,7 +64,7 @@ $badgeLabel = static function (string $badge, Set $set): string {
                         <div class="bricks-spotlight-news-label"><?= Html::encode(T::tr('Newest in this theme')) ?></div>
                         <div class="bricks-spotlight-chips">
                             <?php foreach ($news as $set): ?>
-                                <a class="bricks-spotlight-chip" href="<?= Url::to("/lego/{$set->slug}") ?>">
+                                <a class="bricks-spotlight-chip" href="<?= \frontend\components\LangUrl::to("/lego/{$set->slug}") ?>">
                                     <b><?= Html::encode(T::tr('New release')) ?></b><?= Html::encode((string)$set->name) ?>
                                 </a>
                             <?php endforeach; ?>
@@ -82,7 +82,7 @@ $badgeLabel = static function (string $badge, Set $set): string {
                         $badge = $pick['badge'] !== null ? $badgeLabel($pick['badge'], $set) : '';
                         $price = $set->getLocalRetailPrice();
                         ?>
-                        <a class="bricks-spotlight-card" href="<?= Url::to("/lego/{$set->slug}") ?>">
+                        <a class="bricks-spotlight-card" href="<?= \frontend\components\LangUrl::to("/lego/{$set->slug}") ?>">
                             <span class="bricks-spotlight-card-img">
                                 <?php if ($badge !== ''): ?>
                                     <span class="bricks-spotlight-badge<?= $pick['badge'] === 'retiring' ? ' is-warn' : '' ?>"><?= Html::encode($badge) ?></span>

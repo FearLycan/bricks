@@ -29,6 +29,11 @@ return [
     'on beforeRequest'    => static function (): void {
         \frontend\components\BotGuard::enforce();
     },
+    // Language is known after routing: point "home" links (logo, breadcrumbs)
+    // at the current language's homepage instead of the English "/".
+    'on beforeAction'     => static function (): void {
+        Yii::$app->homeUrl = \frontend\components\LangUrl::to('/');
+    },
     'controllerNamespace' => 'frontend\controllers',
     'defaultRoute'        => 'homepage/home/index',
     'components'          => [
