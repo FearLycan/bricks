@@ -27,6 +27,7 @@ final class GiftGuide
         'gifts-for-tweens' => 'tweens',
         'gifts-for-teens'  => 'teens',
         'gifts-for-adults' => 'adults',
+        'flower-gifts'     => 'flowers',
     ];
 
     /**
@@ -453,6 +454,93 @@ final class GiftGuide
                     [T::tr('Is LEGO a good gift for an adult?'), T::tr('Yes. LEGO has a whole 18+ range: display models, flowers and replicas of famous vehicles and buildings. Many adults build to relax.')],
                     [T::tr('How much should I spend on a LEGO set for an adult?'), T::tr('Sets for 50–150 USD make a good present. The biggest models cost more and work best as a main or joint gift.')],
                     [T::tr('What if I do not know which sets they already have?'), T::tr('Pick a release from the last few months, which they are less likely to own, or go for flowers, which few people collect in full.')],
+                ],
+            ],
+            'flowers' => [
+                'hint'        => T::tr('Bouquets, orchids, bonsai'),
+                'ageLabel'    => T::tr('Flowers'),
+                'accent'      => '#c2185b',
+                'soft'        => '#fce4ef',
+                'slug'        => 'flower-gifts',
+                'icon'        => 'ph ph-flower',
+                'modifier'    => 'flowers',
+                'title'       => T::tr('LEGO flowers as a gift'),
+                'teaser'      => T::tr('Bouquets, orchids and bonsai that never wilt, from small sets to a flower wall.'),
+                'audience'    => null,
+                'audienceCta' => '',
+                'metaTitle'   => T::tr('LEGO flowers: bouquets, orchids and plants to give - BrickAtlas'),
+                'description' => T::tr('Hand-picked LEGO flower sets to give as a present: bouquets of roses, tulips and sunflowers, small orchids, potted plants and bonsai, with tips on vases, build time and size.'),
+                'intro'       => '{n, plural, =1{# flower set} other{# flower sets}} that look good in any home and never need watering. All of them are in the current LEGO range.', // translated in the view with the real count
+                'wizard'      => ['recipient' => 'gift', 'profile' => 'adult'],
+                'tipsTitle'   => T::tr('How to choose LEGO flowers as a gift'),
+                'tips'        => [
+                    [T::tr('They never wilt.'), T::tr('A LEGO bouquet looks the same after a year as on the first day, which is why it works for birthdays, anniversaries and as a thank-you.')],
+                    [T::tr('18+ does not mean difficult.'), T::tr('The label is about who the set is for. Flower sets are calm, repetitive builds that a complete beginner can finish in an evening or two.')],
+                    [T::tr('Bouquets usually come without a vase.'), T::tr('Plan a vase or a tall glass for a bouquet. Potted plants such as the orchid, the peace lily or the bonsai come with their pot.')],
+                    [T::tr('Small sets can be combined.'), T::tr('Daisies, a mini orchid or a small bouquet are inexpensive extras, and several of them together make a fuller arrangement.')],
+                ],
+                'sections'    => [
+                    [
+                        'icon'  => 'ph ph-flower-tulip',
+                        'title' => T::tr('Bouquets'),
+                        'lead'  => T::tr('Classic cut flowers in brick form: roses, tulips and sunflowers.'),
+                        'tags'  => ['botanical-collection', 'brick-built-plants'],
+                        'sets'  => [
+                            '10374' => T::tr('A bouquet of pink roses, almost 800 pieces. The most obvious choice for Valentine\'s Day, an anniversary or Mother\'s Day.'),
+                            '11501' => T::tr('A tulip bouquet in spring colours, about 580 pieces. A cheerful present that suits any occasion.'),
+                            '11502' => T::tr('Sunflowers, about 690 pieces. Large, bright flowers that brighten up a room even in winter.'),
+                        ],
+                    ],
+                    [
+                        'icon'  => 'ph ph-plant',
+                        'title' => T::tr('Plants for the home and desk'),
+                        'lead'  => T::tr('Potted plants that come with their pot and look good on a shelf, a windowsill or at work.'),
+                        'tags'  => ['brick-built-plants'],
+                        'sets'  => [
+                            '11512' => T::tr('A hanging golden pothos, about 370 pieces. Looks like the real plant and needs no care at all.'),
+                            '11504' => T::tr('A peace lily in a pot, under 500 pieces. A calm, elegant plant for a living room or an office.'),
+                            '10373' => T::tr('Mini bonsai trees, about 700 pieces. A small Japanese garden for a desk.'),
+                            '10370' => T::tr('A poinsettia, the classic Christmas plant, about 600 pieces. A festive decoration that lasts much longer than the real one.'),
+                        ],
+                    ],
+                    [
+                        'icon'  => 'ph ph-gift',
+                        'title' => T::tr('Small flowers for a smaller budget'),
+                        'lead'  => T::tr('Quick builds of up to about 400 pieces: good as an extra present or a first LEGO set.'),
+                        'tags'  => ['brick-built-plants'],
+                        'sets'  => [
+                            '10343' => T::tr('A mini orchid in a pot, under 300 pieces. An elegant little present that is built in about an hour.'),
+                            '11508' => T::tr('Daisies, about 130 pieces, rated 9+. The cheapest set in this guide and a nice add-on to another present.'),
+                            '10347' => T::tr('A petite sunny bouquet, under 400 pieces. Bright colours for a small budget.'),
+                        ],
+                    ],
+                    [
+                        'icon'  => 'ph ph-frame-corners',
+                        'title' => T::tr('Big arrangements'),
+                        'lead'  => T::tr('Larger compositions for the main present, or for someone who already has a few LEGO flowers.'),
+                        'tags'  => ['botanical-collection'],
+                        'sets'  => [
+                            '10345' => T::tr('A large flower arrangement, over 1,100 pieces. A centrepiece for the table and a longer build.'),
+                            '11503' => T::tr('A flower wall, almost 900 pieces. A decorative panel instead of a bouquet in a vase.'),
+                            '11513' => T::tr('A flower arrangement in dark, deep colours, about 560 pieces. An elegant choice for someone who does not like pastels.'),
+                        ],
+                    ],
+                    [
+                        'icon'  => 'ph ph-smiley',
+                        'title' => T::tr('Flowers for younger builders'),
+                        'lead'  => T::tr('Sets rated 8+ and 9+, for children and teenagers who like plants and decorating their room.'),
+                        'tags'  => ['3-in-1'],
+                        'sets'  => [
+                            '10371' => T::tr('Cosy plants with cheerful faces, about 250 pieces. One of the highest-rated sets of the year.'),
+                            '11509' => T::tr('A flowering cactus, under 500 pieces, rated 9+. A fun decoration for a desk or a windowsill.'),
+                            '31383' => T::tr('A perfume bottle with flowers from the Creator 3-in-1 range. The same pieces build two other models.'),
+                        ],
+                    ],
+                ],
+                'faq'         => [
+                    [T::tr('Do LEGO bouquets come with a vase?'), T::tr('Most bouquets do not, so plan a vase or a tall glass. Potted plants such as the orchid, the peace lily or the bonsai come with a brick-built pot.')],
+                    [T::tr('How long does it take to build a LEGO bouquet?'), T::tr('A set of about 300 pieces takes an hour or so, 600 to 800 pieces two to three hours, and the biggest arrangements an evening or two.')],
+                    [T::tr('Are LEGO flowers a good gift for someone who has never built LEGO?'), T::tr('Yes. The instructions are picture-based and step by step, and many people who receive a bouquet go on to collect the whole series.')],
                 ],
             ],
         ];

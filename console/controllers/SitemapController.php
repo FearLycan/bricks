@@ -114,6 +114,7 @@ class SitemapController extends Controller
             ['/lego/gifts-for-tweens', 'weekly',  '0.6'],
             ['/lego/gifts-for-teens',  'weekly',  '0.6'],
             ['/lego/gifts-for-adults', 'weekly',  '0.6'],
+            ['/lego/flower-gifts',     'weekly',  '0.6'],
             ['/lego/for-toddlers',    'weekly',  '0.6'],
             ['/lego/for-kids',        'weekly',  '0.6'],
             ['/lego/for-tweens',      'weekly',  '0.6'],
