@@ -411,10 +411,10 @@ final class GiftGuide
                         'lead'  => T::tr('Botanical sets look good in any home and never need watering.'),
                         'tags'  => ['brick-built-plants', 'botanical-collection'],
                         'sets'  => [
+                            '11505' => T::tr('Woodland mushrooms with moss and small details. An unusual decoration for a shelf or desk.'),
                             '11512' => T::tr('A hanging pothos in a pot: a small, quick build that looks like the real plant. A safe pick when you are not sure what to buy.'),
                             '11513' => T::tr('A bouquet in dark, deep colours. A more elegant alternative to fresh flowers.'),
-                            '11505' => T::tr('Woodland mushrooms with moss and small details. An unusual decoration for a shelf or desk.'),
-                        ],
+                                                    ],
                     ],
                     [
                         'icon'  => 'ph ph-lamp',
