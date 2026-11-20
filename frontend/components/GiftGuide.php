@@ -8,7 +8,7 @@ use common\models\Set;
 use common\models\Tag;
 
 /**
- * Hand-curated gift guides (/lego/gifts-for-<who>).
+ * Hand-curated gift guides (/lego/gifts-for-<who>), listed on /lego/gifts.
  *
  * Each guide is a short editorial page: buying tips, a few sections of
  * hand-picked sets with one or two sentences on why each fits, and an FAQ.
@@ -66,15 +66,43 @@ final class GiftGuide
     }
 
     /**
-     * Where generic "Gift ideas" links (menu, footer) point. With a single
-     * guide that is the guide itself; once there are several, point this at
-     * a listing page instead.
+     * Where generic "Gift ideas" links (menu, footer, homepage shortcut)
+     * point: the /lego/gifts hub listing every guide.
      */
     public static function entryRoute(): array
     {
-        $first = array_values(self::definitions())[0];
+        return ['/lego/lego/gifts'];
+    }
 
-        return ['/lego/lego/gift-guide', 'slug' => $first['slug']];
+    /**
+     * Up to $limit sets that represent a guide on the /lego/gifts hub: the
+     * first set still on sale from each section, in section order.
+     *
+     * @param array<string, mixed> $guide
+     * @return Set[]
+     */
+    public static function coverSets(array $guide, int $limit = 3): array
+    {
+        $numbers = [];
+        foreach ($guide['sections'] as $section) {
+            $numbers = array_merge($numbers, array_map('strval', array_keys($section['sets'])));
+        }
+        $onSale = self::loadSets($numbers);
+
+        $covers = [];
+        foreach ($guide['sections'] as $section) {
+            foreach (array_keys($section['sets']) as $number) {
+                if (isset($onSale[(string)$number])) {
+                    $covers[] = $onSale[(string)$number];
+                    break;
+                }
+            }
+            if (count($covers) >= $limit) {
+                break;
+            }
+        }
+
+        return $covers;
     }
 
     /**
@@ -84,6 +112,9 @@ final class GiftGuide
     {
         return [
             'kids' => [
+                'ageLabel'    => T::tr('Ages 5–8'),
+                'accent'      => '#0d6efd',
+                'soft'        => '#e7f0ff',
                 'slug'        => 'gifts-for-kids',
                 'icon'        => 'ph ph-gift',
                 'modifier'    => 'kids',
@@ -166,6 +197,9 @@ final class GiftGuide
                 ],
             ],
             'tweens' => [
+                'ageLabel'    => T::tr('Ages 9–12'),
+                'accent'      => '#198754',
+                'soft'        => '#e6f4ec',
                 'slug'        => 'gifts-for-tweens',
                 'icon'        => 'ph ph-gift',
                 'modifier'    => 'tweens',
@@ -248,6 +282,9 @@ final class GiftGuide
                 ],
             ],
             'teens' => [
+                'ageLabel'    => T::tr('Ages 13–16'),
+                'accent'      => '#6f42c1',
+                'soft'        => '#f0eafa',
                 'slug'        => 'gifts-for-teens',
                 'icon'        => 'ph ph-gift',
                 'modifier'    => 'teens',
@@ -319,6 +356,9 @@ final class GiftGuide
                 ],
             ],
             'adults' => [
+                'ageLabel'    => T::tr('Adults'),
+                'accent'      => '#d01012',
+                'soft'        => '#fde8e8',
                 'slug'        => 'gifts-for-adults',
                 'icon'        => 'ph ph-gift',
                 'modifier'    => 'adults',
