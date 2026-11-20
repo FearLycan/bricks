@@ -15,22 +15,25 @@ use yii\web\View;
  * @var View $this
  */
 
+$adventItem = ['advent', 'ph-duotone ph-calendar-dots', T::tr('Advent calendars'), Url::to(['/lego/lego/advent-calendars'])];
+
 $items = [
     ['new-arrivals', 'ph-duotone ph-sparkle', T::tr('New arrivals')],
     ['by-age', 'ph-duotone ph-baby', T::tr('By age')],
     ['themes', 'ph-duotone ph-puzzle-piece', T::tr('Themes')],
     ['gift-ideas', 'ph-duotone ph-gift', T::tr('Gift ideas')],
     ['coming-soon', 'ph-duotone ph-hourglass-medium', T::tr('Coming soon')],
-    ['for-adults', 'ph-duotone ph-armchair', T::tr('For adults')],
+    \frontend\components\AdventCalendars::isPromoWindow() ? $adventItem : ['for-adults', 'ph-duotone ph-armchair', T::tr('For adults')],
 ];
 
-// Gift season (15 Nov - 24 Dec): gifts first, the advent calendars page
-// instead of "For adults" (which the gift picker already covers).
+// Gift season (15 Nov - 24 Dec): gifts first. The advent calendars link
+// (8 Nov - 6 Dec) takes the place of "For adults", which the gift picker
+// already covers.
 if (\frontend\components\GiftGuide::isGiftSeason()) {
     $items = [
         ['new-arrivals', 'ph-duotone ph-sparkle', T::tr('New arrivals')],
         ['gift-ideas', 'ph-duotone ph-gift', T::tr('Gift ideas')],
-        ['advent', 'ph-duotone ph-calendar-dots', T::tr('Advent calendars'), Url::to(['/lego/lego/advent-calendars'])],
+        \frontend\components\AdventCalendars::isPromoWindow() ? $adventItem : ['for-adults', 'ph-duotone ph-armchair', T::tr('For adults')],
         ['themes', 'ph-duotone ph-puzzle-piece', T::tr('Themes')],
         ['by-age', 'ph-duotone ph-baby', T::tr('By age')],
         ['coming-soon', 'ph-duotone ph-hourglass-medium', T::tr('Coming soon')],
