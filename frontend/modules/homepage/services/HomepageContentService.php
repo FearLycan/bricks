@@ -410,16 +410,29 @@ class HomepageContentService
     }
 
     /**
+     * Homepage lists show buildable sets only: no gear (video games, posters,
+     * plush: 0 pieces), no magazine freebies and no tiny polybags.
+     */
+    private static function realSetCondition(): array
+    {
+        return ['and',
+            ['>=', 's.pieces', 30],
+            ['or', ['s.availability' => null], ['not', ['s.availability' => 'Magazine gift']]],
+        ];
+    }
+
+    /**
      * @return Set[]
      */
     public function getNewArrivals(int $limit = 12): array
     {
-        return $this->cached("homepage.newArrivals.{$limit}", function () use ($limit) {
+        return $this->cached("homepage.newArrivals.v2.{$limit}", function () use ($limit) {
             return Set::find()
                 ->alias('s')
                 ->andWhere(['s.status' => StatusEnum::ACTIVE->value])
                 ->andWhere(['not', ['s.launch_date' => null]])
                 ->andWhere(['<=', 's.launch_date', new Expression('CURDATE()')])
+                ->andWhere(self::realSetCondition())
                 ->with(['mainImageRelation', 'theme', 'subtheme', 'setOffers'])
                 ->orderBy(['s.launch_date' => SORT_DESC, 's.id' => SORT_DESC])
                 ->limit($limit)
@@ -456,12 +469,15 @@ class HomepageContentService
      */
     public function getTopRated(int $limit = 12): array
     {
-        return $this->cached("homepage.topRated.{$limit}", function () use ($limit) {
+        return $this->cached("homepage.topRated.v2.{$limit}", function () use ($limit) {
             return Set::find()
                 ->alias('s')
                 ->andWhere(['s.status' => StatusEnum::ACTIVE->value])
                 ->andWhere(['not', ['s.rating' => null]])
                 ->andWhere(['>=', 's.rating', 4.0])
+                // Recent sets only: old ones with a handful of 5.0 ratings are not something people can buy.
+                ->andWhere(['>=', 's.year', new Expression('YEAR(CURDATE()) - 2')])
+                ->andWhere(self::realSetCondition())
                 ->with(['mainImageRelation', 'theme', 'subtheme', 'setOffers'])
                 ->orderBy(['s.rating' => SORT_DESC, 's.id' => SORT_DESC])
                 ->limit($limit)
@@ -474,11 +490,12 @@ class HomepageContentService
      */
     public function getComingSoon(int $limit = 12): array
     {
-        return $this->cached("homepage.comingSoon.{$limit}", function () use ($limit) {
+        return $this->cached("homepage.comingSoon.v2.{$limit}", function () use ($limit) {
             return Set::find()
                 ->alias('s')
                 ->andWhere(['s.status' => StatusEnum::ACTIVE->value])
                 ->andWhere(['>', 's.launch_date', new Expression('CURDATE()')])
+                ->andWhere(self::realSetCondition())
                 ->with(['mainImageRelation', 'theme', 'subtheme', 'setOffers'])
                 ->orderBy(['s.launch_date' => SORT_ASC, 's.id' => SORT_ASC])
                 ->limit($limit)
@@ -491,11 +508,12 @@ class HomepageContentService
      */
     public function getForAdults(int $limit = 12): array
     {
-        return $this->cached("homepage.forAdults.{$limit}", function () use ($limit) {
+        return $this->cached("homepage.forAdults.v2.{$limit}", function () use ($limit) {
             return Set::find()
                 ->alias('s')
                 ->andWhere(['s.status' => StatusEnum::ACTIVE->value])
                 ->andWhere(['>=', 's.age', 18])
+                ->andWhere(self::realSetCondition())
                 ->with(['mainImageRelation', 'theme', 'subtheme', 'setOffers'])
                 ->orderBy(new Expression('s.rating IS NULL ASC, s.rating DESC, s.id DESC'))
                 ->limit($limit)
