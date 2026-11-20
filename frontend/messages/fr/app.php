@@ -1356,4 +1356,6 @@ return [
     'Where can I find bigger gift ideas?' => 'Où trouver des idées de plus grands cadeaux ?',
     'Our gift guides for kids, teenagers and adults pick sets by interest at every size.' => 'Nos guides cadeaux pour enfants, ados et adultes choisissent des sets par centres d\'intérêt, de toutes les tailles.',
     '{n, plural, =1{# small set} other{# small sets}} of up to about 300 pieces, among the least expensive in the current LEGO range. A full build, not just a token present.' => '{n, plural, =1{# petit set} other{# petits sets}} jusqu\'à environ 300 pièces, parmi les moins chers de la gamme LEGO actuelle. Un vrai montage, pas un simple geste.',
+    'Recommended in our gift guide' => 'Recommandé dans notre guide cadeaux',
+    'Also in:' => 'Aussi dans :',
 ];

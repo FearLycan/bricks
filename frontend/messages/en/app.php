@@ -1360,4 +1360,6 @@ return [
     'Where can I find bigger gift ideas?' => '',
     'Our gift guides for kids, teenagers and adults pick sets by interest at every size.' => '',
     '{n, plural, =1{# small set} other{# small sets}} of up to about 300 pieces, among the least expensive in the current LEGO range. A full build, not just a token present.' => '',
+    'Recommended in our gift guide' => '',
+    'Also in:' => '',
 ];

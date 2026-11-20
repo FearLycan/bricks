@@ -23,6 +23,7 @@ use yii\web\View;
  * @var $reviewList  SetReview[]
  * @var $userReview  SetReview|null
  * @var $relatedSets Set[]
+ * @var $giftGuide   array|null
  */
 
 $relatedSets = $relatedSets ?? [];
@@ -419,6 +420,12 @@ $queueOfferImportModalUrl = Url::to(['/management/queue-offer-import-modal', 'se
                 <?php endif; ?>
             </div>
         </div>
+
+        <?php if (!empty($giftGuide)): ?>
+            <div class="col-12">
+                <?= $this->render('_gift-guide-box', ['box' => $giftGuide]) ?>
+            </div>
+        <?php endif; ?>
 
         <div class="col-12 lego-set-details">
             <div class="lego-details-card">

@@ -88,13 +88,35 @@ final class GiftGuide
     }
 
     /**
+     * Guides that recommend a set, in guide order, each with the guide's
+     * one-line note about that set. Used for the "Recommended in our gift
+     * guide" box on the set page.
+     *
+     * @return list<array{guide: array<string, mixed>, text: string}>
+     */
+    public static function forSet(string $number): array
+    {
+        $found = [];
+        foreach (self::definitions() as $guide) {
+            foreach ($guide['sections'] as $section) {
+                if (isset($section['sets'][$number])) {
+                    $found[] = ['guide' => $guide, 'text' => (string)$section['sets'][$number]];
+                    break;
+                }
+            }
+        }
+
+        return $found;
+    }
+
+    /**
      * Up to $limit sets that represent a guide on the /lego/gifts hub: the
      * first set still on sale from each section, in section order.
      *
      * @param array<string, mixed> $guide
      * @return Set[]
      */
-    public static function coverSets(array $guide, int $limit = 3): array
+    public static function coverSets(array $guide, int $limit = 3, ?string $exclude = null): array
     {
         $numbers = [];
         foreach ($guide['sections'] as $section) {
@@ -105,7 +127,7 @@ final class GiftGuide
         $covers = [];
         foreach ($guide['sections'] as $section) {
             foreach (array_keys($section['sets']) as $number) {
-                if (isset($onSale[(string)$number])) {
+                if ((string)$number !== $exclude && isset($onSale[(string)$number])) {
                     $covers[] = $onSale[(string)$number];
                     break;
                 }

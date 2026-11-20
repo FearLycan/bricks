@@ -3961,3 +3961,143 @@ a, button {
 .dropdown-item.bricks-category-item--gifts i {
     color: #d01012;
 }
+
+/* Set page: "Recommended in our gift guide" box (GiftGuide::forSet) */
+.lego-guide-box {
+    display: grid;
+    grid-template-columns: 210px minmax(0, 1fr) auto;
+    gap: 1.25rem 1.5rem;
+    align-items: center;
+    padding: 1rem 1.5rem 1rem 1rem;
+    border-radius: 1rem;
+    background: var(--lg-soft);
+}
+
+.lego-guide-box-collage {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 6px;
+    aspect-ratio: 3 / 2;
+}
+
+.lego-guide-box-collage > span {
+    position: relative;
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.lego-guide-box-collage > span:first-child {
+    grid-row: 1 / 3;
+}
+
+.lego-guide-box-collage > span:only-child {
+    grid-column: 1 / 3;
+}
+
+/* two covers: side by side, full height */
+.lego-guide-box-collage > span:first-child:nth-last-child(2) {
+    grid-column: 1;
+}
+
+.lego-guide-box-collage > span:first-child:nth-last-child(2) + span {
+    grid-column: 2;
+    grid-row: 1 / 3;
+}
+
+.lego-guide-box-collage:has(> span:nth-child(2):last-child) {
+    grid-template-columns: 1fr 1fr;
+}
+
+.lego-guide-box-collage img {
+    position: absolute;
+    inset: 6px;
+    width: calc(100% - 12px);
+    height: calc(100% - 12px);
+    object-fit: contain;
+}
+
+.lego-guide-box-kicker {
+    display: flex;
+    align-items: center;
+    gap: .375rem;
+    font-size: .75rem;
+    font-weight: 700;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--lg-accent);
+    color: color-mix(in srgb, var(--lg-accent) 80%, #000);
+}
+
+.lego-guide-box-title {
+    display: block;
+    margin: .25rem 0 .375rem;
+    font-size: 1.15rem;
+    font-weight: 800;
+    line-height: 1.3;
+    color: #1b1f3b;
+    text-decoration: none;
+}
+
+.lego-guide-box-title:hover,
+.lego-guide-box-title:focus-visible {
+    text-decoration: underline;
+}
+
+.lego-guide-box-text {
+    margin: 0;
+    color: #3b4058;
+    line-height: 1.5;
+}
+
+.lego-guide-box-also {
+    margin-top: .5rem;
+    font-size: .875rem;
+    color: #5b6077;
+}
+
+.lego-guide-box-also a {
+    font-weight: 600;
+    color: #1b1f3b;
+    text-decoration: underline;
+    text-decoration-color: var(--lg-also, currentColor);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 3px;
+}
+
+.lego-guide-box-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: .375rem;
+    padding: .65rem 1rem;
+    border-radius: .625rem;
+    background: var(--lg-accent);
+    /* darkened so white text passes WCAG AA on every guide colour (orange too) */
+    background: color-mix(in srgb, var(--lg-accent) 80%, #000);
+    color: #fff;
+    font-weight: 700;
+    white-space: nowrap;
+    text-decoration: none;
+}
+
+.lego-guide-box-cta:hover,
+.lego-guide-box-cta:focus-visible {
+    color: #fff;
+    filter: brightness(.92);
+}
+
+@media (max-width: 767.98px) {
+    .lego-guide-box {
+        grid-template-columns: minmax(0, 1fr);
+        padding: 1rem;
+    }
+
+    .lego-guide-box-collage {
+        display: none;
+    }
+
+    .lego-guide-box-cta {
+        justify-self: start;
+    }
+}

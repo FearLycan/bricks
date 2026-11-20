@@ -302,6 +302,22 @@ class LegoController extends Controller
 
         $relatedSets = (new RelatedSetsService())->getRelatedSets($model, 12);
 
+        // "Recommended in our gift guide" box: only for sets the guide page
+        // itself still lists (released, not past their exit date).
+        $giftGuide = null;
+        $retired = $model->exit_date !== null && $model->exit_date !== '' && $model->exit_date < date('Y-m-d');
+        if ($model->isReleased() && !$retired) {
+            $matches = GiftGuide::forSet((string)$model->number);
+            if ($matches !== []) {
+                $giftGuide = [
+                    'guide'  => $matches[0]['guide'],
+                    'text'   => $matches[0]['text'],
+                    'covers' => GiftGuide::coverSets($matches[0]['guide'], 3, (string)$model->number),
+                    'also'   => array_column(array_slice($matches, 1), 'guide'),
+                ];
+            }
+        }
+
         return $this->render('view', [
             'model'          => $model,
             'user'           => $identity instanceof User ? $identity : null,
@@ -310,6 +326,7 @@ class LegoController extends Controller
             'userReview'     => $userReview,
             'userMatchScore' => $userMatchScore,
             'relatedSets'    => $relatedSets,
+            'giftGuide'      => $giftGuide,
         ]);
     }
 
