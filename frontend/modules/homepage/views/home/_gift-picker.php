@@ -30,9 +30,11 @@ use yii\web\View;
             <?= Html::encode(T::tr('All gift guides')) ?>
             <i class="ph ph-arrow-right" aria-hidden="true"></i>
         </a>
+        <?php if (\frontend\components\AdventCalendars::isPromoWindow()): ?>
         <a class="bricks-gift-picker-all" href="<?= Html::encode(Url::to(['/lego/lego/advent-calendars'])) ?>">
             <?= Html::encode(T::tr('LEGO advent calendars {year}', ['year' => \frontend\components\AdventCalendars::seasonYear()])) ?>
             <i class="ph ph-arrow-right" aria-hidden="true"></i>
         </a>
+        <?php endif; ?>
     </div>
 </div>

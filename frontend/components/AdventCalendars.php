@@ -28,6 +28,19 @@ final class AdventCalendars
     }
 
     /**
+     * When the homepage points to the calendars (shortcut, gift picker link):
+     * from the end of the Halloween banner (8 Nov) to 6 Dec. Searches peak in
+     * the first half of November and stop a few days into December; the page
+     * itself stays online all year so it keeps its place in Google.
+     */
+    public static function isPromoWindow(?\DateTimeImmutable $today = null): bool
+    {
+        $md = (int)($today ?? new \DateTimeImmutable('now'))->format('md');
+
+        return $md >= 1108 && $md <= 1206;
+    }
+
+    /**
      * Days left until the first door (1 December of the season year), or
      * null once December has started.
      */
