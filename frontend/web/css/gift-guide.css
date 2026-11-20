@@ -412,3 +412,223 @@
         grid-template-columns: 1fr;
     }
 }
+
+/* Advent calendars (/lego/advent-calendars) */
+
+.advent-countdown {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 170px;
+    padding: 1rem 1.4rem;
+    border: 1px solid rgba(255, 255, 255, .2);
+    border-radius: 16px;
+    background: rgba(255, 255, 255, .12);
+    text-align: center;
+}
+
+.bricks-page-hero-aside:has(.advent-countdown) {
+    text-align: right;
+}
+
+.advent-countdown b {
+    font-size: 2.75rem;
+    font-weight: 900;
+    line-height: 1;
+}
+
+.advent-countdown span {
+    font-size: .82rem;
+    opacity: .9;
+}
+
+.advent-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border: 1px solid #e9e4d8;
+    border-radius: 14px;
+    overflow: hidden;
+    font-size: .92rem;
+}
+
+.advent-table th {
+    padding: .65rem .8rem;
+    background: #f6f3ea;
+    color: #5b6077;
+    font-size: .72rem;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.advent-table td {
+    padding: .6rem .8rem;
+    border-top: 1px solid #e9e4d8;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+.advent-name {
+    display: flex;
+    align-items: center;
+    gap: .65rem;
+    color: #1b1f3b;
+    text-decoration: none;
+}
+
+.advent-name small {
+    color: #5b6077;
+}
+
+.advent-thumb {
+    position: relative;
+    flex: 0 0 56px;
+    width: 56px;
+    height: 42px;
+    border-radius: 8px;
+    background: #f6f3ea;
+}
+
+.advent-thumb img {
+    position: absolute;
+    inset: 3px;
+    width: calc(100% - 6px);
+    height: calc(100% - 6px);
+    object-fit: contain;
+}
+
+.advent-best {
+    margin-left: .35rem;
+    padding: .15rem .45rem;
+    border-radius: 6px;
+    background: #e6f4ec;
+    color: #198754;
+    font-size: .7rem;
+    font-weight: 700;
+}
+
+.advent-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1rem;
+}
+
+.advent-card {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #e9e4d8;
+    border-radius: 16px;
+    overflow: hidden;
+    background: #fff;
+}
+
+.advent-card-img {
+    position: relative;
+    display: block;
+    aspect-ratio: 4 / 3;
+    border-bottom: 1px solid #eef0f3;
+}
+
+.advent-card-img img {
+    position: absolute;
+    inset: .9rem;
+    width: calc(100% - 1.8rem);
+    height: calc(100% - 1.8rem);
+    object-fit: contain;
+}
+
+.advent-card-body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: .9rem 1rem 1rem;
+}
+
+.advent-card-meta {
+    font-size: .75rem;
+    color: #5b6077;
+}
+
+.advent-card h3 {
+    margin: .25rem 0 .4rem;
+    font-size: 1.05rem;
+    font-weight: 800;
+}
+
+.advent-card p {
+    font-size: .9rem;
+    line-height: 1.5;
+}
+
+.advent-card-facts {
+    display: flex;
+    gap: .8rem;
+    margin: auto 0 .7rem;
+    font-size: .82rem;
+    color: #5b6077;
+}
+
+.advent-card-facts b {
+    color: #1b1f3b;
+}
+
+.advent-card .btn {
+    align-self: flex-start;
+}
+
+.advent-older {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .75rem;
+}
+
+.advent-older a {
+    display: flex;
+    align-items: center;
+    gap: .65rem;
+    padding: .5rem .8rem;
+    border: 1px solid #e9e4d8;
+    border-radius: 12px;
+    background: #fff;
+    color: #1b1f3b;
+    font-size: .9rem;
+    text-decoration: none;
+}
+
+.advent-older small {
+    color: #5b6077;
+}
+
+@media (max-width: 991.98px) {
+    .bricks-page-hero-aside:has(.advent-countdown) {
+        text-align: left;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .advent-table {
+        font-size: .82rem;
+    }
+
+    .advent-table th,
+    .advent-table td {
+        padding: .5rem .45rem;
+    }
+
+    .advent-table th {
+        font-size: .62rem;
+        white-space: normal;
+    }
+
+    .advent-table .advent-thumb,
+    .advent-name small {
+        display: none;
+    }
+
+    .advent-best {
+        display: block;
+        width: fit-content;
+        margin: .2rem 0 0;
+    }
+}

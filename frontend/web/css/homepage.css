@@ -2189,6 +2189,12 @@ a.bricks-collection-stats-tile:hover {
     color: #5b6077;
 }
 
+.bricks-gift-picker-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 1.5rem;
+}
+
 .bricks-gift-picker-all {
     display: inline-block;
     margin-top: 0.75rem;

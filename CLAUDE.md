@@ -39,7 +39,7 @@ Hosting: MyDevil (FreeBSD). Deploy ręczny (`git pull` na serwerze).
 ## Landing page'e katalogu (wzorzec dla nowych)
 
 Trasy w `frontend/config/main.php`, akcje w `frontend/modules/lego/controllers/LegoController.php`:
-`/lego`, `/lego/on-sale`, `/lego/magazines`, `/lego/exclusive`, `/lego/retiring-soon`, `/lego/new`, `/lego/gifts` (hub poradników `GiftGuide`, nowy poradnik = wpis w `GiftGuide::definitions()` + `SLUGS` + sitemap),
+`/lego`, `/lego/on-sale`, `/lego/magazines`, `/lego/exclusive`, `/lego/retiring-soon`, `/lego/new`, `/lego/advent-calendars` (`AdventCalendars`, kalendarze szukane po nazwie, opisy serii w `copy()`), `/lego/gifts` (hub poradników `GiftGuide`, nowy poradnik = wpis w `GiftGuide::definitions()` + `SLUGS` + sitemap),
 `/lego/<audience>` (konfiguracja w `SeoHelper::audiencePages()` — dodanie wpisu + regex trasy = nowa strona),
 `/lego/tag/<slug>`, `/lego/theme/<slug>[/<sub>]`, `/lego/minifig/<number>`, `/lego/<slug>` (zestaw — **ostatnia, łapie wszystko**).
 
