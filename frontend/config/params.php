@@ -25,4 +25,6 @@ return [
         '47.82.0.0/16',      // Alibaba Cloud
     ],
     'botGuard.rateLimit' => 60,
+    // Admin read-only SQL endpoint (/management/db-query). Enable in params-local.php.
+    'dbQuery.enabled'    => false,
 ];

@@ -113,6 +113,14 @@ return [
                     'maskVars' => ['_POST.password', '_POST.LoginForm.password', '_POST.SignupForm.password'],
                 ],
                 [
+                    // Audit trail of ManagementController::actionDbQuery.
+                    'class'      => FileTarget::class,
+                    'levels'     => ['info'],
+                    'categories' => ['dbQuery'],
+                    'logFile'    => '@runtime/logs/db-query.log',
+                    'logVars'    => [],
+                ],
+                [
                     'class'   => \common\components\log\DbLogTarget::class,
                     'levels'  => ['error', 'warning'],
                     'except'  => ['yii\db\*', 'yii\web\HttpException:4*'],
@@ -149,6 +157,7 @@ return [
                 '#^wishlist/(toggle|remove)$#'           => '#^/?wishlist/(toggle|remove)$#',
                 '#^owned-set/(toggle|remove)$#'          => '#^/?owned-set/(toggle|remove)$#',
                 '#^management/queue-offer-import$#'      => '#^/?management/queue-offer-import$#',
+                '#^management/db-query$#'                => '#^/?management/db-query$#',
                 '#^wizard/(save|load)$#'                 => '#^/?wizard/(save|load)$#',
                 '#^review/(save-simple|save-detailed|delete)$#' => '#^/?review/(save-simple|save-detailed|delete)$#',
                 '#^user/set-language/#'                  => '#^/?user/set-language/#',
