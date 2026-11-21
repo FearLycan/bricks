@@ -25,6 +25,15 @@ final class SetInsights
     private const CACHE_SECONDS = 43200;
 
     /**
+     * Comparison base: sets sold on their own with at least this many pieces.
+     * Keychains, magnets, polybag promos and gifts with purchase would
+     * otherwise drag the theme minimum to 1 piece and the median down.
+     */
+    public const MIN_COMPARABLE_PIECES = 30;
+
+    private const NOT_SOLD_ALONE = ['Magazine gift', 'Promotional', 'LEGO Gift with Purchase', 'Insiders Reward'];
+
+    /**
      * @return array{
      *   theme: string,
      *   size: array{pieces: int, min: int, max: int, median: int, position: int, percentile: int}|null,
@@ -61,17 +70,18 @@ final class SetInsights
     }
 
     /**
-     * Active buildable sets of a theme: [pieces, price, year, launch, exit, minifigures].
+     * Comparable sets of a theme: [pieces, price, year, launch, exit, minifigures].
      *
      * @return list<array{0:int,1:int,2:int,3:?string,4:?string,5:int}>
      */
     private static function themeRows(int $themeId): array
     {
-        return Yii::$app->cache->getOrSet(['set-insights-theme', $themeId, 1], static function () use ($themeId): array {
+        return Yii::$app->cache->getOrSet(['set-insights-theme', $themeId, 2], static function () use ($themeId): array {
             $rows = Set::find()
                 ->select(['pieces', 'price', 'year', 'launch_date', 'exit_date', 'minifigures'])
                 ->where(['theme_id' => $themeId, 'status' => StatusEnum::ACTIVE->value])
-                ->andWhere(['>=', 'pieces', 1])
+                ->andWhere(['>=', 'pieces', self::MIN_COMPARABLE_PIECES])
+                ->andWhere(['or', ['availability' => null], ['not', ['availability' => self::NOT_SOLD_ALONE]]])
                 ->asArray()
                 ->all();
 
