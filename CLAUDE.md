@@ -81,6 +81,10 @@ listy do selectów `getAvailableYearsList/ThemesList/SubthemesList`.
 `set-offer-import/process-pending`, `sitemap/generate`, `bot-guard/update-ranges` (co tydzień; listy IP centrów danych dla `BotGuard`), `fingerprint/report`, `set/rebuild-slugs`, `tag/recount-sets`, `theme/recount-sets`.
 Integracja AliExpress: `common/components/aliexpress/*` (klient API, resolver linków, matcher, importer).
 
+## Diagnostyka bazy (dla Claude)
+
+`POST /management/db-query` (pole `sql`, CSRF, nagłówek `X-Requested-With: XMLHttpRequest` = bez limitu BotGuard) — tylko admin, tylko gdy `params['dbQuery.enabled']` w `params-local.php`. Zasady w `common/components/ReadOnlySql`: jedno SELECT/WITH/EXPLAIN/SHOW/DESCRIBE, tabele z `ALLOWED_TABLES` (bez `user`, list życzeń, posiadanych, ustawień), transakcja READ ONLY, 5 s, 1000 wierszy. Log: `frontend/runtime/logs/db-query.log`. Nowa tabela z danymi użytkowników = **nie** dopisywać do listy.
+
 ## Ruch botów
 
 `frontend/components/BotGuard` decyduje per zapytanie: człowiek (GA + AdSense), automat (strona bez tagów: zadeklarowany bot, brak `Accept-Language` i `Sec-Fetch-*`, IP centrum danych poza iCloud Private Relay) albo blokada (pusty UA, `params['botGuard.blockCidrs']` → 403, limit `botGuard.rateLimit`/5 min → 429; zweryfikowane DNS-em wyszukiwarki zwolnione). Wymuszane w `on beforeRequest`. W layoucie tagi tylko gdy `!BotGuard::isAutomated()`.
