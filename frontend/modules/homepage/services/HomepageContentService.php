@@ -68,10 +68,14 @@ class HomepageContentService
      */
     public function getHeroSlides(int $limit = 5): array
     {
-        return $this->cached("homepage.hero.{$limit}", function () use ($limit) {
+        // Only sets sold on their own, with a list price: a slide without a
+        // price (gift with purchase, 5-piece polybag) looked empty.
+        return $this->cached("homepage.hero.v2.{$limit}", function () use ($limit) {
             return Set::find()
                 ->alias('s')
                 ->andWhere(['s.status' => StatusEnum::ACTIVE->value])
+                ->andWhere(self::realSetCondition())
+                ->andWhere(['>', 's.price', 0])
                 ->andWhere(['not', ['s.rating' => null]])
                 ->andWhere(['>=', 's.rating', 4.3])
                 ->andWhere(['or',

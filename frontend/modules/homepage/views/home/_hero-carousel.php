@@ -36,6 +36,7 @@ $heroId = 'bricks-hero-' . uniqid();
                 $promoPrice = $slide->getFormattedPromotionalPrice('USD');
                 $basePrice  = $promoPrice !== null ? $slide->getFormattedPrice('USD') : $slide->getFormattedLocalRetailPrice();
                 $savings    = $slide->getPromotionalSavingsPercent('USD');
+                $isNew      = $slide->launch_date && strtotime((string)$slide->launch_date) >= strtotime('-180 days');
             ?>
                 <div class="swiper-slide bricks-hero-slide">
                     <a href="<?= \frontend\components\LangUrl::to("/lego/{$slide->slug}") ?>" class="bricks-hero-slide-link">
@@ -48,6 +49,9 @@ $heroId = 'bricks-hero-' . uniqid();
                             </div>
                         </div>
                         <div class="bricks-hero-slide-content">
+                            <?php if ($isNew): ?>
+                                <span class="bricks-hero-slide-badge"><?= Html::encode(T::tr('New · {date}', ['date' => \frontend\components\SetInsights::formatMonth((string)$slide->launch_date)])) ?></span>
+                            <?php endif; ?>
                             <?php if ($themeName !== ''): ?>
                                 <span class="bricks-hero-slide-eyebrow"><?= Html::encode($themeName) ?></span>
                             <?php endif; ?>
@@ -61,7 +65,7 @@ $heroId = 'bricks-hero-' . uniqid();
                                 <?php if ($slide->rating): ?>
                                     <span class="dot-sep">&middot;</span>
                                     <span class="bricks-hero-slide-rating">
-                                        <i class="ph-fill ph-star"></i>
+                                        <i class="ph-fill ph-star" aria-hidden="true"></i>
                                         <?= Html::encode(number_format((float)$slide->rating, 1)) ?>
                                     </span>
                                 <?php endif; ?>

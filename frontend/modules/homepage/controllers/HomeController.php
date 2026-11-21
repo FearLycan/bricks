@@ -38,12 +38,19 @@ class HomeController extends Controller
     {
         $themeTiles = $this->content->getThemeTiles();
         $themeSpotlight = $this->content->getThemeSpotlight();
+        $heroSlides = $this->content->getHeroSlides();
+        // Hero and "New arrivals" both pick recent sets: keep a set in one place only.
+        $heroIds = array_map(static fn($s) => (int)$s->id, $heroSlides);
+        $newArrivals = array_slice(array_values(array_filter(
+            $this->content->getNewArrivals(12 + count($heroIds)),
+            static fn($s) => !in_array((int)$s->id, $heroIds, true)
+        )), 0, 12);
         $viewData = [
-            'heroSlides'        => $this->content->getHeroSlides(),
+            'heroSlides'        => $heroSlides,
             'themeTiles'        => $themeTiles,
             'themeCovers'       => $this->content->getThemeCovers($themeTiles),
             'ageTiles'          => $this->content->getAgeTiles(),
-            'newArrivals'       => $this->content->getNewArrivals(),
+            'newArrivals'       => $newArrivals,
             'onSale'            => $this->content->getOnSale(),
             'topRated'          => $this->content->getTopRated(),
             'comingSoon'        => $this->content->getComingSoon(),

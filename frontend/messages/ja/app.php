@@ -1398,4 +1398,5 @@ return [
     'In stores since' => '発売',
     'On sale until' => '販売終了',
     'release: {date}' => '発売：{date}',
+    'New · {date}' => '新作・{date}',
 ];
