@@ -1398,4 +1398,5 @@ return [
     'In stores since' => 'A la venta desde',
     'On sale until' => 'A la venta hasta',
     'release: {date}' => 'lanzamiento: {date}',
+    'New · {date}' => 'Novedad · {date}',
 ];

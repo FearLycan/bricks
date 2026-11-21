@@ -1402,4 +1402,5 @@ return [
     'In stores since' => '',
     'On sale until' => '',
     'release: {date}' => '',
+    'New · {date}' => '',
 ];
