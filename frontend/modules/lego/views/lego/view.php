@@ -56,7 +56,8 @@ $buildRatingStars = static function (?float $score): array {
 $ratingStarClasses = $buildRatingStars($reviewAverage !== null ? (float)$reviewAverage : null);
 
 $this->title = SeoHelper::buildSetTitle($model);
-$this->params['metaDescription'] = SeoHelper::buildSetDescription($model);
+$insights = \frontend\components\SetInsights::forSet($model);
+$this->params['metaDescription'] = SeoHelper::buildSetDescription($model, $insights);
 // Self-referencing canonical in the page's own language: hreflang
 // alternates are ignored when a page canonicalises to another language.
 $this->params['canonicalUrl'] = Url::to(['/lego/lego/view', 'modules' => 'lego', 'slug' => $model->slug], true);
@@ -463,6 +464,9 @@ $queueOfferImportModalUrl = Url::to(['/management/queue-offer-import-modal', 'se
 
                 <div class="tab-content pt-4" id="legoProductTabsContent">
                     <div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview-tab" tabindex="0">
+                        <?php if ($insights !== null): ?>
+                            <?= $this->render('_set-insights', ['model' => $model, 'insights' => $insights]) ?>
+                        <?php endif; ?>
                         <p class="mb-0">
                             <?= T::tr('Discover') ?> <strong><?= Html::encode($model->name) ?></strong> <?= T::tr('from the') ?> <?= Html::encode($model->theme->name) ?> <?= T::tr('theme') ?>.
                             <?= T::tr('This set contains') ?> <strong><?= Html::encode($model->getPiecesText()) ?></strong> <?= T::tr('pieces and is designed for builders aged') ?>
