@@ -19,14 +19,21 @@ use yii\db\Expression;
  */
 final class IndexPolicy
 {
-    /** A tag page needs at least this many active sets. */
-    public const MIN_TAG_SETS = 5;
+    /**
+     * A tag page needs at least this many active sets.
+     * 5 -> 10 in 11.2026 (php yii index-stats: drops 1,156 narrow tags such
+     * as "hot-dog-bun", keeps 1,892).
+     */
+    public const MIN_TAG_SETS = 10;
 
     /** A subtheme page needs at least this many active sets. */
     public const MIN_SUBTHEME_SETS = 5;
 
-    /** A minifigure page needs to appear in at least this many sets. */
-    public const MIN_MINIFIG_SETS = 2;
+    /**
+     * A minifigure page needs to appear in at least this many sets.
+     * 2 -> 3 in 11.2026 (drops 1,370 pages with only two set tiles, keeps 779).
+     */
+    public const MIN_MINIFIG_SETS = 3;
 
     public const INDEX = 'index,follow';
     public const NOINDEX = 'noindex,follow';
