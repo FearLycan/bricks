@@ -22,7 +22,7 @@ final class IndexPolicy
     /**
      * A tag page needs at least this many active sets.
      * 5 -> 10 in 11.2026 (php yii index-stats: drops 1,156 narrow tags such
-     * as "hot-dog-bun", keeps 1,892).
+     * as "crutch", keeps 1,892).
      */
     public const MIN_TAG_SETS = 10;
 
