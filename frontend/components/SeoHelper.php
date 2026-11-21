@@ -364,8 +364,21 @@ final class SeoHelper
         ]);
     }
 
-    public static function buildSetDescription(Set $set): string
+    /**
+     * Meta description of a set page, in the page's language (the English
+     * Brickset blurb is only a fallback for sets without pieces/year). With
+     * SetInsights data it also carries one fact computed for this set (price
+     * per piece or size within the theme, release / retirement month), so
+     * descriptions differ between sets instead of repeating the English
+     * Brickset blurb.
+     */
+    public static function buildSetDescription(Set $set, ?array $insights = null): string
     {
+        $localized = self::buildSetDescriptionFromInsights($set, $insights);
+        if ($localized !== null) {
+            return $localized;
+        }
+
         $brandTail = T::tr(' Track price drops on BrickAtlas.');
 
         $description = self::normalizeText($set->description);
@@ -400,6 +413,49 @@ final class SeoHelper
         }
 
         return self::truncate($summary . $brandTail);
+    }
+
+    private static function buildSetDescriptionFromInsights(Set $set, ?array $insights): ?string
+    {
+        $pieces = (int)$set->pieces;
+        $year = (int)$set->year;
+        $themeName = self::normalizeText($insights['theme'] ?? ($set->theme->name ?? null));
+        if ($pieces < 1 || $year < 1 || $themeName === '') {
+            return null;
+        }
+
+        $params = [
+            'name'   => self::normalizeText($set->name),
+            'number' => self::normalizeText($set->getSetNumberText()),
+            'theme'  => $themeName,
+            'pieces' => $pieces,
+            'year'   => $year,
+        ];
+        $minifigs = (int)$set->minifigures;
+        $main = $minifigs > 0
+            ? T::tr('LEGO {theme} {name} ({number}): {pieces, plural, one{# piece} other{# pieces}}, {minifigs, plural, one{# minifigure} other{# minifigures}}, {year}.', $params + ['minifigs' => $minifigs])
+            : T::tr('LEGO {theme} {name} ({number}): {pieces, plural, one{# piece} other{# pieces}}, {year}.', $params);
+
+        $dates = $insights['dates'] ?? ['exit' => null, 'ended' => false, 'upcoming' => false, 'launch' => null];
+        $ppp = $insights['ppp'] ?? null;
+        $size = $insights['size'] ?? null;
+        $month = static fn(string $d): string => SetInsights::formatMonth($d);
+        $retiringSoon = $dates['exit'] !== null && !$dates['ended']
+            && strtotime($dates['exit']) <= strtotime('+' . Set::RETIRING_SOON_DAYS . ' days');
+
+        $fact = match (true) {
+            $dates['upcoming'] && $dates['launch'] !== null => T::tr('Release: {date}.', ['date' => $month($dates['launch'])]),
+            $retiringSoon                                   => T::tr('Expected to retire in {date}.', ['date' => $month($dates['exit'])]),
+            $ppp !== null && $ppp['cheaperThan'] >= 60       => T::tr('Cheaper per piece than {percent}% of {theme} sets.', ['percent' => $ppp['cheaperThan'], 'theme' => $params['theme']]),
+            $ppp !== null && $ppp['pricierThan'] >= 60       => T::tr('Pricier per piece than {percent}% of {theme} sets.', ['percent' => $ppp['pricierThan'], 'theme' => $params['theme']]),
+            $size !== null && $size['percentile'] >= 90      => T::tr('One of the largest {theme} sets.', ['theme' => $params['theme']]),
+            $size !== null && $size['percentile'] <= 10      => T::tr('One of the smallest {theme} sets.', ['theme' => $params['theme']]),
+            default                                         => '',
+        };
+
+        $text = SetInsights::joinSentences([$main, $fact, trim(T::tr(' Compare prices on BrickAtlas.'))]);
+
+        return self::truncate($text);
     }
 
     /**

@@ -4124,3 +4124,102 @@ a, button {
         justify-self: start;
     }
 }
+
+/* Set page: "Compared with the rest of the theme" (SetInsights) */
+.lego-insights {
+    border: 1px solid #e7e3da;
+    border-radius: 14px;
+    background: #fffdf6;
+    padding: 1rem 1.15rem;
+    margin-bottom: 1.25rem;
+}
+
+.lego-insights-title {
+    font-size: 1.1rem;
+    font-weight: 800;
+    margin: 0 0 .75rem;
+}
+
+.lego-insights-cards {
+    display: grid;
+    grid-template-columns: repeat(var(--cols, 3), minmax(0, 1fr));
+    gap: .75rem;
+    margin-bottom: .75rem;
+}
+
+.lego-insights-cards--1 { --cols: 1; }
+.lego-insights-cards--2 { --cols: 2; }
+.lego-insights-cards--3 { --cols: 3; }
+
+.lego-insights-card {
+    background: #fff;
+    border: 1px solid #e7e3da;
+    border-radius: 12px;
+    padding: .7rem .85rem;
+}
+
+.lego-insights-label {
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    color: #5b6077;
+}
+
+.lego-insights-value {
+    font-size: 1.3rem;
+    font-weight: 800;
+    margin: .2rem 0 .1rem;
+    color: #1b1f3b;
+}
+
+.lego-insights-bar {
+    position: relative;
+    height: 8px;
+    border-radius: 99px;
+    background: linear-gradient(90deg, #d1fae5, #fef3c7, #fee2e2);
+    margin: .45rem 0 .2rem;
+}
+
+.lego-insights-bar--neutral {
+    background: linear-gradient(90deg, #e7ecf5, #c9d4e8);
+}
+
+.lego-insights-bar span {
+    position: absolute;
+    top: -4px;
+    width: 4px;
+    height: 16px;
+    margin-left: -2px;
+    border-radius: 2px;
+    background: #1b1f3b;
+}
+
+.lego-insights-bar-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: .72rem;
+    color: #5b6077;
+}
+
+.lego-insights-note {
+    font-size: .82rem;
+    color: #3b4058;
+    margin-top: .2rem;
+}
+
+.lego-insights-text {
+    margin: 0;
+    color: #2f3450;
+    line-height: 1.6;
+}
+
+.lego-insights-source {
+    margin-top: .5rem;
+    font-size: .75rem;
+    color: #5b6077;
+}
+
+@media (max-width: 575.98px) {
+    .lego-insights-cards { --cols: 1 !important; }
+}
