@@ -25,4 +25,8 @@ return [
         '47.82.0.0/16',      // Alibaba Cloud
     ],
     'botGuard.rateLimit' => 60,
+    // Pinterest: code from "Claim website" (meta tag p:domain_verify), set in params-local.php.
+    'pinterest.domainVerify' => '',
+    // Sets per Pinterest feed per day (/pinterest/<board>.rss).
+    'pinterest.perDay'       => 10,
 ];

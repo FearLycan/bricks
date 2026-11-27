@@ -96,6 +96,10 @@ Narzędzia admina są w backendzie (admin.brickatlas.shop, `backend/modules/admi
 
 `js/offer-tracking.js` przy kliknięciu „View offer” (`a.lego-offer-action`, `data-offer-id`) i „Check official LEGO price” (`a.lego-official-price`, `data-set-id`) wysyła `navigator.sendBeacon('/click')` (`frontend/controllers/ClickController`) oraz GA4 `offer_click`. Zestaw, sklep i cenę bierzemy z bazy. Admini pomijani, boty (UA, BotGuard, obcy referrer, >40/h z jednego połączenia) zapisywane z `is_bot = 1`. Raport: Store clicks w panelu (`/admin/click`). Nowy przycisk do sklepu = te same klasy i atrybuty `data-*`.
 
+## Pinterest
+
+Kanały RSS pod tablice: `/pinterest/all.rss`, `/pinterest/<slug-tematu>.rss` (temat z ≥20 zestawami), `/pinterest/<slug-poradnika>.rss` (np. `gifts-for-adults`). `FeedController::actionPinterest`, widok `frontend/views/feed/pinterest.php`. Codziennie okno `pinterest.perDay` (10) zestawów przesuwa się po liście, linki po angielsku z `utm_source=pinterest`. Weryfikacja domeny: `pinterest.domainVerify` w `frontend/config/params-local.php` (meta `p:domain_verify`).
+
 ## Ruch botów
 
 `frontend/components/BotGuard` decyduje per zapytanie: człowiek (GA + AdSense), automat (strona bez tagów: zadeklarowany bot, brak `Accept-Language` i `Sec-Fetch-*`, IP centrum danych poza iCloud Private Relay) albo blokada (pusty UA, `params['botGuard.blockCidrs']` → 403, limit `botGuard.rateLimit`/5 min → 429; zweryfikowane DNS-em wyszukiwarki zwolnione). Wymuszane w `on beforeRequest`. W layoucie tagi tylko gdy `!BotGuard::isAutomated()`.

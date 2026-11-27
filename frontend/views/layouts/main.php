@@ -86,6 +86,9 @@ if ($socialImage !== '') {
     <head>
         <meta charset="<?= Yii::$app->charset ?>">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <?php if (($pinterestVerify = (string)(Yii::$app->params['pinterest.domainVerify'] ?? '')) !== ''): ?>
+            <meta name="p:domain_verify" content="<?= Html::encode($pinterestVerify) ?>">
+        <?php endif; ?>
         <?php $this->registerCsrfMetaTags() ?>
         <title><?= Html::encode($this->title) ?></title>
         <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96"/>
