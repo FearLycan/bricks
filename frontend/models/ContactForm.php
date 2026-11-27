@@ -8,7 +8,7 @@ use Yii;
 use yii\base\Model;
 
 /**
- * Contact form. Every message is stored (read at /management/messages) and, when an
+ * Contact form. Every message is stored (read in the admin panel, admin/message) and, when an
  * address is configured, also mailed. Spam guards instead of a captcha: a hidden honeypot
  * field, a minimum fill time carried in a signed token, and a per-IP rate limit.
  * Ported from store-base.

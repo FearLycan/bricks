@@ -9,17 +9,18 @@ use yii\helpers\Url;
 use yii\web\View;
 
 $this->title = 'Traffic';
-$this->params['robots'] = 'noindex,nofollow';
+$this->params['breadcrumbs'][] = $this->title;
 
 $this->registerJsFile('@web/js/vendor/chart-4.6.2.umd.min.js', ['position' => View::POS_END]);
 $this->registerJs('window.trConfig = ' . json_encode([
-    'dataUrl' => Url::to(['/management/traffic-data']),
-    'pageUrl' => Url::to(['/management/traffic']),
+    'dataUrl' => Url::to(['/admin/traffic/data']),
+    'pageUrl' => Url::to(['/admin/traffic/index']),
     'days' => $days,
+    'siteUrl' => rtrim((string)(Yii::$app->params['frontend.baseUrl'] ?? ''), '/') ?: 'https://brickatlas.shop',
 ], JSON_HEX_TAG | JSON_UNESCAPED_SLASHES) . ';', View::POS_HEAD);
 
 $this->registerCss(<<<'CSS'
-#tr-root{--admin-accent:#1b1f3b;--admin-muted:#5b6077;--admin-ink:#1b1f3b;--admin-card:#fff;--admin-border:#e5e7eb;max-width:1240px;margin:0 auto;padding:1.5rem 1rem 3rem}
+#tr-root{--admin-accent:#1b1f3b;--admin-muted:#5b6077;--admin-ink:#1b1f3b;--admin-card:#fff;--admin-border:#e5e7eb;max-width:1240px;padding:0 0 3rem}
 .tr-head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:1rem;margin-bottom:1.4rem}
 .tr-head h1{margin:0}
 .tr-head p{margin:.2rem 0 0;color:var(--admin-muted);font-size:.92rem}
@@ -90,7 +91,7 @@ $this->registerJs(<<<'JS'
     };
     var ratio = function (a, b) { return b > 0 ? a / b : 0; };
     var bar = function (n, max) { return '<span class="tr-bar"><span style="width:' + (max > 0 ? Math.max(2, Math.round(n / max * 100)) : 0) + '%"></span></span>'; };
-    var link = function (href, text) { return '<a href="' + esc(href) + '" target="_blank" rel="noopener">' + esc(text) + '</a>'; };
+    var link = function (href, text) { if (href.charAt(0) === '/') { href = cfg.siteUrl + href; } return '<a href="' + esc(href) + '" target="_blank" rel="noopener">' + esc(text) + '</a>'; };
     var trim = function (s, n) { s = String(s || ''); return s.length > n ? s.slice(0, n - 1) + '…' : s; };
     var cap = function (s) { return s.charAt(0).toUpperCase() + s.slice(1); };
     var objRows = function (o) { return Object.keys(o || {}).map(function (k) { return [k, o[k]]; }); };

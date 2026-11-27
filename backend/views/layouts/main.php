@@ -43,6 +43,13 @@ AppAsset::register($this);
                     </a>
                     <hr>
 
+                    <?php
+                    try {
+                        $unreadMessages = Yii::$app->user->isGuest ? 0 : \common\models\ContactMessage::unreadCount();
+                    } catch (\Throwable) {
+                        $unreadMessages = 0;
+                    }
+                    ?>
                     <?= Nav::widget([
                             'options'      => ['class' => 'nav nav-pills flex-column mb-auto'],
                             'encodeLabels' => false,
@@ -95,6 +102,24 @@ AppAsset::register($this);
                                             'linkOptions' => ['class' => 'nav-link text-white'],
                                             'url'         => ['/admin/log/index'],
                                             'active'      => Yii::$app->controller->id === 'log',
+                                    ],
+                                    [
+                                            'label'       => '<i class="bi bi-graph-up"></i> Traffic',
+                                            'linkOptions' => ['class' => 'nav-link text-white'],
+                                            'url'         => ['/admin/traffic/index'],
+                                            'active'      => Yii::$app->controller->id === 'traffic',
+                                    ],
+                                    [
+                                            'label'       => '<i class="bi bi-envelope"></i> Messages' . ($unreadMessages > 0 ? ' <span class="badge text-bg-danger rounded-pill ms-1">' . $unreadMessages . '</span>' : ''),
+                                            'linkOptions' => ['class' => 'nav-link text-white'],
+                                            'url'         => ['/admin/message/index'],
+                                            'active'      => Yii::$app->controller->id === 'message',
+                                    ],
+                                    [
+                                            'label'       => '<i class="bi bi-terminal"></i> Activity',
+                                            'linkOptions' => ['class' => 'nav-link text-white'],
+                                            'url'         => ['/admin/console/index'],
+                                            'active'      => Yii::$app->controller->id === 'console',
                                     ],
                             ],
                     ]) ?>

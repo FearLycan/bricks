@@ -48,23 +48,8 @@ use yii\helpers\Url;
 
         <?php if ($user->isAdmin()): ?>
             <li>
-                <?= Html::a(T::tr('Admin panel'), Yii::$app->backendUrlManager->createAbsoluteUrl(['/']), [
-                        'class' => 'dropdown-item',
-                ]) ?>
-            </li>
-            <li>
-                <?= Html::a(T::tr('Admin tools activity'), ['/management/activity'], [
-                        'class' => 'dropdown-item',
-                ]) ?>
-            </li>
-            <li>
-                <?= Html::a(T::tr('Traffic stats'), ['/management/traffic'], [
-                        'class' => 'dropdown-item',
-                ]) ?>
-            </li>
-            <li>
                 <?php $unread = \common\models\ContactMessage::unreadCount(); ?>
-                <?= Html::a(Html::encode(T::tr('Messages')) . ($unread > 0 ? ' <span class="badge text-bg-danger">' . $unread . '</span>' : ''), ['/management/messages'], [
+                <?= Html::a(Html::encode(T::tr('Admin panel')) . ($unread > 0 ? ' <span class="badge text-bg-danger" title="Unread messages">' . $unread . '</span>' : ''), Yii::$app->backendUrlManager->createAbsoluteUrl(['/']), [
                         'class'  => 'dropdown-item',
                         'encode' => false,
                 ]) ?>

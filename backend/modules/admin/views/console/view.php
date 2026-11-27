@@ -9,10 +9,11 @@ use yii\helpers\Url;
  */
 
 $this->title = 'Run ' . $run['id'];
-$this->params['robots'] = 'noindex,nofollow';
+$this->params['breadcrumbs'][] = ['label' => 'Activity', 'url' => ['/admin/console/index']];
+$this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="container py-4">
-    <p><?= Html::a('← All runs', Url::to(['/management/console-history'])) ?></p>
+<div class="console-view">
+    <p><?= Html::a('← Activity', Url::to(['/admin/console/index'])) ?></p>
     <h1 class="h4 mb-2"><code><?= Html::encode((string)$run['command']) ?></code></h1>
     <p class="text-muted small">
         Started <?= Html::encode(date('Y-m-d H:i:s', (int)$run['started'])) ?> by <?= Html::encode((string)($run['who'] ?? '')) ?>

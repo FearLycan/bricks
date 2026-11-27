@@ -1,6 +1,5 @@
 <?php
 
-use frontend\components\T;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
@@ -8,16 +7,17 @@ use yii\helpers\Url;
  * @var yii\web\View $this
  * @var array<int, array<string, mixed>> $runs
  * @var list<array{time: string, who: string, result: string, detail: string, sql: string}> $queries
+ * @var array{console: bool, sql: bool} $enabled
  */
 
-$this->title = T::tr('Admin tools activity');
-$this->params['robots'] = 'noindex,nofollow';
+$this->title = 'Activity';
+$this->params['breadcrumbs'][] = $this->title;
 $runBadge = ['done' => 'success', 'failed' => 'danger', 'running' => 'primary', 'lost' => 'secondary'];
 $sqlBadge = ['OK' => 'success', 'REFUSED' => 'warning', 'ERROR' => 'danger'];
 ?>
-<div class="container py-4">
-    <h1 class="h3 mb-1"><?= Html::encode($this->title) ?></h1>
-    <p class="text-muted small mb-4">Console commands (including deploys) and read-only SQL queries run through /management, newest first. Sources: console/runtime/console-runs and frontend/runtime/logs/db-query.log.</p>
+<div class="console-index">
+    <h1 class="mb-1"><?= Html::encode($this->title) ?></h1>
+    <p class="text-muted small mb-4">Console commands (including deploys) and read-only SQL queries run from this panel, newest first. Command runner: <b><?= $enabled['console'] ? 'on' : 'off' ?></b>, SQL: <b><?= $enabled['sql'] ? 'on' : 'off' ?></b>. Sources: console/runtime/console-runs and the db-query.log files.</p>
 
     <ul class="nav nav-tabs mb-3" role="tablist">
         <li class="nav-item" role="presentation">
@@ -42,7 +42,7 @@ $sqlBadge = ['OK' => 'success', 'REFUSED' => 'warning', 'ERROR' => 'danger'];
                             <td><span class="badge text-bg-<?= $runBadge[$run['status']] ?? 'secondary' ?>"><?= Html::encode((string)$run['status']) ?><?= isset($run['exitCode']) && $run['exitCode'] !== 0 ? ' (' . (int)$run['exitCode'] . ')' : '' ?></span></td>
                             <td class="text-nowrap"><?= $took === null ? '–' : Html::encode($took . ' s') ?></td>
                             <td><?= Html::encode((string)($run['who'] ?? '')) ?></td>
-                            <td><?= Html::a('log', Url::to(['/management/console-view', 'id' => $run['id']])) ?></td>
+                            <td><?= Html::a('log', Url::to(['/admin/console/view', 'id' => $run['id']])) ?></td>
                         </tr>
                     <?php endforeach; ?>
                     <?php if ($runs === []): ?>

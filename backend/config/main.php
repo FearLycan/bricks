@@ -10,6 +10,17 @@ $params = array_merge(
     require __DIR__ . '/params-local.php'
 );
 
+// Admin tools (ConsoleController) used to live in the frontend, so servers may still have
+// their switches only in frontend/config/params-local.php. Backend params-local wins.
+$frontendLocal = __DIR__ . '/../../frontend/config/params-local.php';
+if (is_file($frontendLocal)) {
+    foreach ((array)(require $frontendLocal) as $key => $value) {
+        if (preg_match('/^(console|dbQuery)\./', (string)$key) && !array_key_exists($key, require __DIR__ . '/params-local.php')) {
+            $params[$key] = $value;
+        }
+    }
+}
+
 return [
     'id'                  => 'app-backend',
     'basePath'            => dirname(__DIR__),
@@ -38,6 +49,22 @@ return [
                 [
                     'class'  => \yii\log\FileTarget::class,
                     'levels' => ['error', 'warning'],
+                ],
+                [
+                    // Audit trail of admin/console/run (command starts and refusals).
+                    'class'      => \yii\log\FileTarget::class,
+                    'levels'     => ['info'],
+                    'categories' => ['adminConsole'],
+                    'logFile'    => '@runtime/logs/admin-console.log',
+                    'logVars'    => [],
+                ],
+                [
+                    // Audit trail of admin/console/db-query.
+                    'class'      => \yii\log\FileTarget::class,
+                    'levels'     => ['info'],
+                    'categories' => ['dbQuery'],
+                    'logFile'    => '@runtime/logs/db-query.log',
+                    'logVars'    => [],
                 ],
                 [
                     'class'  => \common\components\log\DbLogTarget::class,
