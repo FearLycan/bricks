@@ -1401,4 +1401,6 @@ return [
     'New · {date}' => '新作・{date}',
     'Admin tools activity' => '管理ツールの実行履歴',
     'Traffic stats' => 'アクセス統計',
+    'Too many messages from your connection. Please try again in an hour.' => 'この接続からのメッセージが多すぎます。1時間後にもう一度お試しください。',
+    'Messages' => 'メッセージ',
 ];

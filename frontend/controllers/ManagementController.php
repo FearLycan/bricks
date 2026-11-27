@@ -45,6 +45,10 @@ final class ManagementController extends Controller
                     'activity'                 => ['get'],
                     'traffic'                  => ['get'],
                     'traffic-data'             => ['get'],
+                    'messages'                 => ['get'],
+                    'message'                  => ['get'],
+                    'message-unread'           => ['post'],
+                    'message-delete'           => ['post'],
                 ],
             ],
         ];
@@ -299,5 +303,50 @@ final class ManagementController extends Controller
         Yii::$app->response->headers->set('Cache-Control', 'no-store');
 
         return (new \frontend\components\TrafficReport(in_array($days, self::TRAFFIC_RANGES, true) ? $days : 30))->toArray();
+    }
+
+    /** Contact form inbox. */
+    public function actionMessages(): string
+    {
+        return $this->render('messages', [
+            'dataProvider' => new \yii\data\ActiveDataProvider([
+                'query'      => \common\models\ContactMessage::find(),
+                'sort'       => ['defaultOrder' => ['id' => SORT_DESC]],
+                'pagination' => ['pageSize' => 30],
+            ]),
+        ]);
+    }
+
+    public function actionMessage(int $id): string
+    {
+        $m = $this->findMessage($id);
+        if ($m->read_at === null) {
+            $m->read_at = time();
+            $m->save(false, ['read_at']);
+        }
+
+        return $this->render('message', ['m' => $m]);
+    }
+
+    public function actionMessageUnread(int $id): \yii\web\Response
+    {
+        $m = $this->findMessage($id);
+        $m->read_at = null;
+        $m->save(false, ['read_at']);
+
+        return $this->redirect(['/management/messages']);
+    }
+
+    public function actionMessageDelete(int $id): \yii\web\Response
+    {
+        $this->findMessage($id)->delete();
+        Yii::$app->session->setFlash('success', 'Message deleted.');
+
+        return $this->redirect(['/management/messages']);
+    }
+
+    private function findMessage(int $id): \common\models\ContactMessage
+    {
+        return \common\models\ContactMessage::findOne($id) ?? throw new \yii\web\NotFoundHttpException();
     }
 }

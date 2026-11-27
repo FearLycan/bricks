@@ -74,14 +74,13 @@ class SiteController extends Controller
     public function actionContact()
     {
         $model = new ContactForm();
-        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-            if ($model->sendEmail(Yii::$app->params['adminEmail'])) {
-                Yii::$app->session->setFlash('success', T::tr('Thanks for your message. We\'ll get back to you soon.'));
-            } else {
-                Yii::$app->session->setFlash('error', T::tr('There was an error sending your message.'));
-            }
+        if ($model->load(Yii::$app->request->post()) && $model->submit((string)Yii::$app->request->userIP)) {
+            Yii::$app->session->setFlash('success', T::tr('Thanks for your message. We\'ll get back to you soon.'));
 
             return $this->refresh();
+        }
+        if ($model->token === '') {
+            $model->token = ContactForm::issueToken(); // keep the posted one after a validation error
         }
 
         return $this->render('contact', [

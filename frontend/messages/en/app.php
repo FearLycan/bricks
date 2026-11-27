@@ -1405,4 +1405,6 @@ return [
     'New · {date}' => '',
     'Admin tools activity' => '',
     'Traffic stats' => '',
+    'Too many messages from your connection. Please try again in an hour.' => '',
+    'Messages' => '',
 ];

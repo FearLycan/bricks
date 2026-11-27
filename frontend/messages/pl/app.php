@@ -1401,4 +1401,6 @@ return [
     'New · {date}' => 'Nowość · {date}',
     'Admin tools activity' => 'Aktywność narzędzi admina',
     'Traffic stats' => 'Statystyki ruchu',
+    'Too many messages from your connection. Please try again in an hour.' => 'Za dużo wiadomości z Twojego połączenia. Spróbuj ponownie za godzinę.',
+    'Messages' => 'Wiadomości',
 ];
