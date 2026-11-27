@@ -1399,4 +1399,5 @@ return [
     'On sale until' => '販売終了',
     'release: {date}' => '発売：{date}',
     'New · {date}' => '新作・{date}',
+    'Admin tools activity' => '管理ツールの実行履歴',
 ];
