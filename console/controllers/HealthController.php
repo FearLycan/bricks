@@ -167,7 +167,7 @@ final class HealthController extends Controller
         return $out;
     }
 
-    /** Twice the longest gap a 5-field expression implies, roughly: hourly 2 h, daily 2 d, weekly 14 d. */
+    /** Twice the longest gap a 5-field expression implies, roughly: hourly 2 h, every N h 2N h, daily 2 d, weekly 14 d. */
     private function maxGapSeconds(string $expr): int
     {
         $f = preg_split('/\s+/', trim($expr));
@@ -178,7 +178,10 @@ final class HealthController extends Controller
         if ($dow !== '*' || $dom !== '*') {
             return 14 * 86400;
         }
-        if ($hour !== '*' && !str_contains($hour, '/')) {
+        if (preg_match('#^\*/(\d+)$#', $hour, $m)) {
+            return 2 * (int)$m[1] * 3600; // every N hours
+        }
+        if ($hour !== '*') {
             return 2 * 86400;
         }
 
