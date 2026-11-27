@@ -1,0 +1,69 @@
+# Deletes branches that are done with:
+#  - right after a pull request is merged, its head branch;
+#  - on demand (Actions → Branch cleanup → Run workflow) and whenever this file changes on master,
+#    every branch that has a merged pull request or whose commits are all in the default branch.
+# Branches with unmerged work are never touched. A deleted branch of a merged PR can be restored
+# from the PR page ("Restore branch").
+name: Branch cleanup
+
+on:
+  pull_request:
+    types: [closed]
+  workflow_dispatch:
+  push:
+    branches: [master]
+    paths: ['.github/workflows/branch-cleanup.yml']
+
+permissions:
+  contents: write
+  pull-requests: read
+
+jobs:
+  merged-head:
+    if: >-
+      github.event_name == 'pull_request' &&
+      github.event.pull_request.merged == true &&
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      github.event.pull_request.head.ref != github.event.repository.default_branch
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete the merged head branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          BRANCH: ${{ github.event.pull_request.head.ref }}
+        run: |
+          if gh api -X DELETE "repos/$REPO/git/refs/heads/$BRANCH" >/dev/null 2>&1; then
+            echo "Deleted $BRANCH"
+          else
+            echo "$BRANCH already gone"
+          fi
+
+  all-merged:
+    if: github.event_name == 'workflow_dispatch' || github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete every merged branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          DEFAULT: ${{ github.event.repository.default_branch }}
+        run: |
+          set -u
+          merged=$(gh api --paginate "repos/$REPO/pulls?state=closed&per_page=100" \
+            --jq '.[] | select(.merged_at != null and .head.repo.full_name == env.REPO) | .head.ref' | sort -u)
+          deleted=0; kept=0
+          while IFS= read -r b; do
+            [ -z "$b" ] || [ "$b" = "$DEFAULT" ] && continue
+            if printf '%s\n' "$merged" | grep -Fxq -- "$b"; then
+              why="merged PR"
+            else
+              ahead=$(gh api "repos/$REPO/compare/$DEFAULT...$b" --jq '.ahead_by' 2>/dev/null || echo "?")
+              if [ "$ahead" != "0" ]; then echo "KEEP  $b (ahead of $DEFAULT by $ahead)"; kept=$((kept+1)); continue; fi
+              why="already in $DEFAULT"
+            fi
+            if gh api -X DELETE "repos/$REPO/git/refs/heads/$b" >/dev/null 2>&1; then
+              echo "DEL   $b ($why)"; deleted=$((deleted+1))
+            fi
+          done < <(gh api --paginate "repos/$REPO/branches?per_page=100" --jq '.[].name')
+          echo "Deleted $deleted, kept $kept."
