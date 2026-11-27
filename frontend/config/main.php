@@ -102,7 +102,7 @@ return [
         ],
         'log'          => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
-            'targets'    => [
+            'targets'    => array_merge(require __DIR__ . '/../../common/config/error-mail-target.php', [
                 [
                     'class'   => FileTarget::class,
                     'levels'  => ['error', 'warning'],
@@ -111,6 +111,14 @@ return [
                     'except'  => ['yii\web\HttpException:4*'],
                     'logVars' => ['_GET', '_POST'],
                     'maskVars' => ['_POST.password', '_POST.LoginForm.password', '_POST.SignupForm.password'],
+                ],
+                [
+                    // Audit trail of ManagementController console runner starts.
+                    'class'      => FileTarget::class,
+                    'levels'     => ['info'],
+                    'categories' => ['adminConsole'],
+                    'logFile'    => '@runtime/logs/admin-console.log',
+                    'logVars'    => [],
                 ],
                 [
                     // Audit trail of ManagementController::actionDbQuery.
@@ -126,7 +134,7 @@ return [
                     'except'  => ['yii\db\*', 'yii\web\HttpException:4*'],
                     'logVars' => [],
                 ],
-            ],
+            ]),
         ],
         'errorHandler' => [
             'errorAction' => 'site/error',
@@ -158,6 +166,7 @@ return [
                 '#^owned-set/(toggle|remove)$#'          => '#^/?owned-set/(toggle|remove)$#',
                 '#^management/queue-offer-import$#'      => '#^/?management/queue-offer-import$#',
                 '#^management/db-query$#'                => '#^/?management/db-query$#',
+                '#^management/console-[a-z]+$#'          => '#^/?management/console-[a-z]+$#',
                 '#^wizard/(save|load)$#'                 => '#^/?wizard/(save|load)$#',
                 '#^review/(save-simple|save-detailed|delete)$#' => '#^/?review/(save-simple|save-detailed|delete)$#',
                 '#^user/set-language/#'                  => '#^/?user/set-language/#',

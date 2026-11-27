@@ -85,6 +85,13 @@ Integracja AliExpress: `common/components/aliexpress/*` (klient API, resolver li
 
 `POST /management/db-query` (pole `sql`, CSRF, nagłówek `X-Requested-With: XMLHttpRequest` = bez limitu BotGuard) — tylko admin, tylko gdy `params['dbQuery.enabled']` w `params-local.php`. Zasady w `common/components/ReadOnlySql`: jedno SELECT/WITH/EXPLAIN/SHOW/DESCRIBE, tabele z `ALLOWED_TABLES` (bez `user`, list życzeń, posiadanych, ustawień), transakcja READ ONLY, 5 s, 1000 wierszy. Log: `frontend/runtime/logs/db-query.log`. Nowa tabela z danymi użytkowników = **nie** dopisywać do listy.
 
+## Deploy, polecenia z panelu, harmonogram, alerty (przeniesione z SnagLoft, 11.2026)
+
+- **Deploy przez Claude** (zgoda Damiana 27.11.2026): `POST /management/console-run` z `route=deploy/run` (`git pull --ff-only origin master` + `migrate/up`), podgląd `deploy/status`. Status przebiegu: `GET /management/console-status?id=…`, historia: `/management/console-history`.
+- Dozwolone polecenia tylko z `common/components/ConsoleRunner::ALLOWED` (typowane opcje, bez powłoki). Wyłącznik: `console.enabled` w `frontend/config/params-local.php` (+ `console.phpBinary`, gdy web chodzi pod php-fpm).
+- **Harmonogram** w `console/config/schedule.php`, w crontabie jedna linia `php yii schedule/run`. Nowe zadanie = wpis tam + deploy. Podgląd: `schedule/list`.
+- **Alerty**: `health/check` co godzinę (Brickset, sitemap, zakresy BotGuard, fala błędów w tabeli `log`, zadania harmonogramu) i maile o błędach PHP max 1 na 15 min (`ThrottledEmailTarget`). Adresat: `alerts.email` w `common/config/params-local.php` (puste = wyłączone).
+
 ## Ruch botów
 
 `frontend/components/BotGuard` decyduje per zapytanie: człowiek (GA + AdSense), automat (strona bez tagów: zadeklarowany bot, brak `Accept-Language` i `Sec-Fetch-*`, IP centrum danych poza iCloud Private Relay) albo blokada (pusty UA, `params['botGuard.blockCidrs']` → 403, limit `botGuard.rateLimit`/5 min → 429; zweryfikowane DNS-em wyszukiwarki zwolnione). Wymuszane w `on beforeRequest`. W layoucie tagi tylko gdy `!BotGuard::isAutomated()`.
