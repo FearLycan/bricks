@@ -132,7 +132,22 @@ final class ManagementController extends Controller
     {
         $this->requireConsole(true);
 
-        return ['ok' => true, 'allowed' => ConsoleRunner::ALLOWED, 'recent' => (new ConsoleRunner())->recent(20)];
+        return [
+            'ok'      => true,
+            'allowed' => ConsoleRunner::ALLOWED,
+            'recent'  => (new ConsoleRunner())->recent(20),
+            // Why a run cannot start (exec disabled etc.): what this web PHP actually loads.
+            'php'     => [
+                'version'           => PHP_VERSION,
+                'sapi'              => PHP_SAPI,
+                'binary'            => PHP_BINARY,
+                'iniLoaded'         => php_ini_loaded_file(),
+                'iniScanned'        => php_ini_scanned_files(),
+                'userIni'           => ini_get('user_ini.filename'),
+                'disableFunctions'  => ini_get('disable_functions'),
+                'openBasedir'       => ini_get('open_basedir'),
+            ],
+        ];
     }
 
     public function actionConsoleRun(): array
