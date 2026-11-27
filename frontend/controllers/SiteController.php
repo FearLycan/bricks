@@ -18,6 +18,19 @@ class SiteController extends Controller
     /**
      * {@inheritdoc}
      */
+    public function beforeAction($action)
+    {
+        // The error page is rendered by the error handler, outside afterRequest: count 404s here.
+        if ($action->id === 'error') {
+            $e = Yii::$app->errorHandler->exception;
+            if ($e instanceof \yii\web\NotFoundHttpException) {
+                \frontend\components\TrafficRecorder::recordNotFound();
+            }
+        }
+
+        return parent::beforeAction($action);
+    }
+
     public function actions()
     {
         return [

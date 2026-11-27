@@ -43,6 +43,8 @@ final class ManagementController extends Controller
                     'console-history'          => ['get'],
                     'console-view'             => ['get'],
                     'activity'                 => ['get'],
+                    'traffic'                  => ['get'],
+                    'traffic-data'             => ['get'],
                 ],
             ],
         ];
@@ -276,5 +278,26 @@ final class ManagementController extends Controller
         }
 
         return $out;
+    }
+
+    /** Allowed traffic report periods in days (1 = today only). */
+    private const TRAFFIC_RANGES = [1, 7, 30, 90, 365];
+
+    /** Cookieless traffic stats page (a shell; data comes from actionTrafficData). */
+    public function actionTraffic(int $days = 30): string
+    {
+        return $this->render('traffic', [
+            'days'   => in_array($days, self::TRAFFIC_RANGES, true) ? $days : 30,
+            'ranges' => self::TRAFFIC_RANGES,
+        ]);
+    }
+
+    /** GET /management/traffic-data?days=N */
+    public function actionTrafficData(int $days = 30): array
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        Yii::$app->response->headers->set('Cache-Control', 'no-store');
+
+        return (new \frontend\components\TrafficReport(in_array($days, self::TRAFFIC_RANGES, true) ? $days : 30))->toArray();
     }
 }

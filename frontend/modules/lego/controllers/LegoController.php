@@ -62,6 +62,10 @@ class LegoController extends Controller
             }
         }
 
+        if (trim((string)$searchModel->name) !== '') {
+            \frontend\components\TrafficRecorder::recordSearch((string)$searchModel->name, (int)$dataProvider->getTotalCount());
+        }
+
         return $this->render('index', [
             'searchModel'  => $searchModel,
             'dataProvider' => $dataProvider,

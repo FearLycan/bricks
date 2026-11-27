@@ -57,6 +57,11 @@ use yii\helpers\Url;
                         'class' => 'dropdown-item',
                 ]) ?>
             </li>
+            <li>
+                <?= Html::a(T::tr('Traffic stats'), ['/management/traffic'], [
+                        'class' => 'dropdown-item',
+                ]) ?>
+            </li>
         <?php endif; ?>
         <li>
             <hr class="dropdown-divider">
