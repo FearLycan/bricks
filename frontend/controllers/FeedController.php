@@ -169,7 +169,7 @@ class FeedController extends Controller
             ->andWhere(['>=', 's.pieces', 30])
             ->andWhere(['or', ['s.availability' => null], ['not', ['s.availability' => ['Magazine gift', 'Promotional', 'LEGO Gift with Purchase', 'Insiders Reward']]]])
             ->andWhere(['or', ['s.launch_date' => null], ['<=', 's.launch_date', $today]])
-            ->andWhere(['or', ['s.exit_date' => null], ['s.exit_date' => ''], ['>=', 's.exit_date', $today]])
+            ->andWhere(['or', ['s.exit_date' => null], ['>=', 's.exit_date', $today]])
             ->groupBy('s.id')
             ->orderBy(['s.year' => SORT_DESC, 's.pieces' => SORT_DESC, 's.id' => SORT_ASC])
             ->limit(3000)
