@@ -1,0 +1,31 @@
+name: CI
+
+permissions:
+  contents: read
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+
+jobs:
+  php-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'  # production runs PHP 8.3
+          tools: composer
+          coverage: none
+
+      - name: composer.json is valid
+        run: composer validate --no-check-publish --no-check-all
+
+      - name: PHP syntax (8.3)
+        run: |
+          find . -name '*.php' \
+            -not -path './vendor/*' -not -path './node_modules/*' -not -path '*/runtime/*' -not -path './backend/web/assets/*' -not -path './frontend/web/assets/*' \
+            -print0 | xargs -0 -n1 -P4 php -l > /tmp/lint.log || { grep -v '^No syntax errors' /tmp/lint.log; exit 1; }
+          echo "$(wc -l < /tmp/lint.log) files OK"
