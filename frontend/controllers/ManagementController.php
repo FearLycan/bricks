@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 
+use common\components\ConsoleRunner;
 use common\components\ReadOnlySql;
 use common\models\User;
 use frontend\components\T;
@@ -36,6 +37,11 @@ final class ManagementController extends Controller
                     'queue-offer-import-modal' => ['get'],
                     'queue-offer-import'       => ['post'],
                     'db-query'                 => ['post'],
+                    'console-run'              => ['post'],
+                    'console-status'           => ['get'],
+                    'console-index'            => ['get'],
+                    'console-history'          => ['get'],
+                    'console-view'             => ['get'],
                 ],
             ],
         ];
@@ -108,5 +114,89 @@ final class ManagementController extends Controller
         Yii::info(sprintf('%s OK %d rows %d ms: %s', $who, count($result['rows']), $result['ms'], $sql), 'dbQuery');
 
         return ['ok' => true] + $result;
+    }
+
+    /*
+     * Background runner for allowlisted console commands (common\components\ConsoleRunner):
+     *
+     *   POST /management/console-run     route=sitemap/generate, options={"print":1} (JSON), CSRF -> {ok, id}
+     *   GET  /management/console-status  id=...[, tail=bytes] -> run meta + status + log tail
+     *   GET  /management/console-index   allowlist + recent runs
+     *   GET  /management/console-history page with past runs; console-view?id=... one log
+     *
+     * Admins only (access rule above), off unless params['console.enabled'] in
+     * frontend/config/params-local.php. Every start is logged to runtime/logs/admin-console.log.
+     */
+
+    public function actionConsoleIndex(): array
+    {
+        $this->requireConsole(true);
+
+        return ['ok' => true, 'allowed' => ConsoleRunner::ALLOWED, 'recent' => (new ConsoleRunner())->recent(20)];
+    }
+
+    public function actionConsoleRun(): array
+    {
+        $this->requireConsole(true);
+        $route = trim((string)Yii::$app->request->post('route', ''));
+        $raw = Yii::$app->request->post('options', '{}');
+        $who = '#' . (Yii::$app->user->id ?? '?');
+
+        try {
+            $options = is_array($raw) ? $raw : \yii\helpers\Json::decode((string)$raw);
+            if (!is_array($options)) {
+                $options = [];
+            }
+            $id = (new ConsoleRunner())->start($route, $options, $who);
+        } catch (\Throwable $e) {
+            Yii::info("{$who} REFUSED {$route} " . \yii\helpers\Json::encode($raw) . ': ' . $e->getMessage(), 'adminConsole');
+            Yii::$app->response->statusCode = 400;
+
+            return ['ok' => false, 'error' => $e->getMessage()];
+        }
+        Yii::info("{$who} START {$id} {$route} " . \yii\helpers\Json::encode($options), 'adminConsole');
+
+        return ['ok' => true, 'id' => $id];
+    }
+
+    public function actionConsoleStatus(string $id, int $tail = 65536): array
+    {
+        $this->requireConsole(true);
+        $run = (new ConsoleRunner())->status($id, $tail);
+        if ($run === null) {
+            Yii::$app->response->statusCode = 404;
+
+            return ['ok' => false, 'error' => 'Unknown run.'];
+        }
+
+        return ['ok' => true] + $run;
+    }
+
+    public function actionConsoleHistory(): string
+    {
+        $this->requireConsole(false);
+
+        return $this->render('console-history', ['runs' => (new ConsoleRunner())->recent(200)]);
+    }
+
+    public function actionConsoleView(string $id): string
+    {
+        $this->requireConsole(false);
+        $run = (new ConsoleRunner())->status($id, 512 * 1024);
+        if ($run === null) {
+            throw new \yii\web\NotFoundHttpException('Unknown run.');
+        }
+
+        return $this->render('console-view', ['run' => $run]);
+    }
+
+    private function requireConsole(bool $json): void
+    {
+        if (!(Yii::$app->params['console.enabled'] ?? false)) {
+            throw new \yii\web\NotFoundHttpException('Console runner is disabled.');
+        }
+        if ($json) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+        }
     }
 }

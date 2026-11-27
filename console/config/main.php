@@ -40,7 +40,7 @@ return [
             'cachePath' => dirname(__DIR__, 2) . '/console/runtime/schema-cache',
         ],
         'log' => [
-            'targets' => [
+            'targets' => array_merge(require __DIR__ . '/../../common/config/error-mail-target.php', [
                 [
                     'class' => \yii\log\FileTarget::class,
                     'levels' => ['error', 'warning'],
@@ -50,7 +50,7 @@ return [
                     'levels' => ['error', 'warning'],
                     'except' => ['yii\db\*', 'yii\web\HttpException:4*'],
                 ],
-            ],
+            ]),
         ],
     ],
     'params' => $params,

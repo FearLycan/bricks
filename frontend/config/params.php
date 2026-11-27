@@ -27,4 +27,9 @@ return [
     'botGuard.rateLimit' => 60,
     // Admin read-only SQL endpoint (/management/db-query). Enable in params-local.php.
     'dbQuery.enabled'    => false,
+    // Admin console runner (/management/console-*) and deploy. Enable in params-local.php;
+    // phpBinary = CLI php when web runs under php-fpm (e.g. /usr/local/bin/php83).
+    'console.enabled'    => false,
+    'console.phpBinary'  => '',
+    'console.gitBinary'  => '',
 ];

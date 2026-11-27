@@ -3,6 +3,9 @@ return [
     'adminEmail'                    => 'no-reply@brickatlas.shop',
     'supportEmail'                  => 'no-reply@brickatlas.shop',
     'senderEmail'                   => 'no-reply@brickatlas.shop',
+    // health/check alerts and PHP error mails go here; empty = off. Set in params-local.php.
+    'alerts.email'                  => '',
+    'alerts.mailErrors'             => true,
     'senderName'                    => 'BricksAtlas',
     'user.passwordResetTokenExpire' => 3600,
     'user.verificationTokenExpire'  => 86400,
