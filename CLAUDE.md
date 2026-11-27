@@ -83,12 +83,12 @@ Integracja AliExpress: `common/components/aliexpress/*` (klient API, resolver li
 
 ## Diagnostyka bazy (dla Claude)
 
-`POST /management/db-query` (pole `sql`, CSRF, nagłówek `X-Requested-With: XMLHttpRequest` = bez limitu BotGuard) — tylko admin, tylko gdy `params['dbQuery.enabled']` w `params-local.php`. Zasady w `common/components/ReadOnlySql`: jedno SELECT/WITH/EXPLAIN/SHOW/DESCRIBE, tabele z `ALLOWED_TABLES` (bez `user`, list życzeń, posiadanych, ustawień), transakcja READ ONLY, 5 s, 1000 wierszy. Log: `frontend/runtime/logs/db-query.log`. Nowa tabela z danymi użytkowników = **nie** dopisywać do listy.
+Narzędzia admina są w backendzie (admin.brickatlas.shop, `backend/modules/admin/controllers/ConsoleController`). `POST /admin/console/db-query` (pole `sql`, CSRF `_csrf-backend`) — tylko admin, tylko gdy `params['dbQuery.enabled']` (backend `params-local.php`, awaryjnie czytane też z `frontend/config/params-local.php`). Zasady w `common/components/ReadOnlySql`: jedno SELECT/WITH/EXPLAIN/SHOW/DESCRIBE, tabele z `ALLOWED_TABLES` (bez `user`, list życzeń, posiadanych, ustawień), transakcja READ ONLY, 5 s, 1000 wierszy. Log: `backend/runtime/logs/db-query.log` (starszy: `frontend/runtime/logs/db-query.log`), widok: Activity w panelu. Nowa tabela z danymi użytkowników = **nie** dopisywać do listy.
 
 ## Deploy, polecenia z panelu, harmonogram, alerty (przeniesione z SnagLoft, 11.2026)
 
-- **Deploy przez Claude** (zgoda Damiana 27.11.2026): `POST /management/console-run` z `route=deploy/run` (`git pull --ff-only origin master` + `migrate/up`), podgląd `deploy/status`. Status przebiegu: `GET /management/console-status?id=…`, historia: `/management/console-history`.
-- Dozwolone polecenia tylko z `common/components/ConsoleRunner::ALLOWED` (typowane opcje, bez powłoki). Wyłącznik: `console.enabled` w `frontend/config/params-local.php` (+ `console.phpBinary`, gdy web chodzi pod php-fpm).
+- **Deploy przez Claude** (zgoda Damiana 27.11.2026): `POST /admin/console/run` z `route=deploy/run` (`git pull --ff-only origin master` + `migrate/up`), podgląd `deploy/status`. Status przebiegu: `GET /admin/console/status?id=…`, lista: `GET /admin/console/list`, historia poleceń i zapytań SQL: strona Activity (`/admin/console/index`). W panelu też Traffic (`/admin/traffic`) i Messages (`/admin/message`).
+- Dozwolone polecenia tylko z `common/components/ConsoleRunner::ALLOWED` (typowane opcje, bez powłoki). Wyłącznik: `console.enabled` w `backend/config/params-local.php` (albo jeszcze `frontend/config/params-local.php`) (+ `console.phpBinary`, gdy web chodzi pod php-fpm).
 - **Harmonogram** w `console/config/schedule.php`, w crontabie jedna linia `php yii schedule/run`. Nowe zadanie = wpis tam + deploy. Podgląd: `schedule/list`.
 - **Alerty**: `health/check` co godzinę (Brickset, sitemap, zakresy BotGuard, fala błędów w tabeli `log`, zadania harmonogramu) i maile o błędach PHP max 1 na 15 min (`ThrottledEmailTarget`). Adresat: `alerts.email` w `common/config/params-local.php` (puste = wyłączone).
 

@@ -10,10 +10,10 @@ use yii\helpers\Url;
  */
 
 $this->title = 'Messages';
-$this->params['robots'] = 'noindex,nofollow';
+$this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="container py-4">
-    <h1 class="h3 mb-1"><?= Html::encode($this->title) ?></h1>
+<div class="message-index">
+    <h1 class="mb-1"><?= Html::encode($this->title) ?></h1>
     <p class="text-muted small mb-3">Everything sent through the contact form. Unread in bold.</p>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
@@ -23,7 +23,7 @@ $this->params['robots'] = 'noindex,nofollow';
         'columns'      => [
             ['attribute' => 'created_at', 'label' => 'Received', 'value' => static fn($m) => date('Y-m-d H:i', (int)$m->created_at), 'contentOptions' => ['class' => 'text-nowrap']],
             ['attribute' => 'name', 'value' => static fn($m) => $m->name . ' <' . $m->email . '>'],
-            ['attribute' => 'subject', 'format' => 'raw', 'value' => static fn($m) => Html::a(Html::encode($m->subject), Url::to(['/management/message', 'id' => $m->id]))],
+            ['attribute' => 'subject', 'format' => 'raw', 'value' => static fn($m) => Html::a(Html::encode($m->subject), Url::to(['/admin/message/view', 'id' => $m->id]))],
             ['attribute' => 'lang', 'label' => 'Lang'],
         ],
     ]) ?>

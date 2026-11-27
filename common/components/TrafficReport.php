@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace frontend\components;
+namespace common\components;
 
 use DateInterval;
 use DateTimeImmutable;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace frontend\components;
+namespace common\components;
 
 /**
  * Pure helpers that turn request headers into the coarse buckets the traffic stats keep.

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace frontend\components;
 
+use common\components\TrafficClassifier;
 use common\models\User;
 use Throwable;
 use Yii;
