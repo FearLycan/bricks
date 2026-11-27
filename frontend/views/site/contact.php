@@ -224,6 +224,10 @@ $this->registerCss('
 
                 <div class="contact-form-wrap">
                     <?php $form = ActiveForm::begin(['id' => 'contact-form']); ?>
+                    <?= Html::activeHiddenInput($model, 'token') ?>
+                    <div aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden">
+                        <label>Website <?= Html::activeTextInput($model, 'website', ['tabindex' => '-1', 'autocomplete' => 'off']) ?></label>
+                    </div>
 
                     <div class="row g-3 mb-3">
                         <div class="col-sm-6">

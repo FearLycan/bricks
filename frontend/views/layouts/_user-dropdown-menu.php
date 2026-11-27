@@ -62,6 +62,13 @@ use yii\helpers\Url;
                         'class' => 'dropdown-item',
                 ]) ?>
             </li>
+            <li>
+                <?php $unread = \common\models\ContactMessage::unreadCount(); ?>
+                <?= Html::a(Html::encode(T::tr('Messages')) . ($unread > 0 ? ' <span class="badge text-bg-danger">' . $unread . '</span>' : ''), ['/management/messages'], [
+                        'class'  => 'dropdown-item',
+                        'encode' => false,
+                ]) ?>
+            </li>
         <?php endif; ?>
         <li>
             <hr class="dropdown-divider">

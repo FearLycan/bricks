@@ -171,6 +171,7 @@ return [
                 '#^management/console-[a-z]+$#'          => '#^/?management/console-[a-z]+$#',
                 '#^management/activity$#'                => '#^/?management/activity$#',
                 '#^management/traffic(-data)?$#'         => '#^/?management/traffic(-data)?$#',
+                '#^management/message[a-z-]*$#'          => '#^/?management/message[a-z-]*$#',
                 '#^wizard/(save|load)$#'                 => '#^/?wizard/(save|load)$#',
                 '#^review/(save-simple|save-detailed|delete)$#' => '#^/?review/(save-simple|save-detailed|delete)$#',
                 '#^user/set-language/#'                  => '#^/?user/set-language/#',

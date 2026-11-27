@@ -6,6 +6,8 @@ return [
     // health/check alerts and PHP error mails go here; empty = off. Set in params-local.php.
     'alerts.email'                  => '',
     'alerts.mailErrors'             => true,
+    // Contact form notifications; empty = alerts.email. Messages are stored either way.
+    'contact.notifyEmail'           => '',
     'senderName'                    => 'BricksAtlas',
     'user.passwordResetTokenExpire' => 3600,
     'user.verificationTokenExpire'  => 86400,
