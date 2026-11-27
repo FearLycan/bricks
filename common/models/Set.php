@@ -757,13 +757,20 @@ class Set extends ActiveRecord
         return (int)$this->released === 1 ? 'Yes' : 'No';
     }
 
+    /** New slug from name + number; the old one goes to set_slug_history (301 to the new URL). */
     public function rebuildSlug(): void
     {
+        $old = $this->slug;
         $this->slug = null;
         $this->trigger(self::EVENT_BEFORE_VALIDATE);
 
         if ($this->slug !== null && $this->slug !== '') {
             $this->updateAttributes(['slug' => $this->slug]);
+            if ($old !== $this->slug) {
+                SetSlugHistory::record((int)$this->id, $old, $this->slug);
+            }
+        } else {
+            $this->slug = $old;
         }
     }
 
