@@ -33,6 +33,8 @@ use yii\httpclient\Client;
 class BricksetController extends Controller
 {
     private const PAGE_SIZE = 500;
+    /** Hard stop: a sync never needs more pages than this (each page is one counted call). */
+    private const MAX_PAGES = 5;
     private const HASH_TTL = 30 * 86400;
     private const LIMIT_PAUSE = 6 * 3600;
     private const LIMIT_KEY = 'brickset-limit-hit';
@@ -64,7 +66,7 @@ class BricksetController extends Controller
             if ($sets) {
                 $this->syncSets($sets);
             }
-        } while (count($sets) >= self::PAGE_SIZE);
+        } while (count($sets) >= self::PAGE_SIZE && $page <= self::MAX_PAGES && !$this->samePageAgain($sets));
     }
 
     public function actionSyncRecentlyUpdatedSets(): int
@@ -90,7 +92,7 @@ class BricksetController extends Controller
                 if ($sets) {
                     $this->syncSets($sets);
                 }
-            } while (count($sets) >= self::PAGE_SIZE);
+            } while (count($sets) >= self::PAGE_SIZE && $page <= self::MAX_PAGES && !$this->samePageAgain($sets));
         } catch (Exception $e) {
             if (!self::isLimitError($e)) {
                 throw $e;
@@ -130,6 +132,23 @@ class BricksetController extends Controller
         }
 
         return ExitCode::OK;
+    }
+
+    /**
+     * Since 19.11.2026 the key used up its 100 daily calls although a run needs 1-2: a page
+     * that repeats the previous one means Brickset ignored pageNumber, so stop there.
+     */
+    private function samePageAgain(array $sets): bool
+    {
+        static $previous = null;
+        $signature = ($sets[0]['setID'] ?? '') . '|' . (end($sets)['setID'] ?? '');
+        $repeat = $signature === $previous;
+        $previous = $signature;
+        if ($repeat) {
+            Yii::warning('Brickset returned the same getSets page twice, stopping pagination.', __METHOD__);
+        }
+
+        return $repeat;
     }
 
     private function limitPaused(): bool
