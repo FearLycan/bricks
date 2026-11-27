@@ -290,9 +290,21 @@ class LegoController extends Controller
         return $this->redirect(array_merge(['/lego'], $params), 301);
     }
 
-    public function actionView(string $slug): string
+    public function actionView(string $slug): string|\yii\web\Response
     {
-        $model = $this->findModel($slug);
+        $model = $this->findSet($slug);
+        if ($model === null) {
+            // Old slug (set renamed): 301 to the current URL in the same language.
+            $moved = \common\models\SetSlugHistory::findSet($slug);
+            if ($moved !== null && $moved->slug) {
+                return $this->redirect(['/lego/lego/view', 'modules' => 'lego', 'slug' => $moved->slug], 301);
+            }
+            $this->notFound();
+        }
+        if (ctype_digit($slug) && $model->slug && $model->slug !== $slug) {
+            // /lego/75447 works, but the slug URL is the one to index.
+            return $this->redirect(['/lego/lego/view', 'modules' => 'lego', 'slug' => $model->slug], 301);
+        }
         $identity = $this->user->identity;
 
         $reviewStats = SetReview::getSetStats((int)$model->id);
@@ -398,25 +410,19 @@ class LegoController extends Controller
         ]);
     }
 
-    private function findModel(string $slug): Set
+    private function findSet(string $slug): ?Set
     {
         $conditions = ['or', ['slug' => $slug]];
         if (ctype_digit($slug)) {
             $conditions[] = ['number' => (int)$slug];
         }
 
-        $model = Set::find()
+        return Set::find()
             ->with([
                 'setOffers.store',
                 'setOffers.setOfferReviews',
             ])
             ->where($conditions)
             ->one();
-
-        if (!$model) {
-            $this->notFound();
-        }
-
-        return $model;
     }
 }
