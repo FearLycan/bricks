@@ -37,6 +37,7 @@ final class ConsoleRunner
         'fingerprint/report'                   => ['_args' => ['hours' => 'int']],
         'brickset/sync-recently-updated-sets'  => [],
         'brickset/sync-themes'                 => [],
+        'brickset/usage'                       => [],
         'set/list-broken-slugs'                => [],
         // git pull --ff-only origin master + migrate/up (console/controllers/DeployController).
         'deploy/status'                        => [],

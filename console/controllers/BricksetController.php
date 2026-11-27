@@ -18,15 +18,25 @@ use Yii;
 use yii\caching\CacheInterface;
 use yii\console\Controller;
 use yii\console\Exception;
+use yii\console\ExitCode;
 use yii\helpers\Json;
 use yii\httpclient\Client;
 
 /**
+ * Brickset API v3. Keys have a daily call limit (100 getSets calls for a personal key), so:
+ * the user hash is kept for 30 days, pages stop when a page is not full, additional images
+ * and instructions are only fetched when Brickset's counts differ from ours, and after
+ * "API limit exceeded" the sync pauses (LIMIT_PAUSE) instead of failing every run.
  *
  * @property-read string $userHash
  */
 class BricksetController extends Controller
 {
+    private const PAGE_SIZE = 500;
+    private const HASH_TTL = 30 * 86400;
+    private const LIMIT_PAUSE = 6 * 3600;
+    private const LIMIT_KEY = 'brickset-limit-hit';
+
     public Client $client;
     public CacheInterface $cache;
 
@@ -44,7 +54,7 @@ class BricksetController extends Controller
             $response = $this->sendRequest('getSets', [
                 'params' => Json::encode([
                     'year'         => $year,
-                    'pageSize'     => 500,
+                    'pageSize'     => self::PAGE_SIZE,
                     'pageNumber'   => $page++,
                     'extendedData' => 1,
                 ]),
@@ -54,35 +64,98 @@ class BricksetController extends Controller
             if ($sets) {
                 $this->syncSets($sets);
             }
-        } while (count($sets) > 0);
+        } while (count($sets) >= self::PAGE_SIZE);
     }
 
-    public function actionSyncRecentlyUpdatedSets(): void
+    public function actionSyncRecentlyUpdatedSets(): int
     {
+        if ($this->limitPaused()) {
+            return ExitCode::OK;
+        }
         $updatedSince = (new \DateTimeImmutable('-2 days', new \DateTimeZone('UTC')))->format('Y-m-d');
 
         $page = 1;
-        do {
-            $response = $this->sendRequest('getSets', [
-                'params' => Json::encode([
-                    'updatedSince' => $updatedSince,
-                    'pageSize'     => 500,
-                    'pageNumber'   => $page++,
-                    'extendedData' => 1,
-                ]),
-            ]);
+        try {
+            do {
+                $response = $this->sendRequest('getSets', [
+                    'params' => Json::encode([
+                        'updatedSince' => $updatedSince,
+                        'pageSize'     => self::PAGE_SIZE,
+                        'pageNumber'   => $page++,
+                        'extendedData' => 1,
+                    ]),
+                ]);
 
-            $sets = $response['sets'] ?? [];
-            if ($sets) {
-                $this->syncSets($sets);
+                $sets = $response['sets'] ?? [];
+                if ($sets) {
+                    $this->syncSets($sets);
+                }
+            } while (count($sets) >= self::PAGE_SIZE);
+        } catch (Exception $e) {
+            if (!self::isLimitError($e)) {
+                throw $e;
             }
-        } while (count($sets) > 0);
+            $this->pauseForLimit($e);
+        }
 
         $controller = new ThemeController(Yii::$app->controller->id, Yii::$app);
         $controller->actionRecountSets();
 
         $controller = new TagController(Yii::$app->controller->id, Yii::$app);
         $controller->actionRecountSets();
+
+        return ExitCode::OK;
+    }
+
+    /**
+     * Calls per day for our key over the last 30 days (getKeyUsageStats does not count
+     * against the limit and needs no login).
+     */
+    public function actionUsage(): int
+    {
+        $response = $this->client->createRequest()->setUrl('getKeyUsageStats')
+            ->setData(['apiKey' => Yii::$app->params['brickset.apiKey']])->setMethod('GET')->send();
+        $data = $response->isOk ? $response->getData() : [];
+        if (($data['status'] ?? '') !== 'success') {
+            $this->stderr('Brickset: ' . $response->getContent() . "\n");
+
+            return ExitCode::UNAVAILABLE;
+        }
+        foreach ((array)($data['apiKeyUsage'] ?? []) as $row) {
+            $this->stdout(sprintf("%s  %d\n", substr((string)($row['dateStamp'] ?? '?'), 0, 10), (int)($row['count'] ?? 0)));
+        }
+        $paused = $this->cache->get(self::LIMIT_KEY);
+        if ($paused) {
+            $this->stdout('Sync paused after "API limit exceeded" until ' . date('Y-m-d H:i', (int)$paused) . "\n");
+        }
+
+        return ExitCode::OK;
+    }
+
+    private function limitPaused(): bool
+    {
+        $until = (int)$this->cache->get(self::LIMIT_KEY);
+        if ($until > time()) {
+            $this->stdout('Brickset limit was hit, sync paused until ' . date('Y-m-d H:i', $until) . "\n");
+
+            return true;
+        }
+
+        return false;
+    }
+
+    private static function isLimitError(Throwable $e): bool
+    {
+        return stripos($e->getMessage(), 'limit exceeded') !== false;
+    }
+
+    /** A warning, not an error: health/check reports stale sets if this lasts for days. */
+    private function pauseForLimit(Throwable $e): void
+    {
+        $until = time() + self::LIMIT_PAUSE;
+        $this->cache->set(self::LIMIT_KEY, $until, self::LIMIT_PAUSE);
+        $this->stdout("Brickset API limit exceeded, pausing sync until " . date('Y-m-d H:i', $until) . "\n");
+        Yii::warning('Brickset API limit exceeded, sync paused until ' . date('Y-m-d H:i', $until) . ': ' . $e->getMessage(), __METHOD__);
     }
 
     private function syncSets(array $sets): void
@@ -91,6 +164,9 @@ class BricksetController extends Controller
             try {
                 $this->syncSingleSet($set);
             } catch (Throwable $e) {
+                if (self::isLimitError($e)) {
+                    throw $e;
+                }
                 $setLabel = ($set['number'] ?? '?') . ' ' . ($set['name'] ?? '');
                 echo "ERROR syncing set {$setLabel}: {$e->getMessage()}\n";
                 Yii::error("BricksetController::syncSets failed for {$setLabel}: {$e->getMessage()}\n{$e->getTraceAsString()}", __METHOD__);
@@ -181,6 +257,14 @@ class BricksetController extends Controller
         });
 
         $this->safeStep("additional images for {$legoSet->number}", function () use ($legoSet, $set) {
+            // getSets says how many extra images Brickset has; only ask for them when that differs.
+            $remote = isset($set['additionalImageCount']) ? (int)$set['additionalImageCount'] : null;
+            if ($remote === 0) {
+                return;
+            }
+            if ($remote !== null && $remote <= (int)SetImage::find()->where(['set_id' => $legoSet->id, 'kind' => KindEnum::ADDITIONAL->value])->count()) {
+                return;
+            }
             $this->syncImages((int)$set['setID'], $legoSet);
         });
 
@@ -204,7 +288,11 @@ class BricksetController extends Controller
                 }
             });
 
-            $this->safeStep("instructions for {$legoSet->number}", function () use ($legoSet) {
+            $this->safeStep("instructions for {$legoSet->number}", function () use ($legoSet, $set) {
+                $remote = isset($set['instructionsCount']) ? (int)$set['instructionsCount'] : null;
+                if ($remote !== null && $remote === (int)SetInstruction::find()->where(['set_id' => $legoSet->id])->count()) {
+                    return;
+                }
                 $this->syncInstructionsFor($legoSet);
             });
         }
@@ -215,6 +303,9 @@ class BricksetController extends Controller
         try {
             $callback();
         } catch (Throwable $e) {
+            if (self::isLimitError($e)) {
+                throw $e;
+            }
             echo "  warn: {$label} failed: {$e->getMessage()}\n";
             Yii::error("BricksetController step '{$label}' failed: {$e->getMessage()}\n{$e->getTraceAsString()}", __METHOD__);
         }
@@ -311,7 +402,14 @@ class BricksetController extends Controller
         $response = $request->send();
 
         if ($response->isOk) {
-            return $response->getData();
+            $data = $response->getData();
+            if (is_array($data) && ($data['status'] ?? '') !== 'error') {
+                return $data;
+            }
+        }
+
+        if (stripos($response->getContent(), 'hash') !== false) {
+            $this->cache->delete('brickset-user-hash'); // log in again next time
         }
 
         throw new Exception("There was problem with brickset action {$url}: {$response->getContent()}");
@@ -336,6 +434,6 @@ class BricksetController extends Controller
             }
 
             throw new Exception("There was problem with brickset login: {$response->getContent()}");
-        }, 60 * 60);
+        }, self::HASH_TTL);
     }
 }
