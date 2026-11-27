@@ -167,6 +167,7 @@ return [
                 '#^management/queue-offer-import$#'      => '#^/?management/queue-offer-import$#',
                 '#^management/db-query$#'                => '#^/?management/db-query$#',
                 '#^management/console-[a-z]+$#'          => '#^/?management/console-[a-z]+$#',
+                '#^management/activity$#'                => '#^/?management/activity$#',
                 '#^wizard/(save|load)$#'                 => '#^/?wizard/(save|load)$#',
                 '#^review/(save-simple|save-detailed|delete)$#' => '#^/?review/(save-simple|save-detailed|delete)$#',
                 '#^user/set-language/#'                  => '#^/?user/set-language/#',

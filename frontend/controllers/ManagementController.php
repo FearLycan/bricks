@@ -42,6 +42,7 @@ final class ManagementController extends Controller
                     'console-index'            => ['get'],
                     'console-history'          => ['get'],
                     'console-view'             => ['get'],
+                    'activity'                 => ['get'],
                 ],
             ],
         ];
@@ -213,5 +214,67 @@ final class ManagementController extends Controller
         if ($json) {
             Yii::$app->response->format = Response::FORMAT_JSON;
         }
+    }
+
+    /**
+     * What was run on this site through the admin tools: console runs (incl. deploys)
+     * and read-only SQL queries, newest first. Reads the existing audit trails
+     * (console/runtime/console-runs, runtime/logs/db-query.log).
+     */
+    public function actionActivity(): string
+    {
+        $runs = (Yii::$app->params['console.enabled'] ?? false) ? (new ConsoleRunner())->recent(200) : [];
+
+        return $this->render('activity', [
+            'runs'    => $runs,
+            'queries' => self::readQueryLog(Yii::getAlias('@runtime/logs/db-query.log'), 300),
+        ]);
+    }
+
+    /**
+     * Last $limit entries of the db-query audit log, newest first.
+     * Line format (yii\log\FileTarget): "Y-m-d H:i:s [ip][user][session][info][dbQuery] message";
+     * lines without a timestamp continue the previous message (multi-line SQL).
+     *
+     * @return list<array{time: string, who: string, result: string, detail: string, sql: string}>
+     */
+    private static function readQueryLog(string $file, int $limit): array
+    {
+        if (!is_file($file)) {
+            return [];
+        }
+        $size = (int)filesize($file);
+        $fh = fopen($file, 'rb');
+        if ($fh === false) {
+            return [];
+        }
+        if ($size > 512 * 1024) {
+            fseek($fh, -512 * 1024, SEEK_END);
+            fgets($fh); // drop the partial first line
+        }
+        $entries = [];
+        while (($line = fgets($fh)) !== false) {
+            if (preg_match('/^(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}) \[[^\]]*\]\[[^\]]*\]\[[^\]]*\]\[info\]\[dbQuery\] (.*)$/s', $line, $m)) {
+                $entries[] = ['time' => $m[1], 'raw' => rtrim($m[2])];
+            } elseif ($entries !== []) {
+                $entries[count($entries) - 1]['raw'] .= "\n" . rtrim($line);
+            }
+        }
+        fclose($fh);
+
+        $out = [];
+        foreach (array_reverse(array_slice($entries, -$limit)) as $e) {
+            // "#3 OK 12 rows 5 ms: SQL" | "#3 REFUSED (why): SQL" | "#3 ERROR: SQL | message"
+            if (preg_match('/^(#\S+|\?) (OK) (\d+ rows \d+ ms): (.*)$/s', $e['raw'], $m)
+                || preg_match('/^(#\S+|\?) (REFUSED) \((.*?)\): (.*)$/s', $e['raw'], $m)) {
+                $out[] = ['time' => $e['time'], 'who' => $m[1], 'result' => $m[2], 'detail' => $m[3], 'sql' => trim($m[4])];
+            } elseif (preg_match('/^(#\S+|\?) ERROR: (.*?) \| (.*)$/s', $e['raw'], $m)) {
+                $out[] = ['time' => $e['time'], 'who' => $m[1], 'result' => 'ERROR', 'detail' => mb_substr($m[3], 0, 200), 'sql' => trim($m[2])];
+            } else {
+                $out[] = ['time' => $e['time'], 'who' => '', 'result' => '', 'detail' => '', 'sql' => $e['raw']];
+            }
+        }
+
+        return $out;
     }
 }

@@ -1403,4 +1403,5 @@ return [
     'On sale until' => '',
     'release: {date}' => '',
     'New · {date}' => '',
+    'Admin tools activity' => '',
 ];

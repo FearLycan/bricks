@@ -1399,4 +1399,5 @@ return [
     'On sale until' => 'Im Handel bis',
     'release: {date}' => 'Erscheinung: {date}',
     'New · {date}' => 'Neu · {date}',
+    'Admin tools activity' => 'Aktivität der Admin-Tools',
 ];

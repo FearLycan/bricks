@@ -52,6 +52,11 @@ use yii\helpers\Url;
                         'class' => 'dropdown-item',
                 ]) ?>
             </li>
+            <li>
+                <?= Html::a(T::tr('Admin tools activity'), ['/management/activity'], [
+                        'class' => 'dropdown-item',
+                ]) ?>
+            </li>
         <?php endif; ?>
         <li>
             <hr class="dropdown-divider">
