@@ -25,6 +25,8 @@ return [
     'sourceLanguage'      => 'en',
     'basePath'            => dirname(__DIR__),
     'bootstrap'           => ['log'],
+    // Cookieless daily traffic counters (TrafficRecorder); HTML pages only.
+    'on afterRequest'     => [\frontend\components\TrafficRecorder::class, 'onAfterRequest'],
     // Abuse (empty UA, blocked networks, rate limit) is answered before routing.
     'on beforeRequest'    => static function (): void {
         \frontend\components\BotGuard::enforce();
@@ -168,6 +170,7 @@ return [
                 '#^management/db-query$#'                => '#^/?management/db-query$#',
                 '#^management/console-[a-z]+$#'          => '#^/?management/console-[a-z]+$#',
                 '#^management/activity$#'                => '#^/?management/activity$#',
+                '#^management/traffic(-data)?$#'         => '#^/?management/traffic(-data)?$#',
                 '#^wizard/(save|load)$#'                 => '#^/?wizard/(save|load)$#',
                 '#^review/(save-simple|save-detailed|delete)$#' => '#^/?review/(save-simple|save-detailed|delete)$#',
                 '#^user/set-language/#'                  => '#^/?user/set-language/#',

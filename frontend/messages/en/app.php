@@ -1404,4 +1404,5 @@ return [
     'release: {date}' => '',
     'New · {date}' => '',
     'Admin tools activity' => '',
+    'Traffic stats' => '',
 ];

@@ -1400,4 +1400,5 @@ return [
     'release: {date}' => 'Erscheinung: {date}',
     'New · {date}' => 'Neu · {date}',
     'Admin tools activity' => 'Aktivität der Admin-Tools',
+    'Traffic stats' => 'Besucherstatistik',
 ];

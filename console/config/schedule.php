@@ -24,6 +24,8 @@ return [
     'bot-ranges' => ['10 4 * * 1', 'bot-guard/update-ranges'],
     // New: email alerts for quiet failures (stale Brickset data, old sitemap, error waves).
     'health'     => ['45 * * * *', 'health/check'],
+    // Drop detailed traffic stats older than 400 days (daily totals are kept), Sundays.
+    'stats-prune' => ['25 5 * * 0', 'stats/prune'],
     // New: trim *.log files over 5 MB to the last 5000 lines, Sundays.
     'log-trim'   => ['30 5 * * 0', 'schedule/trim-logs'],
 ];
