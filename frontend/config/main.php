@@ -151,6 +151,7 @@ return [
                 '#^wishlist/(toggle|remove)$#'           => '#^/?wishlist/(toggle|remove)$#',
                 '#^owned-set/(toggle|remove)$#'          => '#^/?owned-set/(toggle|remove)$#',
                 '#^management/queue-offer-import$#'      => '#^/?management/queue-offer-import$#',
+                '#^click$#'                              => '#^/?click$#',
                 '#^wizard/(save|load)$#'                 => '#^/?wizard/(save|load)$#',
                 '#^review/(save-simple|save-detailed|delete)$#' => '#^/?review/(save-simple|save-detailed|delete)$#',
                 '#^user/set-language/#'                  => '#^/?user/set-language/#',
@@ -162,6 +163,7 @@ return [
                 // same path in English so indexed pages keep their signals.
                 'zh'                                            => 'site/legacy-language',
                 'zh/<path:.*>'                                  => 'site/legacy-language',
+                'POST click'                                    => 'click/record',
                 ''                                              => 'homepage/home/index',
                 'feed'                                          => 'feed/index',
                 'feed.xml'                                      => 'feed/xml',

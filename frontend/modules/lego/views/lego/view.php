@@ -287,7 +287,9 @@ $queueOfferImportModalUrl = Url::to(['/management/queue-offer-import-modal', 'se
                     <div class="lego-cta-group">
                         <?= Html::a(T::tr('Browse all sets'), ['/lego'], ['class' => 'btn btn-outline-secondary']) ?>
                         <?= Html::a(T::tr('Check official LEGO price'), "https://www.lego.com/search?q={$model->number}", [
-                                'class'  => 'btn btn-lego',
+                                'class'  => 'btn btn-lego lego-official-price',
+                                // Counted by js/offer-tracking.js (POST /click, GA4 offer_click).
+                                'data'   => ['set-id' => (int)$model->id, 'offer-set' => (string)$model->number],
                                 'target' => '_blank',
                                 'rel'    => 'noopener noreferrer',
                         ]) ?>
@@ -401,8 +403,9 @@ $queueOfferImportModalUrl = Url::to(['/management/queue-offer-import-modal', 'se
                                                                 'target' => '_blank',
                                                                 // Affiliate links: "sponsored" per Google's link guidelines.
                                                                 'rel'    => 'sponsored nofollow noopener noreferrer',
-                                                                // Read by js/offer-tracking.js for the GA4 offer_click event.
+                                                                // Read by js/offer-tracking.js (POST /click, GA4 offer_click).
                                                                 'data'   => [
+                                                                        'offer-id'       => (int)$offer->id,
                                                                         'offer-store'    => $offer->store->name ?? '',
                                                                         'offer-set'      => (string)$model->number,
                                                                         'offer-price'    => $offer->price !== null ? number_format($offer->price / 100, 2, '.', '') : '',
