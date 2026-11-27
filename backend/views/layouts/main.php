@@ -110,6 +110,12 @@ AppAsset::register($this);
                                             'active'      => Yii::$app->controller->id === 'traffic',
                                     ],
                                     [
+                                            'label'       => '<i class="bi bi-cursor"></i> Store clicks',
+                                            'linkOptions' => ['class' => 'nav-link text-white'],
+                                            'url'         => ['/admin/click/index'],
+                                            'active'      => Yii::$app->controller->id === 'click',
+                                    ],
+                                    [
                                             'label'       => '<i class="bi bi-envelope"></i> Messages' . ($unreadMessages > 0 ? ' <span class="badge text-bg-danger rounded-pill ms-1">' . $unreadMessages . '</span>' : ''),
                                             'linkOptions' => ['class' => 'nav-link text-white'],
                                             'url'         => ['/admin/message/index'],

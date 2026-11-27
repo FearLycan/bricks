@@ -92,6 +92,10 @@ Narzędzia admina są w backendzie (admin.brickatlas.shop, `backend/modules/admi
 - **Harmonogram** w `console/config/schedule.php`, w crontabie jedna linia `php yii schedule/run`. Nowe zadanie = wpis tam + deploy. Podgląd: `schedule/list`.
 - **Alerty**: `health/check` co godzinę (Brickset, sitemap, zakresy BotGuard, fala błędów w tabeli `log`, zadania harmonogramu) i maile o błędach PHP max 1 na 15 min (`ThrottledEmailTarget`). Adresat: `alerts.email` w `common/config/params-local.php` (puste = wyłączone).
 
+## Kliknięcia w sklepy
+
+`js/offer-tracking.js` przy kliknięciu „View offer” (`a.lego-offer-action`, `data-offer-id`) i „Check official LEGO price” (`a.lego-official-price`, `data-set-id`) wysyła `navigator.sendBeacon('/click')` (`frontend/controllers/ClickController`) oraz GA4 `offer_click`. Zestaw, sklep i cenę bierzemy z bazy. Admini pomijani, boty (UA, BotGuard, obcy referrer, >40/h z jednego połączenia) zapisywane z `is_bot = 1`. Raport: Store clicks w panelu (`/admin/click`). Nowy przycisk do sklepu = te same klasy i atrybuty `data-*`.
+
 ## Ruch botów
 
 `frontend/components/BotGuard` decyduje per zapytanie: człowiek (GA + AdSense), automat (strona bez tagów: zadeklarowany bot, brak `Accept-Language` i `Sec-Fetch-*`, IP centrum danych poza iCloud Private Relay) albo blokada (pusty UA, `params['botGuard.blockCidrs']` → 403, limit `botGuard.rateLimit`/5 min → 429; zweryfikowane DNS-em wyszukiwarki zwolnione). Wymuszane w `on beforeRequest`. W layoucie tagi tylko gdy `!BotGuard::isAutomated()`.
